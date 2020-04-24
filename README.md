@@ -1,2 +1,2 @@
-# pyCC
+# CloudComPy
 Python wrapper for CloudCompare
