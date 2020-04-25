@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# to be sourced before using cloudCompare module and tests in Python3
+
+export PYTHONPATH=@CMAKE_INSTALL_PREFIX@/lib/cloudcompare:$PYTHONPATH
+export PYTHONPATH=@CMAKE_INSTALL_PREFIX@/@PYTHONAPI_TEST_SCRIPTS_DIRECTORY@:$PYTHONPATH
