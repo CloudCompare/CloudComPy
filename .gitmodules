@@ -1,0 +1,3 @@
+[submodule "CloudCompare"]
+	path = CloudCompare
+	url = https://github.com/CloudCompare/CloudCompare.git
