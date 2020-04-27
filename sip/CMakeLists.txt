@@ -60,7 +60,7 @@ find_package(PYQTSIP REQUIRED)  # should come after Python
 
 project( cloudCompare VERSION 0.1 )
 
-add_library( cloudCompare SHARED "")
+add_library( ${PROJECT_NAME} SHARED )
 
 # --- sources / sip wrappings
 
@@ -79,8 +79,8 @@ set(SIP_MAIN_GENSRC ${CMAKE_CURRENT_BINARY_DIR}/sipcloudComparecmodule.cc)
 set(SIP_ADD_GENSRC
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareccPointCloud.cc
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareQList0101ccPointCloud.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCLib.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCLibScalarField.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCCoreLib.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCCoreLibScalarField.cc
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareinitNumpy.cc
    )
 set(SIP_ALL_GENSRC ${SIP_MAIN_GENSRC} ${SIP_ADD_GENSRC})
@@ -100,14 +100,14 @@ add_custom_command(
 
 # --- sources / to compile
 
-target_sources( cloudCompare
+target_sources( ${PROJECT_NAME}
                 PRIVATE
                 ${SIP_ALL_GENSRC}
                 )
                 
 # --- Python wrapping with sip
 
-target_include_directories( cloudCompare PUBLIC
+target_include_directories( ${PROJECT_NAME} PUBLIC
     ${SIP_INCLUDE_DIR}
     ${PYTHON_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -118,25 +118,19 @@ target_include_directories( cloudCompare PUBLIC
 find_path(NUMPY_INCLUDE_DIR numpy/npy_common.h HINTS ${PYTHON_INCLUDE_DIRS} DOC "directory path of include: numpy/npy_common.h")
 message(STATUS "NUMPY_INCLUDE_DIR: " ${NUMPY_INCLUDE_DIR})
 
-target_include_directories( cloudCompare PUBLIC
+target_include_directories( ${PROJECT_NAME} PUBLIC
     ${NUMPY_INCLUDE_DIR}
     )
 
-target_link_libraries( cloudCompare
+target_link_libraries( ${PROJECT_NAME}
     PYCC_LIB
     QCC_IO_LIB
-    QCC_DB_LIB
-    CCCoreLib
-    CC_FBO_LIB
     ${PYTHON_LIBRARIES}
     )
-#    QCC_DB_LIB
-#    CCCoreLib
-#    CC_FBO_LIB
 
 # Qt libraries
 
-target_link_libraries( cloudCompare
+target_link_libraries( ${PROJECT_NAME}
     Qt5::Core
     Qt5::Gui
     Qt5::Widgets
@@ -145,22 +139,22 @@ target_link_libraries( cloudCompare
     )
 
 if (WIN32)
-   target_link_libraries( cloudCompare Qt5::WinMain)
+   target_link_libraries( ${PROJECT_NAME} Qt5::WinMain)
 endif()
-
+   
 if( WIN32 OR APPLE)
    foreach( dest ${INSTALL_DESTINATIONS} )
        message(STATUS "INSTALL_DESTINATIONS: " ${dest})
-       install_shared( cloudCompare ${dest} 1 )
+       install_shared( ${PROJECT_NAME} ${dest} 1 )
    endforeach()
 else()
     set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare)
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})
-    install(TARGETS cloudCompare LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
+    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
 endif()
 
 if(WIN32)
-  set_target_properties(cloudCompare PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME cloudCompare_d RELEASE_OUTPUT_NAME cloudCompare)
+  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME cloudCompare_d RELEASE_OUTPUT_NAME cloudCompare)
 else()
-  set_target_properties(cloudCompare PROPERTIES PREFIX "")
+  set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 endif()

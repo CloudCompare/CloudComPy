@@ -22,8 +22,8 @@
 #include <QList>
 #include <QString>
 
-#if (not defined SCALAR_TYPE_DOUBLE) and (not defined SCALAR_TYPE_FLOAT)
-#define SCALAR_TYPE_FLOAT
+#if (not defined CC_CORE_LIB_USES_DOUBLE) and (not defined CC_CORE_LIB_USES_FLOAT)
+#define CC_CORE_LIB_USES_FLOAT
 #endif
 
 #include <ccCommandLineInterface.h>
@@ -96,14 +96,14 @@ pyCC* initCloudCompare();
 
 //! copied from ccLibAlgorithms::ComputeGeomCharacteristic
 bool pyCC_ComputeGeomCharacteristic(
-    CCLib::GeometricalAnalysisTools::GeomCharacteristic c,
+    CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic c,
     int subOption,
     PointCoordinateType radius,
     ccHObject::Container& entities);
 
 //! copied from ccLibAlgorithms::GetDensitySFName
 QString pyCC_GetDensitySFName(
-    CCLib::GeometricalAnalysisTools::Density densityType,
+    CCCoreLib::GeometricalAnalysisTools::Density densityType,
     bool approx,
     double densityKernelSize = 0.0);
 

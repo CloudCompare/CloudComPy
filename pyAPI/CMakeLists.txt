@@ -23,7 +23,7 @@ message(STATUS "Python API")
 
 project( PYCC_LIB VERSION 0.1 )
 
-add_library( PYCC_LIB STATIC "")
+add_library( PYCC_LIB STATIC )
 
 target_sources( PYCC_LIB
     PUBLIC
@@ -59,8 +59,5 @@ target_include_directories( PYCC_LIB PUBLIC
 
 target_link_libraries( PYCC_LIB
     QCC_IO_LIB
-    QCC_DB_LIB
-    CCCoreLib
-    CC_FBO_LIB
    )
 

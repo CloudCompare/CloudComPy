@@ -126,7 +126,7 @@ public:
     
     unsigned getNumberOfScalarFields() const;
     
-    CCLib::ScalarField* getScalarField(int index) const;
+    CCCoreLib::ScalarField* getScalarField(int index) const;
     %Docstring
     Return a ScalarField if index is valid, otherwise None.
     %End
@@ -141,7 +141,7 @@ public:
     Set the current 'out' ScalarField index. No validity check. Use -1 to set None.
     %End
     
-    CCLib::ScalarField* getCurrentOutScalarField() const;
+    CCCoreLib::ScalarField* getCurrentOutScalarField() const;
     %Docstring
     Return the current 'out' ScalarField if there is one, otherwise None.
     %End
@@ -151,7 +151,7 @@ public:
     Set the current 'in' ScalarField index. No validity check. Use -1 to set None.
     %End
     
-    CCLib::ScalarField* getCurrentInScalarField() const;
+    CCCoreLib::ScalarField* getCurrentInScalarField() const;
     %Docstring
     Return the current 'in' ScalarField if there is one, otherwise None.
     %End

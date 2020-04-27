@@ -1,6 +1,6 @@
 ##########################################################################
 #                                                                        #
-#                                PYCC                                    #
+#                             CLOUDCOMPY                                 #
 #                                                                        #
 #  This program is free software; you can redistribute it and/or modify  #
 #  it under the terms of the GNU Library General Public License as       #
@@ -18,12 +18,25 @@
 
 cmake_minimum_required(VERSION 3.10)
 
+# Testing
+option( BUILD_PY_TESTING "Build tests for CloudComPy" OFF )
+if ( BUILD_PY_TESTING )
+	include( CTest )
+endif()
+
 option(PYTHONAPI_TRACES "Activate console trace in the Python API" OFF)
 if (PYTHONAPI_TRACES)
     add_definitions(-D_PYTHONAPI_DEBUG_)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
+
+# RPATH Linux/Unix: (dynamic) libs are put in a subdir of prefix/lib,
+# since they are only used by qCC/ccViewer
+if( UNIX AND NOT APPLE )
+	include( GNUInstallDirs )
+	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_FULL_LIBDIR}/cloudcompare")
+endif()
 
 add_subdirectory( CloudCompare )
 add_subdirectory( pyAPI )

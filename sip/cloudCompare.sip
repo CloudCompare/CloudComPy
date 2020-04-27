@@ -85,5 +85,5 @@ private:
 %Include pyCC.sip
 %Include ccPointCloud.sip
 %Include ScalarField.sip
-namespace CCLib;
+namespace CCCoreLib;
 %End
