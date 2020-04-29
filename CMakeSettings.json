@@ -1,0 +1,75 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x64-Release",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "inheritEnvironments": [
+        "msvc_x64_x64"
+      ],
+      "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
+      "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-v",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "Qt5_DIR",
+          "value": "${env.USERPROFILE}\\anaconda3\\Library\\lib\\cmake\\Qt5"
+        },
+        {
+          "name": "Qt5LinguistTools_DIR",
+          "value": "${env.USERPROFILE}\\anaconda3\\Library\\lib\\cmake\\Qt5LinguistTools"
+        },
+        {
+          "name": "QT5_ROOT_PATH",
+          "value": "${env.USERPROFILE}\\anaconda3\\Library"
+        },
+        {
+          "name": "PYTHON_PREFERED_VERSION:STRING",
+          "value": "3.7"
+        },
+        {
+          "name": "PYQT_PYTHONPATH",
+          "value": "${env.USERPROFILE}\\anaconda3\\Lib\\site-packages"
+        },
+        {
+          "name": "PYQT_PYUIC_EXECUTABLE",
+          "value": "${env.USERPROFILE}\\anaconda3\\Library\\bin\\pyuic5.bat"
+        },
+        {
+          "name": "SIP_INCLUDE_DIR",
+          "value": "${env.USERPROFILE}\\anaconda3\\include"
+        },
+        {
+          "name": "SIP_EXECUTABLE",
+          "value": "${env.USERPROFILE}\\anaconda3\\Library\\bin\\sip.exe"
+        },
+        {
+          "name": "PYQT_SIPS",
+          "value": "${env.USERPROFILE}\\anaconda3\\sip\\PyQt5"
+        },
+        {
+          "name": "NUMPY_INCLUDE_DIR",
+          "value": "${env.USERPROFILE}\\anaconda3\\Lib\\site-packages\\numpy\\core\\include"
+        },
+        {
+          "name": "PYTHONAPI_TEST_DIRECTORY",
+          "value": "${env.USERPROFILE}\\CloudCompare\\data"
+        },
+        {
+          "name": "PYTHONAPI_TRACES:BOOL",
+          "value": "ON"
+        },
+        {
+          "name": "BUILD_PY_TESTING:BOOL",
+          "value": "ON"
+        },
+        {
+          "name": "BUILD_TESTING:BOOL",
+          "value": "ON"
+        }
+      ]
+    }
+  ]
+}

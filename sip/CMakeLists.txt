@@ -17,23 +17,23 @@
 #                                                                        #
 ##########################################################################
 
-message(STATUS "SIP processing")
+message(STATUS "Python3 and SIP processing")
 
 # --- Python detection: if several versions installed, select one with all the required packages installed
 
 set(PYTHON_PREFERED_VERSION "3.6" CACHE STRING "Select a Python version: it should be installed with all packages required for CloudCompare (pyqt, sip, numpy)")
 set_property(CACHE PYTHON_PREFERED_VERSION PROPERTY STRINGS "3.6" "3.7" "3.8")
-message(STATUS "python prefered version: " ${PYTHON_PREFERED_VERSION})
+message(STATUS "  python prefered version: " ${PYTHON_PREFERED_VERSION})
 set(Python_ADDITIONAL_VERSIONS ${PYTHON_PREFERED_VERSION}) # priority to this version 
-find_package(PythonInterp)
-find_package(PythonLibs)
-message(STATUS "python version: " ${PYTHON_VERSION_STRING})
-message(STATUS "check match for ${PYTHON_PREFERED_VERSION}.x")
-if(NOT ${PYTHON_VERSION_STRING} MATCHES "${PYTHON_PREFERED_VERSION}\\..")
+find_package (Python3 COMPONENTS Interpreter Development)
+message(STATUS "  python executable: " ${Python3_EXECUTABLE})
+message(STATUS "  python version: " ${Python3_VERSION})
+message(STATUS "  check match for ${PYTHON_PREFERED_VERSION}.x")
+if(NOT ${Python3_VERSION} MATCHES "${PYTHON_PREFERED_VERSION}\\..")
     message(SEND_ERROR "no Python found matching ${PYTHON_PREFERED_VERSION}.x")
 else()
-    message(STATUS "Python found ${PYTHON_VERSION_STRING} matches prefered version ${PYTHON_PREFERED_VERSION}.x")
-    message(STATUS "PYTHON_LIBRARIES:" ${PYTHON_LIBRARIES})
+    message(STATUS "Python found ${Python3_VERSION} matches prefered version ${PYTHON_PREFERED_VERSION}.x")
+    message(STATUS "  Python3_LIBRARIES:" ${Python3_LIBRARIES})
 endif()
 
 # --- Qt5 detection
@@ -71,7 +71,7 @@ set(SIP_ADD_SOURCES
     ScalarField.sip
     )
 set(SIP_ALL_SOURCES ${SIP_MAIN_SOURCE} ${SIP_ADD_SOURCES})
-message(STATUS "SIP_ALL_SOURCES: " "${SIP_ALL_SOURCES}")
+message(STATUS "  SIP_ALL_SOURCES: " "${SIP_ALL_SOURCES}")
 
 # TODO: names of generated sip files follow some rules based on module name, class name, namespace etc. Not obvious to compute...
 
@@ -85,7 +85,7 @@ set(SIP_ADD_GENSRC
    )
 set(SIP_ALL_GENSRC ${SIP_MAIN_GENSRC} ${SIP_ADD_GENSRC})
 
-message(STATUS "SIP_ALL_GENSRC: " "${SIP_ALL_GENSRC}")
+message(STATUS "  SIP_ALL_GENSRC: " "${SIP_ALL_GENSRC}")
 
 set_source_files_properties( ${SIP_ALL_GENSRC} PROPERTIES GENERATED TRUE )
 
@@ -125,7 +125,7 @@ target_include_directories( ${PROJECT_NAME} PUBLIC
 target_link_libraries( ${PROJECT_NAME}
     PYCC_LIB
     QCC_IO_LIB
-    ${PYTHON_LIBRARIES}
+    ${Python3_LIBRARIES}
     )
 
 # Qt libraries
@@ -143,10 +143,7 @@ if (WIN32)
 endif()
    
 if( WIN32 OR APPLE)
-   foreach( dest ${INSTALL_DESTINATIONS} )
-       message(STATUS "INSTALL_DESTINATIONS: " ${dest})
-       install_shared( ${PROJECT_NAME} ${dest} 1 )
-   endforeach()
+	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare)
 else()
     set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare)
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})

@@ -22,7 +22,7 @@
 #include <QList>
 #include <QString>
 
-#if (not defined CC_CORE_LIB_USES_DOUBLE) and (not defined CC_CORE_LIB_USES_FLOAT)
+#if not defined CC_CORE_LIB_USES_DOUBLE and not defined CC_CORE_LIB_USES_FLOAT
 #define CC_CORE_LIB_USES_FLOAT
 #endif
 

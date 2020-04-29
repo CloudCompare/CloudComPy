@@ -34,22 +34,26 @@ endif()
 find_program(PYQT_PYUIC_EXECUTABLE NAMES pyuic5 pyuic5.bat DOC "full path of pyuic5 script")
 find_program(PYQT_PYRCC_EXECUTABLE NAMES pyrcc5 pyrcc5.bat DOC "full path of pyrcc5 script")
 
-execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
+execute_process(COMMAND ${Python3_EXECUTABLE} -c
 "
 import sys
 hints=' '.join(sys.path)
 sys.stdout.write(hints)
 "
+COMMAND_ECHO STDOUT
+RESULT_VARIABLE RESULT_tmpPythonPath
 OUTPUT_VARIABLE _tmpPythonPath)
+#message(STATUS "  RESULT_tmpPythonPath: " ${RESULT_tmpPythonPath})
+#message(STATUS "  _tmpPythonPath: " ${_tmpPythonPath})
 
 separate_arguments(_tmpPythonPath)
 find_path(PYQT_PYTHONPATH PyQt5/__init__.py HINTS ${_tmpPythonPath} DOC "directory path of PyQt5 Python module")
-message(STATUS "PYQT_PYTHONPATH: " ${PYQT_PYTHONPATH})
+message(STATUS "  PYQT_PYTHONPATH: " ${PYQT_PYTHONPATH})
 
 find_program(SIP_EXECUTABLE sip DOC "full path of executable: sip")
 message("SIP_EXECUTABLE: " ${SIP_EXECUTABLE})
 
-find_path(SIP_INCLUDE_DIR sip.h PATH_SUFFIXES python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR} DOC "directory path of include: sip.h")
+find_path(SIP_INCLUDE_DIR sip.h PATH_SUFFIXES python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR} DOC "directory path of include: sip.h")
 message(STATUS "SIP_INCLUDE_DIR: " ${SIP_INCLUDE_DIR})
 
 find_path(PYQT_SIPS QtGui/QtGuimod.sip HINTS "/usr/share/sip/PyQt5" DOC "directory path of QtGui/QtGuimod.sip")
@@ -58,23 +62,42 @@ message(STATUS "PYQT_SIPS: " ${PYQT_SIPS})
 if(SIP_INCLUDE_DIR)
     get_filename_component(SIP_PYTHONPATH "${SIP_INCLUDE_DIR}" PATH)
     get_filename_component(SIP_PYTHONPATH "${SIP_PYTHONPATH}" PATH)
-    set(SIP_PYTHONPATH "${SIP_PYTHONPATH}/lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages")
+    set(SIP_PYTHONPATH "${SIP_PYTHONPATH}/lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
     message(STATUS "SIP_PYTHONPATH: " ${SIP_PYTHONPATH})
 endif()
 
-execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
+set(TEST_SCRIPT
 "
 import sys
 sys.path[:0] = '${PYQT_PYTHONPATH}'.split(';')
 from PyQt5.QtCore import PYQT_CONFIGURATION
 sys.stdout.write(PYQT_CONFIGURATION['sip_flags'])
 "
-OUTPUT_VARIABLE PYQT_SIPFLAGS)
+)
+#message(STATUS "  TEST_SCRIPT: " "${TEST_SCRIPT}")
+
+execute_process(COMMAND ${Python3_EXECUTABLE} -c "${TEST_SCRIPT}"
+RESULT_VARIABLE RESULT_PYQT_SIPFLAGS
+OUTPUT_VARIABLE PYQT_SIPFLAGS
+ERROR_VARIABLE ERROR_PYQT_SIPFLAGS)
+#message(STATUS "RESULT_PYQT_SIPFLAGS: " ${RESULT_PYQT_SIPFLAGS})
+#message(STATUS "ERROR_PYQT_SIPFLAGS: " ${ERROR_PYQT_SIPFLAGS})
+if (RESULT_PYQT_SIPFLAGS)
+    message(STATUS "detection of PyQt sipflags using a Python script does not work: alternate method")
+    # error on Python script execution, probably because Python environnement is not set
+	set(_SIP_QT_VERSION Qt_${Qt5Core_VERSION_MAJOR}_${Qt5Core_VERSION_MINOR}_${Qt5Core_VERSION_PATCH})
+	if (WIN32)
+	    set(_SIP_PLATFORM WS_WIN)
+	else()
+	    set(_SIP_PLATFORM WS_X11)
+	endif()
+	set(PYQT_SIPFLAGS "-t ${_SIP_PLATFORM} -t ${_SIP_QT_VERSION}")
+endif()
 
 separate_arguments(PYQT_SIPFLAGS)
 
 set(PYQT_SIPFLAGS ${PYQT_SIPFLAGS} -I "${PYQT_SIPS}")
-message(STATUS "PYQT_SIPFLAGS: " "${PYQT_SIPFLAGS}")
+message(STATUS "  PYQT_SIPFLAGS: " "${PYQT_SIPFLAGS}")
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(PYQTSIP REQUIRED_VARS PYQT_PYUIC_EXECUTABLE SIP_INCLUDE_DIR SIP_EXECUTABLE PYQT_SIPFLAGS)
