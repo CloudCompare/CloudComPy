@@ -22,25 +22,25 @@ import os
 import sys
 import math
 from gendata import getSampleCloud, dataDir, isCoordEqual
-
 from PyQt5.QtWidgets import QApplication
-app = QApplication(sys.argv)
 import cloudCompare as cc
-cc.initNumpy.init() # to do once before dealing with numpy
+
+app = QApplication(sys.argv)
+cc.initNumpy.init()  # to do once before dealing with numpy
 
 cloud = cc.loadPointCloud(getSampleCloud(2.0))
 namecloud = cloud.getName()
-print("cloud name: %s"%namecloud)
+print("cloud name: %s" % namecloud)
 if namecloud != "dataSample_2 - Cloud":
     raise RuntimeError
 
 npts = cloud.size()
-print("cloud.size %s"%npts)
+print("cloud.size %s" % npts)
 if npts != 1000000:
     raise RuntimeError
 
 res = cloud.hasScalarFields()
-print("hasScalarField: %s"%res)
+print("hasScalarField: %s" % res)
 if res:
     raise RuntimeError
 
@@ -65,50 +65,50 @@ if sfname is not None:
     raise RuntimeError
 
 g = cloud.computeGravityCenter()
-print("gravityCenter: (%14.7e, %14.7e, %14.7e)"%(g[0], g[1], g[2]))
-if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03,  9.6193114e-03)):
+print("gravityCenter: (%14.7e, %14.7e, %14.7e)" % (g[0], g[1], g[2]))
+if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03, 9.6193114e-03)):
     raise RuntimeError
 
-cloud.scale(1.0, 1.0, 2.0, (0., 0., 0.) )
+cloud.scale(1.0, 1.0, 2.0, (0., 0., 0.))
 g = cloud.computeGravityCenter()
-print("gravityCenter: (%14.7e, %14.7e, %14.7e)"%(g[0], g[1], g[2]))
-if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03,  1.9238623e-02)):
+print("gravityCenter: (%14.7e, %14.7e, %14.7e)" % (g[0], g[1], g[2]))
+if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03, 1.9238623e-02)):
     raise RuntimeError
 
-cloud.scale(1, 1, 0.5 )
+cloud.scale(1, 1, 0.5)
 g = cloud.computeGravityCenter()
-print("gravityCenter: (%14.7e, %14.7e, %14.7e)"%(g[0], g[1], g[2]))
-if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03,  9.6193114e-03)):
+print("gravityCenter: (%14.7e, %14.7e, %14.7e)" % (g[0], g[1], g[2]))
+if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03, 9.6193114e-03)):
     raise RuntimeError
 
 cloud.translate((-1, -2, -3))
 g = cloud.computeGravityCenter()
-print("gravityCenter: (%14.7e, %14.7e, %14.7e)"%(g[0], g[1], g[2]))
+print("gravityCenter: (%14.7e, %14.7e, %14.7e)" % (g[0], g[1], g[2]))
 if not isCoordEqual(g, (-1.0050000e+00, -2.0050001e+00, -2.9903808e+00)):
     raise RuntimeError
 
 cloud.translate((1, 2, 3))
 g = cloud.computeGravityCenter()
-print("gravityCenter: (%14.7e, %14.7e, %14.7e)"%(g[0], g[1], g[2]))
-if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03,  9.6193114e-03)):
+print("gravityCenter: (%14.7e, %14.7e, %14.7e)" % (g[0], g[1], g[2]))
+if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03, 9.6193114e-03)):
     raise RuntimeError
 
-res=cc.SavePointCloud(cloud, os.path.join(dataDir,"res1.bin"))
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "res1.bin"))
 if res:
     raise RuntimeError
-    
-cloud = cc.loadPointCloud(os.path.join(dataDir,"res1.bin"))
+
+cloud = cc.loadPointCloud(os.path.join(dataDir, "res1.bin"))
 namecloud = cloud.getName()
-print("cloud name: %s"%namecloud)
+print("cloud name: %s" % namecloud)
 if namecloud != "dataSample_2 - Cloud":
     raise RuntimeError
 
 npts = cloud.size()
-print("cloud.size %s"%npts)
+print("cloud.size %s" % npts)
 if npts != 1000000:
     raise RuntimeError
 
 g = cloud.computeGravityCenter()
-print("gravityCenter: (%14.7e, %14.7e, %14.7e)"%(g[0], g[1], g[2]))
-if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03,  9.6193114e-03)):
+print("gravityCenter: (%14.7e, %14.7e, %14.7e)" % (g[0], g[1], g[2]))
+if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03, 9.6193114e-03)):
     raise RuntimeError

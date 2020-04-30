@@ -22,11 +22,11 @@ import os
 import sys
 import math
 from gendata import getSampleCloud, dataDir
-
 from PyQt5.QtWidgets import QApplication
-app = QApplication(sys.argv)
 import cloudCompare as cc
-cc.initNumpy.init() # to do once before dealing with numpy
+
+app = QApplication(sys.argv)
+cc.initNumpy.init()  # to do once before dealing with numpy
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 
@@ -36,4 +36,3 @@ if coords.shape != (cloud.size(), 3):
 
 if coords.dtype != cc.initNumpy.getScalarType():
     raise RuntimeError
-
