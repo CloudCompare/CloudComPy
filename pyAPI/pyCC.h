@@ -29,8 +29,6 @@
 #include <ccCommandLineInterface.h>
 #include <GeometricalAnalysisTools.h>
 
-
-
 // --- for Python3 interface
 
 namespace PYCC
@@ -75,18 +73,26 @@ enum CurvatureType
 //! Computes a geometric characteristic (see GeometricalAnalysisTools::GeomCharacteristic) on a list of clouds
 /*! Computes a geometric characteristic (see GeometricalAnalysisTools::GeomCharacteristic) on a set of entities
  * \param option from (GAUSSIAN_CURV, MEAN_CURV, NORMAL_CHANGE_RATE)
- * \list of clouds
+ * \param list of clouds
  * \return status
  */
 bool computeCurvature(CurvatureType option, double radius, QList<ccPointCloud*> clouds);
 
 //! Filters out points whose scalar values falls into an interval(see ccPointCloud::filterBySFValue)
 /** Threshold values should be expressed relatively to the current displayed scalar field.
-    \param minVal minimum value
-    \param maxVal maximum value
-    \return resulting cloud (remaining points)
-**/
+ \param minVal minimum value
+ \param maxVal maximum value
+ \return resulting cloud (remaining points)
+ **/
 ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud);
+
+//! Returns a default first guess for algorithms kernel size (several clouds)
+/*! copied from ccLibAlgorithms::GetDefaultCloudKernelSize
+ * \param list of clouds
+ * \param number of nodes wanted within the radius
+ * \return radius
+ */
+double GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn = 12);
 
 // --- internal functions (not wrapped in the Python API) ---------------------
 
@@ -107,6 +113,8 @@ QString pyCC_GetDensitySFName(
     bool approx,
     double densityKernelSize = 0.0);
 
+//! copied from ccLibAlgorithms::GetDefaultCloudKernelSize
+PointCoordinateType pyCC_GetDefaultCloudKernelSize(ccGenericPointCloud* cloud, unsigned knn = 12);
 }
 
 #endif /* CLOUDCOMPY_PYAPI_PYCC_H_ */

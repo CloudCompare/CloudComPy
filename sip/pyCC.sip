@@ -87,7 +87,7 @@ namespace PYCC
     Compute the curvature on a list of point clouds (create a scalarField)
     parameters:
     - CurvatureType from cloudCompare.GAUSSIAN_CURV, cloudCompare.MEAN_CURV, cloudCompare.NORMAL_CHANGE_RATE
-    - radius: try 1.9
+    - radius: try value obtained by GetDefaultCloudKernelSize
     - list of clouds 
     %End
     
@@ -100,6 +100,15 @@ namespace PYCC
     - maximum value
     - cloud: ccPointCloud
     return a ccPointCloud object.
+    %End
+    
+    double GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn = 12);
+    %Docstring
+    Compute an estimate radius to use in computeCurvature
+    parameters:
+    - list of clouds
+    - number of nodes wanted within the radius
+    return estimated radius
     %End
     
     %Exception std::exception(SIP_Exception) /PyName=StdException, default/

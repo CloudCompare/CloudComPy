@@ -38,7 +38,6 @@
 //qCC
 #include "ccCommon.h"
 
-
 using namespace PYCC;
 
 // --- internal struct
@@ -95,7 +94,6 @@ struct PYCC::pyCC
 };
 
 static PYCC::pyCC* s_pyCCInternals = nullptr;
-
 
 PYCC::pyCC* PYCC::initCloudCompare()
 {
@@ -231,247 +229,280 @@ ccPointCloud* PYCC::filterBySFValue(double minVal, double maxVal, ccPointCloud* 
     return fitleredCloud;
 }
 
-bool PYCC::pyCC_ComputeGeomCharacteristic(
-    CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic c,
-    int subOption,
-    PointCoordinateType radius,
-    ccHObject::Container& entities)
+double PYCC::GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn)
 {
-    // TODO code from ccLibAlgorithms::ComputeGeomCharacteristic
-    CCTRACE("pyCCComputeGeomCharacteristic "<< subOption << " radius: " << radius);
-    size_t selNum = entities.size();
-    if (selNum < 1)
-        return false;
-
-    //generate the right SF name
-    QString sfName;
-
-    switch (c)
+    CCTRACE("GetDefaultCloudKernelSize - NbPoints: " << knn << " nbClouds: " << clouds.size());
+    double sigma = -1;
+    for (ccPointCloud* cloud : clouds)
     {
-    case CCCoreLib::GeometricalAnalysisTools::Feature:
-    {
-        switch (subOption)
-        {
-        case CCCoreLib::Neighbourhood::EigenValuesSum:
-            sfName = "Eigenvalues sum";
-            break;
-        case CCCoreLib::Neighbourhood::Omnivariance:
-            sfName = "Omnivariance";
-            break;
-        case CCCoreLib::Neighbourhood::EigenEntropy:
-            sfName = "Eigenentropy";
-            break;
-        case CCCoreLib::Neighbourhood::Anisotropy:
-            sfName = "Anisotropy";
-            break;
-        case CCCoreLib::Neighbourhood::Planarity:
-            sfName = "Planarity";
-            break;
-        case CCCoreLib::Neighbourhood::Linearity:
-            sfName = "Linearity";
-            break;
-        case CCCoreLib::Neighbourhood::PCA1:
-            sfName = "PCA1";
-            break;
-        case CCCoreLib::Neighbourhood::PCA2:
-            sfName = "PCA2";
-            break;
-        case CCCoreLib::Neighbourhood::SurfaceVariation:
-            sfName = "Surface variation";
-            break;
-        case CCCoreLib::Neighbourhood::Sphericity:
-            sfName = "Sphericity";
-            break;
-        case CCCoreLib::Neighbourhood::Verticality:
-            sfName = "Verticality";
-            break;
-        case CCCoreLib::Neighbourhood::EigenValue1:
-            sfName = "1st eigenvalue";
-            break;
-        case CCCoreLib::Neighbourhood::EigenValue2:
-            sfName = "2nd eigenvalue";
-            break;
-        case CCCoreLib::Neighbourhood::EigenValue3:
-            sfName = "3rd eigenvalue";
-            break;
-        default:
-            assert(false);
-            ccLog::Error("Internal error: invalid sub option for Feature computation");
-            return false;
-        }
+        CCTRACE("cloud name: " << cloud->getName().toStdString());
+        PointCoordinateType sigmaCloud = pyCC_GetDefaultCloudKernelSize(cloud, knn);
 
-        sfName += QString(" (%1)").arg(radius);
+        //we keep the smallest value
+        if (sigma < 0 || sigmaCloud < sigma)
+            sigma = sigmaCloud;
     }
-        break;
+    CCTRACE("radius: "<< sigma);
+    return sigma;
+}
 
-    case CCCoreLib::GeometricalAnalysisTools::Curvature:
+bool PYCC::pyCC_ComputeGeomCharacteristic(
+CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic c,
+int subOption,
+PointCoordinateType radius,
+ccHObject::Container& entities)
+{
+// TODO code from ccLibAlgorithms::ComputeGeomCharacteristic
+CCTRACE("pyCCComputeGeomCharacteristic "<< subOption << " radius: " << radius);
+size_t selNum = entities.size();
+if (selNum < 1)
+    return false;
+
+//generate the right SF name
+QString sfName;
+
+switch (c)
+{
+case CCCoreLib::GeometricalAnalysisTools::Feature:
+{
+    switch (subOption)
     {
-        switch (subOption)
-        {
-        case CCCoreLib::Neighbourhood::GAUSSIAN_CURV:
-            sfName = CC_CURVATURE_GAUSSIAN_FIELD_NAME;
-            break;
-        case CCCoreLib::Neighbourhood::MEAN_CURV:
-            sfName = CC_CURVATURE_MEAN_FIELD_NAME;
-            break;
-        case CCCoreLib::Neighbourhood::NORMAL_CHANGE_RATE:
-            sfName = CC_CURVATURE_NORM_CHANGE_RATE_FIELD_NAME;
-            break;
-        default:
-            assert(false);
-            ccLog::Error("Internal error: invalid sub option for Curvature computation");
-            return false;
-        }
-        sfName += QString(" (%1)").arg(radius);
-    }
+    case CCCoreLib::Neighbourhood::EigenValuesSum:
+        sfName = "Eigenvalues sum";
         break;
-
-    case CCCoreLib::GeometricalAnalysisTools::LocalDensity:
-        sfName = pyCC_GetDensitySFName(static_cast<CCCoreLib::GeometricalAnalysisTools::Density>(subOption), false,
-                                        radius);
+    case CCCoreLib::Neighbourhood::Omnivariance:
+        sfName = "Omnivariance";
         break;
-
-    case CCCoreLib::GeometricalAnalysisTools::ApproxLocalDensity:
-        sfName = pyCC_GetDensitySFName(static_cast<CCCoreLib::GeometricalAnalysisTools::Density>(subOption), true);
+    case CCCoreLib::Neighbourhood::EigenEntropy:
+        sfName = "Eigenentropy";
         break;
-
-    case CCCoreLib::GeometricalAnalysisTools::Roughness:
-        sfName = CC_ROUGHNESS_FIELD_NAME + QString(" (%1)").arg(radius);
+    case CCCoreLib::Neighbourhood::Anisotropy:
+        sfName = "Anisotropy";
         break;
-
-    case CCCoreLib::GeometricalAnalysisTools::MomentOrder1:
-        sfName = CC_MOMENT_ORDER1_FIELD_NAME + QString(" (%1)").arg(radius);
+    case CCCoreLib::Neighbourhood::Planarity:
+        sfName = "Planarity";
         break;
-
+    case CCCoreLib::Neighbourhood::Linearity:
+        sfName = "Linearity";
+        break;
+    case CCCoreLib::Neighbourhood::PCA1:
+        sfName = "PCA1";
+        break;
+    case CCCoreLib::Neighbourhood::PCA2:
+        sfName = "PCA2";
+        break;
+    case CCCoreLib::Neighbourhood::SurfaceVariation:
+        sfName = "Surface variation";
+        break;
+    case CCCoreLib::Neighbourhood::Sphericity:
+        sfName = "Sphericity";
+        break;
+    case CCCoreLib::Neighbourhood::Verticality:
+        sfName = "Verticality";
+        break;
+    case CCCoreLib::Neighbourhood::EigenValue1:
+        sfName = "1st eigenvalue";
+        break;
+    case CCCoreLib::Neighbourhood::EigenValue2:
+        sfName = "2nd eigenvalue";
+        break;
+    case CCCoreLib::Neighbourhood::EigenValue3:
+        sfName = "3rd eigenvalue";
+        break;
     default:
         assert(false);
+        ccLog::Error("Internal error: invalid sub option for Feature computation");
         return false;
     }
 
-    for (size_t i = 0; i < selNum; ++i)
+    sfName += QString(" (%1)").arg(radius);
+}
+    break;
+
+case CCCoreLib::GeometricalAnalysisTools::Curvature:
+{
+    switch (subOption)
     {
-        //is the ith selected data is eligible for processing?
-        if (entities[i]->isKindOf(CC_TYPES::POINT_CLOUD))
+    case CCCoreLib::Neighbourhood::GAUSSIAN_CURV:
+        sfName = CC_CURVATURE_GAUSSIAN_FIELD_NAME;
+        break;
+    case CCCoreLib::Neighbourhood::MEAN_CURV:
+        sfName = CC_CURVATURE_MEAN_FIELD_NAME;
+        break;
+    case CCCoreLib::Neighbourhood::NORMAL_CHANGE_RATE:
+        sfName = CC_CURVATURE_NORM_CHANGE_RATE_FIELD_NAME;
+        break;
+    default:
+        assert(false);
+        ccLog::Error("Internal error: invalid sub option for Curvature computation");
+        return false;
+    }
+    sfName += QString(" (%1)").arg(radius);
+}
+    break;
+
+case CCCoreLib::GeometricalAnalysisTools::LocalDensity:
+    sfName = pyCC_GetDensitySFName(static_cast<CCCoreLib::GeometricalAnalysisTools::Density>(subOption), false, radius);
+    break;
+
+case CCCoreLib::GeometricalAnalysisTools::ApproxLocalDensity:
+    sfName = pyCC_GetDensitySFName(static_cast<CCCoreLib::GeometricalAnalysisTools::Density>(subOption), true);
+    break;
+
+case CCCoreLib::GeometricalAnalysisTools::Roughness:
+    sfName = CC_ROUGHNESS_FIELD_NAME + QString(" (%1)").arg(radius);
+    break;
+
+case CCCoreLib::GeometricalAnalysisTools::MomentOrder1:
+    sfName = CC_MOMENT_ORDER1_FIELD_NAME + QString(" (%1)").arg(radius);
+    break;
+
+default:
+    assert(false);
+    return false;
+}
+
+for (size_t i = 0; i < selNum; ++i)
+{
+    //is the ith selected data is eligible for processing?
+    if (entities[i]->isKindOf(CC_TYPES::POINT_CLOUD))
+    {
+        ccGenericPointCloud* cloud = ccHObjectCaster::ToGenericPointCloud(entities[i]);
+
+        ccPointCloud* pc = 0;
+        int sfIdx = -1;
+        if (cloud->isA(CC_TYPES::POINT_CLOUD))
         {
-            ccGenericPointCloud* cloud = ccHObjectCaster::ToGenericPointCloud(entities[i]);
+            pc = static_cast<ccPointCloud*>(cloud);
 
-            ccPointCloud* pc = 0;
-            int sfIdx = -1;
-            if (cloud->isA(CC_TYPES::POINT_CLOUD))
-            {
-                pc = static_cast<ccPointCloud*>(cloud);
-
-                sfIdx = pc->getScalarFieldIndexByName(qPrintable(sfName));
-                if (sfIdx < 0)
-                    sfIdx = pc->addScalarField(qPrintable(sfName));
-                if (sfIdx >= 0)
-                    pc->setCurrentScalarField(sfIdx);
-                else
-                {
-                    continue;
-                }
-            }
-
-            ccOctree::Shared octree = cloud->getOctree();
-            if (!octree)
-            {
-                octree = cloud->computeOctree(nullptr);
-                if (!octree)
-                {
-                    break;
-                }
-            }
-
-            CCCoreLib::GeometricalAnalysisTools::ErrorCode result = CCCoreLib::GeometricalAnalysisTools::ComputeCharactersitic(
-                    c, subOption, cloud, radius, nullptr, octree.data());
-
-            if (result == CCCoreLib::GeometricalAnalysisTools::NoError)
-            {
-                if (pc && sfIdx >= 0)
-                {
-                    pc->setCurrentDisplayedScalarField(sfIdx);
-                    pc->showSF(sfIdx >= 0);
-                    pc->getCurrentInScalarField()->computeMinAndMax();
-                }
-                cloud->prepareDisplayForRefresh();
-            }
+            sfIdx = pc->getScalarFieldIndexByName(qPrintable(sfName));
+            if (sfIdx < 0)
+                sfIdx = pc->addScalarField(qPrintable(sfName));
+            if (sfIdx >= 0)
+                pc->setCurrentScalarField(sfIdx);
             else
             {
-                QString errorMessage;
-                switch (result)
-                {
-                case CCCoreLib::GeometricalAnalysisTools::InvalidInput:
-                    errorMessage = "Internal error (invalid input)";
-                    break;
-                case CCCoreLib::GeometricalAnalysisTools::NotEnoughPoints:
-                    errorMessage = "Not enough points";
-                    break;
-                case CCCoreLib::GeometricalAnalysisTools::OctreeComputationFailed:
-                    errorMessage = "Failed to compute octree (not enough memory?)";
-                    break;
-                case CCCoreLib::GeometricalAnalysisTools::ProcessFailed:
-                    errorMessage = "Process failed";
-                    break;
-                case CCCoreLib::GeometricalAnalysisTools::UnhandledCharacteristic:
-                    errorMessage = "Internal error (unhandled characteristic)";
-                    break;
-                case CCCoreLib::GeometricalAnalysisTools::NotEnoughMemory:
-                    errorMessage = "Not enough memory";
-                    break;
-                case CCCoreLib::GeometricalAnalysisTools::ProcessCancelledByUser:
-                    errorMessage = "Process cancelled by user";
-                    break;
-                default:
-                    assert(false);
-                    errorMessage = "Unknown error";
-                    break;
-                }
-
-                if (pc && sfIdx >= 0)
-                {
-                    pc->deleteScalarField(sfIdx);
-                    sfIdx = -1;
-                }
-
-                return false;
+                continue;
             }
         }
-    }
 
-    return true;
+        ccOctree::Shared octree = cloud->getOctree();
+        if (!octree)
+        {
+            octree = cloud->computeOctree(nullptr);
+            if (!octree)
+            {
+                break;
+            }
+        }
+
+        CCCoreLib::GeometricalAnalysisTools::ErrorCode result =
+                CCCoreLib::GeometricalAnalysisTools::ComputeCharactersitic(c, subOption, cloud, radius, nullptr,
+                                                                           octree.data());
+
+        if (result == CCCoreLib::GeometricalAnalysisTools::NoError)
+        {
+            if (pc && sfIdx >= 0)
+            {
+                pc->setCurrentDisplayedScalarField(sfIdx);
+                pc->showSF(sfIdx >= 0);
+                pc->getCurrentInScalarField()->computeMinAndMax();
+            }
+            cloud->prepareDisplayForRefresh();
+        }
+        else
+        {
+            QString errorMessage;
+            switch (result)
+            {
+            case CCCoreLib::GeometricalAnalysisTools::InvalidInput:
+                errorMessage = "Internal error (invalid input)";
+                break;
+            case CCCoreLib::GeometricalAnalysisTools::NotEnoughPoints:
+                errorMessage = "Not enough points";
+                break;
+            case CCCoreLib::GeometricalAnalysisTools::OctreeComputationFailed:
+                errorMessage = "Failed to compute octree (not enough memory?)";
+                break;
+            case CCCoreLib::GeometricalAnalysisTools::ProcessFailed:
+                errorMessage = "Process failed";
+                break;
+            case CCCoreLib::GeometricalAnalysisTools::UnhandledCharacteristic:
+                errorMessage = "Internal error (unhandled characteristic)";
+                break;
+            case CCCoreLib::GeometricalAnalysisTools::NotEnoughMemory:
+                errorMessage = "Not enough memory";
+                break;
+            case CCCoreLib::GeometricalAnalysisTools::ProcessCancelledByUser:
+                errorMessage = "Process cancelled by user";
+                break;
+            default:
+                assert(false);
+                errorMessage = "Unknown error";
+                break;
+            }
+
+            if (pc && sfIdx >= 0)
+            {
+                pc->deleteScalarField(sfIdx);
+                sfIdx = -1;
+            }
+
+            return false;
+        }
+    }
+}
+
+return true;
 }
 
 QString PYCC::pyCC_GetDensitySFName(
-    CCCoreLib::GeometricalAnalysisTools::Density densityType,
-    bool approx,
-    double densityKernelSize)
+CCCoreLib::GeometricalAnalysisTools::Density densityType,
+bool approx,
+double densityKernelSize)
 {
-    // --- from ccLibAlgorithms::GetDensitySFName
-    CCTRACE("pyCCGetDensitySFName");
-    QString sfName;
+// --- from ccLibAlgorithms::GetDensitySFName
+CCTRACE("pyCCGetDensitySFName");
+QString sfName;
 
-    //update the name with the density type
-    switch (densityType)
-    {
-    case CCCoreLib::GeometricalAnalysisTools::DENSITY_KNN:
-        sfName = CC_LOCAL_KNN_DENSITY_FIELD_NAME;
-        break;
-    case CCCoreLib::GeometricalAnalysisTools::DENSITY_2D:
-        sfName = CC_LOCAL_SURF_DENSITY_FIELD_NAME;
-        break;
-    case CCCoreLib::GeometricalAnalysisTools::DENSITY_3D:
-        sfName = CC_LOCAL_VOL_DENSITY_FIELD_NAME;
-        break;
-    default:
-        assert(false);
-        break;
-    }
-
-    sfName += QString(" (r=%2)").arg(densityKernelSize);
-
-    if (approx)
-        sfName += " [approx]";
-
-    return sfName;
+//update the name with the density type
+switch (densityType)
+{
+case CCCoreLib::GeometricalAnalysisTools::DENSITY_KNN:
+    sfName = CC_LOCAL_KNN_DENSITY_FIELD_NAME;
+    break;
+case CCCoreLib::GeometricalAnalysisTools::DENSITY_2D:
+    sfName = CC_LOCAL_SURF_DENSITY_FIELD_NAME;
+    break;
+case CCCoreLib::GeometricalAnalysisTools::DENSITY_3D:
+    sfName = CC_LOCAL_VOL_DENSITY_FIELD_NAME;
+    break;
+default:
+    assert(false);
+    break;
 }
 
+sfName += QString(" (r=%2)").arg(densityKernelSize);
+
+if (approx)
+    sfName += " [approx]";
+
+return sfName;
+}
+
+PointCoordinateType PYCC::pyCC_GetDefaultCloudKernelSize(ccGenericPointCloud* cloud, unsigned knn)
+{
+assert(cloud);
+if (cloud && cloud->size() != 0)
+{
+    //we compute the cloud bounding box volume, then guess the cloud surface and get a surface per point
+    ccBBox box = cloud->getOwnBB();
+    CCVector3 d = box.getDiagVec();
+    PointCoordinateType volume = d[0] * d[1] * d[2];
+    PointCoordinateType surface = pow(volume, static_cast<PointCoordinateType>(2.0 / 3.0));
+    PointCoordinateType surfacePerPoint = surface / cloud->size();
+    return sqrt(surfacePerPoint * knn);
+}
+
+return -CCCoreLib::PC_ONE;
+}
