@@ -28,7 +28,7 @@ namespace CCCoreLib
     #include <ScalarField.h>
     #include <PyScalarType.h>
     %End
-    
+
     %Docstring
     A simple scalar field (to be associated to a point cloud)
     A monodimensional array of scalar values.
@@ -36,12 +36,12 @@ namespace CCCoreLib
     Dealing with numpy (method toNpArray) requires to initialize first numpy interface:
     cloudCompare.CCCoreLib.ScalarField.initNumpyApi()
     %End
-    
+
     public:
         explicit ScalarField(const char* name = nullptr);
-        
+
         const char* getName() const;
-        
+
         SIP_PYTUPLE computeMeanAndVariance() [ void (ScalarType&, ScalarType*) ];
         %Docstring
         Return a tuple (mean, variance)
@@ -57,27 +57,27 @@ namespace CCCoreLib
         t = Py_BuildValue("(dd)", mean, variance);
         sipRes = t;
         %End
-        
+
         void computeMinAndMax();
         %Docstring
         Should be called before getMin or getMax.
         No return!
         %End
-        
+
         // Python float is double precision
         double getMin() [ ScalarType ()];
         %Docstring
         Return minimal value of the ScalarField.
         Call computeMinAndMax before!
         %End
-        
+
         // Python float is double precision
         double getMax() [ ScalarType ()];
         %Docstring
         Return maximal value of the ScalarField.
         Call computeMinAndMax before!
         %End
-    
+
         PyObject* toNpArray(bool copy=true); // if copy == false, ownership C++, otherwise ownership Python
         %Docstring
         Wrap the ScalarField data into a numpy Array.
@@ -118,7 +118,7 @@ namespace CCCoreLib
             {
                 sipRes = PyArray_SimpleNewFromData(1, dims, type_num, s ); // by default the PyArray created like this does not own its data
                 sipTransferTo(sipRes, NULL);                               // keep ownership iof PyArray n C++
-                CCTRACE("OwnerShip of scalarField (PyArray object pointing to scalarField) kept in C++"); // potential memory leak, limited 
+                CCTRACE("OwnerShip of scalarField (PyArray object pointing to scalarField) kept in C++"); // potential memory leak, limited
             }
         }
         else
@@ -127,7 +127,7 @@ namespace CCCoreLib
             sipRes = PyArray_ZEROS(1, dims, CC_NPY_FLOAT, 0);
         }
         %End
-        
+
         bool fromNpArray(SIP_PYOBJECT p);
         %Docstring
         Copy data from numpy array into an existing ScalarField.
@@ -169,9 +169,9 @@ namespace CCCoreLib
             sipRes = false;
         }
         %End
-        
+
     protected:
         ~ScalarField();
     };
-    
+
 };

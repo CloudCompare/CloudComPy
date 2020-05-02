@@ -41,9 +41,9 @@ public:
     ccPointCloud(QString name = QString(), unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID) throw();
 
     QString getName() const;
-    
+
     unsigned size() const;
-    
+
     SIP_PYTUPLE computeGravityCenter() [CCVector3 () ];
     %Docstring
     Return a tuple of the 3 coordinates of the gravity center of the cloud
@@ -54,12 +54,12 @@ public:
     t = Py_BuildValue("(ddd)", g.x, g.y, g.z);
     sipRes = t;
     %End
-    
+
     bool hasScalarFields() const;
     %Docstring
     Return True or False.
     %End
-  
+
     void scale(double fx, double fy, double fz, SIP_PYTUPLE center = Py_BuildValue("(ddd)", 0., 0., 0.)) [ void (PointCoordinateType, PointCoordinateType, PointCoordinateType, CCVector3) ];
     %Docstring
     Scale the cloud with separate factors along the 3 directions x,y,z and an optional center (default: (0,0,0)).
@@ -81,7 +81,7 @@ public:
         sipIsErr = 1;
     }
     %End
-    
+
     void translate(SIP_PYTUPLE t) [ void (const CCVector3&) ];
     %Docstring
     translate the cloud of (x,y,z)
@@ -100,7 +100,7 @@ public:
         sipIsErr = 1;
     }
     %End
-    
+
     bool exportCoordToSF(SIP_PYTUPLE b) [ bool (bool*) ];
     %Docstring
     export coordinates to ScalarFields
@@ -123,39 +123,39 @@ public:
         sipIsErr = 1;
     }
     %End
-    
+
     unsigned getNumberOfScalarFields() const;
-    
+
     CCCoreLib::ScalarField* getScalarField(int index) const;
     %Docstring
     Return a ScalarField if index is valid, otherwise None.
     %End
-    
+
     const char* getScalarFieldName(int index) const;
     %Docstring
     Return the ScalarField name if index is valid, otherwise None.
     %End
-    
+
     void setCurrentOutScalarField(int index);
     %Docstring
     Set the current 'out' ScalarField index. No validity check. Use -1 to set None.
     %End
-    
+
     CCCoreLib::ScalarField* getCurrentOutScalarField() const;
     %Docstring
     Return the current 'out' ScalarField if there is one, otherwise None.
     %End
-    
+
     void setCurrentInScalarField(int index);
     %Docstring
     Set the current 'in' ScalarField index. No validity check. Use -1 to set None.
     %End
-    
+
     CCCoreLib::ScalarField* getCurrentInScalarField() const;
     %Docstring
     Return the current 'in' ScalarField if there is one, otherwise None.
     %End
-    
+
     bool renameScalarField(int index, const char* newName);
     %Docstring
     Rename the ScalarField if index is valid.
@@ -166,7 +166,7 @@ public:
     - new name
     return True in case of success
     %End
-    
+
     PyObject* toNpArray(bool copy=true); // if copy == false, ownership C++, otherwise ownership Python
     %Docstring
     Wrap the PointCloud coordinates into a numpy Array.
@@ -211,7 +211,7 @@ public:
         {
             sipRes = PyArray_SimpleNewFromData(2, dims, type_num, s ); // by default the PyArray created like this does not own its data
             sipTransferTo(sipRes, NULL);                               // keep ownership iof PyArray n C++
-            CCTRACE("OwnerShip of coordinates (PyArray object pointing to CloudCoordinates) kept in C++"); // potential memory leak, limited 
+            CCTRACE("OwnerShip of coordinates (PyArray object pointing to CloudCoordinates) kept in C++"); // potential memory leak, limited
         }
     }
     else
@@ -221,5 +221,4 @@ public:
     }
     CCTRACE("---");
     %End
-    
 };

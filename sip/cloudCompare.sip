@@ -53,7 +53,7 @@ class initNumpy
     #include <initNumpy.h>
     #include <PyScalarType.h>
     %End
-    
+
 public:
     static void init();
     %Docstring
@@ -64,7 +64,7 @@ public:
     import_array();
     CCTRACE("initialization numpy C++ API done");
     %End
-    
+
     static const char* getScalarType();
     %Docstring
     Get the scalar type used in cloudCompare under the form defined in Numpy: 'float32' or 'float64'
@@ -76,10 +76,10 @@ public:
     else
         sipRes = "float64";
     %End
-    
+
 private:
     initNumpy();
-    initNumpy(const initNumpy&);    
+    initNumpy(const initNumpy&);
 };
 
 %Include pyCC.sip

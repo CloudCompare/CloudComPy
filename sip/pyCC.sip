@@ -19,7 +19,7 @@
 // sip implementation of pyCC
 
 //! Typical I/O filter errors
-enum CC_FILE_ERROR 
+enum CC_FILE_ERROR
 {
     CC_FERR_NO_ERROR,
     CC_FERR_BAD_ARGUMENT,
@@ -42,7 +42,7 @@ enum CC_FILE_ERROR
 };
 
 %HideNamespace(name = PYCC)
-        
+
 namespace PYCC
 {
     enum CC_SHIFT_MODE
@@ -59,9 +59,9 @@ namespace PYCC
 
     ccPointCloud* loadPointCloud(const char* filename,
                                  CC_SHIFT_MODE mode=PYCC::AUTO,
-                                 int skip=0, 
+                                 int skip=0,
                                  double x=0,
-                                 double y=0, 
+                                 double y=0,
                                  double z=0);
     %Docstring
     Load a 3D cloud from a file
@@ -71,7 +71,7 @@ namespace PYCC
     return a ccPointCloud object.
     Usage: see ccPointCloud doc.
     %End
-    
+
     CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud,
                                  const QString& filename);
     %Docstring
@@ -81,16 +81,16 @@ namespace PYCC
     - filename
     return 0 or I/O error.
     %End
-    
+
     bool computeCurvature(PYCC::CurvatureType option, double radius, QList<ccPointCloud*>);
     %Docstring
     Compute the curvature on a list of point clouds (create a scalarField)
     parameters:
     - CurvatureType from cloudCompare.GAUSSIAN_CURV, cloudCompare.MEAN_CURV, cloudCompare.NORMAL_CHANGE_RATE
     - radius: try value obtained by GetDefaultCloudKernelSize
-    - list of clouds 
+    - list of clouds
     %End
-    
+
     ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud);
     %Docstring
     Create a new point cloud by filtering points using the current out ScalarField (see cloud.setCurrentOutScalarField).
@@ -101,7 +101,7 @@ namespace PYCC
     - cloud: ccPointCloud
     return a ccPointCloud object.
     %End
-    
+
     double GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn = 12);
     %Docstring
     Compute an estimate radius to use in computeCurvature
@@ -110,7 +110,7 @@ namespace PYCC
     - number of nodes wanted within the radius
     return estimated radius
     %End
-    
+
     %Exception std::exception(SIP_Exception) /PyName=StdException, default/
     {
     %TypeHeaderCode
@@ -118,7 +118,7 @@ namespace PYCC
     %End
     %RaiseCode
         const char *detail = sipExceptionRef.what();
-    
+
         SIP_BLOCK_THREADS
         PyErr_SetString(sipException_std_exception, detail);
         SIP_UNBLOCK_THREADS
