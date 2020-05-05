@@ -25,6 +25,14 @@ project( PYCC_LIB VERSION 0.1 )
 
 add_library( PYCC_LIB STATIC )
 
+if ( OPTION_SCALAR_DOUBLE )
+	target_compile_definitions( PYCC_LIB PUBLIC SCALAR_TYPE_DOUBLE )
+	message(STATUS "scalar type double")
+else()
+	target_compile_definitions( PYCC_LIB PUBLIC SCALAR_TYPE_FLOAT )
+	message(STATUS "scalar type float")
+endif()
+
 target_sources( PYCC_LIB
     PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/pyCC.h

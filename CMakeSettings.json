@@ -68,6 +68,10 @@
         {
           "name": "BUILD_TESTING:BOOL",
           "value": "ON"
+        },
+        {
+          "name": "OPTION_SCALAR_DOUBLE:BOOL",
+          "value": "OFF"
         }
       ]
     }

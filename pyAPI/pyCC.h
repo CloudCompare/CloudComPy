@@ -22,7 +22,7 @@
 #include <QList>
 #include <QString>
 
-#if not defined SCALAR_TYPE_DOUBLE and not defined SCALAR_TYPE_FLOAT
+#ifndef SCALAR_TYPE_DOUBLE
 #define SCALAR_TYPE_FLOAT
 #endif
 
