@@ -33,6 +33,3 @@ cloud = cc.loadPointCloud(getSampleCloud(5.0))
 coords = cloud.toNpArray(True)
 if coords.shape != (cloud.size(), 3):
     raise RuntimeError
-
-if coords.dtype != cc.initNumpy.getScalarType():
-    raise RuntimeError

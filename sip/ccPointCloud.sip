@@ -182,12 +182,12 @@ public:
     %MethodCode
     if( sipCpp->size() > 0 )
     {
-        int type_num = CC_NPY_FLOAT;
+        int type_num = NPY_FLOAT32;
         CCTRACE("Type num : " << type_num);
         npy_intp nRows = sipCpp->size(); //size_t
         npy_intp dims[2] = {nRows, 3};
         CCTRACE("nrows: " << nRows);
-        PyScalarType *s = (PyScalarType*)sipCpp->getPoint(0);
+        float *s = (float*)sipCpp->getPoint(0);
         CCTRACE("data address: " << s);
         CCTRACE("x[0] : " << s[0]);
         CCTRACE("y[0] : " << s[1]);
@@ -198,9 +198,9 @@ public:
         CCTRACE("isCopy " << a0);
         if (a0)
         {
-            CCTRACE("--- copy " << 3*nRows*sizeof(PyScalarType));
-            PyScalarType *d = new PyScalarType[3*nRows];
-            memcpy(d, s, 3*nRows*sizeof(PyScalarType));
+            CCTRACE("--- copy " << 3*nRows*sizeof(float));
+            float *d = new float[3*nRows];
+            memcpy(d, s, 3*nRows*sizeof(float));
             CCTRACE("--- copied");
             sipRes = PyArray_SimpleNewFromData(2, dims, type_num, d );
             PyArray_ENABLEFLAGS((PyArrayObject*)sipRes, NPY_ARRAY_OWNDATA); // the PyArray object owns is data now
@@ -217,7 +217,7 @@ public:
     else
     {
         npy_intp dims[2] = {0, 0};
-        sipRes = PyArray_ZEROS(2, dims, CC_NPY_FLOAT, 0);
+        sipRes = PyArray_ZEROS(2, dims, NPY_FLOAT32, 0);
     }
     CCTRACE("---");
     %End
