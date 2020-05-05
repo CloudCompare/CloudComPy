@@ -79,8 +79,8 @@ set(SIP_MAIN_GENSRC ${CMAKE_CURRENT_BINARY_DIR}/sipcloudComparecmodule.cc)
 set(SIP_ADD_GENSRC
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareccPointCloud.cc
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareQList0101ccPointCloud.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCCoreLib.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCCoreLibScalarField.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCLib.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCLibScalarField.cc
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareinitNumpy.cc
    )
 set(SIP_ALL_GENSRC ${SIP_MAIN_GENSRC} ${SIP_ADD_GENSRC})

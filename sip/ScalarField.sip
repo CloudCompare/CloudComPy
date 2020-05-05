@@ -18,7 +18,7 @@
 
 // sip implementation of ScalarField
 
-namespace CCCoreLib
+namespace CCLib
 {
     class ScalarField
     {
@@ -34,7 +34,7 @@ namespace CCCoreLib
     A monodimensional array of scalar values.
     Invalid values can be represented by NAN_VALUE.
     Dealing with numpy (method toNpArray) requires to initialize first numpy interface:
-    cloudCompare.CCCoreLib.ScalarField.initNumpyApi()
+    cloudCompare.CCLib.ScalarField.initNumpyApi()
     %End
 
     public:

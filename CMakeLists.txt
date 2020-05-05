@@ -18,6 +18,12 @@
 
 cmake_minimum_required(VERSION 3.10)
 
+project( CloudCompareProjects )
+
+# specify the C++ standard
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 # Testing
 option( BUILD_PY_TESTING "Build tests for CloudComPy" OFF )
 if ( BUILD_PY_TESTING )

@@ -19,7 +19,7 @@
 #ifndef CLOUDCOMPY_PYAPI_PYSCALARTYPE_H_
 #define CLOUDCOMPY_PYAPI_PYSCALARTYPE_H_
 
-#if defined CC_CORE_LIB_USES_FLOAT
+#if defined SCALAR_TYPE_FLOAT
     #define PyScalarType float
     #define CC_NPY_FLOAT NPY_FLOAT32
 #else

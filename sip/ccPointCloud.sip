@@ -105,7 +105,7 @@ public:
     %Docstring
     export coordinates to ScalarFields
     parameters:
-    tuple of booleans: (isXexported, isYexported, isZexported)
+    tuple of booleans: (isXexported, isYexported, isZexported)ore
     return status
     %End
     %MethodCode
@@ -126,7 +126,7 @@ public:
 
     unsigned getNumberOfScalarFields() const;
 
-    CCCoreLib::ScalarField* getScalarField(int index) const;
+    CCLib::ScalarField* getScalarField(int index) const;
     %Docstring
     Return a ScalarField if index is valid, otherwise None.
     %End
@@ -141,7 +141,7 @@ public:
     Set the current 'out' ScalarField index. No validity check. Use -1 to set None.
     %End
 
-    CCCoreLib::ScalarField* getCurrentOutScalarField() const;
+    CCLib::ScalarField* getCurrentOutScalarField() const;
     %Docstring
     Return the current 'out' ScalarField if there is one, otherwise None.
     %End
@@ -151,7 +151,7 @@ public:
     Set the current 'in' ScalarField index. No validity check. Use -1 to set None.
     %End
 
-    CCCoreLib::ScalarField* getCurrentInScalarField() const;
+    CCLib::ScalarField* getCurrentInScalarField() const;
     %Docstring
     Return the current 'in' ScalarField if there is one, otherwise None.
     %End

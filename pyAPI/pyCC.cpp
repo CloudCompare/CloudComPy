@@ -212,13 +212,13 @@ bool PYCC::computeCurvature(PYCC::CurvatureType option, double radius, QList<ccP
         CCTRACE("entity: "<< i << " name: " << clouds.at(i)->getName().toStdString());
         entities[i] = clouds.at(i);
     }
-    return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::Curvature, option, radius, entities);
+    return pyCC_ComputeGeomCharacteristic(CCLib::GeometricalAnalysisTools::Curvature, option, radius, entities);
 }
 
 ccPointCloud* PYCC::filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
 {
     CCTRACE("filterBySFValue min: " << minVal << " max: " << maxVal << " cloudName: " << cloud->getName().toStdString());
-    CCCoreLib::ScalarField* sf = cloud->getCurrentOutScalarField();
+    CCLib::ScalarField* sf = cloud->getCurrentOutScalarField();
     ccPointCloud* fitleredCloud = nullptr;
     if (sf)
     {
@@ -247,7 +247,7 @@ double PYCC::GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn)
 }
 
 bool PYCC::pyCC_ComputeGeomCharacteristic(
-CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic c,
+CCLib::GeometricalAnalysisTools::GeomCharacteristic c,
 int subOption,
 PointCoordinateType radius,
 ccHObject::Container& entities)
@@ -263,50 +263,50 @@ QString sfName;
 
 switch (c)
 {
-case CCCoreLib::GeometricalAnalysisTools::Feature:
+case CCLib::GeometricalAnalysisTools::Feature:
 {
     switch (subOption)
     {
-    case CCCoreLib::Neighbourhood::EigenValuesSum:
+    case CCLib::Neighbourhood::EigenValuesSum:
         sfName = "Eigenvalues sum";
         break;
-    case CCCoreLib::Neighbourhood::Omnivariance:
+    case CCLib::Neighbourhood::Omnivariance:
         sfName = "Omnivariance";
         break;
-    case CCCoreLib::Neighbourhood::EigenEntropy:
+    case CCLib::Neighbourhood::EigenEntropy:
         sfName = "Eigenentropy";
         break;
-    case CCCoreLib::Neighbourhood::Anisotropy:
+    case CCLib::Neighbourhood::Anisotropy:
         sfName = "Anisotropy";
         break;
-    case CCCoreLib::Neighbourhood::Planarity:
+    case CCLib::Neighbourhood::Planarity:
         sfName = "Planarity";
         break;
-    case CCCoreLib::Neighbourhood::Linearity:
+    case CCLib::Neighbourhood::Linearity:
         sfName = "Linearity";
         break;
-    case CCCoreLib::Neighbourhood::PCA1:
+    case CCLib::Neighbourhood::PCA1:
         sfName = "PCA1";
         break;
-    case CCCoreLib::Neighbourhood::PCA2:
+    case CCLib::Neighbourhood::PCA2:
         sfName = "PCA2";
         break;
-    case CCCoreLib::Neighbourhood::SurfaceVariation:
+    case CCLib::Neighbourhood::SurfaceVariation:
         sfName = "Surface variation";
         break;
-    case CCCoreLib::Neighbourhood::Sphericity:
+    case CCLib::Neighbourhood::Sphericity:
         sfName = "Sphericity";
         break;
-    case CCCoreLib::Neighbourhood::Verticality:
+    case CCLib::Neighbourhood::Verticality:
         sfName = "Verticality";
         break;
-    case CCCoreLib::Neighbourhood::EigenValue1:
+    case CCLib::Neighbourhood::EigenValue1:
         sfName = "1st eigenvalue";
         break;
-    case CCCoreLib::Neighbourhood::EigenValue2:
+    case CCLib::Neighbourhood::EigenValue2:
         sfName = "2nd eigenvalue";
         break;
-    case CCCoreLib::Neighbourhood::EigenValue3:
+    case CCLib::Neighbourhood::EigenValue3:
         sfName = "3rd eigenvalue";
         break;
     default:
@@ -319,17 +319,17 @@ case CCCoreLib::GeometricalAnalysisTools::Feature:
 }
     break;
 
-case CCCoreLib::GeometricalAnalysisTools::Curvature:
+case CCLib::GeometricalAnalysisTools::Curvature:
 {
     switch (subOption)
     {
-    case CCCoreLib::Neighbourhood::GAUSSIAN_CURV:
+    case CCLib::Neighbourhood::GAUSSIAN_CURV:
         sfName = CC_CURVATURE_GAUSSIAN_FIELD_NAME;
         break;
-    case CCCoreLib::Neighbourhood::MEAN_CURV:
+    case CCLib::Neighbourhood::MEAN_CURV:
         sfName = CC_CURVATURE_MEAN_FIELD_NAME;
         break;
-    case CCCoreLib::Neighbourhood::NORMAL_CHANGE_RATE:
+    case CCLib::Neighbourhood::NORMAL_CHANGE_RATE:
         sfName = CC_CURVATURE_NORM_CHANGE_RATE_FIELD_NAME;
         break;
     default:
@@ -341,19 +341,19 @@ case CCCoreLib::GeometricalAnalysisTools::Curvature:
 }
     break;
 
-case CCCoreLib::GeometricalAnalysisTools::LocalDensity:
-    sfName = pyCC_GetDensitySFName(static_cast<CCCoreLib::GeometricalAnalysisTools::Density>(subOption), false, radius);
+case CCLib::GeometricalAnalysisTools::LocalDensity:
+    sfName = pyCC_GetDensitySFName(static_cast<CCLib::GeometricalAnalysisTools::Density>(subOption), false, radius);
     break;
 
-case CCCoreLib::GeometricalAnalysisTools::ApproxLocalDensity:
-    sfName = pyCC_GetDensitySFName(static_cast<CCCoreLib::GeometricalAnalysisTools::Density>(subOption), true);
+case CCLib::GeometricalAnalysisTools::ApproxLocalDensity:
+    sfName = pyCC_GetDensitySFName(static_cast<CCLib::GeometricalAnalysisTools::Density>(subOption), true);
     break;
 
-case CCCoreLib::GeometricalAnalysisTools::Roughness:
+case CCLib::GeometricalAnalysisTools::Roughness:
     sfName = CC_ROUGHNESS_FIELD_NAME + QString(" (%1)").arg(radius);
     break;
 
-case CCCoreLib::GeometricalAnalysisTools::MomentOrder1:
+case CCLib::GeometricalAnalysisTools::MomentOrder1:
     sfName = CC_MOMENT_ORDER1_FIELD_NAME + QString(" (%1)").arg(radius);
     break;
 
@@ -396,11 +396,11 @@ for (size_t i = 0; i < selNum; ++i)
             }
         }
 
-        CCCoreLib::GeometricalAnalysisTools::ErrorCode result =
-                CCCoreLib::GeometricalAnalysisTools::ComputeCharactersitic(c, subOption, cloud, radius, nullptr,
+        CCLib::GeometricalAnalysisTools::ErrorCode result =
+                CCLib::GeometricalAnalysisTools::ComputeCharactersitic(c, subOption, cloud, radius, nullptr,
                                                                            octree.data());
 
-        if (result == CCCoreLib::GeometricalAnalysisTools::NoError)
+        if (result == CCLib::GeometricalAnalysisTools::NoError)
         {
             if (pc && sfIdx >= 0)
             {
@@ -415,25 +415,25 @@ for (size_t i = 0; i < selNum; ++i)
             QString errorMessage;
             switch (result)
             {
-            case CCCoreLib::GeometricalAnalysisTools::InvalidInput:
+            case CCLib::GeometricalAnalysisTools::InvalidInput:
                 errorMessage = "Internal error (invalid input)";
                 break;
-            case CCCoreLib::GeometricalAnalysisTools::NotEnoughPoints:
+            case CCLib::GeometricalAnalysisTools::NotEnoughPoints:
                 errorMessage = "Not enough points";
                 break;
-            case CCCoreLib::GeometricalAnalysisTools::OctreeComputationFailed:
+            case CCLib::GeometricalAnalysisTools::OctreeComputationFailed:
                 errorMessage = "Failed to compute octree (not enough memory?)";
                 break;
-            case CCCoreLib::GeometricalAnalysisTools::ProcessFailed:
+            case CCLib::GeometricalAnalysisTools::ProcessFailed:
                 errorMessage = "Process failed";
                 break;
-            case CCCoreLib::GeometricalAnalysisTools::UnhandledCharacteristic:
+            case CCLib::GeometricalAnalysisTools::UnhandledCharacteristic:
                 errorMessage = "Internal error (unhandled characteristic)";
                 break;
-            case CCCoreLib::GeometricalAnalysisTools::NotEnoughMemory:
+            case CCLib::GeometricalAnalysisTools::NotEnoughMemory:
                 errorMessage = "Not enough memory";
                 break;
-            case CCCoreLib::GeometricalAnalysisTools::ProcessCancelledByUser:
+            case CCLib::GeometricalAnalysisTools::ProcessCancelledByUser:
                 errorMessage = "Process cancelled by user";
                 break;
             default:
@@ -457,7 +457,7 @@ return true;
 }
 
 QString PYCC::pyCC_GetDensitySFName(
-CCCoreLib::GeometricalAnalysisTools::Density densityType,
+CCLib::GeometricalAnalysisTools::Density densityType,
 bool approx,
 double densityKernelSize)
 {
@@ -468,13 +468,13 @@ QString sfName;
 //update the name with the density type
 switch (densityType)
 {
-case CCCoreLib::GeometricalAnalysisTools::DENSITY_KNN:
+case CCLib::GeometricalAnalysisTools::DENSITY_KNN:
     sfName = CC_LOCAL_KNN_DENSITY_FIELD_NAME;
     break;
-case CCCoreLib::GeometricalAnalysisTools::DENSITY_2D:
+case CCLib::GeometricalAnalysisTools::DENSITY_2D:
     sfName = CC_LOCAL_SURF_DENSITY_FIELD_NAME;
     break;
-case CCCoreLib::GeometricalAnalysisTools::DENSITY_3D:
+case CCLib::GeometricalAnalysisTools::DENSITY_3D:
     sfName = CC_LOCAL_VOL_DENSITY_FIELD_NAME;
     break;
 default:
@@ -504,5 +504,5 @@ if (cloud && cloud->size() != 0)
     return sqrt(surfacePerPoint * knn);
 }
 
-return -CCCoreLib::PC_ONE;
+return -PC_ONE;
 }
