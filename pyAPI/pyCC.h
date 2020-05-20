@@ -31,9 +31,6 @@
 
 // --- for Python3 interface
 
-namespace PYCC
-{
-
 enum CC_SHIFT_MODE
 {
     AUTO = 0, XYZ = 1
@@ -115,6 +112,5 @@ QString pyCC_GetDensitySFName(
 
 //! copied from ccLibAlgorithms::GetDefaultCloudKernelSize
 PointCoordinateType pyCC_GetDefaultCloudKernelSize(ccGenericPointCloud* cloud, unsigned knn = 12);
-}
 
 #endif /* CLOUDCOMPY_PYAPI_PYCC_H_ */

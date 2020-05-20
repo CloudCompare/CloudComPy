@@ -38,8 +38,6 @@
 //qCC
 #include "ccCommon.h"
 
-using namespace PYCC;
-
 // --- internal struct
 
 //* Extended file loading parameters, from plugins/ccCommandLineInterface.h
@@ -60,7 +58,7 @@ struct CLLoadParameters: public FileIOFilter::LoadParameters
 };
 
 //! internal attributes (cloned from plugins/ccCommandLineInterface.h)
-struct PYCC::pyCC
+struct pyCC
 {
     //! Currently opened point clouds and their filename
     std::vector<CLCloudDesc> m_clouds;
@@ -93,9 +91,9 @@ struct PYCC::pyCC
     ccHObject m_orphans;
 };
 
-static PYCC::pyCC* s_pyCCInternals = nullptr;
+static pyCC* s_pyCCInternals = nullptr;
 
-PYCC::pyCC* PYCC::initCloudCompare()
+pyCC* initCloudCompare()
 {
     if (!s_pyCCInternals)
     {
@@ -115,12 +113,12 @@ PYCC::pyCC* PYCC::initCloudCompare()
     return s_pyCCInternals;
 }
 
-ccPointCloud* PYCC::loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int skip, double x, double y, double z)
+ccPointCloud* loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int skip, double x, double y, double z)
 {
     CCTRACE("Opening file: " << filename << " mode: " << mode << " skip: " << skip << " x: " << x << " y: " << y << " z: " << z);
     // TODO process optional parameter skip
     // TODO code from ccCommandLineParser::importFile
-    PYCC::pyCC* capi = PYCC::initCloudCompare();
+    pyCC* capi = initCloudCompare();
     ::CC_FILE_ERROR result = CC_FERR_NO_ERROR;
     ccHObject* db = nullptr;
 
@@ -185,10 +183,10 @@ ccPointCloud* PYCC::loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int
     return nullptr;
 }
 
-::CC_FILE_ERROR PYCC::SavePointCloud(ccPointCloud* cloud, const QString& filename)
+::CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename)
 {
     CCTRACE("saving cloud");
-    pyCC* capi = PYCC::initCloudCompare();
+    pyCC* capi = initCloudCompare();
     if ((cloud == nullptr) || filename.isEmpty())
         return ::CC_FERR_BAD_ARGUMENT;
     CCTRACE("cloud: " << cloud->getName().toStdString() << " file: " << filename.toStdString());
@@ -213,7 +211,7 @@ ccPointCloud* PYCC::loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int
     return result;
 }
 
-bool PYCC::computeCurvature(PYCC::CurvatureType option, double radius, QList<ccPointCloud*> clouds)
+bool computeCurvature(CurvatureType option, double radius, QList<ccPointCloud*> clouds)
 {
     CCTRACE("computeCurvature mode: " << option << " radius: " << radius << " nbClouds: " << clouds.size());
     ccHObject::Container entities;
@@ -226,7 +224,7 @@ bool PYCC::computeCurvature(PYCC::CurvatureType option, double radius, QList<ccP
     return pyCC_ComputeGeomCharacteristic(CCLib::GeometricalAnalysisTools::Curvature, option, radius, entities);
 }
 
-ccPointCloud* PYCC::filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
+ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
 {
     CCTRACE("filterBySFValue min: " << minVal << " max: " << maxVal << " cloudName: " << cloud->getName().toStdString());
     CCLib::ScalarField* sf = cloud->getCurrentOutScalarField();
@@ -240,7 +238,7 @@ ccPointCloud* PYCC::filterBySFValue(double minVal, double maxVal, ccPointCloud* 
     return fitleredCloud;
 }
 
-double PYCC::GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn)
+double GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn)
 {
     CCTRACE("GetDefaultCloudKernelSize - NbPoints: " << knn << " nbClouds: " << clouds.size());
     double sigma = -1;
@@ -257,7 +255,7 @@ double PYCC::GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn)
     return sigma;
 }
 
-bool PYCC::pyCC_ComputeGeomCharacteristic(
+bool pyCC_ComputeGeomCharacteristic(
 CCLib::GeometricalAnalysisTools::GeomCharacteristic c,
 int subOption,
 PointCoordinateType radius,
@@ -467,7 +465,7 @@ for (size_t i = 0; i < selNum; ++i)
 return true;
 }
 
-QString PYCC::pyCC_GetDensitySFName(
+QString pyCC_GetDensitySFName(
 CCLib::GeometricalAnalysisTools::Density densityType,
 bool approx,
 double densityKernelSize)
@@ -501,7 +499,7 @@ if (approx)
 return sfName;
 }
 
-PointCoordinateType PYCC::pyCC_GetDefaultCloudKernelSize(ccGenericPointCloud* cloud, unsigned knn)
+PointCoordinateType pyCC_GetDefaultCloudKernelSize(ccGenericPointCloud* cloud, unsigned knn)
 {
 assert(cloud);
 if (cloud && cloud->size() != 0)

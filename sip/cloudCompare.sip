@@ -27,8 +27,11 @@
 %Docstring
 cloudCompare is the Python module interfacing cloudCompare library
 Python3 access to cloudCompare objects is done like this:
+import sys
 from PyQt5.QtWidgets import QApplication
+import cloudCompare as cc
 app = QApplication(sys.argv)
+cc.initNumpy.init()  # to do once before dealing with numpy
 import cloudCompare as cc
 cloud = cc.loadPointCloud("/home/paul/projets/CloudCompare/data/altiXYZ/RGEALTI_FXX_0845_6446_MNT_LAMB93_IGN69.xyz")
 %End

@@ -41,88 +41,87 @@ enum CC_FILE_ERROR
     CC_FERR_NOT_IMPLEMENTED,
 };
 
-%HideNamespace(name = PYCC)
-
-namespace PYCC
+enum CC_SHIFT_MODE
 {
-    enum CC_SHIFT_MODE
-    {
-        AUTO = 0, XYZ = 1
-    };
-
-    enum CurvatureType
-    {
-        GAUSSIAN_CURV = 1,
-        MEAN_CURV,
-        NORMAL_CHANGE_RATE
-    };
-
-    ccPointCloud* loadPointCloud(const char* filename,
-                                 CC_SHIFT_MODE mode=PYCC::AUTO,
-                                 int skip=0,
-                                 double x=0,
-                                 double y=0,
-                                 double z=0);
-    %Docstring
-    Load a 3D cloud from a file
-    parameters:
-    - filename
-    - optional parameters not used yet!
-    return a ccPointCloud object.
-    Usage: see ccPointCloud doc.
-    %End
-
-    CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud,
-                                 const QString& filename);
-    %Docstring
-    Save a 3D cloud in a file
-    parameters:
-    - cloud: ccPointCloud
-    - filename
-    return 0 or I/O error.
-    %End
-
-    bool computeCurvature(PYCC::CurvatureType option, double radius, QList<ccPointCloud*>);
-    %Docstring
-    Compute the curvature on a list of point clouds (create a scalarField)
-    parameters:
-    - CurvatureType from cloudCompare.GAUSSIAN_CURV, cloudCompare.MEAN_CURV, cloudCompare.NORMAL_CHANGE_RATE
-    - radius: try value obtained by GetDefaultCloudKernelSize
-    - list of clouds
-    %End
-
-    ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud);
-    %Docstring
-    Create a new point cloud by filtering points using the current out ScalarField (see cloud.setCurrentOutScalarField).
-    Keep the points whose ScalarField value is between the min and max parameters.
-    parameters:
-    - minimum value
-    - maximum value
-    - cloud: ccPointCloud
-    return a ccPointCloud object.
-    %End
-
-    double GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn = 12);
-    %Docstring
-    Compute an estimate radius to use in computeCurvature
-    parameters:
-    - list of clouds
-    - number of nodes wanted within the radius
-    return estimated radius
-    %End
-
-    %Exception std::exception(SIP_Exception) /PyName=StdException, default/
-    {
-    %TypeHeaderCode
-    #include <exception>
-    %End
-    %RaiseCode
-        const char *detail = sipExceptionRef.what();
-
-        SIP_BLOCK_THREADS
-        PyErr_SetString(sipException_std_exception, detail);
-        SIP_UNBLOCK_THREADS
-    %End
-    };
-
+    AUTO = 0, XYZ = 1
 };
+
+enum CurvatureType
+{
+    GAUSSIAN_CURV = 1,
+    MEAN_CURV,
+    NORMAL_CHANGE_RATE
+};
+
+ccPointCloud* loadPointCloud(const char* filename,
+                                CC_SHIFT_MODE mode=AUTO,
+                                int skip=0,
+                                double x=0,
+                                double y=0,
+                                double z=0);
+%Docstring
+Load a 3D cloud from a file
+parameters:
+- filename
+- shift mode from (AUTO, XYZ),  optional, default AUTO
+  AUTO: automatic shift of coordinates
+  XYZ:  coordinates shift given by x, y, z parameters
+- skip optional parameter not used yet! default 0
+- x, y, z:: optional shift values for coordinates (mode XYZ),  default 0
+return a ccPointCloud object.
+Usage: see ccPointCloud doc.
+%End
+
+CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud,
+                                const QString& filename);
+%Docstring
+Save a 3D cloud in a file
+parameters:
+- cloud: ccPointCloud
+- filename
+return 0 or I/O error.
+%End
+
+bool computeCurvature(CurvatureType option, double radius, QList<ccPointCloud*>);
+%Docstring
+Compute the curvature on a list of point clouds (create a scalarField)
+parameters:
+- CurvatureType from cloudCompare.GAUSSIAN_CURV, cloudCompare.MEAN_CURV, cloudCompare.NORMAL_CHANGE_RATE
+- radius: try value obtained by GetPointCloudRadius
+- list of clouds
+%End
+
+ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud);
+%Docstring
+Create a new point cloud by filtering points using the current out ScalarField (see cloud.setCurrentOutScalarField).
+Keep the points whose ScalarField value is between the min and max parameters.
+parameters:
+- minimum value
+- maximum value
+- cloud: ccPointCloud
+return a ccPointCloud object.
+%End
+
+double GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn = 12);
+%Docstring
+Compute an estimate radius to use in computeCurvature
+parameters:
+- list of clouds
+- number of nodes wanted within the radius
+return estimated radius
+%End
+
+%Exception std::exception(SIP_Exception) /PyName=StdException, default/
+{
+%TypeHeaderCode
+#include <exception>
+%End
+%RaiseCode
+    const char *detail = sipExceptionRef.what();
+
+    SIP_BLOCK_THREADS
+    PyErr_SetString(sipException_std_exception, detail);
+    SIP_UNBLOCK_THREADS
+%End
+};
+
