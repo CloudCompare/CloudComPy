@@ -118,7 +118,7 @@ PYCC::pyCC* PYCC::initCloudCompare()
 ccPointCloud* PYCC::loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int skip, double x, double y, double z)
 {
     CCTRACE("Opening file: " << filename << " mode: " << mode << " skip: " << skip << " x: " << x << " y: " << y << " z: " << z);
-    // TODO process optional parameters following ccCommandLineInterface::processGlobalShiftCommand
+    // TODO process optional parameter skip
     // TODO code from ccCommandLineParser::importFile
     PYCC::pyCC* capi = PYCC::initCloudCompare();
     ::CC_FILE_ERROR result = CC_FERR_NO_ERROR;
@@ -126,6 +126,17 @@ ccPointCloud* PYCC::loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int
 
     FileIOFilter::Shared filter = nullptr;
     QString fileName(filename);
+    if (mode == AUTO)
+    {
+    	capi->m_loadingParameters.m_coordinatesShiftEnabled = false;
+    	capi->m_loadingParameters.shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG_AUTO_SHIFT;
+    }
+    else
+    {
+    	capi->m_loadingParameters.m_coordinatesShiftEnabled = true;
+    	capi->m_loadingParameters.shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG;
+    	capi->m_loadingParameters.m_coordinatesShift = CCVector3d(x, y, z);
+    }
     if (filter)
     {
         db = FileIOFilter::LoadFromFile(fileName, capi->m_loadingParameters, filter, result);
