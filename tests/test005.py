@@ -29,7 +29,7 @@ from PyQt5.QtWidgets import QApplication
 import cloudCompare as cc
 
 app = QApplication(sys.argv)
-cc.initNumpy.init()  # to do once before dealing with numpy
+cc.initCC.init()  # to do once before using plugins or dealing with numpy
 
 thisProcess = psutil.Process()
 startMem = thisProcess.memory_full_info().uss
@@ -39,7 +39,7 @@ print("memory USS, before loading point cloud = REFERENCE: %s" % startMem)
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 npts = cloud.size()
-if cc.initNumpy.getScalarType() == 'float32':
+if cc.initCC.getScalarType() == 'float32':
     sizePoint = 4
 else:
     sizePoint = 8

@@ -17,6 +17,7 @@
 //##########################################################################
 
 #include "pyCC.h"
+#include "initCC.h"
 
 #include <CCTypes.h>
 
@@ -37,6 +38,12 @@
 
 //qCC
 #include "ccCommon.h"
+
+//Qt
+#include <QApplication>
+#include <QDir>
+#include <QStandardPaths>
+#include <QString>
 
 // --- internal struct
 
@@ -89,6 +96,11 @@ struct pyCC
 
     //! Orphan entities
     ccHObject m_orphans;
+
+    //! from ccApplicationBase
+    QString m_ShaderPath;
+    QString m_TranslationPath;
+    QStringList m_PluginPaths;
 };
 
 static pyCC* s_pyCCInternals = nullptr;
@@ -106,11 +118,93 @@ pyCC* initCloudCompare()
         s_pyCCInternals->m_coordinatesShiftWasEnabled = false;
         FileIOFilter::InitInternalFilters();  //load all known I/O filters (plugins will come later!)
         ccNormalVectors::GetUniqueInstance(); //force pre-computed normals array initialization
+        s_pyCCInternals->m_ShaderPath = "";
+        s_pyCCInternals->m_TranslationPath = "";
 
-        // TODO: load the plugins: implemented in the GUI part today, not in a library
-        //ccPluginManager::get().loadPlugins();
+        // TODO: load the plugins:
+        // requires compilation of ccPluginManager.cpp from CloudCompare/commons, not provided in a library (only in CloudCompare executable)
+        pyCC_setupPaths(s_pyCCInternals);
+        ccPluginManager::get().setPaths(s_pyCCInternals->m_PluginPaths);
+        for (int i = 0; i < s_pyCCInternals->m_PluginPaths.size(); ++i)
+            CCTRACE("pluginPath: " << s_pyCCInternals->m_PluginPaths.at(i).toStdString());
+        ccPluginManager::get().loadPlugins();
     }
     return s_pyCCInternals;
+}
+
+void pyCC_setupPaths(pyCC* capi)
+{
+    QDir appDir = initCC::moduleDir;
+    CCTRACE("appDir: " << appDir.absolutePath().toStdString());
+
+    // Set up our shader and plugin paths
+#if defined(Q_OS_MAC)
+    QDir  bundleDir = appDir;
+
+    if ( bundleDir.dirName() == "MacOS" )
+    {
+        bundleDir.cdUp();
+    }
+
+    m_PluginPaths << (bundleDir.absolutePath() + "/PlugIns/ccPlugins");
+
+#if defined(CC_MAC_DEV_PATHS)
+    // Used for development only - this is the path where the plugins are built
+    // and the shaders are located.
+    // This avoids having to install into the application bundle when developing.
+    bundleDir.cdUp();
+    bundleDir.cdUp();
+    bundleDir.cdUp();
+
+    capi->m_PluginPaths << (bundleDir.absolutePath() + "/ccPlugins");
+    capi->m_ShaderPath = (bundleDir.absolutePath() + "/shaders");
+    capi->m_TranslationPath = (bundleDir.absolutePath() + "/qCC/translations");
+#else
+    capi->m_ShaderPath = (bundleDir.absolutePath() + "/Shaders");
+    capi->m_TranslationPath = (bundleDir.absolutePath() + "/translations");
+#endif
+#elif defined(Q_OS_WIN)
+    capi->m_PluginPaths << (appDir.absolutePath() + "/plugins");
+    capi->m_ShaderPath = (appDir.absolutePath() + "/shaders");
+    capi->m_TranslationPath = (appDir.absolutePath() + "/translations");
+#elif defined(Q_OS_LINUX)
+    // Shaders & plugins are relative to the bin directory where the executable is found
+    QDir  theDir = appDir;
+
+    if ( theDir.dirName() == "cloudcompare" )
+    {
+        theDir.cdUp();
+        theDir.cdUp();
+        CCTRACE("cloudCompare install: " << theDir.absolutePath().toStdString());
+        capi->m_PluginPaths << (theDir.absolutePath() + "/lib/cloudcompare/plugins");
+        capi->m_ShaderPath = (theDir.absolutePath() + "/share/cloudcompare/shaders");
+        capi->m_TranslationPath = (theDir.absolutePath() + "/share/cloudcompare/translations");
+    }
+    else
+    {
+        // Choose a reasonable default to look in
+        capi->m_PluginPaths << "/usr/lib/cloudcompare/plugins";
+        capi->m_ShaderPath = "/usr/share/cloudcompare/shaders";
+        capi->m_TranslationPath = "/usr/share/cloudcompare/translations";
+    }
+#else
+#warning Need to specify the shader path for this OS.
+#endif
+
+    // Add any app data paths to plugin paths
+    // Plugins in these directories take precendence over the included ones
+    // This allows users to put plugins outside of the install directories.
+    const QStringList appDataPaths = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation );
+
+    for ( const QString &appDataPath : appDataPaths )
+    {
+        QString path = appDataPath + "/plugins";
+
+        if (!capi->m_PluginPaths.contains(path)) //avoid duplicate entries (can happen, at least on Windows)
+        {
+            capi->m_PluginPaths << path;
+        }
+    }
 }
 
 ccPointCloud* loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int skip, double x, double y, double z)

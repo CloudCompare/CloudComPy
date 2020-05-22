@@ -36,21 +36,6 @@ else()
     message(STATUS "  Python3_LIBRARIES:" ${Python3_LIBRARIES})
 endif()
 
-# --- Qt5 detection
-
-find_package( Qt5
-    COMPONENTS
-        Concurrent
-        Core
-        Gui
-        OpenGL
-        OpenGLExtensions
-        PrintSupport
-        Svg
-        Widgets
-    REQUIRED
-)
-
 # --- PyQt Sip detection
 
 find_package(PYQTSIP REQUIRED)  # should come after Python
@@ -81,7 +66,7 @@ set(SIP_ADD_GENSRC
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareQList0101ccPointCloud.cc
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCLib.cc
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCLibScalarField.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareinitNumpy.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareinitCC.cc
    )
 set(SIP_ALL_GENSRC ${SIP_MAIN_GENSRC} ${SIP_ADD_GENSRC})
 

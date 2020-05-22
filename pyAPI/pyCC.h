@@ -97,6 +97,9 @@ double GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn = 12);
 struct pyCC;
 pyCC* initCloudCompare();
 
+//! copied from ccApplicationBase::setupPaths
+void pyCC_setupPaths(pyCC* capi);
+
 //! copied from ccLibAlgorithms::ComputeGeomCharacteristic
 bool pyCC_ComputeGeomCharacteristic(
     CCLib::GeometricalAnalysisTools::GeomCharacteristic c,

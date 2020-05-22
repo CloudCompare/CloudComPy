@@ -24,6 +24,7 @@ message(STATUS "Python API")
 project( PYCC_LIB VERSION 0.1 )
 
 add_library( PYCC_LIB STATIC )
+set_property(TARGET PYCC_LIB PROPERTY AUTOMOC ON)
 
 if ( OPTION_SCALAR_DOUBLE )
 	target_compile_definitions( PYCC_LIB PUBLIC SCALAR_TYPE_DOUBLE )
@@ -37,9 +38,12 @@ target_sources( PYCC_LIB
     PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/pyCC.h
     ${CMAKE_CURRENT_LIST_DIR}/ccTrace.h
+    ${CMAKE_CURRENT_LIST_DIR}/initCC.h
     PRIVATE
     pyCC.cpp
-    )    
+    initCC.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/common/ccPluginManager.cpp
+    )
        
 target_include_directories( PYCC_LIB PUBLIC
     ${CC_FBO_LIB_SOURCE_DIR}/include
@@ -61,11 +65,18 @@ target_include_directories( PYCC_LIB PUBLIC
     ${CloudCompare_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/common
-    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/qcustomplot
     ${CMAKE_CURRENT_BINARY_DIR}
     )
 
 target_link_libraries( PYCC_LIB
     QCC_IO_LIB
    )
+
+# Qt libraries
+
+target_link_libraries( PYCC_LIB
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    )
 

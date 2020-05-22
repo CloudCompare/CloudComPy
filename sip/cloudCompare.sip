@@ -31,7 +31,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 import cloudCompare as cc
 app = QApplication(sys.argv)
-cc.initNumpy.init()  # to do once before dealing with numpy
+cc.initCC.init()  # to do once before dealing with numpy or use plugins
 import cloudCompare as cc
 cloud = cc.loadPointCloud("/home/paul/projets/CloudCompare/data/altiXYZ/RGEALTI_FXX_0845_6446_MNT_LAMB93_IGN69.xyz")
 %End
@@ -45,7 +45,7 @@ cloud = cc.loadPointCloud("/home/paul/projets/CloudCompare/data/altiXYZ/RGEALTI_
 #include <pyCC.h>
 %End
 
-class initNumpy
+class initCC
 {
     %TypeHeaderCode
     #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
@@ -53,19 +53,24 @@ class initNumpy
     // more explanation in ccNumpyIncludes.h
     #define PY_ARRAY_UNIQUE_SYMBOL PYCC_ARRAY_API
     #include <numpy/arrayobject.h>
-    #include <initNumpy.h>
+    #include <initCC.h>
     #include <PyScalarType.h>
     %End
 
 public:
-    static void init();
+    static void init() [void (const char*)];
     %Docstring
-    Should be done once before dealing with Numpy: transforming Cloud Cooordinates or ScalarField in numpyArray (and the other way).
+    Should be done once before using plugins or dealing with Numpy: transforming Cloud Cooordinates or ScalarField in numpyArray (and the other way).
     %End
     %MethodCode
     CCTRACE("initialization numpy C++ API");
     import_array();
     CCTRACE("initialization numpy C++ API done");
+    PyObject *cc_module;
+    cc_module = PyImport_ImportModule("cloudCompare");
+    const char* modulePath = PyModule_GetFilename(cc_module);
+    CCTRACE("modulePath: " <<  modulePath);
+    initCC::init(modulePath);
     %End
 
     static const char* getScalarType();
@@ -81,8 +86,8 @@ public:
     %End
 
 private:
-    initNumpy();
-    initNumpy(const initNumpy&);
+    initCC();
+    initCC(const initCC&);
 };
 
 %Include pyCC.sip

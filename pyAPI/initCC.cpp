@@ -16,15 +16,28 @@
 //#                                                                        #
 //##########################################################################
 
-#ifndef CLOUDCOMPY_PYAPI_INITNUMPY_H_
-#define CLOUDCOMPY_PYAPI_INITNUMPY_H_
+#include "initCC.h"
+#include "ccTrace.h"
 
-//! Empty class just here for sip, to have a method for Numpy initialisation in a specific generated sip source (see cloudCompare.sip)
-class initNumpy
+#include <QDir>
+#include <QStandardPaths>
+#include <QString>
+
+QString initCC::moduleDir = "";
+
+void initCC::init(const char* modulePath)
 {
-private:
-    initNumpy(){};
-    initNumpy(const initNumpy&){};
-};
+    QDir myModule = QString(modulePath);
+    bool ok = myModule.cdUp();
+    moduleDir = myModule.absolutePath();
+    CCTRACE("moduleDir: " << moduleDir.toStdString());
+}
 
-#endif /* CLOUDCOMPY_PYAPI_INITNUMPY_H_ */
+initCC::initCC()
+{
+}
+
+initCC::initCC(const initCC&)
+{
+}
+

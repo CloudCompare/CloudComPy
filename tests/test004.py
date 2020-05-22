@@ -26,7 +26,7 @@ from PyQt5.QtWidgets import QApplication
 import cloudCompare as cc
 
 app = QApplication(sys.argv)
-cc.initNumpy.init()  # to do once before dealing with numpy
+cc.initCC.init()  # to do once before using plugins or dealing with numpy
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 
