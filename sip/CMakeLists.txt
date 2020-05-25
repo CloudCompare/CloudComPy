@@ -53,6 +53,7 @@ set(SIP_MAIN_SOURCE cloudCompare.sip)
 set(SIP_ADD_SOURCES
     pyCC.sip
     ccPointCloud.sip
+    ccPolyline.sip
     ScalarField.sip
     )
 set(SIP_ALL_SOURCES ${SIP_MAIN_SOURCE} ${SIP_ADD_SOURCES})
@@ -63,6 +64,7 @@ message(STATUS "  SIP_ALL_SOURCES: " "${SIP_ALL_SOURCES}")
 set(SIP_MAIN_GENSRC ${CMAKE_CURRENT_BINARY_DIR}/sipcloudComparecmodule.cc)
 set(SIP_ADD_GENSRC
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareccPointCloud.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareccPolyline.cc
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareQList0101ccPointCloud.cc
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCLib.cc
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCLibScalarField.cc

@@ -73,7 +73,10 @@ struct pyCC
     //! Currently opened meshes and their filename
     std::vector<CLMeshDesc> m_meshes;
 
-    //! Silent mode
+    //! Currently opened polys and their filename
+    std::vector<CLPolyDesc> m_polys;
+
+   //! Silent mode
     bool m_silentMode;
 
     //! Whether files should be automatically saved (after each process) or not
@@ -205,6 +208,73 @@ void pyCC_setupPaths(pyCC* capi)
             capi->m_PluginPaths << path;
         }
     }
+}
+ccPolyline* loadPolyline(
+    const char* filename, CC_SHIFT_MODE mode, int skip, double x, double y, double z)
+{
+    CCTRACE("Opening file: " << filename << " mode: " << mode << " skip: " << skip << " x: " << x << " y: " << y << " z: " << z);
+    pyCC* capi = initCloudCompare();
+    ::CC_FILE_ERROR result = CC_FERR_NO_ERROR;
+    ccHObject* db = nullptr;
+
+    FileIOFilter::Shared filter = nullptr;
+    QString fileName(filename);
+    if (mode == AUTO)
+    {
+        capi->m_loadingParameters.m_coordinatesShiftEnabled = false;
+        capi->m_loadingParameters.shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG_AUTO_SHIFT;
+    }
+    else
+    {
+        capi->m_loadingParameters.m_coordinatesShiftEnabled = true;
+        capi->m_loadingParameters.shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG;
+        capi->m_loadingParameters.m_coordinatesShift = CCVector3d(x, y, z);
+    }
+    if (filter)
+    {
+        db = FileIOFilter::LoadFromFile(fileName, capi->m_loadingParameters, filter, result);
+    }
+    else
+    {
+        db = FileIOFilter::LoadFromFile(fileName, capi->m_loadingParameters, result, QString());
+    }
+
+    if (!db)
+    {
+        CCTRACE("LoadFromFile returns nullptr");
+        return nullptr;
+    }
+//    std::unordered_set<unsigned> verticesIDs;
+
+    // look for polylines inside loaded DB
+    ccHObject::Container polys;
+    db->filterChildren(polys, true, CC_TYPES::POLY_LINE);
+    size_t count = polys.size();
+    CCTRACE("number of polys: " << count);
+    for (size_t i = 0; i < count; ++i)
+    {
+        ccPolyline* pc = static_cast<ccPolyline*>(polys[i]);
+        if (pc->getParent())
+        {
+            pc->getParent()->detachChild(pc);
+        }
+//
+//        //if the cloud is a set of vertices, we ignore it!
+//        if (verticesIDs.find(pc->getUniqueID()) != verticesIDs.end())
+//        {
+//            capi->m_orphans.addChild(pc);
+//            continue;
+//        }
+        CCTRACE("Found one poly with " << pc->size() << " points");
+        capi->m_polys.emplace_back(pc, filename, count == 1 ? -1 : static_cast<int>(i));
+    }
+
+    delete db;
+    db = nullptr;
+
+    if (count > 0)
+        return capi->m_polys.back().pc;
+    return nullptr;
 }
 
 ccPointCloud* loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int skip, double x, double y, double z)

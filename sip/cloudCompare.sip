@@ -92,6 +92,7 @@ private:
 
 %Include pyCC.sip
 %Include ccPointCloud.sip
+%Include ccPolyline.sip
 %Include ScalarField.sip
 namespace CCLib;
 %End

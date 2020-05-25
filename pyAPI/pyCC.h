@@ -28,6 +28,7 @@
 
 #include <ccCommandLineInterface.h>
 #include <GeometricalAnalysisTools.h>
+#include <ccPolyline.h>
 
 // --- for Python3 interface
 
@@ -36,8 +37,26 @@ enum CC_SHIFT_MODE
     AUTO = 0, XYZ = 1
 };
 
+//! load a Polyline from file
+/*! TODO process optional skip parameter following ccCommandLineInterface::processGlobalShiftCommand
+ * \param filename
+ * \param mode optional default AUTO
+ * \param skip optional default 0
+ * \param x optional default 0
+ * \param y optional default 0
+ * \param z optional default 0
+ * \return polyline if success, or nullptr
+ */
+ccPolyline* loadPolyline(
+    const char* filename,
+    CC_SHIFT_MODE mode = AUTO,
+    int skip = 0,
+    double x = 0,
+    double y = 0,
+    double z = 0);
+
 //! load a point cloud from file
-/*! TODO process optional parameters following ccCommandLineInterface::processGlobalShiftCommand
+/*! TODO process optional skip parameter following ccCommandLineInterface::processGlobalShiftCommand
  * \param filename
  * \param mode optional default AUTO
  * \param skip optional default 0
@@ -115,5 +134,40 @@ QString pyCC_GetDensitySFName(
 
 //! copied from ccLibAlgorithms::GetDefaultCloudKernelSize
 PointCoordinateType pyCC_GetDefaultCloudKernelSize(ccGenericPointCloud* cloud, unsigned knn = 12);
+
+
+//! Loaded polyline description (not in ccCommandLineInterface.h)
+struct CLPolyDesc : CLEntityDesc
+{
+    ccPolyline* pc;
+
+    CLPolyDesc()
+        : CLEntityDesc("Unnamed poly")
+        , pc( nullptr )
+    {}
+
+    CLPolyDesc(ccPolyline* poly,
+                const QString& filename = QString(),
+                int index = -1)
+        : CLEntityDesc(filename, index)
+        , pc(poly)
+    {}
+
+    CLPolyDesc(ccPolyline* poly,
+                const QString& basename,
+                const QString& path,
+                int index = -1)
+        : CLEntityDesc(basename, path, index)
+        , pc(poly)
+    {}
+
+    ~CLPolyDesc() override = default;
+
+    ccHObject* getEntity() override { return static_cast<ccHObject*>(pc); }
+    const ccHObject* getEntity() const override { return static_cast<ccHObject*>(pc); }
+    CL_ENTITY_TYPE getCLEntityType() const override { return CL_ENTITY_TYPE::CLOUD; }
+};
+
+
 
 #endif /* CLOUDCOMPY_PYAPI_PYCC_H_ */

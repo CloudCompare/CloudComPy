@@ -53,6 +53,25 @@ enum CurvatureType
     NORMAL_CHANGE_RATE
 };
 
+ccPolyline* loadPolyline(const char* filename,
+                                CC_SHIFT_MODE mode=AUTO,
+                                int skip=0,
+                                double x=0,
+                                double y=0,
+                                double z=0);
+%Docstring
+Load a polyline from a file
+parameters:
+- filename
+- shift mode from (AUTO, XYZ),  optional, default AUTO
+  AUTO: automatic shift of coordinates
+  XYZ:  coordinates shift given by x, y, z parameters
+- skip optional parameter not used yet! default 0
+- x, y, z:: optional shift values for coordinates (mode XYZ),  default 0
+return a ccPolyline object.
+Usage: see ccPolyline doc.
+%End
+
 ccPointCloud* loadPointCloud(const char* filename,
                                 CC_SHIFT_MODE mode=AUTO,
                                 int skip=0,
