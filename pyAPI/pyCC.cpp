@@ -174,7 +174,7 @@ void pyCC_setupPaths(pyCC* capi)
     // Shaders & plugins are relative to the bin directory where the executable is found
     QDir  theDir = appDir;
 
-    if ( theDir.dirName() == "cloudcompare" )
+    if ( theDir.dirName() == "cloudcompare" ) // install
     {
         theDir.cdUp();
         theDir.cdUp();
@@ -182,6 +182,14 @@ void pyCC_setupPaths(pyCC* capi)
         capi->m_PluginPaths << (theDir.absolutePath() + "/lib/cloudcompare/plugins");
         capi->m_ShaderPath = (theDir.absolutePath() + "/share/cloudcompare/shaders");
         capi->m_TranslationPath = (theDir.absolutePath() + "/share/cloudcompare/translations");
+    }
+    else if ( theDir.dirName() == "sip" ) // build
+    {
+        theDir.cdUp();
+        CCTRACE("cloudCompare install: " << theDir.absolutePath().toStdString());
+        capi->m_PluginPaths << (theDir.absolutePath() + "/CloudCompare/plugins"); // need to create a symbolic link here for all the plugins.so
+        capi->m_ShaderPath = (theDir.absolutePath() + "/shaders");
+        capi->m_TranslationPath = (theDir.absolutePath() + "/CloudCompare/translations");
     }
     else
     {

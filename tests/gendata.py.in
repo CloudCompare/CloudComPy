@@ -3,6 +3,8 @@
 import numpy as np
 import math
 import os
+import cloudCompare as cc
+import subprocess
 
 dataDir = "@PYTHONAPI_TEST_DIRECTORY@"
 
@@ -42,3 +44,16 @@ def getSamplePoly(polyname="poly1"):
             for x,y in zip(vx, vy):
                 f.write("%f %f %f\n" % (x, y, 0.))
     return sample
+
+def createSymbolicLinks():
+    modulePath = cc.__file__
+    mpath = os.path.dirname(modulePath)
+    d = mpath.split(os.sep)[-1]
+    if d == 'sip':  # we are on build
+        command = ""
+        command += "cd %s ;" % mpath
+        command += "cd ../CloudCompare/plugins ;"
+        command += "rm -f *.so ;"
+        command += 'find . -name "*.so" -exec ln -s {} . \;'
+        print(command)
+        p = subprocess.Popen(command, shell=True)
