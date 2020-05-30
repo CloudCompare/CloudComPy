@@ -27,3 +27,18 @@ def getSampleCloud(h=5.0):
                     z = math.sin(5 * math.sqrt(x**2 + y**2)) / math.sqrt(x**2 + y**2)
                     f.write("%f %f %f\n" % (x, y, z))
     return sample
+
+
+def getSamplePoly(polyname="poly1"):
+    dataName = "%s.poly" % polyname
+    sample = os.path.join(dataDir, dataName)
+    if not os.path.exists(sample):
+        vx = []
+        vy = []
+        if polyname == "poly1":
+            vx = [ 1.,  2.,  3.,  2., -1., -1., -2.]
+            vy = [ 2.,  4.,  1., -2., -3., -1.,  2.]
+        with open(sample, 'w') as f:
+            for x,y in zip(vx, vy):
+                f.write("%f %f %f\n" % (x, y, 0.))
+    return sample

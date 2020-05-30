@@ -221,4 +221,30 @@ public:
     }
     CCTRACE("---");
     %End
+
+    ccPointCloud* crop2D(const ccPolyline* poly, int orthoDim, bool inside = true) [ CCLib::ReferenceCloud* (const ccPolyline*, unsigned char, bool)];
+    %Docstring
+    Crop the point cloud using a 2D polyline.
+    parameters:
+    - polyline object
+    - orthoDim : normal plane, value in (0, 1, 2) 0 = oY, 1 = oX, 2 = oZ
+    - inside : boolean
+    return the cropped cloud. Points are copied, the original cloud is not modified.
+    %End
+    %MethodCode
+    ccPointCloud* croppedCloud = nullptr;
+    unsigned char ortho = static_cast<unsigned char>(a1);
+    CCTRACE("ortho dim " <<  ortho);
+    CCLib::ReferenceCloud* ref = sipCpp->crop2D(a0, ortho, a2);
+    if (ref && (ref->size() != 0))
+    {
+        croppedCloud = sipCpp->partialClone(ref);
+        delete ref;
+        ref = nullptr;
+    }
+    sipRes = croppedCloud;
+    %End
+
+
+
 };
