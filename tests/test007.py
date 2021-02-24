@@ -29,7 +29,7 @@ app = QApplication(sys.argv)
 createSymbolicLinks() # required for tests on build, before cc.initCC.init
 cc.initCC.init()  # to do once before using plugins or dealing with numpy
 
-cloud = cc.loadPointCloud(getSampleCloud(2.0))
+cloud = cc.loadPointCloud(getSampleCloud(5.0))
 poly = cc.loadPolyline(getSamplePoly("poly1"))
 
 cloudCropZ = cloud.crop2D(poly, 2, True)

@@ -26,7 +26,7 @@ def getSampleCloud(h=5.0):
         with open(sample, 'w') as f:
             for x in vx:
                 for y in vy:
-                    z = math.sin(5 * math.sqrt(x**2 + y**2)) / math.sqrt(x**2 + y**2)
+                    z = math.sin(h * math.sqrt(x**2 + y**2)) / math.sqrt(x**2 + y**2)
                     f.write("%f %f %f\n" % (x, y, z))
     return sample
 

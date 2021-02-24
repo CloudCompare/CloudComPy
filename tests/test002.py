@@ -56,9 +56,9 @@ if sfname != "Coord. Z":
 
 mean, var = sf1.computeMeanAndVariance()
 print("mean: %14.7e, var: %14.7e" % (mean, var))
-if not math.isclose(mean, 9.6193114e-03, rel_tol=1e-06):
+if not math.isclose(mean, 3.2965615e-02, rel_tol=1e-06):
     raise RuntimeError
-if not math.isclose(var, 1.4433296e-01, rel_tol=1e-06):
+if not math.isclose(var, 1.1403269e-01, rel_tol=1e-06):
     raise RuntimeError
 
 sf1.computeMinAndMax()
@@ -66,9 +66,9 @@ sfmin = sf1.getMin()
 sfmax = sf1.getMax()
 print("min: %14.7e" % sfmin)
 print("max: %14.7e" % sfmax)
-if not math.isclose(sfmin, -1.0861681e+00, rel_tol=1e-06):
+if not math.isclose(sfmin, -4.3446699e-01, rel_tol=1e-06):
     raise RuntimeError
-if not math.isclose(sfmax, 5.0000000e+00, rel_tol=1e-06):
+if not math.isclose(sfmax, 2.0000000e+00, rel_tol=1e-06):
     raise RuntimeError
 
 asf1 = sf1.toNpArray()
