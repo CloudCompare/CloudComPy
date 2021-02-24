@@ -51,7 +51,7 @@ find_path(PYQT_PYTHONPATH PyQt5/__init__.py HINTS ${_tmpPythonPath} DOC "directo
 message(STATUS "  PYQT_PYTHONPATH: " ${PYQT_PYTHONPATH})
 
 find_program(SIP_EXECUTABLE sip DOC "full path of executable: sip")
-message("SIP_EXECUTABLE: " ${SIP_EXECUTABLE})
+message(STATUS "SIP_EXECUTABLE: " ${SIP_EXECUTABLE})
 
 find_path(SIP_INCLUDE_DIR sip.h PATH_SUFFIXES python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR} DOC "directory path of include: sip.h")
 message(STATUS "SIP_INCLUDE_DIR: " ${SIP_INCLUDE_DIR})

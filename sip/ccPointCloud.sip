@@ -126,7 +126,7 @@ public:
 
     unsigned getNumberOfScalarFields() const;
 
-    CCLib::ScalarField* getScalarField(int index) const;
+    CCCoreLib::ScalarField* getScalarField(int index) const;
     %Docstring
     Return a ScalarField if index is valid, otherwise None.
     %End
@@ -141,7 +141,7 @@ public:
     Set the current 'out' ScalarField index. No validity check. Use -1 to set None.
     %End
 
-    CCLib::ScalarField* getCurrentOutScalarField() const;
+    CCCoreLib::ScalarField* getCurrentOutScalarField() const;
     %Docstring
     Return the current 'out' ScalarField if there is one, otherwise None.
     %End
@@ -151,7 +151,7 @@ public:
     Set the current 'in' ScalarField index. No validity check. Use -1 to set None.
     %End
 
-    CCLib::ScalarField* getCurrentInScalarField() const;
+    CCCoreLib::ScalarField* getCurrentInScalarField() const;
     %Docstring
     Return the current 'in' ScalarField if there is one, otherwise None.
     %End
@@ -222,7 +222,7 @@ public:
     CCTRACE("---");
     %End
 
-    ccPointCloud* crop2D(const ccPolyline* poly, int orthoDim, bool inside = true) [ CCLib::ReferenceCloud* (const ccPolyline*, unsigned char, bool)];
+    ccPointCloud* crop2D(const ccPolyline* poly, int orthoDim, bool inside = true) [ CCCoreLib::ReferenceCloud* (const ccPolyline*, unsigned char, bool)];
     %Docstring
     Crop the point cloud using a 2D polyline.
     parameters:
@@ -235,7 +235,7 @@ public:
     ccPointCloud* croppedCloud = nullptr;
     unsigned char ortho = static_cast<unsigned char>(a1);
     CCTRACE("ortho dim " <<  ortho);
-    CCLib::ReferenceCloud* ref = sipCpp->crop2D(a0, ortho, a2);
+    CCCoreLib::ReferenceCloud* ref = sipCpp->crop2D(a0, ortho, a2);
     if (ref && (ref->size() != 0))
     {
         croppedCloud = sipCpp->partialClone(ref);

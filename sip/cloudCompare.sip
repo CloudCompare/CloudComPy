@@ -94,5 +94,5 @@ private:
 %Include ccPointCloud.sip
 %Include ccPolyline.sip
 %Include ScalarField.sip
-namespace CCLib;
+namespace CCCoreLib;
 %End

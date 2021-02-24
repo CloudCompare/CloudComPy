@@ -121,14 +121,14 @@ void pyCC_setupPaths(pyCC* capi);
 
 //! copied from ccLibAlgorithms::ComputeGeomCharacteristic
 bool pyCC_ComputeGeomCharacteristic(
-    CCLib::GeometricalAnalysisTools::GeomCharacteristic c,
+    CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic c,
     int subOption,
     PointCoordinateType radius,
     ccHObject::Container& entities);
 
 //! copied from ccLibAlgorithms::GetDensitySFName
 QString pyCC_GetDensitySFName(
-    CCLib::GeometricalAnalysisTools::Density densityType,
+    CCCoreLib::GeometricalAnalysisTools::Density densityType,
     bool approx,
     double densityKernelSize = 0.0);
 

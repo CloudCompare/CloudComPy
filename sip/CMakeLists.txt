@@ -34,6 +34,7 @@ if(NOT ${Python3_VERSION} MATCHES "${PYTHON_PREFERED_VERSION}\\..")
 else()
     message(STATUS "Python found ${Python3_VERSION} matches prefered version ${PYTHON_PREFERED_VERSION}.x")
     message(STATUS "  Python3_LIBRARIES:" ${Python3_LIBRARIES})
+    message(STATUS "  Python3_INCLUDE_DIRS" ${Python3_INCLUDE_DIRS})
 endif()
 
 # --- PyQt Sip detection
@@ -66,8 +67,8 @@ set(SIP_ADD_GENSRC
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareccPointCloud.cc
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareccPolyline.cc
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareQList0101ccPointCloud.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCLib.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCLibScalarField.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCCoreLib.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareCCCoreLibScalarField.cc
     ${CMAKE_CURRENT_BINARY_DIR}/sipcloudCompareinitCC.cc
    )
 set(SIP_ALL_GENSRC ${SIP_MAIN_GENSRC} ${SIP_ADD_GENSRC})
@@ -102,7 +103,7 @@ target_include_directories( ${PROJECT_NAME} PUBLIC
 
 # --- Numpy includes
 
-find_path(NUMPY_INCLUDE_DIR numpy/npy_common.h HINTS ${PYTHON_INCLUDE_DIRS} DOC "directory path of include: numpy/npy_common.h")
+find_path(NUMPY_INCLUDE_DIR numpy/npy_common.h HINTS ${Python3_INCLUDE_DIRS} DOC "directory path of include: numpy/npy_common.h")
 message(STATUS "NUMPY_INCLUDE_DIR: " ${NUMPY_INCLUDE_DIR})
 
 target_include_directories( ${PROJECT_NAME} PUBLIC
@@ -111,7 +112,7 @@ target_include_directories( ${PROJECT_NAME} PUBLIC
 
 target_link_libraries( ${PROJECT_NAME}
     PYCC_LIB
-    QCC_IO_LIB
+    CCAppCommon
     ${Python3_LIBRARIES}
     )
 

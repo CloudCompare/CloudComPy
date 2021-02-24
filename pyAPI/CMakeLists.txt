@@ -42,7 +42,7 @@ target_sources( PYCC_LIB
     PRIVATE
     pyCC.cpp
     initCC.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/common/ccPluginManager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/CCAppCommon/src/ccPluginManager.cpp
     )
        
 target_include_directories( PYCC_LIB PUBLIC
@@ -64,12 +64,15 @@ target_include_directories( PYCC_LIB PUBLIC
     ${CloudComparePlugins_SOURCE_DIR} 
     ${CloudCompare_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/common
+    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/CCAppCommon/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/CCPluginAPI/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/CCPluginStub/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/qCC_glWindow/include
     ${CMAKE_CURRENT_BINARY_DIR}
     )
 
 target_link_libraries( PYCC_LIB
-    QCC_IO_LIB
+    CCAppCommon
    )
 
 # Qt libraries
