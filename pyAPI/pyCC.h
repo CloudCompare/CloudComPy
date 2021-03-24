@@ -23,7 +23,9 @@
 #include <QString>
 
 #ifndef SCALAR_TYPE_DOUBLE
-#define SCALAR_TYPE_FLOAT
+  #ifndef SCALAR_TYPE_FLOAT
+    #define SCALAR_TYPE_FLOAT
+  #endif
 #endif
 
 #include <ccCommandLineInterface.h>

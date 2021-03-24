@@ -19,23 +19,23 @@
 
 message(STATUS "Python3 and SIP processing")
 
-# --- Python detection: if several versions installed, select one with all the required packages installed
+# --- Python detection: done in boostPython
 
-set(PYTHON_PREFERED_VERSION "3.6" CACHE STRING "Select a Python version: it should be installed with all packages required for CloudCompare (pyqt, sip, numpy)")
-set_property(CACHE PYTHON_PREFERED_VERSION PROPERTY STRINGS "3.6" "3.7" "3.8")
-message(STATUS "  python prefered version: " ${PYTHON_PREFERED_VERSION})
-set(Python_ADDITIONAL_VERSIONS ${PYTHON_PREFERED_VERSION}) # priority to this version 
-find_package (Python3 COMPONENTS Interpreter Development)
-message(STATUS "  python executable: " ${Python3_EXECUTABLE})
-message(STATUS "  python version: " ${Python3_VERSION})
-message(STATUS "  check match for ${PYTHON_PREFERED_VERSION}.x")
-if(NOT ${Python3_VERSION} MATCHES "${PYTHON_PREFERED_VERSION}\\..")
-    message(SEND_ERROR "no Python found matching ${PYTHON_PREFERED_VERSION}.x")
-else()
-    message(STATUS "Python found ${Python3_VERSION} matches prefered version ${PYTHON_PREFERED_VERSION}.x")
-    message(STATUS "  Python3_LIBRARIES:" ${Python3_LIBRARIES})
-    message(STATUS "  Python3_INCLUDE_DIRS" ${Python3_INCLUDE_DIRS})
-endif()
+#set(PYTHON_PREFERED_VERSION "3.6" CACHE STRING "Select a Python version: it should be installed with all packages required for CloudCompare (pyqt, sip, numpy)")
+#set_property(CACHE PYTHON_PREFERED_VERSION PROPERTY STRINGS "3.6" "3.7" "3.8")
+#message(STATUS "  python prefered version: " ${PYTHON_PREFERED_VERSION})
+#set(Python_ADDITIONAL_VERSIONS ${PYTHON_PREFERED_VERSION}) # priority to this version 
+#find_package (Python3 COMPONENTS Interpreter Development)
+#message(STATUS "  python executable: " ${Python3_EXECUTABLE})
+#message(STATUS "  python version: " ${Python3_VERSION})
+#message(STATUS "  check match for ${PYTHON_PREFERED_VERSION}.x")
+#if(NOT ${Python3_VERSION} MATCHES "${PYTHON_PREFERED_VERSION}\\..")
+#    message(SEND_ERROR "no Python found matching ${PYTHON_PREFERED_VERSION}.x")
+#else()
+#    message(STATUS "Python found ${Python3_VERSION} matches prefered version ${PYTHON_PREFERED_VERSION}.x")
+#    message(STATUS "  Python3_LIBRARIES:" ${Python3_LIBRARIES})
+#    message(STATUS "  Python3_INCLUDE_DIRS" ${Python3_INCLUDE_DIRS})
+#endif()
 
 # --- PyQt Sip detection
 
