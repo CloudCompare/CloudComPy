@@ -113,6 +113,10 @@ pyCC* initCloudCompare()
     if (!s_pyCCInternals)
     {
         CCTRACE("initCloudCompare");
+        int argc =1;
+        char** argv = new char*[1];
+        argv[0] = "cloudComPy";
+        QApplication* app = new QApplication(argc, argv);
         s_pyCCInternals = new pyCC;
         s_pyCCInternals->m_silentMode = false;
         s_pyCCInternals->m_autoSaveMode = true;

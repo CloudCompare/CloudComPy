@@ -31,4 +31,18 @@ BOOST_PYTHON_MODULE(cloudComPy)
 {
     using namespace boost::python;
     def("greet", greet);
+
+    enum_<CC_SHIFT_MODE>("CC_SHIFT_MODE")
+        .value("AUTO", AUTO)
+        .value("XYZ", XYZ)
+        ;
+
+    class_<ccPointCloud>("ccPointCloud")
+        .def("hasScalarFields", &ccPointCloud::hasScalarFields);
+
+    //ccPointCloud* (*l0)(const char*) = &loadPointCloud;
+    def("loadPointCloud", loadPointCloud,
+        return_value_policy<reference_existing_object>());
+
+
 }

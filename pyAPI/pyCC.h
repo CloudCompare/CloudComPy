@@ -75,6 +75,9 @@ ccPointCloud* loadPointCloud(
     double y = 0,
     double z = 0);
 
+//ccPointCloud* loadPointCloudf(
+//    const char* filename) {return loadPointCloud(filename); };
+
 //! save a point cloud to a file
 /*! the file type is given by the extension
  * \param cloud
