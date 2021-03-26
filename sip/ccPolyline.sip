@@ -22,7 +22,7 @@
 class ccPolyline
 {
 %TypeHeaderCode
-#include <ccTrace.h>
+#include <pyccTrace.h>
 #include <ccNumpyIncludes.h>
 #include <ccPolyline.h>
 #include <PyScalarType.h>

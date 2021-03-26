@@ -28,11 +28,11 @@
 
 //libs/qCC_io
 #include<AsciiFilter.h>
+#include <pyccTrace.h>
 
 //system
 #include <unordered_set>
 
-#include "ccTrace.h"
 #include "ccPluginInterface.h"
 #include "ccPluginManager.h"
 

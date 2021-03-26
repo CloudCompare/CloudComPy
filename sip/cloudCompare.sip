@@ -41,7 +41,7 @@ cloud = cc.loadPointCloud("/home/paul/projets/CloudCompare/data/altiXYZ/RGEALTI_
 %If (Qt_5_9_1 -)
 
 %ModuleHeaderCode
-#include <ccTrace.h>
+#include <pyccTrace.h>
 #include <pyCC.h>
 %End
 

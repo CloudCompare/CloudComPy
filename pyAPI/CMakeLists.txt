@@ -37,7 +37,7 @@ endif()
 target_sources( PYCC_LIB
     PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/pyCC.h
-    ${CMAKE_CURRENT_LIST_DIR}/ccTrace.h
+    ${CMAKE_CURRENT_LIST_DIR}/pyccTrace.h
     ${CMAKE_CURRENT_LIST_DIR}/initCC.h
     PRIVATE
     pyCC.cpp

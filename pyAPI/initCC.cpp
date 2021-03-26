@@ -16,9 +16,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include <pyccTrace.h>
 #include "initCC.h"
-#include "ccTrace.h"
-
 #include <QDir>
 #include <QStandardPaths>
 #include <QString>

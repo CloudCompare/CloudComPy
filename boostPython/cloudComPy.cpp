@@ -24,7 +24,7 @@
 #include "PyScalarType.h"
 #include <QString>
 
-#include "ccTrace.h"
+#include "pyccTrace.h"
 
 char const* greet()
 {
@@ -143,8 +143,20 @@ BOOST_PYTHON_MODULE(cloudComPy)
     class_<ccPolyline>("ccPolyline", no_init)
         .def("is2DMode", &ccPolyline::is2DMode);
 
+    const char* loadPointCloud_doc= R"(
+Load a 3D cloud from a file
+parameters:
+- filename
+- shift mode from (AUTO, XYZ),  optional, default AUTO
+  AUTO: automatic shift of coordinates
+  XYZ:  coordinates shift given by x, y, z parameters
+- skip optional parameter not used yet! default 0
+- x, y, z:: optional shift values for coordinates (mode XYZ),  default 0
+return a ccPointCloud object.
+Usage: see ccPointCloud doc.)";
+
     //ccPointCloud* (*l0)(const char*) = &loadPointCloud;
-    def("loadPointCloud", loadPointCloud,
+    def("loadPointCloud", loadPointCloud, loadPointCloud_doc,
         return_value_policy<reference_existing_object>());
 
     def("loadPolyline", loadPolyline,

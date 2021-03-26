@@ -22,7 +22,7 @@
 class ccPointCloud
 {
 %TypeHeaderCode
-#include <ccTrace.h>
+#include <pyccTrace.h>
 #include <ccNumpyIncludes.h>
 #include <ccPointCloud.h>
 #include <PyScalarType.h>

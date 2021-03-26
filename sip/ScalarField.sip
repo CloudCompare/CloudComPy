@@ -23,7 +23,7 @@ namespace CCCoreLib
     class ScalarField
     {
     %TypeHeaderCode
-    #include <ccTrace.h>
+    #include <pyccTrace.h>
     #include <ccNumpyIncludes.h>
     #include <ScalarField.h>
     #include <PyScalarType.h>
