@@ -78,6 +78,35 @@ struct QString_from_python_str
     }
 };
 
+//struct array_from_python_tuple_bool
+//{
+//    array_from_python_tuple_bool()
+//    {
+//        CCTRACE("register array_from_python_tuple_bool");
+//        boost::python::converter::registry::push_back(&convertible, &construct, boost::python::type_id<const bool&>());
+//    }
+//    static int v[3];
+//
+//    static void* convertible(PyObject* obj_ptr)
+//    {
+//        CCTRACE("convertible to array?");
+//        if (!PyTuple_Check(obj_ptr))
+//            return 0;
+//        if (!PyArg_ParseTuple(obj_ptr, "ppp", &v[0], &v[1], &v[2]))
+//            return 0;
+//        return obj_ptr;
+//    }
+//    static void construct(PyObject* obj_ptr, boost::python::converter::rvalue_from_python_stage1_data* data)
+//    {
+//        CCTRACE("construct");
+//        void* storage = ((boost::python::converter::rvalue_from_python_storage<bool[3]>*) data)->storage.bytes;
+//        bool*b= new (storage) bool[3];
+//        b[0] = v[0]; b[1] = v[1]; b[2] = v[2];
+//        data->convertible = storage;
+//    }
+//};
+//int array_from_python_tuple_bool::v[3];
+
 void initializeConverters()
 {
     using namespace boost::python;
@@ -88,6 +117,7 @@ void initializeConverters()
 
     // register the from-python converter
     QString_from_python_str();
+//    array_from_python_tuple_bool();
 }
 
 } //namespace anonymous
