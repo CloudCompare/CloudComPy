@@ -17,12 +17,14 @@
 //##########################################################################
 
 #include <boost/python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include "converters.hpp"
 
 #include "initCC.h"
 #include "pyCC.h"
 #include "PyScalarType.h"
 #include <QString>
+#include <vector>
 
 #include "pyccTrace.h"
 
@@ -31,15 +33,25 @@ char const* greet()
    return "hello, world";
 }
 
-//struct ccPointCloudWrap : ccPointCloud, boost::python::wrapper<ccPointCloud>
-//{
+struct ccPointCloudWrap : ccPointCloud, boost::python::wrapper<ccPointCloud>
+{
+    std::vector<double> res;
+    const std::vector<double>& computeGravityCenter()
+    {
+        CCVector3  g = ccPointCloud::computeGravityCenter();
+        //std::vector<double> res;
+        res.resize(3);
+        res[0] = g.x; res[1] = g.y; res[2] = g.z;
+        return res;
+    }
+
 //    virtual bool exportCoordToSF_w(bool x, bool y, bool z)
 //    {
 //        bool b[3];
 //        b[0] =x; b[1] = y; b[2] = z;
 //        return ccPointCloud::exportCoordToSF(b);
 //    }
-//};
+};
 
 bool exportCoordToSF_py(ccPointCloud &self, bool x, bool y, bool z)
 {
@@ -56,6 +68,10 @@ BOOST_PYTHON_MODULE(cloudComPy)
     using namespace boost::python;
 
     initializeConverters();
+
+    class_<std::vector<double> >("DoubleVec")
+        .def(boost::python::vector_indexing_suite<std::vector<double> >())
+        ;
 
     def("greet", greet);
 
@@ -91,44 +107,44 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .value("NORMAL_CHANGE_RATE", NORMAL_CHANGE_RATE)
         ;
 
-    class_<ccPointCloud>("ccPointCloud", no_init)
-        .def("computeGravityCenter", &ccPointCloud::computeGravityCenter)
-        .def("crop2D", &ccPointCloud::crop2D, return_value_policy<reference_existing_object>())
-        .def("exportCoordToSF", &exportCoordToSF_py) //&ccPointCloud::exportCoordToSF) //,return_internal_reference<1>())
-        .def("getCurrentInScalarField", &ccPointCloud::getCurrentInScalarField, return_value_policy<reference_existing_object>())
-        .def("getCurrentOutScalarField", &ccPointCloud::getCurrentOutScalarField, return_value_policy<reference_existing_object>())
-        .def("getName", &ccPointCloud::getName)
-        .def("getNumberOfScalarFields", &ccPointCloud::getNumberOfScalarFields)
-        .def("getScalarField", &ccPointCloud::getScalarField, return_value_policy<reference_existing_object>())
-        .def("getScalarFieldName", &ccPointCloud::getScalarFieldName)
-        .def("hasScalarFields", &ccPointCloud::hasScalarFields)
-        .def("renameScalarField", &ccPointCloud::renameScalarField)
-        .def("reserve", &ccPointCloud::reserve)
-        .def("scale", &ccPointCloud::scale)
-        .def("setCurrentInScalarField", &ccPointCloud::setCurrentInScalarField)
-        .def("setCurrentOutScalarField", &ccPointCloud::setCurrentOutScalarField)
-        .def("size", &ccPointCloud::size)
-        .def("translate", &ccPointCloud::translate)
-        ;
-//    class_<ccPointCloudWrap,boost::noncopyable>("ccPointCloud", no_init)
-//        .def("computeGravityCenter", &ccPointCloudWrap::computeGravityCenter)
-//        .def("crop2D", &ccPointCloudWrap::crop2D, return_value_policy<reference_existing_object>())
-//        .def("exportCoordToSF", &ccPointCloudWrap::exportCoordToSF_w)
-//        .def("getCurrentInScalarField", &ccPointCloudWrap::getCurrentInScalarField, return_value_policy<reference_existing_object>())
-//        .def("getCurrentOutScalarField", &ccPointCloudWrap::getCurrentOutScalarField, return_value_policy<reference_existing_object>())
-//        .def("getName", &ccPointCloudWrap::getName)
-//        .def("getNumberOfScalarFields", &ccPointCloudWrap::getNumberOfScalarFields)
-//        .def("getScalarField", &ccPointCloudWrap::getScalarField, return_value_policy<reference_existing_object>())
-//        .def("getScalarFieldName", &ccPointCloudWrap::getScalarFieldName)
-//        .def("hasScalarFields", &ccPointCloudWrap::hasScalarFields)
-//        .def("renameScalarField", &ccPointCloudWrap::renameScalarField)
-//        .def("reserve", &ccPointCloudWrap::reserve)
-//        .def("scale", &ccPointCloudWrap::scale)
-//        .def("setCurrentInScalarField", &ccPointCloudWrap::setCurrentInScalarField)
-//        .def("setCurrentOutScalarField", &ccPointCloudWrap::setCurrentOutScalarField)
-//        .def("size", &ccPointCloudWrap::size)
-//        .def("translate", &ccPointCloudWrap::translate)
+//    class_<ccPointCloud>("ccPointCloud", no_init)
+//        .def("computeGravityCenter", &ccPointCloud::computeGravityCenter)
+//        .def("crop2D", &ccPointCloud::crop2D, return_value_policy<reference_existing_object>())
+//        .def("exportCoordToSF", &exportCoordToSF_py) //&ccPointCloud::exportCoordToSF) //,return_internal_reference<1>())
+//        .def("getCurrentInScalarField", &ccPointCloud::getCurrentInScalarField, return_value_policy<reference_existing_object>())
+//        .def("getCurrentOutScalarField", &ccPointCloud::getCurrentOutScalarField, return_value_policy<reference_existing_object>())
+//        .def("getName", &ccPointCloud::getName)
+//        .def("getNumberOfScalarFields", &ccPointCloud::getNumberOfScalarFields)
+//        .def("getScalarField", &ccPointCloud::getScalarField, return_value_policy<reference_existing_object>())
+//        .def("getScalarFieldName", &ccPointCloud::getScalarFieldName)
+//        .def("hasScalarFields", &ccPointCloud::hasScalarFields)
+//        .def("renameScalarField", &ccPointCloud::renameScalarField)
+//        .def("reserve", &ccPointCloud::reserve)
+//        .def("scale", &ccPointCloud::scale)
+//        .def("setCurrentInScalarField", &ccPointCloud::setCurrentInScalarField)
+//        .def("setCurrentOutScalarField", &ccPointCloud::setCurrentOutScalarField)
+//        .def("size", &ccPointCloud::size)
+//        .def("translate", &ccPointCloud::translate)
 //        ;
+    class_<ccPointCloudWrap,boost::noncopyable>("ccPointCloud", no_init)
+        .def("computeGravityCenter", &ccPointCloudWrap::computeGravityCenter, return_value_policy<reference_existing_object>())
+        .def("crop2D", &ccPointCloudWrap::crop2D, return_value_policy<reference_existing_object>())
+        .def("exportCoordToSF", &exportCoordToSF_py)
+        .def("getCurrentInScalarField", &ccPointCloudWrap::getCurrentInScalarField, return_value_policy<reference_existing_object>())
+        .def("getCurrentOutScalarField", &ccPointCloudWrap::getCurrentOutScalarField, return_value_policy<reference_existing_object>())
+        .def("getName", &ccPointCloudWrap::getName)
+        .def("getNumberOfScalarFields", &ccPointCloudWrap::getNumberOfScalarFields)
+        .def("getScalarField", &ccPointCloudWrap::getScalarField, return_value_policy<reference_existing_object>())
+        .def("getScalarFieldName", &ccPointCloudWrap::getScalarFieldName)
+        .def("hasScalarFields", &ccPointCloudWrap::hasScalarFields)
+        .def("renameScalarField", &ccPointCloudWrap::renameScalarField)
+        .def("reserve", &ccPointCloudWrap::reserve)
+        .def("scale", &ccPointCloudWrap::scale)
+        .def("setCurrentInScalarField", &ccPointCloudWrap::setCurrentInScalarField)
+        .def("setCurrentOutScalarField", &ccPointCloudWrap::setCurrentOutScalarField)
+        .def("size", &ccPointCloudWrap::size)
+        .def("translate", &ccPointCloudWrap::translate)
+        ;
 
 
     class_<ccPolyline>("ccPolyline", no_init)
