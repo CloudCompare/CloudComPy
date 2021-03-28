@@ -23,6 +23,7 @@
 #include "initCC.h"
 #include "pyCC.h"
 #include "PyScalarType.h"
+#include <ScalarField.h>
 #include <QString>
 #include <vector>
 
@@ -184,7 +185,28 @@ BOOST_PYTHON_MODULE(cloudComPy)
 
 
     class_<ccPolyline>("ccPolyline", no_init)
-        .def("is2DMode", &ccPolyline::is2DMode);
+        .def("is2DMode", &ccPolyline::is2DMode)
+        ;
+
+    class_<CCCoreLib::ScalarField, boost::noncopyable>("ScalarField", no_init) // boost::noncopyable required to avoid issue with protected destructor
+        .def("addElement", &CCCoreLib::ScalarField::addElement)
+        .def("computeMeanAndVariance", &CCCoreLib::ScalarField::computeMeanAndVariance)
+        .def("computeMinAndMax", &CCCoreLib::ScalarField::computeMinAndMax)
+        .def("currentSize", &CCCoreLib::ScalarField::currentSize)
+        .def("fill", &CCCoreLib::ScalarField::fill)
+        .def("flagValueAsInvalid", &CCCoreLib::ScalarField::flagValueAsInvalid)
+        .def("flagValueAsInvalid", &CCCoreLib::ScalarField::flagValueAsInvalid)
+        .def("getMax", &CCCoreLib::ScalarField::getMax)
+        .def("getMin", &CCCoreLib::ScalarField::getMin)
+        .def("getName", &CCCoreLib::ScalarField::getName)
+         //.def("getValue", &CCCoreLib::ScalarField::getValue)
+        .def("reserveSafe", &CCCoreLib::ScalarField::reserveSafe)
+        .def("resizeSafe", &CCCoreLib::ScalarField::resizeSafe)
+        .def("setName", &CCCoreLib::ScalarField::setName)
+        .def("setValue", &CCCoreLib::ScalarField::setValue)
+        .def("swap", &CCCoreLib::ScalarField::swap)
+        ;
+
 
     const char* loadPointCloud_doc= R"(
 Load a 3D cloud from a file
