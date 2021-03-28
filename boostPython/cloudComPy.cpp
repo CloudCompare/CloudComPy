@@ -53,13 +53,6 @@ struct ccPointCloudWrap : ccPointCloud, boost::python::wrapper<ccPointCloud>
 //    }
 };
 
-bool exportCoordToSF_py(ccPointCloud &self, bool x, bool y, bool z)
-{
-    bool b[3];
-    b[0] =x; b[1] = y; b[2] = z;
-    return self.exportCoordToSF(b);
-}
-
 boost::python::tuple computeGravityCenter_py(ccPointCloud& self)
 {
     CCVector3 g = self.computeGravityCenter();
@@ -69,6 +62,39 @@ boost::python::tuple computeGravityCenter_py(ccPointCloud& self)
     res[1] = g.y;
     res[2] = g.z;
     return boost::python::make_tuple(res[0], res[1], res[2]);
+}
+
+bool exportCoordToSF_py(ccPointCloud &self, bool x, bool y, bool z)
+{
+    bool b[3];
+    b[0] =x; b[1] = y; b[2] = z;
+    return self.exportCoordToSF(b);
+}
+
+void scale_py(ccPointCloud &self, double fx, double fy, double fz, boost::python::tuple center)
+{
+    if (boost::python::len(center) != 3)
+    {
+        PyErr_SetString(PyExc_TypeError, "tuple must contain 3 coordinates");
+        throw boost::python::error_already_set();
+    }
+    double x = boost::python::extract<double>(center[0]);
+    double y = boost::python::extract<double>(center[1]);
+    double z = boost::python::extract<double>(center[2]);
+    self.scale(fx, fy, fz, CCVector3(x, y, z));
+}
+
+void translate_py(ccPointCloud &self, boost::python::tuple vec)
+{
+    if (boost::python::len(vec) != 3)
+    {
+        PyErr_SetString(PyExc_TypeError, "tuple must contain 3 coordinates");
+        throw boost::python::error_already_set();
+    }
+    double x = boost::python::extract<double>(vec[0]);
+    double y = boost::python::extract<double>(vec[1]);
+    double z = boost::python::extract<double>(vec[2]);
+    self.translate(CCVector3(x, y, z));
 }
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
@@ -149,11 +175,11 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .def("hasScalarFields", &ccPointCloudWrap::hasScalarFields)
         .def("renameScalarField", &ccPointCloudWrap::renameScalarField)
         .def("reserve", &ccPointCloudWrap::reserve)
-        .def("scale", &ccPointCloudWrap::scale)
+        .def("scale", &scale_py)
         .def("setCurrentInScalarField", &ccPointCloudWrap::setCurrentInScalarField)
         .def("setCurrentOutScalarField", &ccPointCloudWrap::setCurrentOutScalarField)
         .def("size", &ccPointCloudWrap::size)
-        .def("translate", &ccPointCloudWrap::translate)
+        .def("translate", &translate_py)
         ;
 
 
