@@ -99,6 +99,7 @@ void translate_py(ccPointCloud &self, boost::python::tuple vec)
 }
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
+BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
 
 BOOST_PYTHON_MODULE(cloudComPy)
 {
@@ -185,7 +186,13 @@ BOOST_PYTHON_MODULE(cloudComPy)
 
 
     class_<ccPolyline>("ccPolyline", no_init)
+        .def("computeLength", &ccPolyline::computeLength)
+        .def("getName", &ccPolyline::getName)
         .def("is2DMode", &ccPolyline::is2DMode)
+        .def("is2DMode", &ccPolyline::is2DMode)
+        .def("isClosed", &ccPolyline::isClosed)
+        .def("segmentCount", &ccPolyline::segmentCount)
+        .def("setClosed", &ccPolyline::setClosed)
         ;
 
     class_<CCCoreLib::ScalarField, boost::noncopyable>("ScalarField", no_init) // boost::noncopyable required to avoid issue with protected destructor
@@ -225,7 +232,8 @@ Usage: see ccPointCloud doc.)";
                                  loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
 
     def("loadPolyline", loadPolyline,
-        return_value_policy<reference_existing_object>());
+        loadPolyline_overloads(args("mode", "skip", "x", "y", "z", "filename"))
+        [return_value_policy<reference_existing_object>()]);
 
     def("SavePointCloud", SavePointCloud);
 
