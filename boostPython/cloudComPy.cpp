@@ -35,15 +35,15 @@ char const* greet()
 
 struct ccPointCloudWrap : ccPointCloud, boost::python::wrapper<ccPointCloud>
 {
-    std::vector<double> res;
-    const std::vector<double>& computeGravityCenter()
-    {
-        CCVector3  g = ccPointCloud::computeGravityCenter();
-        //std::vector<double> res;
-        res.resize(3);
-        res[0] = g.x; res[1] = g.y; res[2] = g.z;
-        return res;
-    }
+//    std::vector<double> res;
+//    const std::vector<double>& computeGravityCenter()
+//    {
+//        CCVector3  g = ccPointCloud::computeGravityCenter();
+//        //std::vector<double> res;
+//        res.resize(3);
+//        res[0] = g.x; res[1] = g.y; res[2] = g.z;
+//        return res;
+//    }
 
 //    virtual bool exportCoordToSF_w(bool x, bool y, bool z)
 //    {
@@ -60,6 +60,16 @@ bool exportCoordToSF_py(ccPointCloud &self, bool x, bool y, bool z)
     return self.exportCoordToSF(b);
 }
 
+std::vector<double> computeGravityCenter_py(ccPointCloud& self)
+{
+    CCVector3 g = self.computeGravityCenter();
+    std::vector<double> res;
+    res.resize(3);
+    res[0] = g.x;
+    res[1] = g.y;
+    res[2] = g.z;
+    return res;
+}
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
 
@@ -127,7 +137,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
 //        .def("translate", &ccPointCloud::translate)
 //        ;
     class_<ccPointCloudWrap,boost::noncopyable>("ccPointCloud", no_init)
-        .def("computeGravityCenter", &ccPointCloudWrap::computeGravityCenter, return_value_policy<reference_existing_object>())
+        .def("computeGravityCenter", &computeGravityCenter_py) //ccPointCloudWrap::computeGravityCenter, return_value_policy<reference_existing_object>())
         .def("crop2D", &ccPointCloudWrap::crop2D, return_value_policy<reference_existing_object>())
         .def("exportCoordToSF", &exportCoordToSF_py)
         .def("getCurrentInScalarField", &ccPointCloudWrap::getCurrentInScalarField, return_value_policy<reference_existing_object>())
