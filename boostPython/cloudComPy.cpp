@@ -60,7 +60,7 @@ bool exportCoordToSF_py(ccPointCloud &self, bool x, bool y, bool z)
     return self.exportCoordToSF(b);
 }
 
-std::vector<double> computeGravityCenter_py(ccPointCloud& self)
+boost::python::tuple computeGravityCenter_py(ccPointCloud& self)
 {
     CCVector3 g = self.computeGravityCenter();
     std::vector<double> res;
@@ -68,7 +68,7 @@ std::vector<double> computeGravityCenter_py(ccPointCloud& self)
     res[0] = g.x;
     res[1] = g.y;
     res[2] = g.z;
-    return res;
+    return boost::python::make_tuple(res[0], res[1], res[2]);
 }
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
