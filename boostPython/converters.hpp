@@ -28,6 +28,8 @@
 
 #include "pyccTrace.h"
 
+namespace bp = boost::python;
+
 namespace
 {
 
@@ -35,7 +37,7 @@ struct QString_to_python_str
 {
     static PyObject* convert(const QString& s)
     {
-        return boost::python::incref(boost::python::object(s.toUtf8().constData()).ptr());
+        return bp::incref(bp::object(s.toUtf8().constData()).ptr());
     }
 };
 
@@ -44,7 +46,7 @@ struct QString_from_python_str
     QString_from_python_str()
     {
         CCTRACE("register QString_from_python_str");
-        boost::python::converter::registry::push_back(&convertible, &construct, boost::python::type_id<QString>());
+        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<QString>());
     }
 
     // Determine if obj_ptr can be converted in a QString
@@ -57,17 +59,17 @@ struct QString_from_python_str
     }
 
     // Convert obj_ptr into a QString
-    static void construct(PyObject* obj_ptr, boost::python::converter::rvalue_from_python_stage1_data* data)
+    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
     {
         CCTRACE("construct");
         // Extract the character data from the python string
         const char* value = PyUnicode_AsUTF8(obj_ptr);
 
         // Verify that obj_ptr is a string (should be ensured by convertible())
-        if (value == 0) boost::python::throw_error_already_set();
+        if (value == 0) bp::throw_error_already_set();
 
         // Grab pointer to memory into which to construct the new QString
-        void* storage = ((boost::python::converter::rvalue_from_python_storage<QString>*) data)->storage.bytes;
+        void* storage = ((bp::converter::rvalue_from_python_storage<QString>*) data)->storage.bytes;
 
         // in-place construct the new QString using the character data
         // extracted from the Python object
@@ -83,7 +85,7 @@ struct QString_from_python_str
 //    array_from_python_tuple_bool()
 //    {
 //        CCTRACE("register array_from_python_tuple_bool");
-//        boost::python::converter::registry::push_back(&convertible, &construct, boost::python::type_id<const bool&>());
+//        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<const bool&>());
 //    }
 //    static int v[3];
 //
@@ -96,10 +98,10 @@ struct QString_from_python_str
 //            return 0;
 //        return obj_ptr;
 //    }
-//    static void construct(PyObject* obj_ptr, boost::python::converter::rvalue_from_python_stage1_data* data)
+//    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
 //    {
 //        CCTRACE("construct");
-//        void* storage = ((boost::python::converter::rvalue_from_python_storage<bool[3]>*) data)->storage.bytes;
+//        void* storage = ((bp::converter::rvalue_from_python_storage<bool[3]>*) data)->storage.bytes;
 //        bool*b= new (storage) bool[3];
 //        b[0] = v[0]; b[1] = v[1]; b[2] = v[2];
 //        data->convertible = storage;

@@ -40,7 +40,7 @@ endif()
 # --- Boost detection
 message( STATUS "Python3_VERSION_MAJOR: " ${Python3_VERSION_MAJOR} )
 message( STATUS "Python3_VERSION_MINOR: " ${Python3_VERSION_MINOR} )
-find_package(Boost COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
+find_package(Boost COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} numpy)
 
 message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
 

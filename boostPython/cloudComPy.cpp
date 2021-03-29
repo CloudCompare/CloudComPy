@@ -16,7 +16,9 @@
 //#                                                                        #
 //##########################################################################
 
+#include <boost/python/numpy.hpp>
 #include <boost/python.hpp>
+
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include "converters.hpp"
 
@@ -29,12 +31,15 @@
 
 #include "pyccTrace.h"
 
+namespace bp = boost::python;
+namespace bnp = boost::python::numpy;
+
 char const* greet()
 {
    return "hello, world";
 }
 
-struct ccPointCloudWrap : ccPointCloud, boost::python::wrapper<ccPointCloud>
+struct ccPointCloudWrap : ccPointCloud, bp::wrapper<ccPointCloud>
 {
 //    std::vector<double> res;
 //    const std::vector<double>& computeGravityCenter()
@@ -62,7 +67,7 @@ void initCC_py()
     initCC::init(modulePath);
 }
 
-boost::python::tuple computeGravityCenter_py(ccPointCloud& self)
+bp::tuple computeGravityCenter_py(ccPointCloud& self)
 {
     CCVector3 g = self.computeGravityCenter();
     std::vector<double> res;
@@ -70,7 +75,7 @@ boost::python::tuple computeGravityCenter_py(ccPointCloud& self)
     res[0] = g.x;
     res[1] = g.y;
     res[2] = g.z;
-    return boost::python::make_tuple(res[0], res[1], res[2]);
+    return bp::make_tuple(res[0], res[1], res[2]);
 }
 
 bool exportCoordToSF_py(ccPointCloud &self, bool x, bool y, bool z)
@@ -80,30 +85,59 @@ bool exportCoordToSF_py(ccPointCloud &self, bool x, bool y, bool z)
     return self.exportCoordToSF(b);
 }
 
-void scale_py(ccPointCloud &self, double fx, double fy, double fz, boost::python::tuple center)
+void scale_py(ccPointCloud &self, double fx, double fy, double fz, bp::tuple center)
 {
-    if (boost::python::len(center) != 3)
+    if (bp::len(center) != 3)
     {
         PyErr_SetString(PyExc_TypeError, "tuple must contain 3 coordinates");
-        throw boost::python::error_already_set();
+        throw bp::error_already_set();
     }
-    double x = boost::python::extract<double>(center[0]);
-    double y = boost::python::extract<double>(center[1]);
-    double z = boost::python::extract<double>(center[2]);
+    double x = bp::extract<double>(center[0]);
+    double y = bp::extract<double>(center[1]);
+    double z = bp::extract<double>(center[2]);
     self.scale(fx, fy, fz, CCVector3(x, y, z));
 }
 
-void translate_py(ccPointCloud &self, boost::python::tuple vec)
+void translate_py(ccPointCloud &self, bp::tuple vec)
 {
-    if (boost::python::len(vec) != 3)
+    if (bp::len(vec) != 3)
     {
         PyErr_SetString(PyExc_TypeError, "tuple must contain 3 coordinates");
-        throw boost::python::error_already_set();
+        throw bp::error_already_set();
     }
-    double x = boost::python::extract<double>(vec[0]);
-    double y = boost::python::extract<double>(vec[1]);
-    double z = boost::python::extract<double>(vec[2]);
+    double x = bp::extract<double>(vec[0]);
+    double y = bp::extract<double>(vec[1]);
+    double z = bp::extract<double>(vec[2]);
     self.translate(CCVector3(x, y, z));
+}
+
+//bnp::ndarray CoordsToNpArray_copy(ccPointCloud &self)
+//{
+//    CCTRACE("CoordsToNpArray with copy, ownership transfered to Python");
+//    bnp::dtype dt = bnp::dtype::get_builtin<float>(); // coordinates always in simple precision
+//    size_t nRows = self.size();
+//    bp::tuple shape = bp::make_tuple(nRows, 3);
+//    bp::tuple stride = bp::make_tuple(sizeof(float), sizeof(float));
+//    float *s = (float*)self.getPoint(0);
+//    CCTRACE("--- copy " << 3*nRows*sizeof(float));
+//    float *d = new float[3*nRows];
+//    memcpy(d, s, 3*nRows*sizeof(float));
+//    CCTRACE("--- copied");
+//    bnp::ndarray result = bnp::from_data(d, dt, shape, stride, bp::object());
+//    return result;
+//}
+
+bnp::ndarray CoordsToNpArray_py(ccPointCloud &self)
+{
+    CCTRACE("CoordsToNpArray without copy, ownership stays in C++");
+    bnp::dtype dt = bnp::dtype::get_builtin<float>(); // coordinates always in simple precision
+    size_t nRows = self.size();
+    CCTRACE("nrows: " << nRows);
+    bp::tuple shape = bp::make_tuple(nRows, 3);
+    bp::tuple stride = bp::make_tuple(3*sizeof(float), sizeof(float));
+    float *s = (float*)self.getPoint(0);
+    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
+    return result;
 }
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
@@ -113,10 +147,11 @@ BOOST_PYTHON_MODULE(cloudComPy)
 {
     using namespace boost::python;
 
+    bnp::initialize();
     initializeConverters();
 
     class_<std::vector<double> >("DoubleVec")
-        .def(boost::python::vector_indexing_suite<std::vector<double> >())
+        .def(bp::vector_indexing_suite<std::vector<double> >())
         ;
 
     def("greet", greet);
@@ -189,8 +224,10 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .def("setCurrentInScalarField", &ccPointCloudWrap::setCurrentInScalarField)
         .def("setCurrentOutScalarField", &ccPointCloudWrap::setCurrentOutScalarField)
         .def("size", &ccPointCloudWrap::size)
+        .def("toNpArray", &CoordsToNpArray_py)
+        //.def("toNpArrayCopy", &CoordsToNpArray_copy, return_value_policy<manage_new_object>())
         .def("translate", &translate_py)
-        ;
+       ;
 
 
     class_<ccPolyline>("ccPolyline", no_init)
