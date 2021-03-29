@@ -53,6 +53,14 @@ struct ccPointCloudWrap : ccPointCloud, boost::python::wrapper<ccPointCloud>
 //        return ccPointCloud::exportCoordToSF(b);
 //    }
 };
+void initCC_py()
+{
+    PyObject *cc_module;
+    cc_module = PyImport_ImportModule("cloudComPy");
+    const char* modulePath = PyModule_GetFilename(cc_module);
+    CCTRACE("modulePath: " <<  modulePath);
+    initCC::init(modulePath);
+}
 
 boost::python::tuple computeGravityCenter_py(ccPointCloud& self)
 {
@@ -192,7 +200,11 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .def("is2DMode", &ccPolyline::is2DMode)
         .def("isClosed", &ccPolyline::isClosed)
         .def("segmentCount", &ccPolyline::segmentCount)
+        .def("set2DMode", &ccPolyline::set2DMode)
         .def("setClosed", &ccPolyline::setClosed)
+        .def("setName", &ccPolyline::setName)
+        .def("size", &ccPolyline::size)
+        //.def("smoothChaikin", &ccPolyline::smoothChaikin)
         ;
 
     class_<CCCoreLib::ScalarField, boost::noncopyable>("ScalarField", no_init) // boost::noncopyable required to avoid issue with protected destructor
@@ -213,7 +225,6 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .def("setValue", &CCCoreLib::ScalarField::setValue)
         .def("swap", &CCCoreLib::ScalarField::swap)
         ;
-
 
     const char* loadPointCloud_doc= R"(
 Load a 3D cloud from a file
@@ -237,5 +248,5 @@ Usage: see ccPointCloud doc.)";
 
     def("SavePointCloud", SavePointCloud);
 
-
+    def("initCC", &initCC_py);
 }
