@@ -169,6 +169,25 @@ bnp::ndarray ToNpArray_py(CCCoreLib::ScalarField &self)
     return result;
 }
 
+void fromNPArray_copy(CCCoreLib::ScalarField &self, bnp::ndarray const & array)
+{
+    if (array.get_dtype() != bnp::dtype::get_builtin<PyScalarType>())
+    {
+        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
+        bp::throw_error_already_set();
+    }
+    size_t nRows = self.size();
+    if (array.get_nd() != 1 && array.shape(0) != nRows)
+    {
+        PyErr_SetString(PyExc_TypeError, "Incorrect array dimension or size");
+        bp::throw_error_already_set();
+    }
+    PyScalarType *s = reinterpret_cast<PyScalarType*>(array.get_data());
+    PyScalarType *d = self.data();
+    memcpy(d, s, nRows*sizeof(PyScalarType));
+    CCTRACE("copied " << nRows*sizeof(PyScalarType));
+    self.computeMinAndMax();
+}
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
@@ -282,6 +301,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .def("fill", &CCCoreLib::ScalarField::fill)
         .def("flagValueAsInvalid", &CCCoreLib::ScalarField::flagValueAsInvalid)
         .def("flagValueAsInvalid", &CCCoreLib::ScalarField::flagValueAsInvalid)
+        .def("fromNPArrayCopy", &fromNPArray_copy)
         .def("getMax", &CCCoreLib::ScalarField::getMax)
         .def("getMin", &CCCoreLib::ScalarField::getMin)
         .def("getName", &CCCoreLib::ScalarField::getName)
