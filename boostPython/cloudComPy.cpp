@@ -67,48 +67,11 @@ void initCC_py()
     initCC::init(modulePath);
 }
 
-bp::tuple computeGravityCenter_py(ccPointCloud& self)
-{
-    CCVector3 g = self.computeGravityCenter();
-    std::vector<double> res;
-    res.resize(3);
-    res[0] = g.x;
-    res[1] = g.y;
-    res[2] = g.z;
-    return bp::make_tuple(res[0], res[1], res[2]);
-}
-
 bool exportCoordToSF_py(ccPointCloud &self, bool x, bool y, bool z)
 {
     bool b[3];
     b[0] =x; b[1] = y; b[2] = z;
     return self.exportCoordToSF(b);
-}
-
-void scale_py(ccPointCloud &self, double fx, double fy, double fz, bp::tuple center)
-{
-    if (bp::len(center) != 3)
-    {
-        PyErr_SetString(PyExc_TypeError, "tuple must contain 3 coordinates");
-        throw bp::error_already_set();
-    }
-    double x = bp::extract<double>(center[0]);
-    double y = bp::extract<double>(center[1]);
-    double z = bp::extract<double>(center[2]);
-    self.scale(fx, fy, fz, CCVector3(x, y, z));
-}
-
-void translate_py(ccPointCloud &self, bp::tuple vec)
-{
-    if (bp::len(vec) != 3)
-    {
-        PyErr_SetString(PyExc_TypeError, "tuple must contain 3 coordinates");
-        throw bp::error_already_set();
-    }
-    double x = bp::extract<double>(vec[0]);
-    double y = bp::extract<double>(vec[1]);
-    double z = bp::extract<double>(vec[2]);
-    self.translate(CCVector3(x, y, z));
 }
 
 bnp::ndarray CoordsToNpArray_copy(ccPointCloud &self)
@@ -257,7 +220,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
 //        .def("translate", &ccPointCloud::translate)
 //        ;
     class_<ccPointCloudWrap,boost::noncopyable>("ccPointCloud", no_init)
-        .def("computeGravityCenter", &computeGravityCenter_py) //ccPointCloudWrap::computeGravityCenter, return_value_policy<reference_existing_object>())
+        .def("computeGravityCenter", &ccPointCloudWrap::computeGravityCenter)
         .def("crop2D", &ccPointCloudWrap::crop2D, return_value_policy<reference_existing_object>())
         .def("exportCoordToSF", &exportCoordToSF_py)
         .def("getCurrentInScalarField", &ccPointCloudWrap::getCurrentInScalarField, return_value_policy<reference_existing_object>())
@@ -269,13 +232,13 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .def("hasScalarFields", &ccPointCloudWrap::hasScalarFields)
         .def("renameScalarField", &ccPointCloudWrap::renameScalarField)
         .def("reserve", &ccPointCloudWrap::reserve)
-        .def("scale", &scale_py)
+        .def("scale", &ccPointCloudWrap::scale)
         .def("setCurrentInScalarField", &ccPointCloudWrap::setCurrentInScalarField)
         .def("setCurrentOutScalarField", &ccPointCloudWrap::setCurrentOutScalarField)
         .def("size", &ccPointCloudWrap::size)
         .def("toNpArray", &CoordsToNpArray_py)
         .def("toNpArrayCopy", &CoordsToNpArray_copy)
-        .def("translate", &translate_py)
+        .def("translate", &ccPointCloudWrap::translate)
        ;
 
 

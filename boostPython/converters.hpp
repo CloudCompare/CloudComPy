@@ -25,6 +25,7 @@
 #include <boost/python.hpp>
 #include <Python.h>
 #include <QString>
+#include <CCGeom.h>
 
 #include "pyccTrace.h"
 
@@ -80,34 +81,67 @@ struct QString_from_python_str
     }
 };
 
-//struct array_from_python_tuple_bool
-//{
-//    array_from_python_tuple_bool()
-//    {
-//        CCTRACE("register array_from_python_tuple_bool");
-//        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<const bool&>());
-//    }
-//    static int v[3];
-//
-//    static void* convertible(PyObject* obj_ptr)
-//    {
-//        CCTRACE("convertible to array?");
-//        if (!PyTuple_Check(obj_ptr))
-//            return 0;
-//        if (!PyArg_ParseTuple(obj_ptr, "ppp", &v[0], &v[1], &v[2]))
-//            return 0;
-//        return obj_ptr;
-//    }
-//    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
-//    {
-//        CCTRACE("construct");
-//        void* storage = ((bp::converter::rvalue_from_python_storage<bool[3]>*) data)->storage.bytes;
-//        bool*b= new (storage) bool[3];
-//        b[0] = v[0]; b[1] = v[1]; b[2] = v[2];
-//        data->convertible = storage;
-//    }
-//};
-//int array_from_python_tuple_bool::v[3];
+template<typename T> struct Vector3Tpl_to_python_str
+{
+    static PyObject* convert(Vector3Tpl<T> v)
+    {
+        return bp::incref(bp::make_tuple(v[0], v[1], v[2]).ptr());
+    }
+};
+
+template<typename T> struct Vector3Tpl_from_python_str // T double or float
+{
+    Vector3Tpl_from_python_str()
+    {
+        CCTRACE("register Vector3Tpl_from_python_str");
+        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<Vector3Tpl<T> >());
+    }
+
+    // Determine if obj_ptr can be converted in a Vector3Tpl<T>
+    static void* convertible(PyObject* obj_ptr)
+    {
+        CCTRACE("convertible to Vector3Tpl<T>?");
+        if (!PyTuple_Check(obj_ptr))
+            return 0;
+        if (PyTuple_GET_SIZE(obj_ptr) != 3)
+            return 0;
+        for (int i=0; i<3; i++)
+        {
+            PyObject* iptr = PyTuple_GET_ITEM(obj_ptr, i);
+            if (!PyFloat_Check(iptr))
+                return 0;
+        }
+        return obj_ptr;
+    }
+
+    // Convert obj_ptr into a Vector3Tpl<T>
+    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
+    {
+        CCTRACE("construct");
+        // Extract the 3 components (check already done by convertible)
+        T val[3];
+        for (int i=0; i<3; i++)
+        {
+            PyObject* iptr = PyTuple_GetItem(obj_ptr, i);
+            if (!PyFloat_Check(iptr))
+                bp::throw_error_already_set();
+            val[i] = PyFloat_AS_DOUBLE(iptr);
+        }
+
+        // Grab pointer to memory into which to construct the new Vector3Tpl<T>
+        void* storage = ((bp::converter::rvalue_from_python_storage<T[3]>*) data)->storage.bytes;
+
+        // in-place construct the new Vector3Tpl<T> using the character data
+        // extracted from the Python object
+        T* res = new (storage) T[3];
+        for (int i=0; i<3; i++)
+            res[i] = val[i];
+
+        // Stash the memory chunk pointer for later use by boost.python
+        data->convertible = storage;
+    }
+};
+
 
 void initializeConverters()
 {
@@ -116,10 +150,13 @@ void initializeConverters()
     // register the to-python converter
     CCTRACE("initializeConverters");
     to_python_converter<QString, QString_to_python_str, false>(); //"false" because QString_to_python_str has no member get_pytype
+    to_python_converter<Vector3Tpl<float>, Vector3Tpl_to_python_str<float>, false>();
+    to_python_converter<Vector3Tpl<double>, Vector3Tpl_to_python_str<double>, false>();
 
     // register the from-python converter
     QString_from_python_str();
-//    array_from_python_tuple_bool();
+    Vector3Tpl_from_python_str<float>();
+    Vector3Tpl_from_python_str<double>();
 }
 
 } //namespace anonymous
