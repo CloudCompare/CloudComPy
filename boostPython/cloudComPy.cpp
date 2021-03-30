@@ -290,7 +290,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .def("setClosed", &ccPolyline::setClosed)
         .def("setName", &ccPolyline::setName)
         .def("size", &ccPolyline::size)
-        //.def("smoothChaikin", &ccPolyline::smoothChaikin)
+        .def("smoothChaikin", &ccPolyline::smoothChaikin, return_value_policy<reference_existing_object>())
         ;
 
     class_<CCCoreLib::ScalarField, boost::noncopyable>("ScalarField", no_init) // boost::noncopyable required to avoid issue with protected destructor
