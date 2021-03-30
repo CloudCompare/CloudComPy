@@ -140,6 +140,36 @@ bnp::ndarray CoordsToNpArray_py(ccPointCloud &self)
     return result;
 }
 
+bnp::ndarray ToNpArray_copy(CCCoreLib::ScalarField &self)
+{
+    CCTRACE("ScalarField ToNpArray with copy, ownership transfered to Python");
+    bnp::dtype dt = bnp::dtype::get_builtin<PyScalarType>();
+    size_t nRows = self.size();
+    bp::tuple shape = bp::make_tuple(nRows);
+    bp::tuple stride = bp::make_tuple(sizeof(PyScalarType));
+    PyScalarType *s = (PyScalarType*)self.data();
+    CCTRACE("--- copy " << nRows*sizeof(PyScalarType));
+    PyScalarType *d = new PyScalarType[nRows];
+    memcpy(d, s, nRows*sizeof(PyScalarType));
+    CCTRACE("--- copied");
+    bnp::ndarray result = bnp::from_data(d, dt, shape, stride, bp::object());
+    return result;
+}
+
+bnp::ndarray ToNpArray_py(CCCoreLib::ScalarField &self)
+{
+    CCTRACE("ScalarField ToNpArray without copy, ownership stays in C++");
+    bnp::dtype dt = bnp::dtype::get_builtin<PyScalarType>();
+    size_t nRows = self.size();
+    CCTRACE("nrows: " << nRows);
+    bp::tuple shape = bp::make_tuple(nRows);
+    bp::tuple stride = bp::make_tuple( sizeof(PyScalarType));
+    PyScalarType *s = (PyScalarType*)self.data();
+    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
+    return result;
+}
+
+
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
 
@@ -261,6 +291,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .def("setName", &CCCoreLib::ScalarField::setName)
         .def("setValue", &CCCoreLib::ScalarField::setValue)
         .def("swap", &CCCoreLib::ScalarField::swap)
+        .def("toNpArray", &ToNpArray_py)
+        .def("toNpArrayCopy", &ToNpArray_copy)
         ;
 
     const char* loadPointCloud_doc= R"(
