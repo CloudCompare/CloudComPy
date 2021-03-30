@@ -62,7 +62,7 @@ void initCC_py()
 {
     PyObject *cc_module;
     cc_module = PyImport_ImportModule("cloudComPy");
-    const char* modulePath = PyModule_GetFilename(cc_module);
+    const char* modulePath = PyUnicode_AsUTF8(PyModule_GetFilenameObject(cc_module));
     CCTRACE("modulePath: " <<  modulePath);
     initCC::init(modulePath);
 }
