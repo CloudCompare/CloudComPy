@@ -111,21 +111,21 @@ void translate_py(ccPointCloud &self, bp::tuple vec)
     self.translate(CCVector3(x, y, z));
 }
 
-//bnp::ndarray CoordsToNpArray_copy(ccPointCloud &self)
-//{
-//    CCTRACE("CoordsToNpArray with copy, ownership transfered to Python");
-//    bnp::dtype dt = bnp::dtype::get_builtin<float>(); // coordinates always in simple precision
-//    size_t nRows = self.size();
-//    bp::tuple shape = bp::make_tuple(nRows, 3);
-//    bp::tuple stride = bp::make_tuple(sizeof(float), sizeof(float));
-//    float *s = (float*)self.getPoint(0);
-//    CCTRACE("--- copy " << 3*nRows*sizeof(float));
-//    float *d = new float[3*nRows];
-//    memcpy(d, s, 3*nRows*sizeof(float));
-//    CCTRACE("--- copied");
-//    bnp::ndarray result = bnp::from_data(d, dt, shape, stride, bp::object());
-//    return result;
-//}
+bnp::ndarray CoordsToNpArray_copy(ccPointCloud &self)
+{
+    CCTRACE("CoordsToNpArray with copy, ownership transfered to Python");
+    bnp::dtype dt = bnp::dtype::get_builtin<float>(); // coordinates always in simple precision
+    size_t nRows = self.size();
+    bp::tuple shape = bp::make_tuple(nRows, 3);
+    bp::tuple stride = bp::make_tuple(3*sizeof(float), sizeof(float));
+    float *s = (float*)self.getPoint(0);
+    CCTRACE("--- copy " << 3*nRows*sizeof(float));
+    float *d = new float[3*nRows];
+    memcpy(d, s, 3*nRows*sizeof(float));
+    CCTRACE("--- copied");
+    bnp::ndarray result = bnp::from_data(d, dt, shape, stride, bp::object());
+    return result;
+}
 
 bnp::ndarray CoordsToNpArray_py(ccPointCloud &self)
 {
@@ -225,7 +225,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .def("setCurrentOutScalarField", &ccPointCloudWrap::setCurrentOutScalarField)
         .def("size", &ccPointCloudWrap::size)
         .def("toNpArray", &CoordsToNpArray_py)
-        //.def("toNpArrayCopy", &CoordsToNpArray_copy, return_value_policy<manage_new_object>())
+        .def("toNpArrayCopy", &CoordsToNpArray_copy)
         .def("translate", &translate_py)
        ;
 
