@@ -134,6 +134,11 @@ void fromNPArray_copy(CCCoreLib::ScalarField &self, bnp::ndarray const & array)
     self.computeMinAndMax();
 }
 
+ScalarType& (CCCoreLib::ScalarField::* getValue1)(std::size_t) = &CCCoreLib::ScalarField::getValue; // getValue1: pointer to member function
+const ScalarType& (CCCoreLib::ScalarField::* getValue2)(std::size_t) const = &CCCoreLib::ScalarField::getValue; //pointer to member function with const qualifier
+//typedef const ScalarType& (CCCoreLib::ScalarField::*gvftype)(std::size_t) const; // the same using a typedef
+//gvftype getValue2 = &CCCoreLib::ScalarField::getValue;
+
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
 
@@ -230,7 +235,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .def("getMax", &CCCoreLib::ScalarField::getMax)
         .def("getMin", &CCCoreLib::ScalarField::getMin)
         .def("getName", &CCCoreLib::ScalarField::getName)
-         //.def("getValue", &CCCoreLib::ScalarField::getValue)
+        .def("getValue", getValue1, return_value_policy<copy_non_const_reference>())
+        .def("getValue", getValue2, return_value_policy<copy_const_reference>())
         .def("reserveSafe", &CCCoreLib::ScalarField::reserveSafe)
         .def("resizeSafe", &CCCoreLib::ScalarField::resizeSafe)
         .def("setName", &CCCoreLib::ScalarField::setName)
