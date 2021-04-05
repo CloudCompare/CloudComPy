@@ -58,6 +58,9 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     target_sources( ${PROJECT_NAME}
     PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/cloudComPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ScalarFieldPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ccPointCloudPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ccPolylinePy.cpp
     )
 
 target_include_directories( ${PROJECT_NAME} PUBLIC

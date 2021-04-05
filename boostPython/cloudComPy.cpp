@@ -23,6 +23,10 @@
 #include "converters.hpp"
 #include "ccDocStrings.hpp"
 
+#include "ScalarFieldPy.hpp"
+#include "ccPointCloudPy.hpp"
+#include "ccPolylinePy.hpp"
+
 #include "initCC.h"
 #include "pyCC.h"
 #include "PyScalarType.h"
@@ -51,103 +55,6 @@ void initCC_py()
     initCC::init(modulePath);
 }
 
-bool exportCoordToSF_py(ccPointCloud &self, bool x, bool y, bool z)
-{
-    bool b[3];
-    b[0] =x; b[1] = y; b[2] = z;
-    return self.exportCoordToSF(b);
-}
-
-//bool splitDistances_py(CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams &self, CCCoreLib::ScalarField* x, CCCoreLib::ScalarField* y, CCCoreLib::ScalarField* z)
-//{
-//    CCCoreLib::ScalarField* sf[3];
-//    sf[0] =x; sf[1] = y; sf[2] = z;
-//    return self.splitDistances(sf);
-//}
-
-bnp::ndarray CoordsToNpArray_copy(ccPointCloud &self)
-{
-    CCTRACE("CoordsToNpArray with copy, ownership transfered to Python");
-    bnp::dtype dt = bnp::dtype::get_builtin<float>(); // coordinates always in simple precision
-    size_t nRows = self.size();
-    bp::tuple shape = bp::make_tuple(nRows, 3);
-    bp::tuple stride = bp::make_tuple(3*sizeof(float), sizeof(float));
-    float *s = (float*)self.getPoint(0);
-    CCTRACE("--- copy " << 3*nRows*sizeof(float));
-    float *d = new float[3*nRows];
-    memcpy(d, s, 3*nRows*sizeof(float));
-    CCTRACE("--- copied");
-    bnp::ndarray result = bnp::from_data(d, dt, shape, stride, bp::object());
-    return result;
-}
-
-bnp::ndarray CoordsToNpArray_py(ccPointCloud &self)
-{
-    CCTRACE("CoordsToNpArray without copy, ownership stays in C++");
-    bnp::dtype dt = bnp::dtype::get_builtin<float>(); // coordinates always in simple precision
-    size_t nRows = self.size();
-    CCTRACE("nrows: " << nRows);
-    bp::tuple shape = bp::make_tuple(nRows, 3);
-    bp::tuple stride = bp::make_tuple(3*sizeof(float), sizeof(float));
-    float *s = (float*)self.getPoint(0);
-    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
-    return result;
-}
-
-bnp::ndarray ToNpArray_copy(CCCoreLib::ScalarField &self)
-{
-    CCTRACE("ScalarField ToNpArray with copy, ownership transfered to Python");
-    bnp::dtype dt = bnp::dtype::get_builtin<PyScalarType>();
-    size_t nRows = self.size();
-    bp::tuple shape = bp::make_tuple(nRows);
-    bp::tuple stride = bp::make_tuple(sizeof(PyScalarType));
-    PyScalarType *s = (PyScalarType*)self.data();
-    CCTRACE("--- copy " << nRows*sizeof(PyScalarType));
-    PyScalarType *d = new PyScalarType[nRows];
-    memcpy(d, s, nRows*sizeof(PyScalarType));
-    CCTRACE("--- copied");
-    bnp::ndarray result = bnp::from_data(d, dt, shape, stride, bp::object());
-    return result;
-}
-
-bnp::ndarray ToNpArray_py(CCCoreLib::ScalarField &self)
-{
-    CCTRACE("ScalarField ToNpArray without copy, ownership stays in C++");
-    bnp::dtype dt = bnp::dtype::get_builtin<PyScalarType>();
-    size_t nRows = self.size();
-    CCTRACE("nrows: " << nRows);
-    bp::tuple shape = bp::make_tuple(nRows);
-    bp::tuple stride = bp::make_tuple( sizeof(PyScalarType));
-    PyScalarType *s = (PyScalarType*)self.data();
-    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
-    return result;
-}
-
-void fromNPArray_copy(CCCoreLib::ScalarField &self, bnp::ndarray const & array)
-{
-    if (array.get_dtype() != bnp::dtype::get_builtin<PyScalarType>())
-    {
-        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
-        bp::throw_error_already_set();
-    }
-    size_t nRows = self.size();
-    if (array.get_nd() != 1 && array.shape(0) != nRows)
-    {
-        PyErr_SetString(PyExc_TypeError, "Incorrect array dimension or size");
-        bp::throw_error_already_set();
-    }
-    PyScalarType *s = reinterpret_cast<PyScalarType*>(array.get_data());
-    PyScalarType *d = self.data();
-    memcpy(d, s, nRows*sizeof(PyScalarType));
-    CCTRACE("copied " << nRows*sizeof(PyScalarType));
-    self.computeMinAndMax();
-}
-
-ScalarType& (CCCoreLib::ScalarField::* getValue1)(std::size_t) = &CCCoreLib::ScalarField::getValue; // getValue1: pointer to member function
-const ScalarType& (CCCoreLib::ScalarField::* getValue2)(std::size_t) const = &CCCoreLib::ScalarField::getValue; //pointer to member function with const qualifier
-//typedef const ScalarType& (CCCoreLib::ScalarField::*gvftype)(std::size_t) const; // the same using a typedef
-//gvftype getValue2 = &CCCoreLib::ScalarField::getValue;
-
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
 
@@ -158,9 +65,9 @@ BOOST_PYTHON_MODULE(cloudComPy)
     bnp::initialize();
     initializeConverters();
 
-    class_<std::vector<double> >("DoubleVec")
-        .def(bp::vector_indexing_suite<std::vector<double> >())
-        ;
+    export_ScalarField();
+    export_ccPolyline();
+    export_ccPointCloud();
 
     def("greet", greet);
 
@@ -194,65 +101,6 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .value("GAUSSIAN_CURV", GAUSSIAN_CURV)
         .value("MEAN_CURV", MEAN_CURV)
         .value("NORMAL_CHANGE_RATE", NORMAL_CHANGE_RATE)
-        ;
-
-    class_<ccPointCloud>("ccPointCloud", no_init)
-        .def("computeGravityCenter", &ccPointCloud::computeGravityCenter)
-        .def("crop2D", &ccPointCloud::crop2D, return_value_policy<reference_existing_object>())
-        .def("exportCoordToSF", &exportCoordToSF_py)
-        .def("getCurrentInScalarField", &ccPointCloud::getCurrentInScalarField, return_value_policy<reference_existing_object>())
-        .def("getCurrentOutScalarField", &ccPointCloud::getCurrentOutScalarField, return_value_policy<reference_existing_object>())
-        .def("getName", &ccPointCloud::getName)
-        .def("getNumberOfScalarFields", &ccPointCloud::getNumberOfScalarFields)
-        .def("getScalarField", &ccPointCloud::getScalarField, return_value_policy<reference_existing_object>())
-        .def("getScalarFieldName", &ccPointCloud::getScalarFieldName)
-        .def("hasScalarFields", &ccPointCloud::hasScalarFields)
-        .def("renameScalarField", &ccPointCloud::renameScalarField)
-        .def("reserve", &ccPointCloud::reserve)
-        .def("scale", &ccPointCloud::scale)
-        .def("setCurrentInScalarField", &ccPointCloud::setCurrentInScalarField)
-        .def("setCurrentOutScalarField", &ccPointCloud::setCurrentOutScalarField)
-        .def("size", &ccPointCloud::size)
-        .def("toNpArray", &CoordsToNpArray_py)
-        .def("toNpArrayCopy", &CoordsToNpArray_copy)
-        .def("translate", &ccPointCloud::translate)
-       ;
-
-    class_<ccPolyline>("ccPolyline", no_init)
-        .def("computeLength", &ccPolyline::computeLength)
-        .def("getName", &ccPolyline::getName)
-        .def("is2DMode", &ccPolyline::is2DMode)
-        .def("is2DMode", &ccPolyline::is2DMode)
-        .def("isClosed", &ccPolyline::isClosed)
-        .def("segmentCount", &ccPolyline::segmentCount)
-        .def("set2DMode", &ccPolyline::set2DMode)
-        .def("setClosed", &ccPolyline::setClosed)
-        .def("setName", &ccPolyline::setName)
-        .def("size", &ccPolyline::size)
-        .def("smoothChaikin", &ccPolyline::smoothChaikin, return_value_policy<reference_existing_object>())
-        ;
-
-    class_<CCCoreLib::ScalarField, boost::noncopyable>("ScalarField", no_init) // boost::noncopyable required to avoid issue with protected destructor
-        .def("addElement", &CCCoreLib::ScalarField::addElement)
-        .def("computeMeanAndVariance", &CCCoreLib::ScalarField::computeMeanAndVariance)
-        .def("computeMinAndMax", &CCCoreLib::ScalarField::computeMinAndMax)
-        .def("currentSize", &CCCoreLib::ScalarField::currentSize)
-        .def("fill", &CCCoreLib::ScalarField::fill)
-        .def("flagValueAsInvalid", &CCCoreLib::ScalarField::flagValueAsInvalid)
-        .def("flagValueAsInvalid", &CCCoreLib::ScalarField::flagValueAsInvalid)
-        .def("fromNPArrayCopy", &fromNPArray_copy)
-        .def("getMax", &CCCoreLib::ScalarField::getMax)
-        .def("getMin", &CCCoreLib::ScalarField::getMin)
-        .def("getName", &CCCoreLib::ScalarField::getName)
-        .def("getValue", getValue1, return_value_policy<copy_non_const_reference>())
-        .def("getValue", getValue2, return_value_policy<copy_const_reference>())
-        .def("reserveSafe", &CCCoreLib::ScalarField::reserveSafe)
-        .def("resizeSafe", &CCCoreLib::ScalarField::resizeSafe)
-        .def("setName", &CCCoreLib::ScalarField::setName)
-        .def("setValue", &CCCoreLib::ScalarField::setValue)
-        .def("swap", &CCCoreLib::ScalarField::swap)
-        .def("toNpArray", &ToNpArray_py)
-        .def("toNpArrayCopy", &ToNpArray_copy)
         ;
 
     class_<CCCoreLib::ReferenceCloud>("ReferenceCloud", no_init)
