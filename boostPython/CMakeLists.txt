@@ -61,6 +61,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     ${CMAKE_CURRENT_LIST_DIR}/ScalarFieldPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ccPointCloudPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ccPolylinePy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/distanceComputationToolsPy.cpp
     )
 
 target_include_directories( ${PROJECT_NAME} PUBLIC
