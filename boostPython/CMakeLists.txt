@@ -65,6 +65,7 @@ target_include_directories( ${PROJECT_NAME} PUBLIC
     ${Boost_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../pyAPI
+    ${CCCoreLib_SOURCE_DIR}/include
     )
 
 target_link_libraries( ${PROJECT_NAME}

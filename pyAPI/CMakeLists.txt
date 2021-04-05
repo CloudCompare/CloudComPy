@@ -47,7 +47,7 @@ target_sources( PYCC_LIB
        
 target_include_directories( PYCC_LIB PUBLIC
     ${CC_FBO_LIB_SOURCE_DIR}/include
-    ${CC_CORE_LIB_SOURCE_DIR}/include
+    ${CCCoreLib_SOURCE_DIR}/include
     ${QCC_DB_LIB_SOURCE_DIR}
     )
     
