@@ -22,6 +22,9 @@
 #include <boost/python.hpp>
 
 #include <ccPointCloud.h>
+#include <GenericIndexedCloudPersist.h>
+#include <DgmOctree.h>
+#include <ccScalarField.h>
 #include <DistanceComputationTools.h>
 #include <GenericProgressCallback.h>
 
@@ -33,14 +36,77 @@ namespace bnp = boost::python::numpy;
 
 using namespace boost::python;
 
+int computeCloud2CloudDistance1(ccPointCloud* comparedCloud,
+    ccPointCloud* referenceCloud,
+    CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& params)
+{
+    return CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance(comparedCloud, referenceCloud, params,
+                                                                           nullptr, nullptr, nullptr);
+}
+
+int computeCloud2CloudDistance2(ccPointCloud* comparedCloud,
+    ccPointCloud* referenceCloud,
+    CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& params,
+    CCCoreLib::DgmOctree* compOctree)
+{
+    return CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance(comparedCloud, referenceCloud, params,
+                                                                           nullptr, compOctree, nullptr);
+}
+
+int computeCloud2CloudDistance3(ccPointCloud* comparedCloud,
+    ccPointCloud* referenceCloud,
+    CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& params,
+    CCCoreLib::DgmOctree* compOctree,
+    CCCoreLib::DgmOctree* refOctree)
+{
+    return CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance(comparedCloud, referenceCloud, params,
+                                                                           nullptr, compOctree, refOctree);
+}
+
+bool setSplitDistances(CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& self, size_t count)
+{
+    bool success = true;
+    for (unsigned j = 0; j < 3; ++j)
+    {
+        ccScalarField* sfDim = new ccScalarField();
+        if (sfDim->resizeSafe(count))
+        {
+            sfDim->link();
+            self.splitDistances[j] = sfDim;
+        }
+        else
+        {
+            success = false;
+            break;
+        }
+    }
+    if (!success)
+    {
+        CCTRACE("[ComputeDistances] Not enough memory to generate 3D split fields!");
+
+        for (unsigned j = 0; j < 3; ++j)
+        {
+            if (self.splitDistances[j])
+            {
+                self.splitDistances[j]->release();
+                self.splitDistances[j] = nullptr;
+            }
+        }
+    }
+    return success;
+}
+
+CCCoreLib::ScalarField* getSplitDistance(CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& self, int index)
+{
+    if (index < 0 || index > 2)
+        return nullptr;
+    return self.splitDistances[index];
+}
 
 void export_distanceComputationTools()
 {
     class_<CCCoreLib::ReferenceCloud>("ReferenceCloud", no_init)
         ;
-
-//    class_<CCCoreLib::GenericProgressCallback>("GenericProgressCallback", no_init)
-//        ;
 
     enum_<CCCoreLib::LOCAL_MODEL_TYPES>("LOCAL_MODEL_TYPES")
         .value("NO_MODEL", CCCoreLib::NO_MODEL)
@@ -60,14 +126,17 @@ void export_distanceComputationTools()
         .def_readwrite("radiusForLocalModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::radiusForLocalModel)
         .def_readwrite("reuseExistingLocalModels", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::reuseExistingLocalModels)
         .def_readwrite("CPSet", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::CPSet)
-//        .def_readwrite("splitDistances_X", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::splitDistances[0])
-//        .def_readwrite("splitDistances_Y", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::splitDistances[1])
-//        .def_readwrite("splitDistances_Z", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::splitDistances[2])
+        .def("setSplitDistances", &setSplitDistances)
+        .def("getSplitDistance", &getSplitDistance, return_value_policy<reference_existing_object>())
         .def_readwrite("resetFormerDistances", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::resetFormerDistances)
         ;
 
     class_<CCCoreLib::DistanceComputationTools, boost::noncopyable>("DistanceComputationTools", no_init)
-//        .def("computeCloud2CloudDistance", CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance)
-//            .staticmethod("computeCloud2CloudDistance")
+        .def("computeCloud2CloudDistance", computeCloud2CloudDistance1)
+            .staticmethod("computeCloud2CloudDistance")
+        .def("computeCloud2CloudDistance2", computeCloud2CloudDistance2)
+            .staticmethod("computeCloud2CloudDistance2")
+        .def("computeCloud2CloudDistance3", computeCloud2CloudDistance3)
+        .staticmethod("computeCloud2CloudDistance3")
         ;
 }
