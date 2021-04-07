@@ -75,9 +75,6 @@ ccPointCloud* loadPointCloud(
     double y = 0,
     double z = 0);
 
-//ccPointCloud* loadPointCloudf(
-//    const char* filename) {return loadPointCloud(filename); };
-
 //! save a point cloud to a file
 /*! the file type is given by the extension
  * \param cloud
@@ -85,6 +82,15 @@ ccPointCloud* loadPointCloud(
  * \return IO status
  */
 CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename);
+
+//! save a vector of entities
+/*! the file type is given by the extension (use .bin)
+ * \param entities
+ * \param filename
+ * \return IO status
+ */
+CC_FILE_ERROR SaveEntities(std::vector<ccHObject*> entities, const QString& filename);
+
 
 enum CurvatureType
 {

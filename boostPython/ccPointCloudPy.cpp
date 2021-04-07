@@ -68,11 +68,16 @@ bnp::ndarray CoordsToNpArray_py(ccPointCloud &self)
     return result;
 }
 
+int (ccPointCloud::*addScalarFieldt)(const char*) = &ccPointCloud::addScalarField;
+
 void export_ccPointCloud()
 {
     class_<ccPointCloud>("ccPointCloud", no_init)
+        .def("addScalarField", addScalarFieldt)
         .def("computeGravityCenter", &ccPointCloud::computeGravityCenter)
         .def("crop2D", &ccPointCloud::crop2D, return_value_policy<reference_existing_object>())
+        .def("deleteAllScalarFields", &ccPointCloud::deleteAllScalarFields)
+        .def("deleteScalarField", &ccPointCloud::deleteScalarField)
         .def("exportCoordToSF", &exportCoordToSF_py)
         .def("getCurrentInScalarField", &ccPointCloud::getCurrentInScalarField, return_value_policy<reference_existing_object>())
         .def("getCurrentOutScalarField", &ccPointCloud::getCurrentOutScalarField, return_value_policy<reference_existing_object>())

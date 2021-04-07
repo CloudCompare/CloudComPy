@@ -60,6 +60,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     ${CMAKE_CURRENT_LIST_DIR}/cloudComPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ScalarFieldPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ccPointCloudPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ccPrimitivesPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ccPolylinePy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/distanceComputationToolsPy.cpp
     )
@@ -70,6 +71,7 @@ target_include_directories( ${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../pyAPI
     ${CCCoreLib_SOURCE_DIR}/include
+    ${QCC_DB_LIB_SOURCE_DIR}/include
     )
 
 target_link_libraries( ${PROJECT_NAME}

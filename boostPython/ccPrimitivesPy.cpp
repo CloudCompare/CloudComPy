@@ -1,0 +1,68 @@
+//##########################################################################
+//#                                                                        #
+//#                                PYCC                                    #
+//#                                                                        #
+//#  This program is free software; you can redistribute it and/or modify  #
+//#  it under the terms of the GNU Library General Public License as       #
+//#  published by the Free Software Foundation; version 2 or later of the  #
+//#  License.                                                              #
+//#                                                                        #
+//#  This program is distributed in the hope that it will be useful,       #
+//#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
+//#  GNU General Public License for more details.                          #
+//#                                                                        #
+//#          Copyright 2021 Paul RASCLE www.openfields.fr                  #
+//#                                                                        #
+//##########################################################################
+
+#include "ccPrimitivesPy.hpp"
+
+//#include <boost/python/numpy.hpp>
+#include <boost/python.hpp>
+
+#include <CCGeom.h>
+#include <ccGLMatrixTpl.h>
+#include <ccGLMatrix.h>
+#include <ccBox.h>
+
+#include <QString>
+
+//#include "PyScalarType.h"
+//#include "pyccTrace.h"
+//
+//namespace bp = boost::python;
+//namespace bnp = boost::python::numpy;
+
+using namespace boost::python;
+
+// templates for function pointer requires C++14
+template<typename T> void (ccGLMatrixTpl<T>::*initFromParameters1)(T, const Vector3Tpl<T>&, const Vector3Tpl<T>&) = &ccGLMatrixTpl<T>::initFromParameters;
+template<typename T> void (ccGLMatrixTpl<T>::*initFromParameters2)(T, T, T, const Vector3Tpl<T>&) = &ccGLMatrixTpl<T>::initFromParameters;
+
+//BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccBox_overloads, init, 1, 3)
+
+void export_ccPrimitives()
+{
+    // TODO: expose more construtors
+
+    class_<ccGLMatrixTpl<float> >("ccGLMatrixTpl_float")
+        .def("initFromParameters", initFromParameters1<float>)
+        .def("initFromParameters", initFromParameters2<float>)
+        ;
+
+    class_<ccGLMatrixTpl<double> >("ccGLMatrixTpl_double")
+        .def("initFromParameters", initFromParameters1<double>)
+        .def("initFromParameters", initFromParameters2<double>)
+        ;
+
+    class_<ccGLMatrix, bases<ccGLMatrixTpl<float> > >("ccGLMatrix")
+        ;
+
+    class_<ccGLMatrixd, bases<ccGLMatrixTpl<double> > >("ccGLMatrixd")
+        ;
+
+    class_<ccBox>("ccBox", init<QString>())
+        .def(init<const CCVector3&, optional<const ccGLMatrix*, QString> >())
+        ;
+}

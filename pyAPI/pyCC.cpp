@@ -387,6 +387,38 @@ ccPointCloud* loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int skip,
     return result;
 }
 
+::CC_FILE_ERROR SaveEntities(std::vector<ccHObject*> entities, const QString& filename)
+{
+    CCTRACE("saving entities");
+    pyCC* capi = initCloudCompare();
+    if ((entities.size() == 0) || filename.isEmpty())
+        return ::CC_FERR_BAD_ARGUMENT;
+    CCTRACE("entities.size: " << entities.size() << " file: " << filename.toStdString());
+    FileIOFilter::SaveParameters parameters;
+    parameters.alwaysDisplaySaveDialog = false;
+    QFileInfo fi(filename);
+    QString ext = fi.suffix();
+    QString fileFilter = "";
+    const std::vector<FileIOFilter::Shared>& filters = FileIOFilter::GetFilters();
+    for (const auto filter : filters)
+    {
+        QStringList theFilters = filter->getFileFilters(false);
+        QStringList matches = theFilters.filter(ext);
+        if (matches.size())
+        {
+            fileFilter = matches.first();
+            break;
+        }
+    }
+    CCTRACE("fileFilter: " << fileFilter.toStdString());
+    //we'll regroup all selected entities in a temporary group
+    ccHObject tempContainer;
+    ConvertToGroup(entities, tempContainer, ccHObject::DP_NONE);
+
+    ::CC_FILE_ERROR result = FileIOFilter::SaveToFile(&tempContainer, filename, parameters, fileFilter);
+    return result;
+}
+
 bool computeCurvature(CurvatureType option, double radius, QList<ccPointCloud*> clouds)
 {
     CCTRACE("computeCurvature mode: " << option << " radius: " << radius << " nbClouds: " << clouds.size());

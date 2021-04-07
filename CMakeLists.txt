@@ -20,8 +20,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project( CloudCompareProjects )
 
-# specify the C++ standard
-set(CMAKE_CXX_STANDARD 11)
+# specify the C++ standard: C++14 required for boost python (use of variable templates for some pointer functions)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # --- Qt5 detection

@@ -25,6 +25,7 @@
 
 #include "ScalarFieldPy.hpp"
 #include "ccPointCloudPy.hpp"
+#include "ccPrimitivesPy.hpp"
 #include "ccPolylinePy.hpp"
 #include "distanceComputationToolsPy.hpp"
 
@@ -67,6 +68,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
     export_ScalarField();
     export_ccPolyline();
     export_ccPointCloud();
+    export_ccPrimitives();
     export_distanceComputationTools();
 
     def("greet", greet);
@@ -113,6 +115,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
         [return_value_policy<reference_existing_object>()]);
 
     def("SavePointCloud", SavePointCloud);
+
+    def("SaveEntities", SaveEntities);
 
     def("initCC", &initCC_py);
 }

@@ -25,7 +25,9 @@
 #include <boost/python.hpp>
 #include <Python.h>
 #include <QString>
+#include <vector>
 #include <CCGeom.h>
+#include <ccHObject.h>
 
 #include "pyccTrace.h"
 
@@ -81,7 +83,7 @@ struct QString_from_python_str
     }
 };
 
-template<typename T> struct Vector3Tpl_to_python_str
+template<typename T> struct Vector3Tpl_to_python_tuple
 {
     static PyObject* convert(Vector3Tpl<T> v)
     {
@@ -89,11 +91,11 @@ template<typename T> struct Vector3Tpl_to_python_str
     }
 };
 
-template<typename T> struct Vector3Tpl_from_python_str // T double or float
+template<typename T> struct Vector3Tpl_from_python_tuple // T double or float
 {
-    Vector3Tpl_from_python_str()
+    Vector3Tpl_from_python_tuple()
     {
-        CCTRACE("register Vector3Tpl_from_python_str");
+        CCTRACE("register Vector3Tpl_from_python_tuple");
         bp::converter::registry::push_back(&convertible, &construct, bp::type_id<Vector3Tpl<T> >());
     }
 
@@ -142,6 +144,60 @@ template<typename T> struct Vector3Tpl_from_python_str // T double or float
     }
 };
 
+struct ccHObjectVector_from_python_list
+{
+    ccHObjectVector_from_python_list()
+    {
+        CCTRACE("register ccHObjectVector_from_python_list");
+        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<std::vector<ccHObject*> >());
+    }
+
+    // Determine if obj_ptr can be converted in a ccHObject*
+    static void* convertible(PyObject* obj_ptr)
+    {
+        CCTRACE("convertible to std::vector<ccHObject*>?");
+        if (!PyList_Check(obj_ptr))
+            return 0;
+        CCTRACE("list ok");
+        Py_ssize_t nbobj = PyList_GET_SIZE(obj_ptr);
+        if (nbobj == 0)
+            return 0;
+        CCTRACE("nbobj "<< nbobj);
+        for (Py_ssize_t i = 0; i<nbobj; i++)
+        {
+            PyObject* iptr = PyList_GetItem(obj_ptr, i);
+            bp::extract<ccHObject*> x(iptr);
+            if (!x.check())
+                return 0;
+            CCTRACE("  OK " << i);
+        }
+        return obj_ptr;
+    }
+
+    // Convert obj_ptr into a std::vector<ccHObject*>
+    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
+    {
+        CCTRACE("construct");
+        Py_ssize_t nbobj = PyList_GET_SIZE(obj_ptr);
+
+        // Grab pointer to memory into which to construct the new list<ccHObject*>
+        void* storage = ((bp::converter::rvalue_from_python_storage<std::vector<ccHObject*> >*) data)->storage.bytes;
+
+        // in-place construct the new list<ccHObject*> using the character data
+        // extracted from the Python object
+        std::vector<ccHObject*>* res = new (storage) std::vector<ccHObject*>;
+        res->resize(nbobj);
+        for (Py_ssize_t i = 0; i<nbobj; i++)
+        {
+            PyObject* iptr = PyList_GetItem(obj_ptr, i);
+            ccHObject* obj = bp::extract<ccHObject*>(iptr);
+            (*res)[i] = obj;
+        }
+
+        // Stash the memory chunk pointer for later use by boost.python
+        data->convertible = storage;
+    }
+};
 
 void initializeConverters()
 {
@@ -150,13 +206,14 @@ void initializeConverters()
     // register the to-python converter
     CCTRACE("initializeConverters");
     to_python_converter<QString, QString_to_python_str, false>(); //"false" because QString_to_python_str has no member get_pytype
-    to_python_converter<Vector3Tpl<float>, Vector3Tpl_to_python_str<float>, false>();
-    to_python_converter<Vector3Tpl<double>, Vector3Tpl_to_python_str<double>, false>();
+    to_python_converter<Vector3Tpl<float>, Vector3Tpl_to_python_tuple<float>, false>();
+    to_python_converter<Vector3Tpl<double>, Vector3Tpl_to_python_tuple<double>, false>();
 
     // register the from-python converter
     QString_from_python_str();
-    Vector3Tpl_from_python_str<float>();
-    Vector3Tpl_from_python_str<double>();
+    Vector3Tpl_from_python_tuple<float>();
+    Vector3Tpl_from_python_tuple<double>();
+    ccHObjectVector_from_python_list();
 }
 
 } //namespace anonymous
