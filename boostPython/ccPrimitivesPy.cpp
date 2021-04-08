@@ -24,6 +24,8 @@
 #include <CCGeom.h>
 #include <ccGLMatrixTpl.h>
 #include <ccGLMatrix.h>
+#include <ccMesh.h>
+#include <ccGenericPrimitive.h>
 #include <ccBox.h>
 
 #include <QString>
@@ -40,7 +42,13 @@ using namespace boost::python;
 template<typename T> void (ccGLMatrixTpl<T>::*initFromParameters1)(T, const Vector3Tpl<T>&, const Vector3Tpl<T>&) = &ccGLMatrixTpl<T>::initFromParameters;
 template<typename T> void (ccGLMatrixTpl<T>::*initFromParameters2)(T, T, T, const Vector3Tpl<T>&) = &ccGLMatrixTpl<T>::initFromParameters;
 
-//BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccBox_overloads, init, 1, 3)
+struct ccGenericPrimitiveWrap : ccGenericPrimitive, wrapper<ccGenericPrimitive>
+{
+    virtual QString getTypeName()
+    {
+        return this->get_override("getTypeName")();
+    }
+};
 
 void export_ccPrimitives()
 {
@@ -62,7 +70,11 @@ void export_ccPrimitives()
     class_<ccGLMatrixd, bases<ccGLMatrixTpl<double> > >("ccGLMatrixd")
         ;
 
-    class_<ccBox>("ccBox", init<QString>())
+    class_<ccGenericPrimitiveWrap, bases<ccMesh>, boost::noncopyable>("ccGenericPrimitive", no_init)
+        .def("getTypeName", pure_virtual(&ccGenericPrimitive::getTypeName))
+        ;
+
+    class_<ccBox, bases<ccGenericPrimitive> >("ccBox", init<QString>())
         .def(init<const CCVector3&, optional<const ccGLMatrix*, QString> >())
         ;
 }

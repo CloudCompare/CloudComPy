@@ -25,6 +25,7 @@
 
 #include "ScalarFieldPy.hpp"
 #include "ccPointCloudPy.hpp"
+#include "ccMeshPy.hpp"
 #include "ccPrimitivesPy.hpp"
 #include "ccPolylinePy.hpp"
 #include "distanceComputationToolsPy.hpp"
@@ -68,6 +69,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
     export_ScalarField();
     export_ccPolyline();
     export_ccPointCloud();
+    export_ccMesh();
     export_ccPrimitives();
     export_distanceComputationTools();
 
