@@ -27,6 +27,12 @@
 #include <ccMesh.h>
 #include <ccGenericPrimitive.h>
 #include <ccBox.h>
+#include <ccCone.h>
+#include <ccCylinder.h>
+#include <ccPlane.h>
+#include <ccQuadric.h>
+#include <ccSphere.h>
+#include <ccTorus.h>
 
 #include <QString>
 
@@ -77,4 +83,35 @@ void export_ccPrimitives()
     class_<ccBox, bases<ccGenericPrimitive> >("ccBox", init<QString>())
         .def(init<const CCVector3&, optional<const ccGLMatrix*, QString> >())
         ;
+
+    class_<ccCone, bases<ccGenericPrimitive> >("ccCone", init<QString>())
+        .def(init<PointCoordinateType, PointCoordinateType, PointCoordinateType,
+             optional<PointCoordinateType, PointCoordinateType,const ccGLMatrix*, QString, unsigned, unsigned> >())
+        ;
+
+    class_<ccCylinder, bases<ccGenericPrimitive> >("ccCylinder", init<QString>())
+        .def(init<PointCoordinateType, PointCoordinateType,
+             optional<const ccGLMatrix*, QString, unsigned, unsigned> >())
+        ;
+
+    class_<ccPlane, bases<ccGenericPrimitive> >("ccPlane", init<QString>())
+        .def(init<PointCoordinateType, PointCoordinateType,
+             optional<const ccGLMatrix*, QString> >())
+        ;
+
+//    class_<ccQuadric, bases<ccGenericPrimitive> >("ccQuadric", init<QString>())
+//        .def(init<CCVector2, CCVector2, const PointCoordinateType[6],
+//             optional<const Tuple3ub*, const ccGLMatrix*, QString, unsigned> >())
+//        ;
+
+    class_<ccSphere, bases<ccGenericPrimitive> >("ccSphere", init<QString>())
+        .def(init<PointCoordinateType,
+             optional<const ccGLMatrix*, QString, unsigned, unsigned> >())
+        ;
+
+    class_<ccTorus, bases<ccGenericPrimitive> >("ccTorus", init<QString>())
+        .def(init<PointCoordinateType, PointCoordinateType,
+             optional<double, bool, PointCoordinateType, const ccGLMatrix*, QString, unsigned, unsigned> >())
+        ;
+
 }
