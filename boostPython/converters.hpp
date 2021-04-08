@@ -28,6 +28,8 @@
 #include <vector>
 #include <CCGeom.h>
 #include <ccHObject.h>
+#include <ccPointCloud.h>
+#include <ccBox.h>
 
 #include "pyccTrace.h"
 
@@ -166,10 +168,20 @@ struct ccHObjectVector_from_python_list
         for (Py_ssize_t i = 0; i<nbobj; i++)
         {
             PyObject* iptr = PyList_GetItem(obj_ptr, i);
-            bp::extract<ccHObject*> x(iptr);
-            if (!x.check())
-                return 0;
-            CCTRACE("  OK " << i);
+            bp::extract<ccPointCloud*> cl(iptr);
+            if (cl.check())
+            {
+                CCTRACE("  OK ccPointCloud" << i);
+                continue;
+            }
+            bp::extract<ccBox*> bo(iptr);
+            if (bo.check())
+            {
+                CCTRACE("  OK ccBox" << i);
+                continue;
+            }
+            CCTRACE("  NOK " << i);
+            return 0;
         }
         return obj_ptr;
     }
@@ -190,8 +202,20 @@ struct ccHObjectVector_from_python_list
         for (Py_ssize_t i = 0; i<nbobj; i++)
         {
             PyObject* iptr = PyList_GetItem(obj_ptr, i);
-            ccHObject* obj = bp::extract<ccHObject*>(iptr);
-            (*res)[i] = obj;
+            bp::extract<ccPointCloud*> cl(iptr);
+            if (cl.check())
+            {
+                CCTRACE("  Extract OK ccPointCloud" << i);
+                (*res)[i] = cl();
+                continue;
+            }
+            bp::extract<ccBox*> bo(iptr);
+            if (bo.check())
+            {
+                CCTRACE("  OK ccBox" << i);
+                (*res)[i] = bo();
+                continue;
+            }
         }
 
         // Stash the memory chunk pointer for later use by boost.python
