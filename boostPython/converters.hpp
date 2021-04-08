@@ -174,10 +174,10 @@ struct ccHObjectVector_from_python_list
                 CCTRACE("  OK ccPointCloud" << i);
                 continue;
             }
-            bp::extract<ccBox*> bo(iptr);
-            if (bo.check())
+            bp::extract<ccMesh*> mh(iptr);
+            if (mh.check())
             {
-                CCTRACE("  OK ccBox" << i);
+                CCTRACE("  OK ccMesh" << i);
                 continue;
             }
             CCTRACE("  NOK " << i);
@@ -209,11 +209,11 @@ struct ccHObjectVector_from_python_list
                 (*res)[i] = cl();
                 continue;
             }
-            bp::extract<ccBox*> bo(iptr);
-            if (bo.check())
+            bp::extract<ccMesh*> mh(iptr);
+            if (mh.check())
             {
-                CCTRACE("  OK ccBox" << i);
-                (*res)[i] = bo();
+                CCTRACE("  OK ccMesh" << i);
+                (*res)[i] = mh();
                 continue;
             }
         }
