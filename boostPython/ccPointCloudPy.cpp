@@ -32,6 +32,63 @@ namespace bnp = boost::python::numpy;
 
 using namespace boost::python;
 
+//struct GenericIndexedCloudPersistWrap : CCCoreLib::GenericIndexedCloudPersist, wrapper<CCCoreLib::GenericIndexedCloudPersist>
+//{
+//    virtual const CCVector3* getPointPersistentPtr(unsigned index) const
+//    {
+//        return this->get_override("getPointPersistentPtr")(index);
+//    }
+//    virtual const CCVector3* getPoint(unsigned index) const
+//    {
+//        return this->get_override("getPoint")(index);
+//    }
+//    virtual void getPoint(unsigned index, CCVector3& P) const
+//    {
+//        this->get_override("getPoint")(index, P);
+//    }
+//    virtual unsigned size() const
+//    {
+//        return this->get_override("size")();
+//    }
+//    virtual void forEach(genericPointAction action)
+//    {
+//        this->get_override("forEach")(action);
+//    }
+//    virtual void getBoundingBox(CCVector3& bbMin, CCVector3& bbMax)
+//    {
+//        this->get_override("getBoundingBox")(bbMin, bbMax);
+//    }
+//    virtual void placeIteratorAtBeginning()
+//    {
+//        this->get_override("placeIteratorAtBeginning")();
+//    }
+//    virtual const CCVector3* getNextPoint()
+//    {
+//        return this->get_override("getNextPoint")();
+//    }
+//    virtual bool enableScalarField()
+//    {
+//        return this->get_override("enableScalarField")();
+//    }
+//    virtual bool isScalarFieldEnabled()
+//    {
+//        return this->get_override("isScalarFieldEnabled")();
+//    }
+//    virtual void setPointScalarValue(unsigned pointIndex, ScalarType value)
+//    {
+//        this->get_override("setPointScalarValue")(pointIndex, value);
+//    }
+//    virtual ScalarType getPointScalarValue(unsigned pointIndex) const
+//    {
+//        return this->get_override("getPointScalarValue")(pointIndex);
+//    }
+//};
+//
+//struct ccGenericPointCloudWrap : ccGenericPointCloud, wrapper<ccGenericPointCloud>
+//{
+//
+//};
+
 bool exportCoordToSF_py(ccPointCloud &self, bool x, bool y, bool z)
 {
     bool b[3];
@@ -72,7 +129,20 @@ int (ccPointCloud::*addScalarFieldt)(const char*) = &ccPointCloud::addScalarFiel
 
 void export_ccPointCloud()
 {
-    class_<ccPointCloud>("ccPointCloud", no_init)
+    //    class_<GenericIndexedCloudPersistWrap, boost::noncopyable>("GenericIndexedCloudPersist", no_init)
+    //        ;
+    //    class_<ccGenericPointCloudWrap, bases<CCCoreLib::GenericIndexedCloudPersist>, boost::noncopyable>("ccGenericPointCloud", no_init)
+    //        ;
+    class_<CCCoreLib::GenericIndexedCloudPersist, boost::noncopyable>("GenericIndexedCloudPersist", no_init)
+        ;
+
+    class_<ccGenericPointCloud, bases<CCCoreLib::GenericIndexedCloudPersist>, boost::noncopyable>("ccGenericPointCloud", no_init)
+        ;
+
+    class_<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>, bases<ccGenericPointCloud>, boost::noncopyable>("PointCloudTpl_ccGenericPointCloud_QString", no_init)
+        ;
+
+    class_<ccPointCloud, bases<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString> > >("ccPointCloud", no_init)
         .def("addScalarField", addScalarFieldt)
         .def("computeGravityCenter", &ccPointCloud::computeGravityCenter)
         .def("crop2D", &ccPointCloud::crop2D, return_value_policy<reference_existing_object>())

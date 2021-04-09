@@ -23,6 +23,7 @@
 
 #include <ccPointCloud.h>
 #include <GenericIndexedCloudPersist.h>
+#include <PointCloud.h>
 #include <DgmOctree.h>
 #include <ccScalarField.h>
 #include <DistanceComputationTools.h>
@@ -36,32 +37,62 @@ namespace bnp = boost::python::numpy;
 
 using namespace boost::python;
 
-int computeCloud2CloudDistance1(ccPointCloud* comparedCloud,
-    ccPointCloud* referenceCloud,
-    CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& params)
+//int computeCloud2CloudDistance1(ccPointCloud* comparedCloud,
+//    ccPointCloud* referenceCloud,
+//    CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& params)
+//{
+//    return CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance(comparedCloud, referenceCloud, params,
+//                                                                           nullptr, nullptr, nullptr);
+//}
+//
+//int computeCloud2CloudDistance2(ccPointCloud* comparedCloud,
+//    ccPointCloud* referenceCloud,
+//    CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& params,
+//    CCCoreLib::DgmOctree* compOctree)
+//{
+//    return CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance(comparedCloud, referenceCloud, params,
+//                                                                           nullptr, compOctree, nullptr);
+//}
+//
+//int computeCloud2CloudDistance3(ccPointCloud* comparedCloud,
+//    ccPointCloud* referenceCloud,
+//    CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& params,
+//    CCCoreLib::DgmOctree* compOctree,
+//    CCCoreLib::DgmOctree* refOctree)
+//{
+//    return CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance(comparedCloud, referenceCloud, params,
+//                                                                           nullptr, compOctree, refOctree);
+//}
+struct GenericProgressCallbackWrap : CCCoreLib::GenericProgressCallback, wrapper<CCCoreLib::GenericProgressCallback>
 {
-    return CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance(comparedCloud, referenceCloud, params,
-                                                                           nullptr, nullptr, nullptr);
-}
+    virtual void update(float percent)
+    {
+        this->get_override("update")(percent);
+    }
+    virtual void setMethodTitle(const char* methodTitle)
+    {
+        this->get_override("setMethodTitle")(methodTitle);
+    }
+    virtual void setInfo(const char* infoStr)
+    {
+        this->get_override("setInfo")(infoStr);
+    }
+    virtual void start()
+    {
+        this->get_override("start")();
+    }
+    virtual void stop()
+    {
+        this->get_override("stop")();
+    }
+    virtual bool isCancelRequested()
+    {
+        return this->get_override("isCancelRequested")();
+    }
+};
 
-int computeCloud2CloudDistance2(ccPointCloud* comparedCloud,
-    ccPointCloud* referenceCloud,
-    CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& params,
-    CCCoreLib::DgmOctree* compOctree)
-{
-    return CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance(comparedCloud, referenceCloud, params,
-                                                                           nullptr, compOctree, nullptr);
-}
-
-int computeCloud2CloudDistance3(ccPointCloud* comparedCloud,
-    ccPointCloud* referenceCloud,
-    CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& params,
-    CCCoreLib::DgmOctree* compOctree,
-    CCCoreLib::DgmOctree* refOctree)
-{
-    return CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance(comparedCloud, referenceCloud, params,
-                                                                           nullptr, compOctree, refOctree);
-}
+//BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(DistanceComputationTools_overloads, computeCloud2CloudDistance, 3, 6)
+BOOST_PYTHON_FUNCTION_OVERLOADS(DistanceComputationTools_overloads, CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance, 3, 6)
 
 bool setSplitDistances(CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& self, size_t count)
 {
@@ -105,6 +136,13 @@ CCCoreLib::ScalarField* getSplitDistance(CCCoreLib::DistanceComputationTools::Cl
 
 void export_distanceComputationTools()
 {
+//    class_<CCCoreLib::GenericProgressCallback>("GenericProgressCallback", no_init)
+//        ;
+
+    class_<GenericProgressCallbackWrap, boost::noncopyable>("GenericProgressCallback", no_init)
+//        .def("getTypeName", pure_virtual(&ccGenericPrimitive::getTypeName))
+        ;
+
     class_<CCCoreLib::ReferenceCloud>("ReferenceCloud", no_init)
         ;
 
@@ -131,12 +169,26 @@ void export_distanceComputationTools()
         .def_readwrite("resetFormerDistances", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::resetFormerDistances)
         ;
 
-    class_<CCCoreLib::DistanceComputationTools, boost::noncopyable>("DistanceComputationTools", no_init)
-        .def("computeCloud2CloudDistance", computeCloud2CloudDistance1)
-            .staticmethod("computeCloud2CloudDistance")
-        .def("computeCloud2CloudDistance2", computeCloud2CloudDistance2)
-            .staticmethod("computeCloud2CloudDistance2")
-        .def("computeCloud2CloudDistance3", computeCloud2CloudDistance3)
-        .staticmethod("computeCloud2CloudDistance3")
+    class_<CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams>("Cloud2MeshDistanceComputationParams")
+        .def_readwrite("octreeLevel", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::octreeLevel)
+        .def_readwrite("maxSearchDist", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::maxSearchDist)
+        .def_readwrite("useDistanceMap", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::useDistanceMap)
+        .def_readwrite("signedDistances", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::signedDistances)
+        .def_readwrite("flipNormals", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::flipNormals)
+        .def_readwrite("multiThread", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::multiThread)
+        .def_readwrite("maxThreadCount", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::maxThreadCount)
+        .def_readwrite("CPSet", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::CPSet)
         ;
+
+    class_<CCCoreLib::DistanceComputationTools, boost::noncopyable>("DistanceComputationTools", no_init)
+        .def("computeCloud2CloudDistance", &CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance, DistanceComputationTools_overloads())
+            .staticmethod("computeCloud2CloudDistance")
+//        .def("computeCloud2CloudDistance", computeCloud2CloudDistance1)
+//            .staticmethod("computeCloud2CloudDistance")
+//        .def("computeCloud2CloudDistance2", computeCloud2CloudDistance2)
+//            .staticmethod("computeCloud2CloudDistance2")
+//        .def("computeCloud2CloudDistance3", computeCloud2CloudDistance3)
+//        .staticmethod("computeCloud2CloudDistance3")
+        ;
+
 }
