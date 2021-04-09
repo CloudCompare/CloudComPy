@@ -37,32 +37,6 @@ namespace bnp = boost::python::numpy;
 
 using namespace boost::python;
 
-//int computeCloud2CloudDistance1(ccPointCloud* comparedCloud,
-//    ccPointCloud* referenceCloud,
-//    CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& params)
-//{
-//    return CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance(comparedCloud, referenceCloud, params,
-//                                                                           nullptr, nullptr, nullptr);
-//}
-//
-//int computeCloud2CloudDistance2(ccPointCloud* comparedCloud,
-//    ccPointCloud* referenceCloud,
-//    CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& params,
-//    CCCoreLib::DgmOctree* compOctree)
-//{
-//    return CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance(comparedCloud, referenceCloud, params,
-//                                                                           nullptr, compOctree, nullptr);
-//}
-//
-//int computeCloud2CloudDistance3(ccPointCloud* comparedCloud,
-//    ccPointCloud* referenceCloud,
-//    CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& params,
-//    CCCoreLib::DgmOctree* compOctree,
-//    CCCoreLib::DgmOctree* refOctree)
-//{
-//    return CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance(comparedCloud, referenceCloud, params,
-//                                                                           nullptr, compOctree, refOctree);
-//}
 struct GenericProgressCallbackWrap : CCCoreLib::GenericProgressCallback, wrapper<CCCoreLib::GenericProgressCallback>
 {
     virtual void update(float percent)
@@ -91,7 +65,6 @@ struct GenericProgressCallbackWrap : CCCoreLib::GenericProgressCallback, wrapper
     }
 };
 
-//BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(DistanceComputationTools_overloads, computeCloud2CloudDistance, 3, 6)
 BOOST_PYTHON_FUNCTION_OVERLOADS(DistanceComputationTools_overloads, CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance, 3, 6)
 
 bool setSplitDistances(CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& self, size_t count)
@@ -136,11 +109,8 @@ CCCoreLib::ScalarField* getSplitDistance(CCCoreLib::DistanceComputationTools::Cl
 
 void export_distanceComputationTools()
 {
-//    class_<CCCoreLib::GenericProgressCallback>("GenericProgressCallback", no_init)
-//        ;
 
     class_<GenericProgressCallbackWrap, boost::noncopyable>("GenericProgressCallback", no_init)
-//        .def("getTypeName", pure_virtual(&ccGenericPrimitive::getTypeName))
         ;
 
     class_<CCCoreLib::ReferenceCloud>("ReferenceCloud", no_init)
@@ -183,12 +153,6 @@ void export_distanceComputationTools()
     class_<CCCoreLib::DistanceComputationTools, boost::noncopyable>("DistanceComputationTools", no_init)
         .def("computeCloud2CloudDistance", &CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance, DistanceComputationTools_overloads())
             .staticmethod("computeCloud2CloudDistance")
-//        .def("computeCloud2CloudDistance", computeCloud2CloudDistance1)
-//            .staticmethod("computeCloud2CloudDistance")
-//        .def("computeCloud2CloudDistance2", computeCloud2CloudDistance2)
-//            .staticmethod("computeCloud2CloudDistance2")
-//        .def("computeCloud2CloudDistance3", computeCloud2CloudDistance3)
-//        .staticmethod("computeCloud2CloudDistance3")
         ;
 
 }

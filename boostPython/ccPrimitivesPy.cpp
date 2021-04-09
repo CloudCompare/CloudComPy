@@ -36,12 +36,6 @@
 
 #include <QString>
 
-//#include "PyScalarType.h"
-//#include "pyccTrace.h"
-//
-//namespace bp = boost::python;
-//namespace bnp = boost::python::numpy;
-
 using namespace boost::python;
 
 // templates for function pointer requires C++14
