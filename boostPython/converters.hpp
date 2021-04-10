@@ -268,11 +268,11 @@ template<typename T> struct Tuple3Tpl_from_python_tuple // T int, short, unsigne
     }
 };
 
-template<typename T> struct Vector6_from_python_tuple // T double or float
+template<typename T> struct Vector_from_python_tuple // T double or float
 {
-    Vector6_from_python_tuple()
+    Vector_from_python_tuple()
     {
-        CCTRACE("register Vector6_from_python_tuple");
+        CCTRACE("register Vector_from_python_tuple");
         bp::converter::registry::push_back(&convertible, &construct, bp::type_id<std::vector<T> >());
     }
 
@@ -282,9 +282,8 @@ template<typename T> struct Vector6_from_python_tuple // T double or float
         CCTRACE("convertible to std::vector<T>?");
         if (!PyTuple_Check(obj_ptr))
             return 0;
-        if (PyTuple_GET_SIZE(obj_ptr) != 6)
-            return 0;
-        for (int i=0; i<6; i++)
+        Py_ssize_t nbElems = PyTuple_GET_SIZE(obj_ptr);
+        for (Py_ssize_t i=0; i<nbElems; i++)
         {
             PyObject* iptr = PyTuple_GET_ITEM(obj_ptr, i);
             if (!PyFloat_Check(iptr) && !PyLong_Check(iptr))
@@ -297,9 +296,10 @@ template<typename T> struct Vector6_from_python_tuple // T double or float
     static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
     {
         CCTRACE("construct");
-        // Extract the 6 components (check already done by convertible)
-        T val[6];
-        for (int i=0; i<6; i++)
+        // Extract the components (check already done by convertible)
+        Py_ssize_t nbElems = PyTuple_GET_SIZE(obj_ptr);
+        T val[nbElems];
+        for (Py_ssize_t i=0; i<nbElems; i++)
         {
             PyObject* iptr = PyTuple_GetItem(obj_ptr, i);
             if (PyFloat_Check(iptr))
@@ -316,8 +316,8 @@ template<typename T> struct Vector6_from_python_tuple // T double or float
         // in-place construct the new Vector3Tpl<T> using the character data
         // extracted from the Python object
         std::vector<T> *res = new (storage) std::vector<T>;
-        res->resize(6);
-        for (int i=0; i<6; i++)
+        res->resize(nbElems);
+        for (Py_ssize_t i=0; i<nbElems; i++)
             (*res)[i] = val[i];
 
         // Stash the memory chunk pointer for later use by boost.python
@@ -428,8 +428,8 @@ void initializeConverters()
     Tuple3Tpl_from_python_tuple<unsigned int>();
     Tuple3Tpl_from_python_tuple<unsigned char>();
     Tuple3Tpl_from_python_tuple<short>();
-    Vector6_from_python_tuple<float>();
-    Vector6_from_python_tuple<double>();
+    Vector_from_python_tuple<float>();
+    Vector_from_python_tuple<double>();
     ccHObjectVector_from_python_list();
 }
 
