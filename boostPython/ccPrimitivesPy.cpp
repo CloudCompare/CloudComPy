@@ -33,6 +33,7 @@
 #include <ccQuadric.h>
 #include <ccSphere.h>
 #include <ccTorus.h>
+#include <ccDish.h>
 
 #include <QString>
 

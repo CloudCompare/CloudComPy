@@ -27,8 +27,13 @@ using namespace boost::python;
 
 void export_ccMesh()
 {
+    class_<CCCoreLib::GenericIndexedMesh, boost::noncopyable>("GenericIndexedMesh", no_init)
+        ;
 
-    class_<ccMesh>("ccMesh", no_init)
+    class_<ccGenericMesh, bases<CCCoreLib::GenericIndexedMesh>, boost::noncopyable>("ccGenericMesh", no_init)
+        ;
+
+    class_<ccMesh, bases<ccGenericMesh> >("ccMesh", no_init)
         .def("size", &ccMesh::size)
         ;
 }

@@ -28,6 +28,7 @@
 #include <ccScalarField.h>
 #include <DistanceComputationTools.h>
 #include <GenericProgressCallback.h>
+#include <ccMesh.h>
 
 #include "PyScalarType.h"
 #include "pyccTrace.h"
@@ -65,7 +66,9 @@ struct GenericProgressCallbackWrap : CCCoreLib::GenericProgressCallback, wrapper
     }
 };
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(DistanceComputationTools_overloads, CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance, 3, 6)
+BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2CloudDistance_overloads, CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance, 3, 6)
+BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2MeshDistance_overloads, CCCoreLib::DistanceComputationTools::computeCloud2MeshDistance, 3, 5)
+BOOST_PYTHON_FUNCTION_OVERLOADS(computeApproxCloud2CloudDistance_overloads, CCCoreLib::DistanceComputationTools::computeApproxCloud2CloudDistance, 3, 7)
 
 bool setSplitDistances(CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& self, size_t count)
 {
@@ -151,8 +154,11 @@ void export_distanceComputationTools()
         ;
 
     class_<CCCoreLib::DistanceComputationTools, boost::noncopyable>("DistanceComputationTools", no_init)
-        .def("computeCloud2CloudDistance", &CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance, DistanceComputationTools_overloads())
+        .def("computeCloud2CloudDistance", &CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance, computeCloud2CloudDistance_overloads())
             .staticmethod("computeCloud2CloudDistance")
+        .def("computeCloud2MeshDistance", &CCCoreLib::DistanceComputationTools::computeCloud2MeshDistance, computeCloud2MeshDistance_overloads())
+            .staticmethod("computeCloud2MeshDistance")
+        .def("computeApproxCloud2CloudDistance", &CCCoreLib::DistanceComputationTools::computeApproxCloud2CloudDistance, computeApproxCloud2CloudDistance_overloads())
+            .staticmethod("computeApproxCloud2CloudDistance")
         ;
-
 }
