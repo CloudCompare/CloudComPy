@@ -217,7 +217,7 @@ template<typename T> struct Vector3Tpl_from_python_tuple // T double or float
     }
 };
 
-template<typename T> struct Tuple3Tpl_from_python_tuple // T double or float
+template<typename T> struct Tuple3Tpl_from_python_tuple // T int, short, unsigned int, unsigned char
 {
     Tuple3Tpl_from_python_tuple()
     {
@@ -262,6 +262,63 @@ template<typename T> struct Tuple3Tpl_from_python_tuple // T double or float
         // in-place construct the new Tuple3Tpl<T> using the character data
         // extracted from the Python object
         new (storage) Tuple3Tpl<T>(val);
+
+        // Stash the memory chunk pointer for later use by boost.python
+        data->convertible = storage;
+    }
+};
+
+template<typename T> struct Vector6_from_python_tuple // T double or float
+{
+    Vector6_from_python_tuple()
+    {
+        CCTRACE("register Vector6_from_python_tuple");
+        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<std::vector<T> >());
+    }
+
+    // Determine if obj_ptr can be converted in a std::vector<T> size 6
+    static void* convertible(PyObject* obj_ptr)
+    {
+        CCTRACE("convertible to std::vector<T>?");
+        if (!PyTuple_Check(obj_ptr))
+            return 0;
+        if (PyTuple_GET_SIZE(obj_ptr) != 6)
+            return 0;
+        for (int i=0; i<6; i++)
+        {
+            PyObject* iptr = PyTuple_GET_ITEM(obj_ptr, i);
+            if (!PyFloat_Check(iptr) && !PyLong_Check(iptr))
+                return 0;
+        }
+        return obj_ptr;
+    }
+
+    // Convert obj_ptr into a std::vector<T>
+    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
+    {
+        CCTRACE("construct");
+        // Extract the 6 components (check already done by convertible)
+        T val[6];
+        for (int i=0; i<6; i++)
+        {
+            PyObject* iptr = PyTuple_GetItem(obj_ptr, i);
+            if (PyFloat_Check(iptr))
+                val[i] = PyFloat_AS_DOUBLE(iptr);
+            else if (PyLong_Check(iptr))
+                val[i] = PyLong_AsDouble(iptr);
+            else
+                bp::throw_error_already_set();
+        }
+
+        // Grab pointer to memory into which to construct the new T*
+        void* storage = ((bp::converter::rvalue_from_python_storage<std::vector<T> >*) data)->storage.bytes;
+
+        // in-place construct the new Vector3Tpl<T> using the character data
+        // extracted from the Python object
+        std::vector<T> *res = new (storage) std::vector<T>;
+        res->resize(6);
+        for (int i=0; i<6; i++)
+            (*res)[i] = val[i];
 
         // Stash the memory chunk pointer for later use by boost.python
         data->convertible = storage;
@@ -371,6 +428,8 @@ void initializeConverters()
     Tuple3Tpl_from_python_tuple<unsigned int>();
     Tuple3Tpl_from_python_tuple<unsigned char>();
     Tuple3Tpl_from_python_tuple<short>();
+    Vector6_from_python_tuple<float>();
+    Vector6_from_python_tuple<double>();
     ccHObjectVector_from_python_list();
 }
 

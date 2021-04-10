@@ -36,6 +36,7 @@
 #include <ccDish.h>
 
 #include <QString>
+#include <exception>
 
 using namespace boost::python;
 
@@ -48,6 +49,70 @@ struct ccGenericPrimitiveWrap : ccGenericPrimitive, wrapper<ccGenericPrimitive>
     virtual QString getTypeName()
     {
         return this->get_override("getTypeName")();
+    }
+};
+
+class ccQuadricWrap
+{
+public:
+    static boost::shared_ptr<ccQuadric> initWrapper1(CCVector2 minCorner,
+                                                    CCVector2 maxCorner,
+                                                    std::vector<PointCoordinateType> eqv)
+    {
+        if (eqv.size() != 6)
+            throw std::range_error("equation parameters: vector of 6 float/double required");
+        PointCoordinateType* eq = eqv.data();
+        return boost::shared_ptr<ccQuadric>( new ccQuadric(minCorner, maxCorner, eq, 0, 0, "Quadric", ccQuadric::DEFAULT_DRAWING_PRECISION));
+    }
+
+    static boost::shared_ptr<ccQuadric> initWrapper2(CCVector2 minCorner,
+                                                    CCVector2 maxCorner,
+                                                    std::vector<PointCoordinateType> eqv,
+                                                    const Tuple3ub* dims = 0)
+    {
+        if (eqv.size() != 6)
+            throw std::range_error("equation parameters: vector of 6 float/double required");
+        PointCoordinateType* eq = eqv.data();
+        return boost::shared_ptr<ccQuadric>( new ccQuadric(minCorner, maxCorner, eq, dims, 0, "Quadric",  ccQuadric::DEFAULT_DRAWING_PRECISION));
+    }
+
+    static boost::shared_ptr<ccQuadric> initWrapper3(CCVector2 minCorner,
+                                                    CCVector2 maxCorner,
+                                                    std::vector<PointCoordinateType> eqv,
+                                                    const Tuple3ub* dims = 0,
+                                                    const ccGLMatrix* transMat = 0)
+    {
+        if (eqv.size() != 6)
+            throw std::range_error("equation parameters: vector of 6 float/double required");
+        PointCoordinateType* eq = eqv.data();
+        return boost::shared_ptr<ccQuadric>( new ccQuadric(minCorner, maxCorner, eq, dims, transMat, "Quadric",  ccQuadric::DEFAULT_DRAWING_PRECISION));
+    }
+
+    static boost::shared_ptr<ccQuadric> initWrapper4(CCVector2 minCorner,
+                                                    CCVector2 maxCorner,
+                                                    std::vector<PointCoordinateType> eqv,
+                                                    const Tuple3ub* dims = 0,
+                                                    const ccGLMatrix* transMat = 0,
+                                                    QString name = QString("Quadric"))
+    {
+        if (eqv.size() != 6)
+            throw std::range_error("equation parameters: vector of 6 float/double required");
+        PointCoordinateType* eq = eqv.data();
+        return boost::shared_ptr<ccQuadric>( new ccQuadric(minCorner, maxCorner, eq, dims, transMat, name,  ccQuadric::DEFAULT_DRAWING_PRECISION));
+    }
+
+    static boost::shared_ptr<ccQuadric> initWrapper5(CCVector2 minCorner,
+                                                    CCVector2 maxCorner,
+                                                    std::vector<PointCoordinateType> eqv,
+                                                    const Tuple3ub* dims = 0,
+                                                    const ccGLMatrix* transMat = 0,
+                                                    QString name = QString("Quadric"),
+                                                    unsigned precision = ccQuadric::DEFAULT_DRAWING_PRECISION)
+    {
+        if (eqv.size() != 6)
+            throw std::range_error("equation parameters: vector of 6 float/double required");
+        PointCoordinateType* eq = eqv.data();
+        return boost::shared_ptr<ccQuadric>( new ccQuadric(minCorner, maxCorner, eq, dims, transMat, name, precision));
     }
 };
 
@@ -94,10 +159,13 @@ void export_ccPrimitives()
              optional<const ccGLMatrix*, QString> >())
         ;
 
-//    class_<ccQuadric, bases<ccGenericPrimitive> >("ccQuadric", init<QString>())
-//        .def(init<CCVector2, CCVector2, const PointCoordinateType[6],
-//             optional<const Tuple3ub*, const ccGLMatrix*, QString, unsigned> >())
-//        ;
+    class_<ccQuadric, boost::shared_ptr<ccQuadric>, bases<ccGenericPrimitive> >("ccQuadric",  no_init)
+        .def("__init__", make_constructor(&ccQuadricWrap::initWrapper1 ))
+        .def("__init__", make_constructor(&ccQuadricWrap::initWrapper2 ))
+        .def("__init__", make_constructor(&ccQuadricWrap::initWrapper3 ))
+        .def("__init__", make_constructor(&ccQuadricWrap::initWrapper4 ))
+        .def("__init__", make_constructor(&ccQuadricWrap::initWrapper5 ))
+        ;
 
     class_<ccSphere, bases<ccGenericPrimitive> >("ccSphere", init<QString>())
         .def(init<PointCoordinateType,
