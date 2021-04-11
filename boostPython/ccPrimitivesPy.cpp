@@ -18,7 +18,6 @@
 
 #include "ccPrimitivesPy.hpp"
 
-//#include <boost/python/numpy.hpp>
 #include <boost/python.hpp>
 
 #include <CCGeom.h>
@@ -175,6 +174,11 @@ void export_ccPrimitives()
     class_<ccTorus, bases<ccGenericPrimitive> >("ccTorus", init<QString>())
         .def(init<PointCoordinateType, PointCoordinateType,
              optional<double, bool, PointCoordinateType, const ccGLMatrix*, QString, unsigned, unsigned> >())
+        ;
+
+    class_<ccDish, bases<ccGenericPrimitive> >("ccDish", init<QString>())
+        .def(init<PointCoordinateType, PointCoordinateType,
+             optional<PointCoordinateType, const ccGLMatrix*, QString, unsigned> >())
         ;
 
 }

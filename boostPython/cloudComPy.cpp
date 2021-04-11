@@ -44,7 +44,7 @@ namespace bnp = boost::python::numpy;
 
 char const* greet()
 {
-   return "hello, world";
+   return "hello, world, this is CloudCompare Python Interface: 'CloudComPy'";
 }
 
 void initCC_py()
@@ -72,6 +72,13 @@ BOOST_PYTHON_MODULE(cloudComPy)
     export_ccMesh();
     export_ccPrimitives();
     export_distanceComputationTools();
+
+    // TODO: function load entities ("file.bin")
+    // TODO: more methods on distanceComputationTools
+    // TODO: methods from ccEntityAction.h to transpose without dialogs
+    // TODO: compute octree
+    // TODO: mesh Delaunay
+    // TODO: explore menus edit, tools, plugins
 
     def("greet", greet);
 
@@ -106,7 +113,6 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .value("MEAN_CURV", MEAN_CURV)
         .value("NORMAL_CHANGE_RATE", NORMAL_CHANGE_RATE)
         ;
-
 
     def("loadPointCloud", loadPointCloud,
         loadPointCloud_overloads(args("mode", "skip", "x", "y", "z", "filename"),
