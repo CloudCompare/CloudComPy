@@ -26,6 +26,8 @@
 #include "PyScalarType.h"
 #include "pyccTrace.h"
 
+#include <vector>
+
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
 
@@ -80,6 +82,14 @@ void fromNPArray_copy(CCCoreLib::ScalarField &self, bnp::ndarray const & array)
     self.computeMinAndMax();
 }
 
+bp::tuple computeMeanAndVariance_py(CCCoreLib::ScalarField &self)
+{
+    ScalarType mean, variance;
+    self.computeMeanAndVariance(mean, &variance);
+    bp::tuple res = bp::make_tuple(mean, variance);
+    return res;
+}
+
 ScalarType& (CCCoreLib::ScalarField::* getValue1)(std::size_t) = &CCCoreLib::ScalarField::getValue; // getValue1: pointer to member function
 const ScalarType& (CCCoreLib::ScalarField::* getValue2)(std::size_t) const = &CCCoreLib::ScalarField::getValue; //pointer to member function with const qualifier
 //typedef const ScalarType& (CCCoreLib::ScalarField::*gvftype)(std::size_t) const; // the same using a typedef
@@ -89,13 +99,13 @@ void export_ScalarField()
 {
     class_<CCCoreLib::ScalarField, boost::noncopyable>("ScalarField", no_init) // boost::noncopyable required to avoid issue with protected destructor
         .def("addElement", &CCCoreLib::ScalarField::addElement)
-        .def("computeMeanAndVariance", &CCCoreLib::ScalarField::computeMeanAndVariance)
+        .def("computeMeanAndVariance", &computeMeanAndVariance_py)
         .def("computeMinAndMax", &CCCoreLib::ScalarField::computeMinAndMax)
         .def("currentSize", &CCCoreLib::ScalarField::currentSize)
         .def("fill", &CCCoreLib::ScalarField::fill)
         .def("flagValueAsInvalid", &CCCoreLib::ScalarField::flagValueAsInvalid)
         .def("flagValueAsInvalid", &CCCoreLib::ScalarField::flagValueAsInvalid)
-        .def("fromNPArrayCopy", &fromNPArray_copy)
+        .def("fromNpArrayCopy", &fromNPArray_copy)
         .def("getMax", &CCCoreLib::ScalarField::getMax)
         .def("getMin", &CCCoreLib::ScalarField::getMin)
         .def("getName", &CCCoreLib::ScalarField::getName)

@@ -22,9 +22,11 @@
 #if defined SCALAR_TYPE_FLOAT
     #define PyScalarType float
     #define CC_NPY_FLOAT NPY_FLOAT32
+    #define CC_NPY_FLOAT_STRING "float32"
 #else
     #define PyScalarType double
     #define CC_NPY_FLOAT NPY_FLOAT64
+    #define CC_NPY_FLOAT_STRING "float64"
 #endif
 
 #endif /* CLOUDCOMPY_PYAPI_PYSCALARTYPE_H_ */

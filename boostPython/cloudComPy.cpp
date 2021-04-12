@@ -55,8 +55,16 @@ void initCC_py()
     initCC::init(modulePath);
 }
 
+const char* getScalarType()
+{
+    //Get the scalar type used in cloudCompare under the form defined in Numpy: 'float32' or 'float64'
+    return CC_NPY_FLOAT_STRING;
+}
+
+
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
+BOOST_PYTHON_FUNCTION_OVERLOADS(GetPointCloudRadius_overloads, GetPointCloudRadius, 1, 2);
 
 BOOST_PYTHON_MODULE(cloudComPy)
 {
@@ -128,12 +136,11 @@ BOOST_PYTHON_MODULE(cloudComPy)
 
     def("initCC", &initCC_py, cloudComPy_initCC_doc);
 
-//    bool computeCurvature(CurvatureType option, double radius, QList<ccPointCloud*> clouds);
-//    ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud);
-//    double GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn = 12);
+    def("computeCurvature", computeCurvature, cloudComPy_computeCurvature_doc);
 
-    // TODO:
-//    cloudComPy_computeCurvature_doc
-//    cloudComPy_filterBySFValue_doc
-//    cloudComPy_GetPointCloudRadius_doc
+    def("filterBySFValue", filterBySFValue, return_value_policy<reference_existing_object>(), cloudComPy_filterBySFValue_doc);
+
+    def("GetPointCloudRadius", GetPointCloudRadius, GetPointCloudRadius_overloads(args("knn", "clouds"), cloudComPy_GetPointCloudRadius_doc));
+
+    def("getScalarType", getScalarType);
 }

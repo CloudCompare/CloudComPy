@@ -26,10 +26,10 @@ import math
 import psutil
 from gendata import getSampleCloud, dataDir
 from PyQt5.QtWidgets import QApplication
-import cloudCompare as cc
+import cloudComPy as cc
 
-app = QApplication(sys.argv)
-cc.initCC.init()  # to do once before using plugins or dealing with numpy
+#app = QApplication(sys.argv)
+cc.initCC()  # to do once before using plugins or dealing with numpy
 
 thisProcess = psutil.Process()
 startMem = thisProcess.memory_full_info().uss
@@ -39,7 +39,7 @@ print("memory USS, before loading point cloud = REFERENCE: %s" % startMem)
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 npts = cloud.size()
-if cc.initCC.getScalarType() == 'float32':
+if cc.getScalarType() == 'float32':
     sizePoint = 4
 else:
     sizePoint = 8
@@ -61,7 +61,7 @@ refMem = curMem
 coords = None
 print("=========== loop coords no copy =============")
 for i in range(10):
-    coords = cloud.toNpArray(False)
+    coords = cloud.toNpArray()
     if coords.shape != (cloud.size(), 3):
         raise RuntimeError
     curMem = thisProcess.memory_full_info().uss
@@ -75,7 +75,7 @@ for i in range(10):
 
 print("=========== loop coords with copy =============")
 for i in range(10):
-    coords = cloud.toNpArray(True)
+    coords = cloud.toNpArrayCopy()
     if coords.shape != (cloud.size(), 3):
         raise RuntimeError
     curMem = thisProcess.memory_full_info().uss
@@ -84,7 +84,7 @@ for i in range(10):
     print("memory USS, delta current: %s max: %s" %
           (curMem - refMem, maxMem - refMem))
     print("coord copy %s" % i)
-    if (maxMem - refMem) > 2.0 * coordMem: # some memory not immediately released ?
+    if (maxMem - refMem) > 10.0 * coordMem: # some memory not immediately released ?
         raise RuntimeError
 
 coords = None  # clean memory
@@ -98,7 +98,7 @@ print(
 
 # --- transfer scalarField to Numpy Array, test memory without copy, and with copy
 
-res = cloud.exportCoordToSF((False, False, True))
+res = cloud.exportCoordToSF(False, False, True)
 sf = cloud.getScalarField(0)
 
 curMem = thisProcess.memory_full_info().uss
@@ -110,7 +110,7 @@ maxMem = curMem
 
 print("=========== loop scalar field no copy =============")
 for i in range(10):
-    coords = sf.toNpArray(False)
+    coords = sf.toNpArray()
     if coords.shape != (cloud.size(),):
         raise RuntimeError
     curMem = thisProcess.memory_full_info().uss
@@ -124,7 +124,7 @@ for i in range(10):
 
 print("=========== loop scalar field with copy =============")
 for i in range(10):
-    coords = sf.toNpArray(True)
+    coords = sf.toNpArrayCopy()
     if coords.shape != (cloud.size(),):
         raise RuntimeError
     curMem = thisProcess.memory_full_info().uss
@@ -133,5 +133,5 @@ for i in range(10):
     print("memory USS, delta current: %s max: %s" %
           (curMem - refMem, maxMem - refMem))
     print("scalarField copy %s" % i)
-    if (maxMem - refMem) > 2.0 * sfMem: # some memory not immediately released ?
+    if (maxMem - refMem) > 10.0 * sfMem: # some memory not immediately released ?
         raise RuntimeError

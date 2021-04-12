@@ -68,7 +68,23 @@ bnp::ndarray CoordsToNpArray_py(ccPointCloud &self)
     return result;
 }
 
+ccPointCloud* crop2D_py(ccPointCloud &self, const ccPolyline* poly, unsigned char orthoDim, bool inside = true)
+{
+    ccPointCloud* croppedCloud = nullptr;
+    CCTRACE("ortho dim " <<  orthoDim);
+    CCCoreLib::ReferenceCloud* ref = self.crop2D(poly, orthoDim, inside);
+    if (ref && (ref->size() != 0))
+    {
+        croppedCloud = self.partialClone(ref);
+        delete ref;
+        ref = nullptr;
+    }
+    return croppedCloud;
+}
+
 int (ccPointCloud::*addScalarFieldt)(const char*) = &ccPointCloud::addScalarField;
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_overloads, scale, 3, 4)
 
 void export_ccPointCloud()
 {
@@ -84,7 +100,7 @@ void export_ccPointCloud()
     class_<ccPointCloud, bases<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString> > >("ccPointCloud", no_init)
         .def("addScalarField", addScalarFieldt)
         .def("computeGravityCenter", &ccPointCloud::computeGravityCenter)
-        .def("crop2D", &ccPointCloud::crop2D, return_value_policy<reference_existing_object>())
+        .def("crop2D", &crop2D_py, return_value_policy<reference_existing_object>())
         .def("deleteAllScalarFields", &ccPointCloud::deleteAllScalarFields)
         .def("deleteScalarField", &ccPointCloud::deleteScalarField)
         .def("exportCoordToSF", &exportCoordToSF_py)
@@ -97,7 +113,7 @@ void export_ccPointCloud()
         .def("hasScalarFields", &ccPointCloud::hasScalarFields)
         .def("renameScalarField", &ccPointCloud::renameScalarField)
         .def("reserve", &ccPointCloud::reserve)
-        .def("scale", &ccPointCloud::scale)
+        .def("scale", &ccPointCloud::scale, ccPointCloud_overloads())
         .def("setCurrentInScalarField", &ccPointCloud::setCurrentInScalarField)
         .def("setCurrentOutScalarField", &ccPointCloud::setCurrentOutScalarField)
         .def("size", &ccPointCloud::size)

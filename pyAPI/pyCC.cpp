@@ -44,6 +44,7 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QString>
+#include <exception>
 
 // --- internal struct
 
@@ -419,17 +420,14 @@ ccPointCloud* loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int skip,
     return result;
 }
 
-bool computeCurvature(CurvatureType option, double radius, QList<ccPointCloud*> clouds)
+bool computeCurvature(CurvatureType option, double radius, std::vector<ccHObject*> clouds)
 {
     CCTRACE("computeCurvature mode: " << option << " radius: " << radius << " nbClouds: " << clouds.size());
-    ccHObject::Container entities;
-    entities.resize(clouds.size());
     for (int i = 0; i < clouds.size(); ++i)
     {
-        CCTRACE("entity: "<< i << " name: " << clouds.at(i)->getName().toStdString());
-        entities[i] = clouds.at(i);
+        CCTRACE("entity: "<< i << " name: " << clouds[i]->getName().toStdString());
     }
-    return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::Curvature, option, radius, entities);
+    return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::Curvature, option, radius, clouds);
 }
 
 ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
@@ -446,14 +444,17 @@ ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
     return fitleredCloud;
 }
 
-double GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn)
+double GetPointCloudRadius(std::vector<ccHObject*> clouds, unsigned knn)
 {
     CCTRACE("GetDefaultCloudKernelSize - NbPoints: " << knn << " nbClouds: " << clouds.size());
     double sigma = -1;
-    for (ccPointCloud* cloud : clouds)
+    for (ccHObject* cloud : clouds)
     {
         CCTRACE("cloud name: " << cloud->getName().toStdString());
-        PointCoordinateType sigmaCloud = pyCC_GetDefaultCloudKernelSize(cloud, knn);
+        ccGenericPointCloud* gencloud=dynamic_cast<ccGenericPointCloud*>(cloud);
+        if (!gencloud)
+            throw std::invalid_argument("entity is not a cloud");
+        PointCoordinateType sigmaCloud = pyCC_GetDefaultCloudKernelSize(gencloud, knn);
 
         //we keep the smallest value
         if (sigma < 0 || sigmaCloud < sigma)

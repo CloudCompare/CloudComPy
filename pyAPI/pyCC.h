@@ -19,8 +19,8 @@
 #ifndef CLOUDCOMPY_PYAPI_PYCC_H_
 #define CLOUDCOMPY_PYAPI_PYCC_H_
 
-#include <QList>
 #include <QString>
+#include <vector>
 
 #ifndef SCALAR_TYPE_DOUBLE
   #ifndef SCALAR_TYPE_FLOAT
@@ -31,6 +31,7 @@
 #include <ccCommandLineInterface.h>
 #include <GeometricalAnalysisTools.h>
 #include <ccPolyline.h>
+#include <ccPointCloud.h>
 
 // --- for Python3 interface
 
@@ -103,7 +104,7 @@ enum CurvatureType
  * \param list of clouds
  * \return status
  */
-bool computeCurvature(CurvatureType option, double radius, QList<ccPointCloud*> clouds);
+bool computeCurvature(CurvatureType option, double radius, std::vector<ccHObject*> clouds);
 
 //! Filters out points whose scalar values falls into an interval(see ccPointCloud::filterBySFValue)
 /** Threshold values should be expressed relatively to the current displayed scalar field.
@@ -119,7 +120,7 @@ ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
  * \param number of nodes wanted within the radius
  * \return radius
  */
-double GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn = 12);
+double GetPointCloudRadius(std::vector<ccHObject*> clouds, unsigned knn = 12);
 
 // --- internal functions (not wrapped in the Python API) ---------------------
 

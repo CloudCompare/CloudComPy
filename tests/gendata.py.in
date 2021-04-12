@@ -3,7 +3,7 @@
 import numpy as np
 import math
 import os
-import cloudCompare as cc
+import cloudComPy as cc
 import subprocess
 
 dataDir = "@PYTHONAPI_TEST_DIRECTORY@"

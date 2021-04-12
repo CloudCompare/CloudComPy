@@ -23,10 +23,10 @@ import sys
 import math
 from gendata import getSampleCloud, dataDir, isCoordEqual
 from PyQt5.QtWidgets import QApplication
-import cloudCompare as cc
+import cloudComPy as cc
 
-app = QApplication(sys.argv)
-cc.initCC.init()  # to do once before using plugins or dealing with numpy
+#app = QApplication(sys.argv)
+cc.initCC()  # to do once before using plugins or dealing with numpy
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 cloud.translate((1000, 2000, 3000))
@@ -35,11 +35,11 @@ if res:
     raise RuntimeError
 
 cloud = cc.loadPointCloud(os.path.join(dataDir, "res1.xyz"))
-coords = cloud.toNpArray(True)
+coords = cloud.toNpArray()
 if not isCoordEqual(coords[0], (995., 1995., 2999.8987)):
     raise RuntimeError
 
-cloud1 = cc.loadPointCloud(os.path.join(dataDir, "res1.xyz"), cc.XYZ, 0, -1000, -2000, -3000)
-coords1 = cloud1.toNpArray(True)
+cloud1 = cc.loadPointCloud(os.path.join(dataDir, "res1.xyz"), cc.CC_SHIFT_MODE.XYZ, 0, -1000, -2000, -3000)
+coords1 = cloud1.toNpArray()
 if not isCoordEqual(coords1[0], (-5., -5., -0.10131836)):
     raise RuntimeError

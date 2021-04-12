@@ -23,13 +23,13 @@ import sys
 import math
 from gendata import getSampleCloud, dataDir
 from PyQt5.QtWidgets import QApplication
-import cloudCompare as cc
+import cloudComPy as cc
 
-app = QApplication(sys.argv)
-cc.initCC.init()  # to do once before using plugins or dealing with numpy
+#app = QApplication(sys.argv)
+cc.initCC()  # to do once before using plugins or dealing with numpy
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 
-coords = cloud.toNpArray(True)
+coords = cloud.toNpArrayCopy()
 if coords.shape != (cloud.size(), 3):
     raise RuntimeError

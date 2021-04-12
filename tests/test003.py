@@ -23,13 +23,13 @@ import sys
 import math
 from gendata import getSampleCloud, dataDir
 from PyQt5.QtWidgets import QApplication
-import cloudCompare as cc
+import cloudComPy as cc
 
-app = QApplication(sys.argv)
-cc.initCC.init()  # to do once before using plugins or dealing with numpy
+#app = QApplication(sys.argv)
+cc.initCC()  # to do once before using plugins or dealing with numpy
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
-res = cloud.exportCoordToSF((False, True, True))
+res = cloud.exportCoordToSF(False, True, True)
 n = cloud.getNumberOfScalarFields()
 cloud.setCurrentInScalarField(0)
 cloud.setCurrentOutScalarField(1)
@@ -48,7 +48,7 @@ if not math.isclose(radius, 0.0293, rel_tol=1e-02):
     raise RuntimeError
 radius = 0.03
 
-res = cc.computeCurvature(cc.GAUSSIAN_CURV, radius, [cloud])
+res = cc.computeCurvature(cc.CurvatureType.GAUSSIAN_CURV, radius, [cloud])
 nsf = cloud.getNumberOfScalarFields()
 sfc = cloud.getScalarField(nsf - 1)
 if sfc.getName() != "Gaussian curvature (0.03)":

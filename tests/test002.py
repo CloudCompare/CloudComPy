@@ -24,14 +24,14 @@ import math
 from gendata import getSampleCloud, dataDir
 import numpy as np
 from PyQt5.QtWidgets import QApplication
-import cloudCompare as cc
+import cloudComPy as cc
 
-app = QApplication(sys.argv)
-cc.initCC.init()  # Sto do once before using plugins or dealing with numpy
+#app = QApplication(sys.argv)
+cc.initCC()  # Sto do once before using plugins or dealing with numpy
 
 cloud1 = cc.loadPointCloud(getSampleCloud(2.0))
 
-ok = cloud1.exportCoordToSF((False, False, True))
+ok = cloud1.exportCoordToSF(False, False, True)
 if not ok:
     raise RuntimeError
 
@@ -77,11 +77,11 @@ if asf1.size != 1000000:
     raise RuntimeError
 
 cloud2 = cc.loadPointCloud(getSampleCloud(1.9))
-res = cloud2.exportCoordToSF((False, False, True))
+res = cloud2.exportCoordToSF(False, False, True)
 sf2 = cloud2.getScalarField(0)
 asf2 = sf2.toNpArray()
 
-sf2.fromNpArray(asf1)
+sf2.fromNpArrayCopy(asf1)
 
 res = cc.SavePointCloud(cloud2, os.path.join(dataDir, "res2.xyz"))
 cloud2 = cc.loadPointCloud(os.path.join(dataDir, "res2.xyz"))
