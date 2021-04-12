@@ -42,12 +42,8 @@ bnp::ndarray ToNpArray_copy(CCCoreLib::ScalarField &self)
     bp::tuple shape = bp::make_tuple(nRows);
     bp::tuple stride = bp::make_tuple(sizeof(PyScalarType));
     PyScalarType *s = (PyScalarType*)self.data();
-    CCTRACE("--- copy " << nRows*sizeof(PyScalarType));
-    PyScalarType *d = new PyScalarType[nRows];
-    memcpy(d, s, nRows*sizeof(PyScalarType));
-    CCTRACE("--- copied");
-    bnp::ndarray result = bnp::from_data(d, dt, shape, stride, bp::object());
-    return result;
+    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
+    return result.copy();
 }
 
 bnp::ndarray ToNpArray_py(CCCoreLib::ScalarField &self)

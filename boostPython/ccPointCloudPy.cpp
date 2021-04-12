@@ -47,12 +47,8 @@ bnp::ndarray CoordsToNpArray_copy(ccPointCloud &self)
     bp::tuple shape = bp::make_tuple(nRows, 3);
     bp::tuple stride = bp::make_tuple(3*sizeof(float), sizeof(float));
     float *s = (float*)self.getPoint(0);
-    CCTRACE("--- copy " << 3*nRows*sizeof(float));
-    float *d = new float[3*nRows];
-    memcpy(d, s, 3*nRows*sizeof(float));
-    CCTRACE("--- copied");
-    bnp::ndarray result = bnp::from_data(d, dt, shape, stride, bp::object());
-    return result;
+    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
+    return result.copy();
 }
 
 bnp::ndarray CoordsToNpArray_py(ccPointCloud &self)

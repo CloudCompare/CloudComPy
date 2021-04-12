@@ -84,7 +84,7 @@ for i in range(10):
     print("memory USS, delta current: %s max: %s" %
           (curMem - refMem, maxMem - refMem))
     print("coord copy %s" % i)
-    if (maxMem - refMem) > 10.0 * coordMem: # some memory not immediately released ?
+    if (maxMem - refMem) > 2.0 * coordMem: # some memory not immediately released ?
         raise RuntimeError
 
 coords = None  # clean memory
@@ -133,5 +133,5 @@ for i in range(10):
     print("memory USS, delta current: %s max: %s" %
           (curMem - refMem, maxMem - refMem))
     print("scalarField copy %s" % i)
-    if (maxMem - refMem) > 10.0 * sfMem: # some memory not immediately released ?
+    if (maxMem - refMem) > 2.0 * sfMem: # some memory not immediately released ?
         raise RuntimeError
