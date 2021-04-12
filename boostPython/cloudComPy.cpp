@@ -21,8 +21,6 @@
 
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include "converters.hpp"
-#include "ccDocStrings.hpp"
-
 #include "ScalarFieldPy.hpp"
 #include "ccPointCloudPy.hpp"
 #include "ccMeshPy.hpp"
@@ -38,6 +36,7 @@
 #include <vector>
 
 #include "pyccTrace.h"
+#include "cloudComPy_DocStrings.hpp"
 
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
@@ -116,15 +115,25 @@ BOOST_PYTHON_MODULE(cloudComPy)
 
     def("loadPointCloud", loadPointCloud,
         loadPointCloud_overloads(args("mode", "skip", "x", "y", "z", "filename"),
-                                 loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
+                                 cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
 
     def("loadPolyline", loadPolyline,
-        loadPolyline_overloads(args("mode", "skip", "x", "y", "z", "filename"))
+        loadPolyline_overloads(args("mode", "skip", "x", "y", "z", "filename"),
+                               cloudComPy_loadPolyline_doc)
         [return_value_policy<reference_existing_object>()]);
 
-    def("SavePointCloud", SavePointCloud);
+    def("SavePointCloud", SavePointCloud, cloudComPy_SavePointCloud_doc);
 
-    def("SaveEntities", SaveEntities);
+    def("SaveEntities", SaveEntities, cloudComPy_SaveEntities_doc);
 
-    def("initCC", &initCC_py);
+    def("initCC", &initCC_py, cloudComPy_initCC_doc);
+
+//    bool computeCurvature(CurvatureType option, double radius, QList<ccPointCloud*> clouds);
+//    ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud);
+//    double GetPointCloudRadius(QList<ccPointCloud*> clouds, unsigned knn = 12);
+
+    // TODO:
+//    cloudComPy_computeCurvature_doc
+//    cloudComPy_filterBySFValue_doc
+//    cloudComPy_GetPointCloudRadius_doc
 }
