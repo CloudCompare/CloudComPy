@@ -28,65 +28,55 @@ import cloudComPy as cc
 #app = QApplication(sys.argv)
 createSymbolicLinks() # required for tests on build, before cc.initCC.init
 cc.initCC()  # to do once before using plugins or dealing with numpy
-
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
-poly = cc.loadPolyline(getSamplePoly("poly1"))
 
-lg = poly.computeLength()
-if not math.isclose(lg, 16.885, rel_tol=1e-04):
+box = cc.ccBox((1., 2., 3.))
+if box.getTypeName() != 'Box':
     raise RuntimeError
-
-if poly.isClosed():
+if box.size() != 12:
     raise RuntimeError
 
-if poly.segmentCount() != 6:
+cone = cc.ccCone(3., 1., 2.)
+if cone.getTypeName() != 'Cone':
+    raise RuntimeError
+if cone.size() != 96:
     raise RuntimeError
 
-poly.setClosed(True)
-if not poly.isClosed():
+cylinder = cc.ccCylinder(0.5, 6.0)
+if cylinder.getTypeName() != 'Cylinder':
+    raise RuntimeError
+if cylinder.size() != 96:
     raise RuntimeError
 
-if poly.segmentCount() != 7:
+plane = cc.ccPlane(3.0, 4.0)
+if plane.getTypeName() != 'Plane':
+    raise RuntimeError
+if plane.size() != 2:
     raise RuntimeError
 
-if poly.size() != 7:
+sphere = cc.ccSphere(1.5)
+if sphere.getTypeName() != 'Sphere':
+    raise RuntimeError
+if sphere.size() != 1104:
     raise RuntimeError
 
-poly.setName("myPoly")
-if poly.getName() != "myPoly":
+torus = cc.ccTorus(5.0, 7.0)
+if torus.getTypeName() != 'Torus':
+    raise RuntimeError
+if torus.size() != 4608:
     raise RuntimeError
 
-cloudCropZ = cloud.crop2D(poly, 2, True)
-cc.SavePointCloud(cloudCropZ, os.path.join(dataDir, "cloudCropZ.xyz"))
-npts = cloudCropZ.size()
-print("cloud.size %s" % npts)
-if npts != 189981:
+quadric = cc.ccQuadric((-1., -1.), (1., 1.), (1., 2., 3., 4., 5., 6.))
+if quadric.getTypeName() != 'Quadric':
+    raise RuntimeError
+if quadric.size() != 1058:
     raise RuntimeError
 
-cloudCropX = cloud.crop2D(poly, 1, True)
-cc.SavePointCloud(cloudCropX, os.path.join(dataDir, "cloudCropX.xyz"))
-npts = cloudCropX.size()
-print("cloud.size %s" % npts)
-if npts != 458593:
+dish = cc.ccDish(2.0, 1.0)
+if dish.getTypeName() != 'Dish':
+    raise RuntimeError
+if dish.size() != 168:
     raise RuntimeError
 
-cloudCropY = cloud.crop2D(poly, 0, True)
-cc.SavePointCloud(cloudCropY, os.path.join(dataDir, "cloudCropY.xyz"))
-npts = cloudCropY.size()
-print("cloud.size %s" % npts)
-if npts != 399968:
-    raise RuntimeError
-
-if poly.is2DMode():
-    raise RuntimeError
-poly.set2DMode(True)
-if not poly.is2DMode():
-    raise RuntimeError
-
-p2 = poly.smoothChaikin(0.2, 4)
-lg = p2.computeLength()
-if not math.isclose(lg, 17.504, rel_tol=1e-04):
-    raise RuntimeError
-if p2.segmentCount() != 112:
-    raise RuntimeError
+cc.SaveEntities([cloud, box, cone, cylinder, plane, sphere, torus, quadric, dish], os.path.join(dataDir, "entities.bin"))
 
