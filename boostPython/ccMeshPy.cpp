@@ -22,6 +22,7 @@
 
 #include <CCGeom.h>
 #include <ccMesh.h>
+#include <ccGenericPointCloud.h>
 
 using namespace boost::python;
 
@@ -31,9 +32,11 @@ void export_ccMesh()
         ;
 
     class_<ccGenericMesh, bases<CCCoreLib::GenericIndexedMesh>, boost::noncopyable>("ccGenericMesh", no_init)
+        .def("getName", &ccGenericMesh::getName)
         ;
 
     class_<ccMesh, bases<ccGenericMesh> >("ccMesh", no_init)
         .def("size", &ccMesh::size)
+        .def("getAssociatedCloud", &ccMesh::getAssociatedCloud, return_value_policy<reference_existing_object>())
         ;
 }
