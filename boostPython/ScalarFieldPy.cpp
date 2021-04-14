@@ -25,6 +25,7 @@
 
 #include "PyScalarType.h"
 #include "pyccTrace.h"
+#include "scalarFieldPy_DocStrings.hpp"
 
 #include <vector>
 
@@ -93,26 +94,26 @@ const ScalarType& (CCCoreLib::ScalarField::* getValue2)(std::size_t) const = &CC
 
 void export_ScalarField()
 {
-    class_<CCCoreLib::ScalarField, boost::noncopyable>("ScalarField", no_init) // boost::noncopyable required to avoid issue with protected destructor
-        .def("addElement", &CCCoreLib::ScalarField::addElement)
-        .def("computeMeanAndVariance", &computeMeanAndVariance_py)
-        .def("computeMinAndMax", &CCCoreLib::ScalarField::computeMinAndMax)
-        .def("currentSize", &CCCoreLib::ScalarField::currentSize)
-        .def("fill", &CCCoreLib::ScalarField::fill)
-        .def("flagValueAsInvalid", &CCCoreLib::ScalarField::flagValueAsInvalid)
-        .def("flagValueAsInvalid", &CCCoreLib::ScalarField::flagValueAsInvalid)
-        .def("fromNpArrayCopy", &fromNPArray_copy)
-        .def("getMax", &CCCoreLib::ScalarField::getMax)
-        .def("getMin", &CCCoreLib::ScalarField::getMin)
-        .def("getName", &CCCoreLib::ScalarField::getName)
-        .def("getValue", getValue1, return_value_policy<copy_non_const_reference>())
-        .def("getValue", getValue2, return_value_policy<copy_const_reference>())
-        .def("reserveSafe", &CCCoreLib::ScalarField::reserveSafe)
-        .def("resizeSafe", &CCCoreLib::ScalarField::resizeSafe)
-        .def("setName", &CCCoreLib::ScalarField::setName)
-        .def("setValue", &CCCoreLib::ScalarField::setValue)
-        .def("swap", &CCCoreLib::ScalarField::swap)
-        .def("toNpArray", &ToNpArray_py)
-        .def("toNpArrayCopy", &ToNpArray_copy)
+    class_<CCCoreLib::ScalarField, boost::noncopyable>("ScalarField", ScalarFieldPy_ScalarField_doc, no_init) // boost::noncopyable required to avoid issue with protected destructor
+        .def("addElement", &CCCoreLib::ScalarField::addElement, ScalarFieldPy_addElement_doc)
+        .def("computeMeanAndVariance", &computeMeanAndVariance_py, ScalarFieldPy_computeMeanAndVariance_doc)
+        .def("computeMinAndMax", &CCCoreLib::ScalarField::computeMinAndMax, ScalarFieldPy_computeMinAndMax_doc)
+        .def("currentSize", &CCCoreLib::ScalarField::currentSize, ScalarFieldPy_currentSize_doc)
+        .def("fill", &CCCoreLib::ScalarField::fill, ScalarFieldPy_fill_doc)
+        .def("flagValueAsInvalid", &CCCoreLib::ScalarField::flagValueAsInvalid, ScalarFieldPy_flagValueAsInvalid_doc)
+        .def("fromNpArrayCopy", &fromNPArray_copy, ScalarFieldPy_fromNpArrayCopy_doc)
+        .def("getMax", &CCCoreLib::ScalarField::getMax, ScalarFieldPy_getMax_doc)
+        .def("getMin", &CCCoreLib::ScalarField::getMin, ScalarFieldPy_getMin_doc)
+        .def("getName", &CCCoreLib::ScalarField::getName, ScalarFieldPy_getName_doc)
+        .def("getValue", getValue1, ScalarFieldPy_getValue_doc, return_value_policy<copy_non_const_reference>())
+        .def("getValue", getValue2, ScalarFieldPy_getValue_doc, return_value_policy<copy_const_reference>())
+        .def("reserveSafe", &CCCoreLib::ScalarField::reserveSafe, ScalarFieldPy_reserveSafe_doc)
+        .def("resizeSafe", &CCCoreLib::ScalarField::resizeSafe, ScalarFieldPy_resizeSafe_doc)
+        .def("setName", &CCCoreLib::ScalarField::setName, ScalarFieldPy_setName_doc)
+        .def("setValue", &CCCoreLib::ScalarField::setValue, ScalarFieldPy_setValue_doc)
+        .def("swap", &CCCoreLib::ScalarField::swap, ScalarFieldPy_swap_doc)
+        .def("toNpArray", &ToNpArray_py, ScalarFieldPy_toNpArray_doc)
+        .def("toNpArrayCopy", &ToNpArray_copy, ScalarFieldPy_toNpArrayCopy_doc)
         ;
+    //TODO optional parameters on resizeSafe
 }
