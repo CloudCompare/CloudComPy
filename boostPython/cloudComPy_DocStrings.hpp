@@ -19,6 +19,13 @@
 #ifndef CLOUDCOMPY_DOCSTRINGS_HPP_
 #define CLOUDCOMPY_DOCSTRINGS_HPP_
 
+const char* cloudComPy_doc= R"(
+cloudCompPy is the Python module interfacing cloudCompare library
+Python3 access to cloudCompare objects is done like this:
+import cloudComPy as cc 
+cc.initCC  # to do once before using plugins
+cloud = cc.loadPointCloud("/home/paul/projets/CloudCompare/data/altiXYZ/RGEALTI_FXX_0845_6446_MNT_LAMB93_IGN69.xyz"))";
+
 const char* cloudComPy_initCC_doc= R"(
 Should be done once before using plugins!)";
 
@@ -82,5 +89,10 @@ parameters:
 - list of clouds
 - number of nodes wanted within the radius
 return estimated radius)";
+
+const char* cloudComPy_getScalarType_doc= R"(
+Get the scalar type used in cloudCompare under the form defined in Numpy: 'float32' or 'float64'
+)";
+
 
 #endif /* CLOUDCOMPY_DOCSTRINGS_HPP_ */

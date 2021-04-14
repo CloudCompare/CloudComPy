@@ -26,6 +26,7 @@
 
 #include "PyScalarType.h"
 #include "pyccTrace.h"
+#include "ccPointCloudPy_DocStrings.hpp"
 
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
@@ -93,28 +94,34 @@ void export_ccPointCloud()
     class_<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>, bases<ccGenericPointCloud>, boost::noncopyable>("PointCloudTpl_ccGenericPointCloud_QString", no_init)
         ;
 
-    class_<ccPointCloud, bases<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString> > >("ccPointCloud", no_init)
-        .def("addScalarField", addScalarFieldt)
-        .def("computeGravityCenter", &ccPointCloud::computeGravityCenter)
-        .def("crop2D", &crop2D_py, return_value_policy<reference_existing_object>())
-        .def("deleteAllScalarFields", &ccPointCloud::deleteAllScalarFields)
-        .def("deleteScalarField", &ccPointCloud::deleteScalarField)
-        .def("exportCoordToSF", &exportCoordToSF_py)
-        .def("getCurrentInScalarField", &ccPointCloud::getCurrentInScalarField, return_value_policy<reference_existing_object>())
-        .def("getCurrentOutScalarField", &ccPointCloud::getCurrentOutScalarField, return_value_policy<reference_existing_object>())
-        .def("getName", &ccPointCloud::getName)
-        .def("getNumberOfScalarFields", &ccPointCloud::getNumberOfScalarFields)
-        .def("getScalarField", &ccPointCloud::getScalarField, return_value_policy<reference_existing_object>())
-        .def("getScalarFieldName", &ccPointCloud::getScalarFieldName)
-        .def("hasScalarFields", &ccPointCloud::hasScalarFields)
-        .def("renameScalarField", &ccPointCloud::renameScalarField)
-        .def("reserve", &ccPointCloud::reserve)
-        .def("scale", &ccPointCloud::scale, ccPointCloud_overloads())
-        .def("setCurrentInScalarField", &ccPointCloud::setCurrentInScalarField)
-        .def("setCurrentOutScalarField", &ccPointCloud::setCurrentOutScalarField)
-        .def("size", &ccPointCloud::size)
-        .def("toNpArray", &CoordsToNpArray_py)
-        .def("toNpArrayCopy", &CoordsToNpArray_copy)
-        .def("translate", &ccPointCloud::translate)
+    class_<ccPointCloud, bases<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString> > >("ccPointCloud",
+                                                                                          ccPointCloudPy_ccPointCloud_doc, no_init)
+        .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
+        .def("computeGravityCenter", &ccPointCloud::computeGravityCenter, ccPointCloudPy_computeGravityCenter_doc)
+        .def("crop2D", &crop2D_py, return_value_policy<reference_existing_object>(), ccPointCloudPy_crop2D_doc)
+        .def("deleteAllScalarFields", &ccPointCloud::deleteAllScalarFields, ccPointCloudPy_deleteAllScalarFields_doc)
+        .def("deleteScalarField", &ccPointCloud::deleteScalarField, ccPointCloudPy_deleteScalarField_doc)
+        .def("exportCoordToSF", &exportCoordToSF_py, ccPointCloudPy_exportCoordToSF_doc)
+        .def("getCurrentInScalarField", &ccPointCloud::getCurrentInScalarField,
+             return_value_policy<reference_existing_object>(), ccPointCloudPy_getCurrentInScalarField_doc)
+        .def("getCurrentOutScalarField", &ccPointCloud::getCurrentOutScalarField,
+             return_value_policy<reference_existing_object>(), ccPointCloudPy_getCurrentOutScalarField_doc)
+        .def("getName", &ccPointCloud::getName, ccPointCloudPy_getName_doc)
+        .def("getNumberOfScalarFields", &ccPointCloud::getNumberOfScalarFields, ccPointCloudPy_getNumberOfScalarFields_doc)
+        .def("getScalarField", &ccPointCloud::getScalarField,
+             return_value_policy<reference_existing_object>(), ccPointCloudPy_getScalarField_doc)
+        .def("getScalarFieldName", &ccPointCloud::getScalarFieldName, ccPointCloudPy_getScalarFieldName_doc)
+        .def("hasScalarFields", &ccPointCloud::hasScalarFields, ccPointCloudPy_hasScalarFields_doc)
+        .def("renameScalarField", &ccPointCloud::renameScalarField, ccPointCloudPy_renameScalarField_doc)
+        .def("reserve", &ccPointCloud::reserve, ccPointCloudPy_reserve_doc)
+        .def("resize", &ccPointCloud::resize, ccPointCloudPy_resize_doc)
+        .def("scale", &ccPointCloud::scale, ccPointCloud_overloads(ccPointCloudPy_scale_doc))
+        .def("setCurrentInScalarField", &ccPointCloud::setCurrentInScalarField, ccPointCloudPy_setCurrentInScalarField_doc)
+        .def("setCurrentOutScalarField", &ccPointCloud::setCurrentOutScalarField, ccPointCloudPy_setCurrentOutScalarField_doc)
+        .def("size", &ccPointCloud::size, ccPointCloudPy_size_doc)
+        .def("toNpArray", &CoordsToNpArray_py, ccPointCloudPy_toNpArray_doc)
+        .def("toNpArrayCopy", &CoordsToNpArray_copy, ccPointCloudPy_toNpArrayCopy_doc)
+        .def("translate", &ccPointCloud::translate, ccPointCloudPy_translate_doc)
        ;
 }
+

@@ -87,6 +87,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
     // TODO: mesh Delaunay
     // TODO: explore menus edit, tools, plugins
 
+    scope().attr("__doc__") = cloudComPy_doc;
+
     def("greet", greet);
 
     enum_<CC_SHIFT_MODE>("CC_SHIFT_MODE")
@@ -142,5 +144,5 @@ BOOST_PYTHON_MODULE(cloudComPy)
 
     def("GetPointCloudRadius", GetPointCloudRadius, GetPointCloudRadius_overloads(args("knn", "clouds"), cloudComPy_GetPointCloudRadius_doc));
 
-    def("getScalarType", getScalarType);
+    def("getScalarType", getScalarType, cloudComPy_getScalarType_doc);
 }

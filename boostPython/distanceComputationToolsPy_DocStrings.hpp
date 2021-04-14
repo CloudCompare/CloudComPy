@@ -1,6 +1,6 @@
 //##########################################################################
 //#                                                                        #
-//#                                PYCC                                    #
+//#                                boost.Python                            #
 //#                                                                        #
 //#  This program is free software; you can redistribute it and/or modify  #
 //#  it under the terms of the GNU Library General Public License as       #
@@ -16,31 +16,11 @@
 //#                                                                        #
 //##########################################################################
 
-#include "ccMeshPy.hpp"
+#ifndef DISTANCECOMPUTATIONTOOLSPY_DOCSTRINGS_HPP_
+#define DISTANCECOMPUTATIONTOOLSPY_DOCSTRINGS_HPP_
 
-#include <boost/python.hpp>
+const char* distanceComputationToolsPy__doc= R"(
 
-#include <CCGeom.h>
-#include <ccMesh.h>
-#include <ccGenericPointCloud.h>
-#include "ccMeshPy_DocStrings.hpp"
+)";
 
-using namespace boost::python;
-
-void export_ccMesh()
-{
-    class_<CCCoreLib::GenericIndexedMesh, boost::noncopyable>("GenericIndexedMesh", no_init)
-        ;
-
-    class_<ccGenericMesh, bases<CCCoreLib::GenericIndexedMesh>, boost::noncopyable>("ccGenericMesh", no_init)
-        .def("getName", &ccGenericMesh::getName)
-        ;
-
-    class_<ccMesh, bases<ccGenericMesh> >("ccMesh", ccMeshPy_ccMesh_doc, no_init)
-        .def("size", &ccMesh::size)
-        .def("getAssociatedCloud", &ccMesh::getAssociatedCloud,
-             return_value_policy<reference_existing_object>(), ccMeshPy_getAssociatedCloud_doc)
-        ;
-
-    //TODO static ccMesh* Triangulate( ccGenericPointCloud* cloud,...
-}
+#endif /* DISTANCECOMPUTATIONTOOLSPY_DOCSTRINGS_HPP_ */

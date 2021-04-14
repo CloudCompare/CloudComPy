@@ -22,6 +22,7 @@
 #include <boost/python.hpp>
 
 #include <ccPolyline.h>
+#include "ccPolylinePy_DocStrings.hpp"
 
 //#include "PyScalarType.h"
 //#include "pyccTrace.h"
@@ -33,17 +34,17 @@ using namespace boost::python;
 
 void export_ccPolyline()
 {
-    class_<ccPolyline>("ccPolyline", no_init)
-        .def("computeLength", &ccPolyline::computeLength)
-        .def("getName", &ccPolyline::getName)
-        .def("is2DMode", &ccPolyline::is2DMode)
-        .def("is2DMode", &ccPolyline::is2DMode)
-        .def("isClosed", &ccPolyline::isClosed)
-        .def("segmentCount", &ccPolyline::segmentCount)
-        .def("set2DMode", &ccPolyline::set2DMode)
-        .def("setClosed", &ccPolyline::setClosed)
-        .def("setName", &ccPolyline::setName)
-        .def("size", &ccPolyline::size)
-        .def("smoothChaikin", &ccPolyline::smoothChaikin, return_value_policy<reference_existing_object>())
+    class_<ccPolyline>("ccPolyline", ccPolylinePy_ccPolyline_doc, no_init)
+        .def("computeLength", &ccPolyline::computeLength, ccPolylinePy_computeLength_doc)
+        .def("getName", &ccPolyline::getName, ccPolylinePy_getName_doc)
+        .def("is2DMode", &ccPolyline::is2DMode, ccPolylinePy_is2DMode_doc)
+        .def("isClosed", &ccPolyline::isClosed, ccPolylinePy_isClosed_doc)
+        .def("segmentCount", &ccPolyline::segmentCount, ccPolylinePy_segmentCount_doc)
+        .def("set2DMode", &ccPolyline::set2DMode, ccPolylinePy_set2DMode_doc)
+        .def("setClosed", &ccPolyline::setClosed, ccPolylinePy_setClosed_doc)
+        .def("setName", &ccPolyline::setName, ccPolylinePy_setName_doc)
+        .def("size", &ccPolyline::size, ccPolylinePy_size_doc)
+        .def("smoothChaikin", &ccPolyline::smoothChaikin,
+             ccPolylinePy_smoothChaikin_doc, return_value_policy<reference_existing_object>())
         ;
 }
