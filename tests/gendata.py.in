@@ -49,7 +49,7 @@ def createSymbolicLinks():
     modulePath = cc.__file__
     mpath = os.path.dirname(modulePath)
     d = mpath.split(os.sep)[-1]
-    if d == 'sip':  # we are on build
+    if d == 'boostPython':  # we are on build
         command = ""
         command += "cd %s ;" % mpath
         command += "cd ../CloudCompare/plugins ;"
