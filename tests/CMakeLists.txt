@@ -30,6 +30,7 @@ set(PYTHONAPI_TEST_SCRIPTS_DIRECTORY doc/PythonAPI_test)
 
 # data sample generator and other utilities for test
 configure_file(gendata.py.in gendata.py)
+configure_file(DartConfiguration.tcl.in DartConfiguration.tcl)
 
 # shell scripts to execute a test, a build or install step
 if(WIN32)
@@ -43,7 +44,7 @@ else()
     configure_file(execTest.sh.in execTest.sh)
     configure_file(execInstallTest.sh.in execInstallTest.sh)
     configure_file(envPyCC.sh.in envPyCC.sh)
-	set(EXEC_TEST execTest.sh)
+    set(EXEC_TEST execTest.sh)
     set(EXEC_INSTALL_TEST execInstallTest.sh)
     set(ENV_INSTALL_TEST envPyCC.sh)
 endif()
@@ -64,6 +65,8 @@ set(PYTHONAPI_TEST_SCRIPTS
 # list of utilities
 set(PYTHONAPI_TEST_UTILITIES
     ${CMAKE_CURRENT_BINARY_DIR}/gendata.py
+    ${CMAKE_CURRENT_BINARY_DIR}/DartConfiguration.tcl
+    DartTestfile.txt
     )
 
 # files to install    
