@@ -4,74 +4,217 @@
       "name": "x64-Release",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
-      "inheritEnvironments": [
-        "msvc_x64_x64"
-      ],
-      "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
-      "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "C:/Users/paulr/CloudComPy_v212x/build/${name}",
+      "installRoot": "C:/Users/paulr/CloudComPy_v212x/install/${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
         {
           "name": "Qt5_DIR",
-          "value": "${env.USERPROFILE}\\anaconda3\\Library\\lib\\cmake\\Qt5"
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library/lib/cmake/Qt5",
+          "type": "STRING"
         },
         {
           "name": "Qt5LinguistTools_DIR",
-          "value": "${env.USERPROFILE}\\anaconda3\\Library\\lib\\cmake\\Qt5LinguistTools"
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library/lib/cmake/Qt5LinguistTools",
+          "type": "STRING"
         },
         {
           "name": "QT5_ROOT_PATH",
-          "value": "${env.USERPROFILE}\\anaconda3\\Library"
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library",
+          "type": "STRING"
+        },
+        {
+          "name": "Python3_ROOT_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy",
+          "type": "STRING"
         },
         {
           "name": "PYTHON_PREFERED_VERSION:STRING",
-          "value": "3.7"
-        },
-        {
-          "name": "PYQT_PYTHONPATH",
-          "value": "${env.USERPROFILE}\\anaconda3\\Lib\\site-packages"
-        },
-        {
-          "name": "PYQT_PYUIC_EXECUTABLE",
-          "value": "${env.USERPROFILE}\\anaconda3\\Library\\bin\\pyuic5.bat"
-        },
-        {
-          "name": "SIP_INCLUDE_DIR",
-          "value": "${env.USERPROFILE}\\anaconda3\\include"
-        },
-        {
-          "name": "SIP_EXECUTABLE",
-          "value": "${env.USERPROFILE}\\anaconda3\\Library\\bin\\sip.exe"
-        },
-        {
-          "name": "PYQT_SIPS",
-          "value": "${env.USERPROFILE}\\anaconda3\\sip\\PyQt5"
+          "value": "3.7",
+          "type": "STRING"
         },
         {
           "name": "NUMPY_INCLUDE_DIR",
-          "value": "${env.USERPROFILE}\\anaconda3\\Lib\\site-packages\\numpy\\core\\include"
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Lib/site-packages/numpy/core/include",
+          "type": "STRING"
         },
         {
           "name": "PYTHONAPI_TEST_DIRECTORY",
-          "value": "${env.USERPROFILE}\\CloudCompare\\data"
+          "value": "C:/Users/paulr/CloudCompare/data",
+          "type": "STRING"
         },
         {
           "name": "PYTHONAPI_TRACES:BOOL",
-          "value": "ON"
+          "value": "ON",
+          "type": "STRING"
         },
         {
           "name": "BUILD_PY_TESTING:BOOL",
-          "value": "ON"
+          "value": "ON",
+          "type": "STRING"
         },
         {
           "name": "BUILD_TESTING:BOOL",
-          "value": "ON"
+          "value": "ON",
+          "type": "STRING"
         },
         {
           "name": "OPTION_SCALAR_DOUBLE:BOOL",
-          "value": "OFF"
+          "value": "OFF",
+          "type": "STRING"
+        },
+        {
+          "name": "COMPILE_CC_CORE_LIB_WITH_CGAL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "COMPILE_CC_CORE_LIB_WITH_TBB",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "COMPILE_CC_CORE_LIB_WITH_QT",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
+          "name": "OPTION_USE_GDAL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "OPTION_USE_SHAPE_LIB",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_EXAMPLE_GL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_EXAMPLE_IO",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_EXAMPLE_STANDARD",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_GL_QEDL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_GL_QSSAO",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QADDITIONAL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QCORE",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QCSV_MATRIX",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QPHOTOSCAN",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QBROOM",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QCOMPASS",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QM3C2",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QPCL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QPOISSON_RECON",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QRANSAC_SD",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QSRA",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "CGAL_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library",
+          "type": "PATH"
+        },
+        {
+          "name": "GMP_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "GMP_LIBRARIES",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library/lib/mpir.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "MPFR_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library",
+          "type": "PATH"
+        },
+        {
+          "name": "MPFR_LIBRARIES",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library/lib/mpfr.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "Boost_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "TBB_INCLUDE_DIRS",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "ZLIB_INCLUDE_DIRS",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library",
+          "type": "PATH"
+        },
+        {
+          "name": "ZLIB_LIBRARIES",
+          "value": "C:/Users/paulr/anaconda3/Library/lib/zlib.lib",
+          "type": "FILEPATH"
         }
       ]
     }
