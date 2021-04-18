@@ -298,7 +298,8 @@ template<typename T> struct Vector_from_python_tuple // T double or float
         CCTRACE("construct");
         // Extract the components (check already done by convertible)
         Py_ssize_t nbElems = PyTuple_GET_SIZE(obj_ptr);
-        T val[nbElems];
+        std::vector<T> val;
+        val.resize(nbElems);
         for (Py_ssize_t i=0; i<nbElems; i++)
         {
             PyObject* iptr = PyTuple_GetItem(obj_ptr, i);
