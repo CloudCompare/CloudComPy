@@ -19,6 +19,9 @@
 #include <boost/python/numpy.hpp>
 #include <boost/python.hpp>
 
+//#define BOOST_LIB_NAME "boost_python"
+//#include <boost/config/auto_link.hpp>
+
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include "converters.hpp"
 #include "ScalarFieldPy.hpp"

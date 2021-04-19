@@ -40,7 +40,8 @@ endif()
 # --- Boost detection
 message( STATUS "Python3_VERSION_MAJOR: " ${Python3_VERSION_MAJOR} )
 message( STATUS "Python3_VERSION_MINOR: " ${Python3_VERSION_MINOR} )
-find_package(Boost COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} numpy)
+#find_package(Boost COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} numpy)
+find_package(Boost 1.72.0 COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}  numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} REQUIRED)
 
 message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
 
@@ -67,8 +68,8 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     )
 
 target_include_directories( ${PROJECT_NAME} PUBLIC
-    ${Python3_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
+    ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../pyAPI
     ${CCCoreLib_SOURCE_DIR}/include
@@ -81,6 +82,8 @@ target_link_libraries( ${PROJECT_NAME}
     ${Boost_LIBRARIES}
     ${Python3_LIBRARIES}
     )
+#    ${Python3_LIBRARIES}
+#set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 
 # Qt libraries
 

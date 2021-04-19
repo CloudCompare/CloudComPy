@@ -27,18 +27,38 @@
           "type": "STRING"
         },
         {
+          "name": "BOOST_INCLUDEDIR",
+          "value": "C:/local/boost1_72_0/include/boost-1_72",
+          "type": "STRING"
+        },
+        {
+          "name": "BOOST_LIBRARYDIR",
+          "value": "C:/local/boost1_72_0/lib",
+          "type": "STRING"
+        },
+        {
+          "name": "Boost_USE_STATIC_LIBS:BOOL",
+          "value": "OFF",
+          "type": "STRING"
+        },
+        {
+          "name": "Boost_DEBUG:BOOL",
+          "value": "OFF",
+          "type": "STRING"
+        },
+        {
           "name": "Python3_ROOT_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy",
+          "value": "C:/local/python38",
           "type": "STRING"
         },
         {
           "name": "PYTHON_PREFERED_VERSION:STRING",
-          "value": "3.7",
+          "value": "3.8",
           "type": "STRING"
         },
         {
           "name": "NUMPY_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Lib/site-packages/numpy/core/include",
+          "value": "C:/local/python38/Lib/site-packages/numpy/core/include",
           "type": "STRING"
         },
         {
@@ -195,11 +215,6 @@
           "name": "MPFR_LIBRARIES",
           "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library/lib/mpfr.lib",
           "type": "FILEPATH"
-        },
-        {
-          "name": "Boost_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library/include",
-          "type": "PATH"
         },
         {
           "name": "TBB_INCLUDE_DIRS",
