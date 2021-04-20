@@ -25,7 +25,7 @@ import sys
 import math
 import psutil
 from gendata import getSampleCloud, dataDir
-from PyQt5.QtWidgets import QApplication
+#from PyQt5.QtWidgets import QApplication
 import cloudComPy as cc
 
 #app = QApplication(sys.argv)

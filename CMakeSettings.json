@@ -28,27 +28,22 @@
         },
         {
           "name": "BOOST_INCLUDEDIR",
-          "value": "C:/local/boost1_72_0/include/boost-1_72",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library/include",
           "type": "STRING"
         },
         {
           "name": "BOOST_LIBRARYDIR",
-          "value": "C:/local/boost1_72_0/lib",
-          "type": "STRING"
-        },
-        {
-          "name": "Boost_USE_STATIC_LIBS:BOOL",
-          "value": "OFF",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Library/lib",
           "type": "STRING"
         },
         {
           "name": "Boost_DEBUG:BOOL",
-          "value": "OFF",
+          "value": "ON",
           "type": "STRING"
         },
         {
           "name": "Python3_ROOT_DIR",
-          "value": "C:/local/python38",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy",
           "type": "STRING"
         },
         {
@@ -58,7 +53,7 @@
         },
         {
           "name": "NUMPY_INCLUDE_DIR",
-          "value": "C:/local/python38/Lib/site-packages/numpy/core/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy/Lib/site-packages/numpy/core/include",
           "type": "STRING"
         },
         {

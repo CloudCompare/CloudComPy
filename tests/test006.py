@@ -22,7 +22,7 @@ import os
 import sys
 import math
 from gendata import getSampleCloud, dataDir, isCoordEqual
-from PyQt5.QtWidgets import QApplication
+#from PyQt5.QtWidgets import QApplication
 import cloudComPy as cc
 
 #app = QApplication(sys.argv)
