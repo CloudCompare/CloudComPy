@@ -41,7 +41,7 @@ endif()
 message( STATUS "Python3_VERSION_MAJOR: " ${Python3_VERSION_MAJOR} )
 message( STATUS "Python3_VERSION_MINOR: " ${Python3_VERSION_MINOR} )
 #find_package(Boost COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} numpy)
-find_package(Boost 1.72.0 COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}  numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} REQUIRED)
+find_package(Boost COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}  numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} REQUIRED)
 
 message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
 
