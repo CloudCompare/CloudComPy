@@ -25,10 +25,8 @@ import sys
 import math
 import psutil
 from gendata import getSampleCloud, dataDir
-#from PyQt5.QtWidgets import QApplication
 import cloudComPy as cc
 
-#app = QApplication(sys.argv)
 cc.initCC()  # to do once before using plugins or dealing with numpy
 
 thisProcess = psutil.Process()
