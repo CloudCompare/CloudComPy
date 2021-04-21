@@ -4,8 +4,8 @@
 
 
 # Configuration directories and files
-SourceDirectory: ${CMAKE_SOURCE_DIR}
-BuildDirectory: ${PYTHONAPI_TEST_SCRIPTS_DIRECTORY}
+SourceDirectory: @CMAKE_SOURCE_DIR@
+BuildDirectory: @CMAKE_INSTALL_PREFIX@/@PYTHONAPI_TEST_SCRIPTS_DIRECTORY@
 
 # Where to place the cost data store
 CostDataFile: 
