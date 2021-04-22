@@ -1,54 +1,63 @@
-Cloud Compare Python API TODO list & questions
-==============================================
+Cloud Compare Python API Choices of technology, TODO list & questions
+======================================================================
 
-Wrapping: PyQt SIP, or migration to Qt for Python (Pyside2 Shiboken2)?
-----------------------------------------------------------------------
+Choice of a wrapping tool
+-------------------------
 
-CloudCompare relies on Qt: PyQt - SIP is more suitable than SWIG, but a bit laborious ...
+Several tools are available. I successively tested PyQt/sip, then Pyside2/Shiboken2, and BoostPython. 
+BostPython is the one I'm currently using.
+
+First try: PyQt SIP
+-------------------
+
+CloudCompare relies on Qt: PyQt - SIP is more suitable than SWIG, but a bit laborious...
+A first demonstration with PyQt/sip was done in 2020. I had some experience with PyQt in other projects. 
+The product runs on Linux and Windows.
+This solution has several drawbacks: wrapping is laborious to write, the maintenance of the tool is fragile in the long term, 
+there is a competing tool supported by Qt (Pyside2/Shiboken2 or Qt for Python) which has reached the right level of maturity, 
+and has the advantage of an LGPL license while PyQt/Sip is under GPL.
+
+Second try: Pyside2 / Shiboken2
+-------------------------------
 With recent versions of Qt (5.12 -), Qt offers Pyside2 and Shiboken2.
-For a first test, on Ubuntu 18.4, (Qt 5.9.5), I stayed at PyQt -SIP, with the native system packages.
-Should we switch to Pyside2 / Shiboken2?
+Why Pyside2 / Shiboken2?
 See https://machinekoder.com/pyqt-vs-qt-for-python-pyside2-pyside/
-If yes, migration to be planned SIP -> Shiboken2, later, when the required Qt version will be readily available on platforms (for Linux, native distribution package)
 On the Python side, great compatibility of scripts between Pyside2 and PyQt ==> no significant impact for future users.
+Compared to Sip; the way to define the interface with Shiboken2 is completely different: 
+instead of explicitly describing all classes, methods and functions to be wrapped, we provide the C++ include files, 
+and a set of instructions to hide or modify some parts, in an xml file. This is not well documented, 
+but there is the example of Qt itself.
+After several unsuccessful attempts on CloudCompare, I finally understood that there were limitations in Shiboken2, 
+not allowing the wrapping of some complex class inheritance: In cloudCompare, there are classes derived from template classes. 
+Shiboken2 does not handle this situation correctly, the limitation is known and will probably not be fixed in the short term
+(TODO: find the link on the bug reports).  
 
-CMakefile for PYQT-SIP
-----------------------
-No ready-made detection: FindPYQTSIP.cmake inspired by SALOME works, and probably incomplete.
-A CMake proposed by Qt_Python_Binding (https://github.com/ros-visualization/python_qt_binding.git) requires too many other prerequisites ...
-Tests with FindPYQTSIP.cmake:
-- Ubuntu 18.4 with native prerequisites
-- Windows 10, Visual Studio 2017, prerequisites provided by Anaconda.
-- tests to be continued on different configurations
+Selected tool: BoostPython
+--------------------------
+BoostPython is a mature and stable project. It is entirely based on C++, we write C++ to describe the interface, explicitly, 
+for all the classes, methods, functions that we want to show.
+The documentation is succinct and austere (small tutorial and reference documentation). 
+Learning is laborious, but the tool is very powerful and introducing new classes and methods becomes easier, 
+when most of the type converters have been defined.
 
 Windows 10 generation and testing
 ---------------------------------
-To test, I launched Visual Studio 2017 in the Anaconda environment, to facilitate the detection of prerequisites.
-Some paths must be given at the configuration step for Sip, PyQt5, Numpy ...
+See the README on the current construction and testing method.
 
 Wrapping extension
 ------------------
-Very limited interface, for first tests:
 
-cloudCompare
-- read / write point clouds
+The interface is still incomplete, but allows to do a lot of tests.
+
+cloudComPy module
+- load and save entities (point clouds, meshes, primitives)
+- create primitives (box, cone, cylinder, plane, sphere, torus, quadric, dish)
 - curvature calculation
 - scalar field filtering
-ccPointCloud
-- computeGravityCenter
-- scale, translate
-- getName, hasScalarFields, getNumberOfScalarFields, getScalarFieldName
-- exportCoordToSF
-- getScalarField
 - ...
-ScalarField
-- getName
-- initNumpyApi (static to call once)
-- toNpArray
-- fromNpArray
 
-The idea is to complete by taking inspiration from the functions available in the command interface.
-To do as a priority: export points (x, y, z) to a Numpy array.
+pointcloud, mesh, primitives, polyline, ScalarField, distanceComputationtools:
+See the available methodes in the Python test scripts
 
 Duplicate qCC code elements
 ---------------------------
@@ -56,29 +65,30 @@ The Cloud Compare Python API code is gathered in a PYCC directory (Cloud Compare
 It is based on potentially all the CloudCompare libraries, except the application itself (qCC).
 It does not require any modification of the called libraries.
 By cons, need to duplicate code from qCC, without GUI graphics calls.
-For example, for the calculation of curvature, retrieved from ccLibAlgorithms :: ComputeGeomCharacteristic, ccLibAlgorithms :: GetDensitySFName.
+For example, for the calculation of curvature, retrieved from `ccLibAlgorithms::ComputeGeomCharacteristic`, 
+`ccLibAlgorithms::GetDensitySFName`.
 Do we need an intermediate layer of callable processing from the GUI and the Python interface?
-
-Plugins are not loaded
-----------------------
-The plugin manager seems to be only available from the GUI (Graphical User Interface), not in a non graphic library.
-Same problem as above. Not implemented.
 
 Numpy, ownership of ScalarFields
 --------------------------------
 It is possible to transform the cloud coordinates or a ScalarField into Numpy Array with or without copying data.
-When data is borrowed from C++ (not copied), ownership remains on the C++ side: the destruction of data can only be done via a CloudCompare method (destruction of the C++ cloudCompare object owning the data). Nothing exists yet in the Python interface for CloudCompare objects destruction.
-When data is copied, ownership of the copied data is transfered to Python. The PyArray object owns the copied data, the Python garbage collector is in charge of the PyArray and its data. 
-In the other direction, we can overwrite the data of an existing ScalarField with that of a Numpy Array of the same type, same dimensions and size (vector of the same number of elements).
-The copy operation is done by memcpy.
+
+When data is borrowed from C++ (not copied), ownership remains on the C++ side: 
+the destruction of data can only be done via a CloudCompare method (destruction of the C++ cloudCompare object owning the data). 
+Nothing exists yet in the Python interface for CloudCompare objects destruction.
+
+When data is copied, ownership of the copied data is transfered to Python. 
+The PyArray object owns the copied data, the Python garbage collector is in charge of the PyArray and its data. 
+In the other direction, we can overwrite the data of an existing ScalarField with that of a Numpy Array of the same type, 
+same dimensions and size (vector of the same number of elements).
 - There are build tests to ensure that premature destruction or memory leaks are avoided.
 
 Python references counter, Ownership
 ------------------------------------
 Python's garbage collector relies on a references counter on which we can act in the C ++ interface (Py_INCREF, PY_DECREF).
-SIP makes it possible to say explicitly who has the ownership of the objects created at the interface.
+The Wrapper makes it possible to say explicitly who has the ownership of the objects created at the interface.
 Establish rules and tests to be sure of writing reliable code (Numpy Array <--> Coordinates or ScalarField is an important particular case).
-Now, by default, data is copied to avoid problems such as a creation of PyArray of borrowed data from a scalarField, and destruction of the scalarField in CloudCompare.
+Currently the interface does not prohibit potentially destructive actions.
 NB: no problem detected to date on the reduced interface, with simple tests ...
 
 Portable Python tests
@@ -86,7 +96,7 @@ Portable Python tests
 The test scripts are dependent on local paths, and on a local dataset.
 - the dataset is generated by scripts.
 - the test scripts are configured to run at build time and install time
-- ctest is used to run the tests at build step: make test (works only on Linux)
+- ctest is used to run the tests at build step (make test, works only on Linux), and install step (ctest)
 - TODO: try to have ctest working at build step on Windows
-- TODO: try to have a ctest configuration at install step...
+- TODO: try to have an automatic ctest configuration at deployment step...
 

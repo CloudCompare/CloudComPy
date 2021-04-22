@@ -2,50 +2,49 @@
 Python wrapper for CloudCompare
 
 ## What is CloudComPy?
-This project is a draft of what could be a Python module to interface to CloudCompare, of equivalent level to the command mode of CloudCompare.
+This project is a draft of what could be a Python module to interface to CloudCompare, 
+of equivalent level to the command mode of CloudCompare.
 
-There are still few features available in this prototype, the idea is to collect feedback from interested users to guide future developments.
+There are still few features available in this prototype, 
+the idea is to collect feedback from interested users to guide future developments.
 
 Here is an example of a Python script:
 
 ```
-import sys
+import cloudComPy as cc                                                # import the CloudComPy module
+cc.initCC()                                                            # to do once before dealing with plugins
 
-from PyQt5.QtWidgets import QApplication                       # create a Qt application, 
-app = QApplication(sys.argv)                                   # CloudCompare relies on Qt
-import cloudCompare as cc                                      # import the CloudCompare module
-cc.initNumpy.init()                                            # to do once before dealing with numpy
-
-cloud = cc.loadPointCloud("myCloud.xyz")                       # read a point cloud from a file
+cloud = cc.loadPointCloud("myCloud.xyz")                               # read a point cloud from a file
 print("cloud name: %s"%cloud.getName())
 
-res=cc.computeCurvature(cc.GAUSSIAN_CURV, 0.05, [cloud])       # compute curvature as a scalar field
+res=cc.computeCurvature(cc.CurvatureType.GAUSSIAN_CURV, 0.05, [cloud]) # compute curvature as a scalar field
 nsf = cloud.getNumberOfScalarFields()
 sfCurv=cloud.getScalarField(nsf-1)
 cloud.setCurrentOutScalarField(nsf-1)
-filteredCloud=cc.filterBySFValue(0.01, sfCurv.getMax(), cloud) # keep only the points above a given curvature
+filteredCloud=cc.filterBySFValue(0.01, sfCurv.getMax(), cloud)         # keep only the points above a given curvature
 
-ok = filteredCloud.exportCoordToSF((False, False, True))       # Z coordinate as a scalar Field
+ok = filteredCloud.exportCoordToSF(False, False, True)                 # Z coordinate as a scalar Field
 nsf = cloud.getNumberOfScalarFields()
 sf1=filteredCloud.getScalarField(nsf-1)
 mean, var = sf1.computeMeanAndVariance()
 
 # using Numpy...
 
-coordinates = filteredCloud.toNpArray(True)                    # coordinates as a numpy array
-x=coordinates[:,0]                                             # x column
+coordinates = filteredCloud.toNpArrayCopy()                            # coordinates as a numpy array
+x=coordinates[:,0]                                                     # x column
 y=coordinates[:,1]
 z=coordinates[:,2]
 
-f=(2*x-y)*(x+3*y)                                              # elementwise operation on arrays
+f=(2*x-y)*(x+3*y)                                                      # elementwise operation on arrays
 
-asf1=sf1.toNpArray()                                           # scalar field as a numpy array
-sf1.fromNpArray(f)                                             # replace scalar field values by a numpy array
+asf1=sf1.toNpArray()                                                   # scalar field as a numpy array
+sf1.fromNpArrayCopy(f)                                                 # replace scalar field values by a numpy array
 
-res=cc.SavePointCloud(filteredCloud,"myModifiedCloud.bin")     #save the point cloud to a file
+res=cc.SavePointCloud(filteredCloud,"myModifiedCloud.bin")             #save the point cloud to a file
 ```
 
-As you can see, it is possible to read and write point clouds, access scalar fields from Numpy (with or without copy of data), call some CloudCompare functions to transform point clouds.
+As you can see, it is possible to read and write point clouds, 
+access scalar fields from Numpy (with or without copy of data), call some CloudCompare functions to transform point clouds.
 
 The list of available functions should quickly grow.
 
@@ -53,7 +52,7 @@ From the Python interpreter, Docstrings provide some documentation on the availa
 
 ## how to build CloudComPy?
 
-Prerequisites for CloudComPy are Python3, PyQt, sip and Numpy plus, of course, everything needed to build CloudCompare.
+Prerequisites for CloudComPy are Python3, BoostPython and Numpy plus, of course, everything needed to build CloudCompare.
 
 With CloudComPy you build CloudCompare and the associated Python module.
 
@@ -62,50 +61,45 @@ Compilation is done with CMake, minimum version 3.10, recommended version 3.13 o
 ### prerequisites versions
 The minimum required version of each prerequisite is not always precisely identified. Examples of constructions that work are given here.
 
-First example: Linux, Ubuntu 18.4, all native packages plus CMake 3.13 rebuilt (native version is 3.10).
+First example: Linux, Ubuntu 20.04, all native packages.
 
-Second example: Windows 10, Visual Studio 2017, Anaconda3 to get all the prerequisites plus a lot more...
-
-
-| Platform | Linux Ubuntu 18.4 gcc 7.5 | Windows 10 Visual Studio 2017 | minimum |
-| -------- | ------------------------- | ------------------------------| ------- |
-| Qt       | 5.9.5                     | 5.9.7                         | 5.9 ?   |
-| Python   | 3.6.7                     | 3.7                           | 3.6     |
-| PyQt5    | 5.10.1                    | 5.9.2                         | 5.9 ?   |
-| sip      | 4.19.7                    | 4.19.8                        | 4.19 ?  |
-| Numpy    | 1.13.3                    | 1.18.1                        | 1.13    |
+Second example: Windows 10, Visual Studio 2019, Anaconda3 to get all the prerequisites plus a lot more...
 
 
+| Platform | Linux Ubuntu 20.04 (clang 10) | Windows 10 Visual Studio 2019 | minimum |
+| -------- | ----------------------------- | ------------------------------| ------- |
+| Qt       | 5.12.8                        | 5.9.7                         | 5.9 ?   |
+| Python   | 3.8.5                         | 3.7.10                        | 3.6     |
+| Boost    | 1.71                          | 1.68                          | 1.68 ?  |
+| Numpy    | 1.17.4                        | 1.20.2                        | 1.13 ?  |
 
-### Ubuntu 18.4
 
-On Ubuntu 18.4, you can install the development versions of the prerequisites with:
+
+### Ubuntu 20.04
+
+On Ubuntu 20.04, you can install the development versions of the prerequisites with:
+TODO: complete the list...
 
 ```
-sudo apt-get intall qtbase5-dev python3 libpython3-dev python3-pyqt5 python3-sip-dev python3-numpy
+sudo apt-get intall qtbase5-dev python3 libpython3-dev python3-numpy cmake
 ```
-Download and install CMake 3.13.5 (plus ccmake, cmake-gui, ctest...). CMake 3.13.5 is is easy to build from sources using the native CMake 3.10 and cmake-gui.
-
-Here are my options used with CMake 3.13.5: depending on the plugins and options you choose, you may need additional prerequisites (use the corresponding natives packages, they are OK here).
-
-To run tests on memory usage, you need the python3 package psutil (native package 5.4.2 is OK).
+To run tests on memory usage, you need the python3 package python3-psutil.
 
 Commandline options (adapt the paths):
 
 ```
--DPLUGIN_STANDARD_QPOISSON_RECON:BOOL="1" -DPLUGIN_IO_QPHOTOSCAN:BOOL="1" -DPLUGIN_IO_QE57:BOOL="1" -DPLUGIN_STANDARD_QCOMPASS:BOOL="1" -DBUILD_TESTING:BOOL="1" -DPYTHONAPI_TEST_DIRECTORY:STRING="/home/paul/projets/CloudCompare/data" -DPLUGIN_GL_QEDL:BOOL="1" -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo" -DCMAKE_INSTALL_PREFIX:PATH="/home/paul/projets/CloudCompare/CloudComPy/installRelease" -DCCCORELIB_USE_CGAL:BOOL="1" -DOPTION_USE_GDAL:BOOL="1" -DPLUGIN_STANDARD_QBROOM:BOOL="1" -DPLUGIN_EXAMPLE_GL:BOOL="1" -DOPTION_USE_SHAPE_LIB:BOOL="1" -DPLUGIN_EXAMPLE_IO:BOOL="1" -DCMAKE_INSTALL_OLDINCLUDEDIR:PATH="" -DPLUGIN_IO_QCSV_MATRIX:BOOL="1" -DPYTHONAPI_TRACES:BOOL="1" -DPLUGIN_EXAMPLE_STANDARD:BOOL="1" -DPLUGIN_STANDARD_QPCL:BOOL="1" -DPLUGIN_STANDARD_QRANSAC_SD:BOOL="1" -DPLUGIN_IO_QADDITIONAL:BOOL="1" -DPLUGIN_GL_QSSAO:BOOL="1" -DPLUGIN_STANDARD_QM3C2:BOOL="1" 
+-DPYTHONAPI_TRACES:BOOL="1" -DFBX_SDK_INCLUDE_DIR:PATH="" -DCMAKE_INSTALL_PREFIX:PATH="/home/paul/projets/CloudComPy/installRelease" -DPLUGIN_GL_QSSAO:BOOL="1" -DPYTHON_PREFERED_VERSION:STRING="3.8" -DPLUGIN_IO_QADDITIONAL:BOOL="1" -DPLUGIN_IO_QFBX:BOOL="0" -DPLUGIN_STANDARD_QRANSAC_SD:BOOL="1" -DPLUGIN_EXAMPLE_STANDARD:BOOL="1" -DPLUGIN_IO_QPHOTOSCAN:BOOL="1" -DPLUGIN_STANDARD_QPOISSON_RECON:BOOL="1" -DPLUGIN_GL_QEDL:BOOL="1" -DPLUGIN_STANDARD_QM3C2:BOOL="1" -DPLUGIN_STANDARD_QMPLANE:BOOL="1" -DOPTION_USE_GDAL:BOOL="1" -DPLUGIN_EXAMPLE_IO:BOOL="1" -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo" -DPLUGIN_IO_QE57:BOOL="1" -DBUILD_TESTING:BOOL="1" -DPYTHONAPI_TEST_DIRECTORY:STRING="/home/paul/projets/CloudComPy/data" -DPLUGIN_STANDARD_QCOMPASS:BOOL="1" -DPLUGIN_IO_QCSV_MATRIX:BOOL="1" -DPLUGIN_STANDARD_QPCL:BOOL="1" -DPLUGIN_EXAMPLE_GL:BOOL="1" -DPLUGIN_STANDARD_QBROOM:BOOL="1" -DBUILD_PY_TESTING:BOOL="1"
 ```
 
 Options to set with cmake-gui or ccmake (adapt the paths):
 
 ```
+BUILD_PY_TESTING:BOOL=1
 BUILD_TESTING:BOOL=1
-CCCORELIB_USE_CGAL:BOOL=1
 CMAKE_BUILD_TYPE:STRING=RelWithDebInfo
-CMAKE_INSTALL_OLDINCLUDEDIR:PATH=
-CMAKE_INSTALL_PREFIX:PATH=/home/paul/projets/CloudCompare/CloudComPy/installRelease
+CMAKE_INSTALL_PREFIX:PATH=/home/paul/projets/CloudComPy/installRelease
+FBX_SDK_INCLUDE_DIR:PATH=
 OPTION_USE_GDAL:BOOL=1
-OPTION_USE_SHAPE_LIB:BOOL=1
 PLUGIN_EXAMPLE_GL:BOOL=1
 PLUGIN_EXAMPLE_IO:BOOL=1
 PLUGIN_EXAMPLE_STANDARD:BOOL=1
@@ -114,15 +108,18 @@ PLUGIN_GL_QSSAO:BOOL=1
 PLUGIN_IO_QADDITIONAL:BOOL=1
 PLUGIN_IO_QCSV_MATRIX:BOOL=1
 PLUGIN_IO_QE57:BOOL=1
+PLUGIN_IO_QFBX:BOOL=0
 PLUGIN_IO_QPHOTOSCAN:BOOL=1
 PLUGIN_STANDARD_QBROOM:BOOL=1
 PLUGIN_STANDARD_QCOMPASS:BOOL=1
 PLUGIN_STANDARD_QM3C2:BOOL=1
+PLUGIN_STANDARD_QMPLANE:BOOL=1
 PLUGIN_STANDARD_QPCL:BOOL=1
 PLUGIN_STANDARD_QPOISSON_RECON:BOOL=1
 PLUGIN_STANDARD_QRANSAC_SD:BOOL=1
-PYTHONAPI_TEST_DIRECTORY:STRING=/home/paul/projets/CloudCompare/data
+PYTHONAPI_TEST_DIRECTORY:STRING=/home/paul/projets/CloudComPy/data
 PYTHONAPI_TRACES:BOOL=1
+PYTHON_PREFERED_VERSION:STRING=3.8
 ```
 After the CMake configuration and generation, run make (adapt the parallel option -j to your processor):
 
@@ -132,98 +129,271 @@ make -j12 && make test && make install
 
 `make test` creates Point Cloud datasets and executes Python tests scripts using the cloudCompare module.
 The tests are installed in `<install-dir>/doc/PythonAPI_test`, with shell scripts to set the `PYTHONPATH` and launch one test.
+When in `<install-dir>/doc/PythonAPI_test`, `ctest` launches all the tests. 
 
-The CloudCompare GUI is installed in the same place, and works as usual.	
+The CloudCompare GUI is installed in  `<install-dir>/bin/CloudCompare`, and works as usual.	
 
 ### Windows 10
 
-There are several methods to install the prerequisites on Windows 10. I chose to install Anaconda, which is a very complete and large Python-based tools environment.
+There are several methods to install the prerequisites on Windows 10. 
+I chose to install Anaconda, which is a very complete and large Python-based tools environment. 
 There is a package system under Anaconda, to select the products you need. It has all our prerequisites.
 
-It is necessary to configure Visual Studio with CMake.
+From Anaconda prompt:
+```
+conda activate
+conda config --set channel_priority strict
+conda create --name CloudComPy37 python=3.7
+conda activate CloudComPy37
+conda install qt=5.9.7 numpy psutil boost=1.68 xerces-c pcl gdal cgal cmake
+```
+CMake from Anaconda is used to get ctest at install, not for build.
 
-I don't master well the configuration and use of Visual Studio, so I tested two ways to use the Visual Studio GUI, without knowing if there is a better way to take into account the prerequisites in the Visual Studio environment.
+It is necessary to configure Visual Studio 2019 with CMake.
+
+I don't master well the configuration and use of Visual Studio, so I tested two ways to use the Visual Studio GUI, 
+without knowing if there is a better way to take into account the prerequisites in the Visual Studio environment.
 
 - 1: Launch the Visual Studio GUI as is, without any additions, and give all the necessary paths for the prerequisites.
 
-- 2: Launch the Visual Studio GUI from the `Anaconda Prompt (Anaconda3)` console with the command: `"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"`. 
+- 2: Launch the Visual Studio GUI from the `Anaconda Prompt (Anaconda3)` console with the command: 
+`"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"`. 
 
-With the Anaconda environment, many paths and variables are found automatically.
-In both cases, it is necessary to provide some configuration variables to CMake. With Visual Studio, these variables can be filled in a json file, which is read during the configuration step. I suppose it is also possible to install cmake-gui to do the same.
+With the Anaconda environment, many paths and variables are found automatically. 
+In both cases, it is necessary to provide some configuration variables to CMake. 
+With Visual Studio, these variables can be filled in a json file, which is read during the configuration step. 
+I suppose it is also possible to install cmake-gui to do the same.
 
-Here are my json file, for the first method (a minimal configuration of CloudCompare, without optional plugins):
+Here are my json file, for the first method, with the plugins availables with Anaconda packages:
 
 ```
-{
+﻿{
   "configurations": [
     {
       "name": "x64-Release",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
-      "inheritEnvironments": [
-        "msvc_x64_x64"
-      ],
-      "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
-      "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "C:/Users/paulr/CloudComPy_v212x/build/${name}",
+      "installRoot": "C:/Users/paulr/CloudComPy_v212x/install/CloudComPy37_bnf",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
         {
           "name": "Qt5_DIR",
-          "value": "${env.USERPROFILE}\\anaconda3\\Library\\lib\\cmake\\Qt5"
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/cmake/Qt5",
+          "type": "STRING"
         },
         {
           "name": "Qt5LinguistTools_DIR",
-          "value": "${env.USERPROFILE}\\anaconda3\\Library\\lib\\cmake\\Qt5LinguistTools"
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/cmake/Qt5LinguistTools",
+          "type": "STRING"
         },
         {
           "name": "QT5_ROOT_PATH",
-          "value": "${env.USERPROFILE}\\anaconda3\\Library"
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library",
+          "type": "STRING"
+        },
+        {
+          "name": "BOOST_INCLUDEDIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "type": "STRING"
+        },
+        {
+          "name": "BOOST_LIBRARYDIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib",
+          "type": "STRING"
+        },
+        {
+          "name": "Boost_DEBUG:BOOL",
+          "value": "ON",
+          "type": "STRING"
+        },
+        {
+          "name": "Python3_ROOT_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37",
+          "type": "STRING"
         },
         {
           "name": "PYTHON_PREFERED_VERSION:STRING",
-          "value": "3.7"
-        },
-        {
-          "name": "PYQT_PYTHONPATH",
-          "value": "${env.USERPROFILE}\\anaconda3\\Lib\\site-packages"
-        },
-        {
-          "name": "PYQT_PYUIC_EXECUTABLE",
-          "value": "${env.USERPROFILE}\\anaconda3\\Library\\bin\\pyuic5.bat"
-        },
-        {
-          "name": "SIP_INCLUDE_DIR",
-          "value": "${env.USERPROFILE}\\anaconda3\\include"
-        },
-        {
-          "name": "SIP_EXECUTABLE",
-          "value": "${env.USERPROFILE}\\anaconda3\\Library\\bin\\sip.exe"
-        },
-        {
-          "name": "PYQT_SIPS",
-          "value": "${env.USERPROFILE}\\anaconda3\\sip\\PyQt5"
+          "value": "3.7",
+          "type": "STRING"
         },
         {
           "name": "NUMPY_INCLUDE_DIR",
-          "value": "${env.USERPROFILE}\\anaconda3\\Lib\\site-packages\\numpy\\core\\include"
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Lib/site-packages/numpy/core/include",
+          "type": "STRING"
         },
         {
           "name": "PYTHONAPI_TEST_DIRECTORY",
-          "value": "${env.USERPROFILE}\\CloudCompare\\data"
+          "value": "C:/Users/paulr/CloudCompare/data",
+          "type": "STRING"
         },
         {
           "name": "PYTHONAPI_TRACES:BOOL",
-          "value": "ON"
+          "value": "ON",
+          "type": "STRING"
         },
         {
           "name": "BUILD_PY_TESTING:BOOL",
-          "value": "ON"
+          "value": "ON",
+          "type": "STRING"
         },
         {
           "name": "BUILD_TESTING:BOOL",
-          "value": "ON"
+          "value": "ON",
+          "type": "STRING"
+        },
+        {
+          "name": "OPTION_SCALAR_DOUBLE:BOOL",
+          "value": "OFF",
+          "type": "STRING"
+        },
+        {
+          "name": "COMPILE_CC_CORE_LIB_WITH_CGAL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "COMPILE_CC_CORE_LIB_WITH_TBB",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "COMPILE_CC_CORE_LIB_WITH_QT",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
+          "name": "OPTION_USE_GDAL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "OPTION_USE_SHAPE_LIB",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_EXAMPLE_GL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_EXAMPLE_IO",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_EXAMPLE_STANDARD",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_GL_QEDL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_GL_QSSAO",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QADDITIONAL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QCORE",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QCSV_MATRIX",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QPHOTOSCAN",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QBROOM",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QCOMPASS",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QM3C2",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QPCL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QPOISSON_RECON",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QRANSAC_SD",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QSRA",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "CGAL_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library",
+          "type": "PATH"
+        },
+        {
+          "name": "GMP_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "GMP_LIBRARIES",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/mpir.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "MPFR_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library",
+          "type": "PATH"
+        },
+        {
+          "name": "MPFR_LIBRARIES",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/mpfr.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "TBB_INCLUDE_DIRS",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "ZLIB_INCLUDE_DIRS",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library",
+          "type": "PATH"
+        },
+        {
+          "name": "ZLIB_LIBRARIES",
+          "value": "C:/Users/paulr/anaconda3/Library/lib/zlib.lib",
+          "type": "FILEPATH"
         }
       ]
     }
@@ -231,14 +401,15 @@ Here are my json file, for the first method (a minimal configuration of CloudCom
 }
 ```
 
-With the first method, Anaconda environment is not set, and make test does not work.
-
-After the installation step, it is in any case necessary to load the Anaconda environment (Anaconda Prompt console) for Python and Numpy to be correctly configured.
+After the installation step, it is in any case necessary to load the Anaconda environment (Anaconda Prompt console) 
+for Python and Numpy to be correctly configured.
 
 The tests are installed in `<install-dir>/doc/PythonAPI_test`, with shell scripts to set the `PYTHONPATH` and launch one test.
+When in `<install-dir>/doc/PythonAPI_test`, `ctest` launches all the tests. 
 
-The CloudCompare GUI is installed in the same place, and works as usual.
+The CloudCompare GUI is installed in  `<install-dir>/bin/CloudCompare`, and works as usual. 
 
 There is still a lot of work to do to make a correct packaging, but it is already possible to test the Python interface.
 
-In addition to feedback on the interface itself and the extensions to be made, I take advice on best practices for configuration and use of Visual Studio tools :-)
+In addition to feedback on the interface itself and the extensions to be made, I take advice on best practices 
+for configuration and use of Visual Studio tools :-)
