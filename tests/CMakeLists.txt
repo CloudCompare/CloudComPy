@@ -66,8 +66,18 @@ set(PYTHONAPI_TEST_SCRIPTS
 set(PYTHONAPI_TEST_UTILITIES
     ${CMAKE_CURRENT_BINARY_DIR}/gendata.py
     ${CMAKE_CURRENT_BINARY_DIR}/DartConfiguration.tcl
-    DartTestfile.txt
     )
+
+if(WIN32)
+    install(PROGRAMS DartTestfile.win.txt
+            DESTINATION ${PYTHONAPI_TEST_SCRIPTS_DIRECTORY}
+            RENAME DartTestfile.txt
+           )
+else()
+    install(PROGRAMS DartTestfile.txt
+            DESTINATION ${PYTHONAPI_TEST_SCRIPTS_DIRECTORY}
+           )
+endif()
 
 # files to install    
 set(PYTHONAPI_TEST_FILES
