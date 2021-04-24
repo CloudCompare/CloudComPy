@@ -6,8 +6,9 @@ import os
 import cloudComPy as cc
 import subprocess
 
-dataDir = "@PYTHONAPI_TEST_DIRECTORY@"
-
+dataDir = os.path.join(os.environ["@USER_HOME@"], "@PYTHONAPI_TEST_DIRECTORY@")
+if not os.path.exists(dataDir):
+    os.makedirs(dataDir)
 
 def isCoordEqual(vals, refs):
     for val, ref in zip(vals, refs):

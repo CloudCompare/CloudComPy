@@ -23,7 +23,12 @@ enable_testing()
 # --- ------------
 # --- target tests
 
-set(PYTHONAPI_TEST_DIRECTORY "/tmp" CACHE STRING "Directory path for tests: to store samples and generated data")
+set(PYTHONAPI_TEST_DIRECTORY "CloudComPyData" CACHE STRING "Directory path for tests to be created in your user directory, to store samples and generated data")
+if(WIN32)
+    set(USER_HOME "USERPROFILE")
+else()
+    set(USER_HOME "HOME")
+endif()
 
 # where to install the tests scripts
 set(PYTHONAPI_TEST_SCRIPTS_DIRECTORY doc/PythonAPI_test)

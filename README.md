@@ -142,9 +142,10 @@ There is a package system under Anaconda, to select the products you need. It ha
 From Anaconda prompt:
 ```
 conda activate
-conda config --set channel_priority strict
 conda create --name CloudComPy37 python=3.7
 conda activate CloudComPy37
+conda config --add channels conda-forge
+conda config --set channel_priority strict
 conda install qt=5.9.7 numpy psutil boost=1.68 xerces-c pcl gdal cgal cmake
 ```
 CMake from Anaconda is used to get ctest at install, not for build.
@@ -167,7 +168,7 @@ I suppose it is also possible to install cmake-gui to do the same.
 Here are my json file, for the first method, with the plugins availables with Anaconda packages:
 
 ```
-﻿{
+{
   "configurations": [
     {
       "name": "x64-Release",
@@ -207,7 +208,7 @@ Here are my json file, for the first method, with the plugins availables with An
         },
         {
           "name": "Boost_DEBUG:BOOL",
-          "value": "ON",
+          "value": "OFF",
           "type": "STRING"
         },
         {
@@ -227,12 +228,17 @@ Here are my json file, for the first method, with the plugins availables with An
         },
         {
           "name": "PYTHONAPI_TEST_DIRECTORY",
-          "value": "C:/Users/paulr/CloudCompare/data",
+          "value": "CloudComPy/data",
           "type": "STRING"
         },
         {
           "name": "PYTHONAPI_TRACES:BOOL",
           "value": "ON",
+          "type": "STRING"
+        },
+        {
+          "name": "INSTALL_PREREQUISITE_LIBRARIES",
+          "value": "OFF",
           "type": "STRING"
         },
         {

@@ -38,7 +38,7 @@
         },
         {
           "name": "Boost_DEBUG:BOOL",
-          "value": "ON",
+          "value": "OFF",
           "type": "STRING"
         },
         {
@@ -58,12 +58,17 @@
         },
         {
           "name": "PYTHONAPI_TEST_DIRECTORY",
-          "value": "C:/Users/paulr/CloudCompare/data",
+          "value": "CloudComPy/data",
           "type": "STRING"
         },
         {
           "name": "PYTHONAPI_TRACES:BOOL",
           "value": "ON",
+          "type": "STRING"
+        },
+        {
+          "name": "INSTALL_PREREQUISITE_LIBRARIES",
+          "value": "OFF",
           "type": "STRING"
         },
         {
