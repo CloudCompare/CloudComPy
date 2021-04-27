@@ -26,6 +26,14 @@ import cloudComPy as cc
 cc.initCC  # to do once before using plugins
 cloud = cc.loadPointCloud("/home/paul/projets/CloudCompare/data/altiXYZ/RGEALTI_FXX_0845_6446_MNT_LAMB93_IGN69.xyz"))";
 
+const char* cloudComPy_ICPres_doc=R"(
+result parameters on ICP registration
+)";
+
+const char* cloudComPy_ICP_doc=R"(
+Applies ICP registration on two entities
+)";
+
 const char* cloudComPy_initCC_doc= R"(
 Should be done once before using plugins!)";
 

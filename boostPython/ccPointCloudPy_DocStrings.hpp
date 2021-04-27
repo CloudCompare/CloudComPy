@@ -36,6 +36,11 @@ param uniqueName scalar field name (must be unique)
 return index of this new scalar field (or -1 if an error occurred)
 )";
 
+const char* ccPointCloudPy_applyRigidTransformation_doc= R"(
+Applies a GL transformation to the entity
+this = rotMat*(this-rotCenter)+(rotCenter+trans)
+param trans a ccGLMatrix structure)";
+
 const char* ccPointCloudPy_computeGravityCenter_doc= R"(
 Return a tuple of the 3 coordinates of the gravity center of the cloud)";
 

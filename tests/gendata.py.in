@@ -17,11 +17,13 @@ def isCoordEqual(vals, refs):
     return True
 
 
-def getSampleCloud(h=5.0):
+def getSampleCloud(h=5.0, dx=0):
     dataName = "dataSample_%s.xyz" % h
+    if dx != 0:
+        dataName = "dataSample_%s_%s.xyz" % (h,dx)
     sample = os.path.join(dataDir, dataName)
     if not os.path.exists(sample):
-        vx = np.arange(-5, 5, 0.01)
+        vx = np.arange(-5+dx, 5+dx, 0.01)
         vy = np.arange(-5, 5, 0.01)
 
         with open(sample, 'w') as f:

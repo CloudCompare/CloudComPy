@@ -30,10 +30,12 @@
 #include "ccPrimitivesPy.hpp"
 #include "ccPolylinePy.hpp"
 #include "distanceComputationToolsPy.hpp"
+#include "registrationToolsPy.hpp"
 
 #include "initCC.h"
 #include "pyCC.h"
 #include "PyScalarType.h"
+#include <ccGLMatrix.h>
 #include <ScalarField.h>
 #include <QString>
 #include <vector>
@@ -64,10 +66,54 @@ const char* getScalarType()
     return CC_NPY_FLOAT_STRING;
 }
 
+struct ICPres
+{
+    ccGLMatrix transMat;
+    double finalScale;
+    double finalRMS;
+    unsigned finalPointCount;
+};
+
+ICPres ICP_py(  ccHObject* data,
+                ccHObject* model,
+                double minRMSDecrease,
+                unsigned maxIterationCount,
+                unsigned randomSamplingLimit,
+                bool removeFarthestPoints,
+                CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE method,
+                bool adjustScale,
+                double finalOverlapRatio = 1.0,
+                bool useDataSFAsWeights = false,
+                bool useModelSFAsWeights = false,
+                int transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE,
+                int maxThreadCount = 0)
+{
+    ICPres a;
+    ICP(data,
+        model,
+        a.transMat,
+        a.finalScale,
+        a.finalRMS,
+        a.finalPointCount,
+        minRMSDecrease,
+        maxIterationCount,
+        randomSamplingLimit,
+        removeFarthestPoints,
+        method,
+        adjustScale,
+        finalOverlapRatio,
+        useDataSFAsWeights,
+        useModelSFAsWeights,
+        transformationFilters,
+        maxThreadCount);
+    return a;
+}
+
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(GetPointCloudRadius_overloads, GetPointCloudRadius, 1, 2);
+BOOST_PYTHON_FUNCTION_OVERLOADS(ICP_py_overloads, ICP_py, 8, 13);
 
 BOOST_PYTHON_MODULE(cloudComPy)
 {
@@ -82,6 +128,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
     export_ccMesh();
     export_ccPrimitives();
     export_distanceComputationTools();
+    export_registrationTools();
 
     // TODO: function load entities ("file.bin")
     // TODO: more methods on distanceComputationTools
@@ -148,4 +195,39 @@ BOOST_PYTHON_MODULE(cloudComPy)
     def("GetPointCloudRadius", GetPointCloudRadius, GetPointCloudRadius_overloads(args("knn", "clouds"), cloudComPy_GetPointCloudRadius_doc));
 
     def("getScalarType", getScalarType, cloudComPy_getScalarType_doc);
+
+    class_<ICPres>("ICPres", cloudComPy_ICPres_doc)
+       .def_readwrite("transMat", &ICPres::transMat,
+                       cloudComPy_ICPres_doc)
+       .def_readwrite("finalScale", &ICPres::finalScale,
+                      cloudComPy_ICPres_doc)
+       .def_readwrite("finalRMS", &ICPres::finalRMS,
+                      cloudComPy_ICPres_doc)
+       .def_readwrite("finalPointCount", &ICPres::finalPointCount,
+                      cloudComPy_ICPres_doc)
+    ;
+
+    //def("ICP", ICP, cloudComPy_ICP_doc);
+
+    def("ICP", ICP_py, ICP_py_overloads(cloudComPy_ICP_doc));
+
+//    def("ICP", ICP,
+//        ICP_overloads(args("finalOverlapRatio",
+//                           "useDataSFAsWeights",
+//                           "useModelSFAsWeights",
+//                           "transformationFilters",
+//                           "maxThreadCount",
+//                           "data",
+//                           "model",
+//                           "transMat",
+//                           "finalScale",
+//                           "finalRMS",
+//                           "finalPointCount",
+//                           "minRMSDecrease",
+//                           "maxIterationCount",
+//                           "randomSamplingLimit",
+//                           "removeFarthestPoints",
+//                           "method",
+//                           "adjustScale"),
+//        cloudComPy_ICP_doc));
 }

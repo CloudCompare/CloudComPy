@@ -120,4 +120,7 @@ param transMat optional (default 0) 3D transformation (can be set afterwards wit
 param name optional name, default 'Dish'
 param precision optional drawing precision (angular step = 360/precision), default 24)";
 
+const char* ccPrimitivesPy_toString_doc= R"(
+String version of the transformer coefficients)";
+
 #endif /* CCPRIMITIVESPY_DOCSTRINGS_HPP_ */

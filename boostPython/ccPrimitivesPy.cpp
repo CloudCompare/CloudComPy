@@ -43,6 +43,12 @@ using namespace boost::python;
 // templates for function pointer requires C++14
 template<typename T> void (ccGLMatrixTpl<T>::*initFromParameters1)(T, const Vector3Tpl<T>&, const Vector3Tpl<T>&) = &ccGLMatrixTpl<T>::initFromParameters;
 template<typename T> void (ccGLMatrixTpl<T>::*initFromParameters2)(T, T, T, const Vector3Tpl<T>&) = &ccGLMatrixTpl<T>::initFromParameters;
+//template<typename T> QString (ccGLMatrixTpl<T>::*toString12Space)(int, char) = &ccGLMatrixTpl<T>::toString;
+
+template<typename T> QString toString_def_py(ccGLMatrixTpl<T>&self)
+{
+    return self.toString();
+}
 
 struct ccGenericPrimitiveWrap : ccGenericPrimitive, wrapper<ccGenericPrimitive>
 {
@@ -123,11 +129,13 @@ void export_ccPrimitives()
     class_<ccGLMatrixTpl<float> >("ccGLMatrixTpl_float")
         .def("initFromParameters", initFromParameters1<float>, ccPrimitivesPy_initFromParameters_doc)
         .def("initFromParameters", initFromParameters2<float>)
+        .def("toString", &toString_def_py<float>, ccPrimitivesPy_toString_doc)
         ;
 
     class_<ccGLMatrixTpl<double> >("ccGLMatrixTpl_double")
         .def("initFromParameters", initFromParameters1<double>, ccPrimitivesPy_initFromParameters_doc)
         .def("initFromParameters", initFromParameters2<double>)
+        .def("toString", &toString_def_py<double>, ccPrimitivesPy_toString_doc)
         ;
 
     class_<ccGLMatrix, bases<ccGLMatrixTpl<float> > >("ccGLMatrix", ccPrimitivesPy_ccGLMatrix_doc)

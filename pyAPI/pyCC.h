@@ -32,6 +32,7 @@
 #include <GeometricalAnalysisTools.h>
 #include <ccPolyline.h>
 #include <ccPointCloud.h>
+#include <RegistrationTools.h>
 
 // --- for Python3 interface
 
@@ -122,6 +123,26 @@ ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
  */
 double GetPointCloudRadius(std::vector<ccHObject*> clouds, unsigned knn = 12);
 
+//! copied from ccRegistrationTools::ICP
+bool ICP(
+    ccHObject* data,
+    ccHObject* model,
+    ccGLMatrix& transMat,
+    double& finalScale,
+    double& finalRMS,
+    unsigned& finalPointCount,
+    double minRMSDecrease,
+    unsigned maxIterationCount,
+    unsigned randomSamplingLimit,
+    bool removeFarthestPoints,
+    CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE method,
+    bool adjustScale,
+    double finalOverlapRatio = 1.0,
+    bool useDataSFAsWeights = false,
+    bool useModelSFAsWeights = false,
+    int transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE,
+    int maxThreadCount = 0);
+
 // --- internal functions (not wrapped in the Python API) ---------------------
 
 //! initialize internal structures: should be done once, multiples calls allowed (does nothing)
@@ -146,7 +167,6 @@ QString pyCC_GetDensitySFName(
 
 //! copied from ccLibAlgorithms::GetDefaultCloudKernelSize
 PointCoordinateType pyCC_GetDefaultCloudKernelSize(ccGenericPointCloud* cloud, unsigned knn = 12);
-
 
 //! Loaded polyline description (not in ccCommandLineInterface.h)
 struct CLPolyDesc : CLEntityDesc
