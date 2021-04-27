@@ -32,7 +32,7 @@ void export_ccMesh()
     class_<CCCoreLib::GenericIndexedMesh, boost::noncopyable>("GenericIndexedMesh", no_init)
         ;
 
-    class_<ccGenericMesh, bases<CCCoreLib::GenericIndexedMesh>, boost::noncopyable>("ccGenericMesh", no_init)
+    class_<ccGenericMesh, bases<CCCoreLib::GenericIndexedMesh, ccShiftedObject>, boost::noncopyable>("ccGenericMesh", no_init)
         .def("getName", &ccGenericMesh::getName)
         ;
 

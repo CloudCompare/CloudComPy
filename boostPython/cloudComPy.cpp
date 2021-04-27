@@ -36,6 +36,8 @@
 #include "pyCC.h"
 #include "PyScalarType.h"
 #include <ccGLMatrix.h>
+#include <ccHObject.h>
+#include <ccPointCloud.h>
 #include <ScalarField.h>
 #include <QString>
 #include <vector>
@@ -68,6 +70,7 @@ const char* getScalarType()
 
 struct ICPres
 {
+    ccPointCloud* aligned;
     ccGLMatrix transMat;
     double finalScale;
     double finalRMS;
@@ -106,6 +109,7 @@ ICPres ICP_py(  ccHObject* data,
         useModelSFAsWeights,
         transformationFilters,
         maxThreadCount);
+    a.aligned = dynamic_cast<ccPointCloud*>(data);
     return a;
 }
 
@@ -197,6 +201,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
     def("getScalarType", getScalarType, cloudComPy_getScalarType_doc);
 
     class_<ICPres>("ICPres", cloudComPy_ICPres_doc)
+       .add_property("aligned", bp::make_getter(&ICPres::aligned, return_value_policy<return_by_value>()))
        .def_readwrite("transMat", &ICPres::transMat,
                        cloudComPy_ICPres_doc)
        .def_readwrite("finalScale", &ICPres::finalScale,

@@ -85,10 +85,16 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_overloads, scale, 3, 4)
 
 void export_ccPointCloud()
 {
+    class_<ccHObject>("ccHObject", no_init)
+        ;
+
+    class_<ccShiftedObject, bases<ccHObject>, boost::noncopyable>("ccShiftedObject", no_init)
+        ;
+
     class_<CCCoreLib::GenericIndexedCloudPersist, boost::noncopyable>("GenericIndexedCloudPersist", no_init)
         ;
 
-    class_<ccGenericPointCloud, bases<CCCoreLib::GenericIndexedCloudPersist>, boost::noncopyable>("ccGenericPointCloud", no_init)
+    class_<ccGenericPointCloud, bases<CCCoreLib::GenericIndexedCloudPersist, ccShiftedObject>, boost::noncopyable>("ccGenericPointCloud", no_init)
         ;
 
     class_<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>, bases<ccGenericPointCloud>, boost::noncopyable>("PointCloudTpl_ccGenericPointCloud_QString", no_init)

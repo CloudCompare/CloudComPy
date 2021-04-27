@@ -38,6 +38,14 @@ namespace bp = boost::python;
 namespace
 {
 
+struct ccPointCloud_to_python
+{
+    static PyObject* convert(ccPointCloud* c)
+    {
+        return bp::incref(bp::object(c).ptr());
+    }
+};
+
 struct QString_to_python_str
 {
     static PyObject* convert(const QString& s)
@@ -409,6 +417,7 @@ void initializeConverters()
 
     // register the to-python converter
     CCTRACE("initializeConverters");
+    to_python_converter<ccPointCloud*, ccPointCloud_to_python, false>();
     to_python_converter<QString, QString_to_python_str, false>(); //"false" because QString_to_python_str has no member get_pytype
     to_python_converter<Vector2Tpl<float>, Vector2Tpl_to_python_tuple<float>, false>();
     to_python_converter<Vector2Tpl<double>, Vector2Tpl_to_python_tuple<double>, false>();
