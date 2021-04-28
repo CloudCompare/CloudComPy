@@ -19,6 +19,12 @@
 #ifndef CCPOINTCLOUDPY_DOCSTRINGS_HPP_
 #define CCPOINTCLOUDPY_DOCSTRINGS_HPP_
 
+const char* ccHObject_setName_doc= R"(
+Set the name of the entity)";
+
+const char* ccHObject_getName_doc= R"(
+get the name of the entity)";
+
 const char* ccPointCloudPy_ccPointCloud_doc= R"(
 A 3D cloud and its associated features ( normals, scalar fields, etc.)
 A point cloud can have multiple features:
@@ -86,9 +92,6 @@ Return the current 'in' ScalarField if there is one, otherwise None.)";
 
 const char* ccPointCloudPy_getCurrentOutScalarField_doc= R"(
 Return the current 'out' ScalarField if there is one, otherwise None.)";
-
-const char* ccPointCloudPy_getName_doc= R"(
-return the point cloud name)";
 
 const char* ccPointCloudPy_getNumberOfScalarFields_doc= R"(
 return the number of scalar fields associated to the cloud)";

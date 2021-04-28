@@ -33,7 +33,6 @@ void export_ccMesh()
         ;
 
     class_<ccGenericMesh, bases<CCCoreLib::GenericIndexedMesh, ccShiftedObject>, boost::noncopyable>("ccGenericMesh", no_init)
-        .def("getName", &ccGenericMesh::getName)
         ;
 
     class_<ccMesh, bases<ccGenericMesh> >("ccMesh", ccMeshPy_ccMesh_doc, no_init)

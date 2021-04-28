@@ -88,6 +88,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_cloneThis_overloads, cloneTh
 void export_ccPointCloud()
 {
     class_<ccHObject>("ccHObject", no_init)
+        .def("setName", &ccHObject::setName, ccHObject_setName_doc)
+        .def("getName", &ccHObject::getName, ccHObject_getName_doc)
         ;
 
     class_<ccShiftedObject, bases<ccHObject>, boost::noncopyable>("ccShiftedObject", no_init)
@@ -117,7 +119,6 @@ void export_ccPointCloud()
              return_value_policy<reference_existing_object>(), ccPointCloudPy_getCurrentInScalarField_doc)
         .def("getCurrentOutScalarField", &ccPointCloud::getCurrentOutScalarField,
              return_value_policy<reference_existing_object>(), ccPointCloudPy_getCurrentOutScalarField_doc)
-        .def("getName", &ccPointCloud::getName, ccPointCloudPy_getName_doc)
         .def("getNumberOfScalarFields", &ccPointCloud::getNumberOfScalarFields, ccPointCloudPy_getNumberOfScalarFields_doc)
         .def("getScalarField", &ccPointCloud::getScalarField,
              return_value_policy<reference_existing_object>(), ccPointCloudPy_getScalarField_doc)
