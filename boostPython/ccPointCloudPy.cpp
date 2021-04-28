@@ -81,7 +81,9 @@ ccPointCloud* crop2D_py(ccPointCloud &self, const ccPolyline* poly, unsigned cha
 
 int (ccPointCloud::*addScalarFieldt)(const char*) = &ccPointCloud::addScalarField;
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_overloads, scale, 3, 4)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_scale_overloads, scale, 3, 4)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_cloneThis_overloads, cloneThis, 0, 2)
+
 
 void export_ccPointCloud()
 {
@@ -104,6 +106,8 @@ void export_ccPointCloud()
                                                                                           ccPointCloudPy_ccPointCloud_doc, no_init)
         .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)
+        .def("cloneThis", &ccPointCloud::cloneThis,
+             ccPointCloud_cloneThis_overloads(ccPointCloudPy_cloneThis_doc)[return_value_policy<reference_existing_object>()])
         .def("computeGravityCenter", &ccPointCloud::computeGravityCenter, ccPointCloudPy_computeGravityCenter_doc)
         .def("crop2D", &crop2D_py, return_value_policy<reference_existing_object>(), ccPointCloudPy_crop2D_doc)
         .def("deleteAllScalarFields", &ccPointCloud::deleteAllScalarFields, ccPointCloudPy_deleteAllScalarFields_doc)
@@ -122,7 +126,7 @@ void export_ccPointCloud()
         .def("renameScalarField", &ccPointCloud::renameScalarField, ccPointCloudPy_renameScalarField_doc)
         .def("reserve", &ccPointCloud::reserve, ccPointCloudPy_reserve_doc)
         .def("resize", &ccPointCloud::resize, ccPointCloudPy_resize_doc)
-        .def("scale", &ccPointCloud::scale, ccPointCloud_overloads(ccPointCloudPy_scale_doc))
+        .def("scale", &ccPointCloud::scale, ccPointCloud_scale_overloads(ccPointCloudPy_scale_doc))
         .def("setCurrentInScalarField", &ccPointCloud::setCurrentInScalarField, ccPointCloudPy_setCurrentInScalarField_doc)
         .def("setCurrentOutScalarField", &ccPointCloud::setCurrentOutScalarField, ccPointCloudPy_setCurrentOutScalarField_doc)
         .def("size", &ccPointCloud::size, ccPointCloudPy_size_doc)

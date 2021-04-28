@@ -41,6 +41,14 @@ Applies a GL transformation to the entity
 this = rotMat*(this-rotCenter)+(rotCenter+trans)
 param trans a ccGLMatrix structure)";
 
+const char* ccPointCloudPy_cloneThis_doc= R"(
+Clones this entity
+All the main features of the entity are cloned, except from the octree and
+the points visibility information.
+param destCloud [optional] the destination cloud can be provided here
+param ignoreChildren [optional] whether to ignore the cloud's children or not (in which case they will be cloned as well)
+return a copy of this entity)";
+
 const char* ccPointCloudPy_computeGravityCenter_doc= R"(
 Return a tuple of the 3 coordinates of the gravity center of the cloud)";
 
