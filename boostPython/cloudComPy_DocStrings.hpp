@@ -28,11 +28,43 @@ cloud = cc.loadPointCloud("/home/paul/projets/CloudCompare/data/altiXYZ/RGEALTI_
 
 const char* cloudComPy_ICPres_doc=R"(
 result parameters on ICP registration
+- aligned: the point cloud on which the transformation must be applied
+- transMat: the resulting transformation to apply
+- finalScale: calculated scale if rescale required
+- finalRMS: final error (RMS)
+- finalPointCount: number of points used to compute the final RMS
 )";
 
 const char* cloudComPy_ICP_doc=R"(
 Applies ICP registration on two entities
-)";
+parameters:
+- data: cloud to align
+- model: reference cloud
+- minRMSDecrease: The minimum error (RMS) reduction between two consecutive steps to continue process,
+                  if CONVERGENCE_TYPE = MAX_ERROR_CONVERGENCE
+- maxIterationCount: stop after this number of iterations,
+                     if CONVERGENCE_TYPE = MAX_ITER_CONVERGENCE
+- randomSamplingLimit: limit above which clouds should be randomly resampled
+- removeFarthestPoints: If true, the algorithm will automatically ignore farthest points from the reference
+                        This is a trick to improve registration for slightly different clouds.
+- method: mode of convergence, CONVERGENCE_TYPE.MAX_ITER_CONVERGENCE or CONVERGENCE_TYPE.MAX_ERROR_CONVERGENCE
+- adjustScale: Whether to release the scale parameter during the registration procedure or not
+- finalOverlapRatio: Theoretical overlap ratio (at each iteration, only this percentage (between 0 and 1)
+                     will be used for registration (optional, default 1.0)
+- useDataSFAsWeights: Weights for data points (optional, default false) = false,
+- useModelSFAsWeights: Weights for model points (optional, default false)
+- transformationFilters: Filters to be applied on the resulting transformation at each step
+                         integer (optional, default 0)
+                        SKIP_NONE           = 0
+                        SKIP_RXY            = 1
+                        SKIP_RYZ            = 2
+                        SKIP_RXZ            = 4
+                        SKIP_ROTATION       = 7
+                        SKIP_TX             = 8
+                        SKIP_TY             = 16
+                        SKIP_TZ             = 32
+                        SKIP_TRANSLATION    = 56
+- maxThreadCount: Maximum number of threads to use (optional, default 0 = max)";
 
 const char* cloudComPy_initCC_doc= R"(
 Should be done once before using plugins!)";

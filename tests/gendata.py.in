@@ -33,6 +33,19 @@ def getSampleCloud(h=5.0, dx=0):
                     f.write("%f %f %f\n" % (x, y, z))
     return sample
 
+def getSampleCloud2(h=5.0, dx=0, step=0.01):
+    dataName = "dataSample2_%s_%s_%s.xyz" % (h,dx,step)
+    sample = os.path.join(dataDir, dataName)
+    if True: #not os.path.exists(sample):
+        vx = np.arange(-5+dx, 5+dx, step)
+        vy = np.arange(-5, 5, step)
+
+        with open(sample, 'w') as f:
+            for x in vx:
+                for y in vy:
+                    z = math.sin(h * math.sqrt((0.5*x)**2 + y**2)) / math.sqrt((0.5*x)**2 + y**2)
+                    f.write("%f %f %f\n" % (x, y, z))
+    return sample
 
 def getSamplePoly(polyname="poly1"):
     dataName = "%s.poly" % polyname

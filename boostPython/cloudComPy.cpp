@@ -212,27 +212,5 @@ BOOST_PYTHON_MODULE(cloudComPy)
                       cloudComPy_ICPres_doc)
     ;
 
-    //def("ICP", ICP, cloudComPy_ICP_doc);
-
     def("ICP", ICP_py, ICP_py_overloads(cloudComPy_ICP_doc));
-
-//    def("ICP", ICP,
-//        ICP_overloads(args("finalOverlapRatio",
-//                           "useDataSFAsWeights",
-//                           "useModelSFAsWeights",
-//                           "transformationFilters",
-//                           "maxThreadCount",
-//                           "data",
-//                           "model",
-//                           "transMat",
-//                           "finalScale",
-//                           "finalRMS",
-//                           "finalPointCount",
-//                           "minRMSDecrease",
-//                           "maxIterationCount",
-//                           "randomSamplingLimit",
-//                           "removeFarthestPoints",
-//                           "method",
-//                           "adjustScale"),
-//        cloudComPy_ICP_doc));
 }
