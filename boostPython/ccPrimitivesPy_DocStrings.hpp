@@ -81,6 +81,18 @@ param yWidth plane width along 'Y' dimension
 param transMat optional (default 0) 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
 param name optional name, default 'Plane')";
 
+const char* ccPrimitivesPy_ccPlane_Fit_doc= R"(
+Fits a plane primitive on a cloud
+The cloud can be either a pointCloud or a Polyline
+param cloud input cloud
+return plane primitive (if successful)
+)";
+
+const char* ccPrimitivesPy_ccPlane_getEquation_doc= R"(
+Returns the equation of the plane
+Equation:
+planeEquation plane equation : [a, b, c, d] as 'ax+by+cz=d')";
+
 const char* ccPrimitivesPy_ccQuadric_doc= R"(
 Quadric orthogonal dimension is 'Z' by default
 param minCorner min corner of the 'representation' base area

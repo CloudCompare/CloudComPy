@@ -50,6 +50,16 @@ template<typename T> QString toString_def_py(ccGLMatrixTpl<T>&self)
     return self.toString();
 }
 
+ccPlane* plane_Fit_py(CCCoreLib::GenericIndexedCloudPersist * cloud)
+{
+    return ccPlane::Fit(cloud, nullptr);
+}
+std::vector<double> plane_getEquation_py(ccPlane& self)
+{
+    const PointCoordinateType* coefs = self.getEquation();
+    std::vector<double> vec = {coefs[0], coefs[1], coefs[2], coefs[3]};
+    return vec;
+}
 struct ccGenericPrimitiveWrap : ccGenericPrimitive, wrapper<ccGenericPrimitive>
 {
     virtual QString getTypeName()
@@ -165,6 +175,9 @@ void export_ccPrimitives()
     class_<ccPlane, bases<ccGenericPrimitive> >("ccPlane", ccPrimitivesPy_ccPlane_doc, init<QString>())
         .def(init<PointCoordinateType, PointCoordinateType,
              optional<const ccGLMatrix*, QString> >())
+        .def("Fit", &plane_Fit_py, ccPrimitivesPy_ccPlane_Fit_doc, return_value_policy<reference_existing_object>())
+            .staticmethod("Fit")
+        .def("getEquation", &plane_getEquation_py, ccPrimitivesPy_ccPlane_getEquation_doc)
         ;
 
     class_<ccQuadric, boost::shared_ptr<ccQuadric>, bases<ccGenericPrimitive> >("ccQuadric", ccPrimitivesPy_ccQuadric_doc, no_init)

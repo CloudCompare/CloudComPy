@@ -31,6 +31,7 @@
 #include <ccPointCloud.h>
 #include <ccMesh.h>
 #include <ccBox.h>
+#include <ccPlane.h>
 
 #include "pyccTrace.h"
 
@@ -50,6 +51,14 @@ struct ccPointCloud_to_python
 struct ccMesh_to_python
 {
     static PyObject* convert(ccMesh* c)
+    {
+        return bp::incref(bp::object(c).ptr());
+    }
+};
+
+struct ccPlane_to_python
+{
+    static PyObject* convert(ccPlane* c)
     {
         return bp::incref(bp::object(c).ptr());
     }
@@ -99,6 +108,17 @@ struct QString_from_python_str
 
         // Stash the memory chunk pointer for later use by boost.python
         data->convertible = storage;
+    }
+};
+
+template<typename T> struct vector_to_python_list
+{
+    static PyObject* convert(std::vector<T> v)
+    {
+        bp::list vec;
+        for (int i=0; i<v.size(); i++)
+            vec.append(v[i]);
+        return bp::incref(vec.ptr());
     }
 };
 
@@ -428,6 +448,7 @@ void initializeConverters()
     CCTRACE("initializeConverters");
     to_python_converter<ccPointCloud*, ccPointCloud_to_python, false>();
     to_python_converter<ccMesh*, ccMesh_to_python, false>();
+    to_python_converter<ccPlane*, ccPlane_to_python, false>();
     to_python_converter<QString, QString_to_python_str, false>(); //"false" because QString_to_python_str has no member get_pytype
     to_python_converter<Vector2Tpl<float>, Vector2Tpl_to_python_tuple<float>, false>();
     to_python_converter<Vector2Tpl<double>, Vector2Tpl_to_python_tuple<double>, false>();
@@ -437,6 +458,8 @@ void initializeConverters()
     to_python_converter<Tuple3Tpl<unsigned char>, Tuple3Tpl_to_python_tuple<unsigned char>, false>();
     to_python_converter<Tuple3Tpl<short>, Tuple3Tpl_to_python_tuple<short>, false>();
     to_python_converter<Tuple3Tpl<int>, Tuple3Tpl_to_python_tuple<int>, false>();
+    to_python_converter<std::vector<float>, vector_to_python_list<float>, false>();
+    to_python_converter<std::vector<double>, vector_to_python_list<double>, false>();
 
     // register the from-python converter
     QString_from_python_str();
