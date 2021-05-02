@@ -25,6 +25,7 @@
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include "converters.hpp"
 #include "ScalarFieldPy.hpp"
+#include "ccOctreePy.hpp"
 #include "ccPointCloudPy.hpp"
 #include "ccMeshPy.hpp"
 #include "ccPrimitivesPy.hpp"
@@ -128,6 +129,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
 
     export_ScalarField();
     export_ccPolyline();
+    export_ccOctree();
     export_ccPointCloud();
     export_ccMesh();
     export_ccPrimitives();

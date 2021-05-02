@@ -28,6 +28,7 @@
 #include <vector>
 #include <CCGeom.h>
 #include <ccHObject.h>
+#include <ccOctree.h>
 #include <ccPointCloud.h>
 #include <ccMesh.h>
 #include <ccBox.h>
@@ -39,6 +40,14 @@ namespace bp = boost::python;
 
 namespace
 {
+
+struct ccOctree_to_python
+{
+    static PyObject* convert(ccOctree* c)
+    {
+        return bp::incref(bp::object(c).ptr());
+    }
+};
 
 struct ccPointCloud_to_python
 {
@@ -446,6 +455,7 @@ void initializeConverters()
 
     // register the to-python converter
     CCTRACE("initializeConverters");
+    to_python_converter<ccOctree*, ccOctree_to_python, false>();
     to_python_converter<ccPointCloud*, ccPointCloud_to_python, false>();
     to_python_converter<ccMesh*, ccMesh_to_python, false>();
     to_python_converter<ccPlane*, ccPlane_to_python, false>();
@@ -460,6 +470,8 @@ void initializeConverters()
     to_python_converter<Tuple3Tpl<int>, Tuple3Tpl_to_python_tuple<int>, false>();
     to_python_converter<std::vector<float>, vector_to_python_list<float>, false>();
     to_python_converter<std::vector<double>, vector_to_python_list<double>, false>();
+    to_python_converter<std::vector<Vector3Tpl<float> >, vector_to_python_list<Vector3Tpl<float> >, false>();
+    to_python_converter<std::vector<Vector3Tpl<double> >, vector_to_python_list<Vector3Tpl<double> >, false>();
 
     // register the from-python converter
     QString_from_python_str();
