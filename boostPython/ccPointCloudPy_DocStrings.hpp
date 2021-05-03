@@ -36,6 +36,12 @@ param autoAddChild (default True) whether to automatically add the computed octr
 return the computed octree
 )";
 
+const char* ccGenericPointCloud_deleteOctree_doc= R"(
+Erases the octree)";
+
+const char* ccGenericPointCloud_getOctree_doc= R"(
+Returns the associated octree (if any))";
+
 const char* ccPointCloudPy_ccPointCloud_doc= R"(
 A 3D cloud and its associated features ( normals, scalar fields, etc.)
 A point cloud can have multiple features:

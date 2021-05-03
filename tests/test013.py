@@ -28,6 +28,9 @@ createSymbolicLinks() # required for tests on build, before cc.initCC
 cc.initCC()  # to do once before using plugins or dealing with numpy
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
+octree = cloud.getOctree() 
+if octree is not None:
+    raise RuntimeError
 octree = cloud.computeOctree()
 
 bb = octree.getBoundingBox()

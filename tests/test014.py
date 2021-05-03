@@ -29,6 +29,12 @@ cc.initCC()  # to do once before using plugins or dealing with numpy
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 cc.computeNormals([cloud])
+octree = cloud.getOctree() 
+if octree is None:
+    raise RuntimeError
+nb = octree.getNumberOfProjectedPoints()
+if nb != 1000000:
+    raise RuntimeError
 
 cloud.exportNormalToSF(True, True, True)
 sf=cloud.getScalarField(2)
