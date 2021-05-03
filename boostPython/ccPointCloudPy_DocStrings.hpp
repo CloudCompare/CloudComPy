@@ -98,6 +98,15 @@ parameters:
 return status
 )";
 
+const char* ccPointCloudPy_exportNormalToSF_doc= R"(
+export normals to ScalarFields.
+parameters:
+- isXexported boolean
+- isYexported boolean
+- isZexported boolean
+return status
+)";
+
 const char* ccPointCloudPy_getCurrentInScalarField_doc= R"(
 Return the current 'in' ScalarField if there is one, otherwise None.)";
 

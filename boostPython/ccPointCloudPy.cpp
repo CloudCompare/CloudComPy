@@ -41,6 +41,13 @@ bool exportCoordToSF_py(ccPointCloud &self, bool x, bool y, bool z)
     return self.exportCoordToSF(b);
 }
 
+bool exportNormalToSF_py(ccPointCloud &self, bool x, bool y, bool z)
+{
+    bool b[3];
+    b[0] =x; b[1] = y; b[2] = z;
+    return self.exportNormalToSF(b);
+}
+
 bnp::ndarray CoordsToNpArray_copy(ccPointCloud &self)
 {
     CCTRACE("CoordsToNpArray with copy, ownership transfered to Python");
@@ -118,6 +125,7 @@ void export_ccPointCloud()
         .def("deleteAllScalarFields", &ccPointCloud::deleteAllScalarFields, ccPointCloudPy_deleteAllScalarFields_doc)
         .def("deleteScalarField", &ccPointCloud::deleteScalarField, ccPointCloudPy_deleteScalarField_doc)
         .def("exportCoordToSF", &exportCoordToSF_py, ccPointCloudPy_exportCoordToSF_doc)
+        .def("exportNormalToSF", &exportNormalToSF_py, ccPointCloudPy_exportNormalToSF_doc)
         .def("getCurrentInScalarField", &ccPointCloud::getCurrentInScalarField,
              return_value_policy<reference_existing_object>(), ccPointCloudPy_getCurrentInScalarField_doc)
         .def("getCurrentOutScalarField", &ccPointCloud::getCurrentOutScalarField,

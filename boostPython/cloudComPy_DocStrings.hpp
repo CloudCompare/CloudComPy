@@ -131,8 +131,23 @@ parameters:
 return estimated radius)";
 
 const char* cloudComPy_getScalarType_doc= R"(
-Get the scalar type used in cloudCompare under the form defined in Numpy: 'float32' or 'float64'
-)";
+Get the scalar type used in cloudCompare under the form defined in Numpy: 'float32' or 'float64')";
 
+const char* cloudComPy_computeNormals_doc= R"(
+Compute normals on a list of clouds and meshes
+parameters:
+- selectedEntities: list of entities (clouds, meshes)
+optional:
+- model: default = LOCAL_MODEL_TYPES.LS (Least Square best fitting plane)
+- useScanGridsForComputation: default True, whether to use ScanGrids when available
+- defaultRadius: default 0.0,
+- minGridAngle_deg: default 1.0,
+- orientNormals: default True
+- useScanGridsForOrientation: default True, when ScanGrids available
+- useSensorsForOrientation: default True, when Sensors available
+- preferredOrientation: default ccNormalVectors::UNDEFINED
+- orientNormalsMST: default True, use Minimum Spanning Tree
+- mstNeighbors: default 6, for Minimum Spanning Tree
+- computePerVertexNormals: default True, apply on mesh, if True, compute on vertices, if False, compute on triangles)";
 
 #endif /* CLOUDCOMPY_DOCSTRINGS_HPP_ */

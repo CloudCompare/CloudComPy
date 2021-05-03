@@ -33,6 +33,7 @@
 #include <ccPolyline.h>
 #include <ccPointCloud.h>
 #include <RegistrationTools.h>
+#include <ccNormalVectors.h>
 
 // --- for Python3 interface
 
@@ -142,6 +143,20 @@ bool ICP(
     bool useModelSFAsWeights = false,
     int transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE,
     int maxThreadCount = 0);
+
+//! copied from ccEntityAction::computeNormals
+bool computeNormals(std::vector<ccHObject*> selectedEntities,
+    CCCoreLib::LOCAL_MODEL_TYPES model =CCCoreLib::LS,
+    bool useScanGridsForComputation = true,
+    PointCoordinateType defaultRadius = 0.0,
+    double minGridAngle_deg =1.0,
+    bool orientNormals = true,
+    bool useScanGridsForOrientation = true,
+    bool useSensorsForOrientation = true,
+    ccNormalVectors::Orientation preferredOrientation = ccNormalVectors::UNDEFINED,
+    bool orientNormalsMST = true,
+    int mstNeighbors = 6,
+    bool computePerVertexNormals = true);
 
 // --- internal functions (not wrapped in the Python API) ---------------------
 

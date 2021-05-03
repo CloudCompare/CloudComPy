@@ -40,6 +40,8 @@
 #include <ccHObject.h>
 #include <ccPointCloud.h>
 #include <ScalarField.h>
+#include <ccNormalVectors.h>
+
 #include <QString>
 #include <vector>
 
@@ -119,6 +121,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(GetPointCloudRadius_overloads, GetPointCloudRadius, 1, 2);
 BOOST_PYTHON_FUNCTION_OVERLOADS(ICP_py_overloads, ICP_py, 8, 13);
+BOOST_PYTHON_FUNCTION_OVERLOADS(computeNormals_overloads, computeNormals, 1, 12);
 
 BOOST_PYTHON_MODULE(cloudComPy)
 {
@@ -179,6 +182,28 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .value("NORMAL_CHANGE_RATE", NORMAL_CHANGE_RATE)
         ;
 
+    enum_<CCCoreLib::LOCAL_MODEL_TYPES>("LOCAL_MODEL_TYPES")
+        .value("NO_MODEL", CCCoreLib::NO_MODEL )
+        .value("LS", CCCoreLib::LS )
+        .value("TRI", CCCoreLib::TRI )
+        .value("QUADRIC", CCCoreLib::QUADRIC )
+        ;
+
+    enum_<ccNormalVectors::Orientation>("Orientation")
+        .value("PLUS_X", ccNormalVectors::PLUS_X )
+        .value("MINUS_X", ccNormalVectors::MINUS_X )
+        .value("PLUS_Y", ccNormalVectors::PLUS_Y )
+        .value("MINUS_Y", ccNormalVectors::MINUS_Y )
+        .value("PLUS_Z", ccNormalVectors::PLUS_Z )
+        .value("MINUS_Z", ccNormalVectors::MINUS_Z )
+        .value("PLUS_BARYCENTER", ccNormalVectors::PLUS_BARYCENTER )
+        .value("MINUS_BARYCENTER", ccNormalVectors::MINUS_BARYCENTER )
+        .value("PLUS_ZERO", ccNormalVectors::PLUS_ZERO )
+        .value("MINUS_ZERO", ccNormalVectors::MINUS_ZERO )
+        .value("PREVIOUS", ccNormalVectors::PREVIOUS )
+        .value("UNDEFINED", ccNormalVectors::UNDEFINED )
+        ;
+
     def("loadPointCloud", loadPointCloud,
         loadPointCloud_overloads(args("mode", "skip", "x", "y", "z", "filename"),
                                  cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
@@ -215,4 +240,6 @@ BOOST_PYTHON_MODULE(cloudComPy)
     ;
 
     def("ICP", ICP_py, ICP_py_overloads(cloudComPy_ICP_doc));
+
+    def("computeNormals", computeNormals, computeNormals_overloads(cloudComPy_computeNormals_doc));
 }

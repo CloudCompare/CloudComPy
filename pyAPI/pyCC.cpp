@@ -32,6 +32,8 @@
 #include <ParallelSort.h>
 #include <PointProjectionTools.h>
 #include <ccScalarField.h>
+#include <ccSensor.h>
+#include <ccMesh.h>
 
 //libs/qCC_io
 #include<AsciiFilter.h>
@@ -1007,4 +1009,272 @@ bool ICP(
     }
 
     return (result < CCCoreLib::ICPRegistrationTools::ICP_ERROR);
+}
+
+bool computeNormals(std::vector<ccHObject*> selectedEntities,
+                    CCCoreLib::LOCAL_MODEL_TYPES model,
+                    bool useScanGridsForComputation,
+                    PointCoordinateType defaultRadius,
+                    double minGridAngle_deg,
+                    bool orientNormals,
+                    bool useScanGridsForOrientation,
+                    bool useSensorsForOrientation,
+                    ccNormalVectors::Orientation preferredOrientation,
+                    bool orientNormalsMST,
+                    int mstNeighbors,
+                    bool computePerVertexNormals)
+{
+    if (selectedEntities.empty())
+    {
+        ccLog::Error(QObject::tr("Select at least one point cloud"));
+        CCTRACE("Select at least one point cloud");
+        return false;
+    }
+
+    static const QString s_NormalScaleKey("Normal scale");
+
+    //look for clouds and meshes
+    std::vector<ccPointCloud*> clouds;
+    bool withScanGrid = false;
+    bool withSensor = false;
+    std::vector<ccMesh*> meshes;
+
+    try
+    {
+        for (const auto entity : selectedEntities)
+        {
+            if (entity->isA(CC_TYPES::POINT_CLOUD))
+            {
+                ccPointCloud* cloud = static_cast<ccPointCloud*>(entity);
+                clouds.push_back(cloud);
+
+                if (!withScanGrid)
+                {
+                    withScanGrid = (cloud->gridCount() > 0);
+                }
+
+                if (!withSensor)
+                {
+                    for (unsigned i = 0; i < cloud->getChildrenNumber(); ++i)
+                    {
+                        if (cloud->hasSensor())
+                        {
+                            withSensor = true;
+                            break; //no need to look anyfurther
+                        }
+                    }
+                }
+
+                //does the cloud have a former radius value saved as meta-data?
+                if (cloud->hasMetaData(s_NormalScaleKey))
+                {
+                    bool ok = false;
+                    double formerRadius = cloud->getMetaData(s_NormalScaleKey).toDouble(&ok);
+                    if (ok)
+                    {
+                        //remember the largest radius
+                        defaultRadius = std::max(defaultRadius, static_cast<PointCoordinateType>(formerRadius));
+                    }
+                    else
+                    {
+                        assert(false);
+                    }
+                }
+
+                if (defaultRadius == 0.0)
+                {
+                    //default radius
+                    defaultRadius = ccNormalVectors::GuessNaiveRadius(cloud);
+                }
+            }
+            else if (entity->isKindOf(CC_TYPES::MESH))
+            {
+                if (entity->isA(CC_TYPES::MESH))
+                {
+                    ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
+                    meshes.push_back(mesh);
+                }
+                else
+                {
+                    ccLog::Error(QObject::tr("Can't compute normals on sub-meshes! Select the parent mesh instead"));
+                    CCTRACE("Can't compute normals on sub-meshes! Select the parent mesh instead");
+                    return false;
+                }
+            }
+        }
+    } catch (const std::bad_alloc&)
+    {
+        ccLog::Error(QObject::tr("Not enough memory!"));
+        CCTRACE("Not enough memory!");
+        return false;
+    }
+
+    //compute normals for each selected cloud
+    if (!clouds.empty())
+    {
+//        static CCCoreLib::LOCAL_MODEL_TYPES s_lastModelType = CCCoreLib::LS;
+//        static ccNormalVectors::Orientation s_lastNormalOrientation = ccNormalVectors::UNDEFINED;
+//        static int s_lastMSTNeighborCount = 6;
+//        static double s_lastMinGridAngle_deg = 1.0;
+
+//        ccNormalComputationDlg ncDlg(withScanGrid, withSensor, nullptr);
+//        ncDlg.setLocalModel(s_lastModelType);
+//        ncDlg.setRadius(defaultRadius);
+//        ncDlg.setPreferredOrientation(s_lastNormalOrientation);
+//        ncDlg.setMSTNeighborCount(s_lastMSTNeighborCount);
+//        ncDlg.setMinGridAngle_deg(s_lastMinGridAngle_deg);
+//        if (clouds.size() == 1)
+//        {
+//            ncDlg.setCloud(clouds.front());
+//        }
+//
+//        if (!ncDlg.exec())
+//            return false;
+
+        //normals computation
+        bool useGridStructure = withScanGrid && useScanGridsForComputation;
+//        double minGridAngle_deg = s_lastMinGridAngle_deg = ncDlg.getMinGridAngle_deg();
+
+        //normals orientation
+//        bool orientNormals = ncDlg.orientNormals();
+        bool orientNormalsWithGrids = withScanGrid && useScanGridsForOrientation;
+        bool orientNormalsWithSensors = withSensor && useSensorsForOrientation;
+//        ccNormalVectors::Orientation preferredOrientation = s_lastNormalOrientation = ncDlg.getPreferredOrientation();
+//        bool orientNormalsMST = ncDlg.useMSTOrientation();
+//        int mstNeighbors = s_lastMSTNeighborCount = ncDlg.getMSTNeighborCount();
+
+//        ccProgressDialog pDlg(true, parent);
+//        pDlg.setAutoClose(false);
+
+        size_t errors = 0;
+
+        for (auto cloud : clouds)
+        {
+            Q_ASSERT(cloud != nullptr);
+
+            bool result = false;
+            bool normalsAlreadyOriented = false;
+
+            if (useGridStructure && cloud->gridCount())
+            {
+                //compute normals with the associated scan grid(s)
+                normalsAlreadyOriented = true;
+                result = cloud->computeNormalsWithGrids(minGridAngle_deg, nullptr);
+            }
+            else
+            {
+                //compute normals with the octree
+                normalsAlreadyOriented = orientNormals && (preferredOrientation != ccNormalVectors::UNDEFINED);
+                result = cloud->computeNormalsWithOctree(
+                        model, orientNormals ? preferredOrientation : ccNormalVectors::UNDEFINED, defaultRadius, nullptr);
+                if (result)
+                {
+                    //save the normal computation radius as meta-data
+                    cloud->setMetaData(s_NormalScaleKey, defaultRadius);
+                }
+            }
+
+            //do we need to orient the normals? (this may have been already done if 'orientNormalsForThisCloud' is true)
+            if (result && orientNormals && !normalsAlreadyOriented)
+            {
+                if (cloud->gridCount() && orientNormalsWithGrids)
+                {
+                    //we can still use the grid structure(s) to orient the normals!
+                    result = cloud->orientNormalsWithGrids();
+                }
+                else if (cloud->hasSensor() && orientNormalsWithSensors)
+                {
+                    result = false;
+
+                    // RJ: TODO: the issue here is that a cloud can have multiple sensors.
+                    // As the association to sensor is not explicit in CC, given a cloud
+                    // some points can belong to one sensor and some others can belongs to others sensors.
+                    // so it's why here grid orientation has precedence over sensor orientation because in this
+                    // case association is more explicit.
+                    // Here we take the first valid viewpoint for now even if it's not a really good...
+                    CCVector3 sensorPosition;
+                    for (size_t i = 0; i < cloud->getChildrenNumber(); ++i)
+                    {
+                        ccHObject* child = cloud->getChild(static_cast<unsigned>(i));
+                        if (child && child->isKindOf(CC_TYPES::SENSOR))
+                        {
+                            ccSensor* sensor = ccHObjectCaster::ToSensor(child);
+                            if (sensor->getActiveAbsoluteCenter(sensorPosition))
+                            {
+                                result = cloud->orientNormalsTowardViewPoint(sensorPosition, nullptr);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (orientNormalsMST)
+                {
+                    //use Minimum Spanning Tree to resolve normals direction
+                    result = cloud->orientNormalsWithMST(mstNeighbors, nullptr);
+                }
+            }
+
+            if (!result)
+            {
+                ++errors;
+            }
+
+            cloud->prepareDisplayForRefresh();
+        }
+
+        if (errors != 0)
+        {
+            if (errors < clouds.size())
+            {
+                ccLog::Error(QObject::tr("Failed to compute or orient the normals on some clouds! (see console)"));
+                CCTRACE("Failed to compute or orient the normals on some clouds! (see console)");
+            }
+            else
+            {
+                ccLog::Error(QObject::tr("Failed to compute or orient the normals! (see console)"));
+                CCTRACE("Failed to compute or orient the normals! (see console)");
+            }
+        }
+    }
+
+    //compute normals for each selected mesh
+    if (!meshes.empty())
+    {
+//        QMessageBox question(QMessageBox::Question, QObject::tr("Mesh normals"),
+//                             QObject::tr("Compute per-vertex normals (smooth) or per-triangle (faceted)?"),
+//                             QMessageBox::NoButton, parent);
+//
+//        QPushButton* perVertexButton = question.addButton(QObject::tr("Per-vertex"), QMessageBox::YesRole);
+//        QPushButton* perTriangleButton = question.addButton(QObject::tr("Per-triangle"), QMessageBox::NoRole);
+//
+//        question.exec();
+//
+//        bool computePerVertexNormals = (question.clickedButton() == perVertexButton);
+
+        for (auto mesh : meshes)
+        {
+            Q_ASSERT(mesh != nullptr);
+
+//            //we remove temporarily the mesh as its normals may be removed (and they can be a child object)
+//            ccMainAppInterface* instance = dynamic_cast<ccMainAppInterface*>(parent);
+//            ccMainAppInterface::ccHObjectContext objContext;
+//            if (instance)
+//                objContext = instance->removeObjectTemporarilyFromDBTree(mesh);
+//            mesh->clearTriNormals();
+//            mesh->showNormals(false);
+            bool result = mesh->computeNormals(computePerVertexNormals);
+//            if (instance)
+//                instance->putObjectBackIntoDBTree(mesh, objContext);
+
+            if (!result)
+            {
+                ccLog::Error(QObject::tr("Failed to compute normals on mesh '%1'").arg(mesh->getName()));
+                CCTRACE("Failed to compute normals on mesh " << mesh->getName().toStdString());
+                continue;
+            }
+            mesh->prepareDisplayForRefresh_recursive();
+        }
+    }
+
+    return true;
 }
