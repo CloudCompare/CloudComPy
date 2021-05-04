@@ -23,6 +23,9 @@
 #include <CCGeom.h>
 #include <ccMesh.h>
 #include <ccGenericPointCloud.h>
+#include <ccPointCloud.h>
+#include <GenericProgressCallback.h>
+
 #include "ccMeshPy_DocStrings.hpp"
 
 using namespace boost::python;
@@ -37,9 +40,20 @@ bool laplacianSmooth_py(ccMesh &self, unsigned nbIteration = 20, double factor=0
     return self.laplacianSmooth(nbIteration, (float)factor);
 }
 
+ccPointCloud* mesh_samplePoints_py( ccGenericMesh&self,
+                                    bool densityBased,
+                                    double samplingParameter,
+                                    bool withNormals = true,
+                                    bool withRGB = true,
+                                    bool withTexture = true,
+                                    CCCoreLib::GenericProgressCallback* pDlg = nullptr)
+{
+    return self.samplePoints(densityBased, samplingParameter, withNormals, withRGB, withTexture, pDlg);
+}
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(ccMesh_triangulate_overloads, ccMesh::Triangulate, 2, 5)
 BOOST_PYTHON_FUNCTION_OVERLOADS(laplacianSmooth_py_overloads, laplacianSmooth_py, 1, 3)
+BOOST_PYTHON_FUNCTION_OVERLOADS(mesh_samplePoints_py_overloads, mesh_samplePoints_py, 3, 7)
 
 void export_ccMesh()
 {
@@ -52,6 +66,9 @@ void export_ccMesh()
         ;
 
     class_<ccGenericMesh, bases<CCCoreLib::GenericIndexedMesh, ccShiftedObject>, boost::noncopyable>("ccGenericMesh", no_init)
+        .def("samplePoints",
+             &mesh_samplePoints_py,
+             mesh_samplePoints_py_overloads(ccGenericMeshPy_samplePoints_doc)[return_value_policy<reference_existing_object>()])
         ;
 
     class_<ccMesh, bases<ccGenericMesh> >("ccMesh", ccMeshPy_ccMesh_doc, no_init)

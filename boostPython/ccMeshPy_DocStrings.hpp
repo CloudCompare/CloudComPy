@@ -19,17 +19,26 @@
 #ifndef CCMESHPY_DOCSTRINGS_HPP_
 #define CCMESHPY_DOCSTRINGS_HPP_
 
+const char* ccGenericMeshPy_samplePoints_doc= R"(
+Samples points on a mesh
+parameters:
+- densityBased: boolean, the sampling method is based on a surface density or a number of points
+- samplingParameter: double, either the surface density or the number of points
+optional: 
+- withNormals: boolean, default True
+- withRGB: boolean, default True
+- withTexture: boolean, default True
+- pDl: progress dialog, default None)";
+
 const char* ccMeshPy_ccMesh_doc= R"(
-a triangular mesh based on a cloud of vertices.
-)";
+a triangular mesh based on a cloud of vertices.)";
 
 const char* ccMeshPy_cloneMesh_doc= R"(
 Clones this entity
 All the main features of the entity are cloned, except from the octree)";
 
 const char* ccMeshPy_getAssociatedCloud_doc= R"(
-return the cloud corresponding to the mesh vertices.
-)";
+return the cloud corresponding to the mesh vertices.)";
 
 const char* ccMeshPy_subdivide_doc= R"(
 Subdivides mesh (so as to ensure that all triangles are falls below 'maxArea'
