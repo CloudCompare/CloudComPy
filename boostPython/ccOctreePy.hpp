@@ -19,6 +19,18 @@
 #ifndef CCOCTREEPY_HPP_
 #define CCOCTREEPY_HPP_
 
+#include <CCGeom.h>
+#include <DgmOctree.h>
+
+struct PointDescriptor_persistent_py
+{
+    const CCVector3 point;
+    unsigned pointIndex;
+    double squareDistd;
+    PointDescriptor_persistent_py();
+    PointDescriptor_persistent_py(const CCCoreLib::DgmOctree::PointDescriptor& pt);
+};
+
 void export_ccOctree();
 
 #endif

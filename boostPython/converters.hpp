@@ -24,16 +24,20 @@
 
 #include <boost/python.hpp>
 #include <Python.h>
+
 #include <QString>
 #include <vector>
+
 #include <CCGeom.h>
 #include <ccHObject.h>
 #include <ccOctree.h>
+#include <DgmOctree.h>
 #include <ccPointCloud.h>
 #include <ccMesh.h>
 #include <ccBox.h>
 #include <ccPlane.h>
 
+#include "ccOctreePy.hpp"
 #include "pyccTrace.h"
 
 namespace bp = boost::python;
@@ -472,7 +476,7 @@ void initializeConverters()
     to_python_converter<std::vector<double>, vector_to_python_list<double>, false>();
     to_python_converter<std::vector<Vector3Tpl<float> >, vector_to_python_list<Vector3Tpl<float> >, false>();
     to_python_converter<std::vector<Vector3Tpl<double> >, vector_to_python_list<Vector3Tpl<double> >, false>();
-
+    to_python_converter<std::vector<PointDescriptor_persistent_py>, vector_to_python_list<PointDescriptor_persistent_py>, false>();
     // register the from-python converter
     QString_from_python_str();
     Vector2Tpl_from_python_tuple<float>();
