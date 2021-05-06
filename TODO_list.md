@@ -100,3 +100,7 @@ The test scripts are dependent on local paths, and on a local dataset.
 - TODO: try to have ctest working at build step on Windows
 - TODO: try to have an automatic ctest configuration at deployment step...
 
+Windows Packaging
+-----------------
+Windows version is built with Anaconda3 packages. Anaconda provides all the libraries and environment required.
+- TODO: Select the minimal list of external libraries to keep within CloudCompare package.

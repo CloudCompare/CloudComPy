@@ -120,13 +120,6 @@ void export_distanceComputationTools()
     class_<CCCoreLib::ReferenceCloud>("ReferenceCloud", no_init)
         ;
 
-    enum_<CCCoreLib::LOCAL_MODEL_TYPES>("LOCAL_MODEL_TYPES")
-        .value("NO_MODEL", CCCoreLib::NO_MODEL)
-        .value("LS", CCCoreLib::LS)
-        .value("TRI", CCCoreLib::TRI)
-        .value("QUADRIC", CCCoreLib::QUADRIC)
-        ;
-
     class_<CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams>("Cloud2CloudDistanceComputationParams",
                                                                                       distanceComputationToolsPy_Cloud2CloudDistanceComputationParams_doc)
         .def_readwrite("octreeLevel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::octreeLevel,

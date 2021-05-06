@@ -39,7 +39,7 @@ using namespace boost::python;
 template <typename T>
 T* get_pointer(QSharedPointer<T> const& p)
 {
-    return p.get();
+    return p.data();
 }
 
 namespace boost

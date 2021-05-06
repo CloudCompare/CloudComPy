@@ -257,18 +257,13 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "STRING"
         },
         {
-          "name": "COMPILE_CC_CORE_LIB_WITH_CGAL",
+          "name": "CCCORELIB_USE_CGAL",
           "value": "True",
           "type": "BOOL"
         },
         {
-          "name": "COMPILE_CC_CORE_LIB_WITH_TBB",
-          "value": "False",
-          "type": "BOOL"
-        },
-        {
-          "name": "COMPILE_CC_CORE_LIB_WITH_QT",
-          "value": "true",
+          "name": "CCCORELIB_USE_QT_CONCURRENT",
+          "value": "True",
           "type": "BOOL"
         },
         {
