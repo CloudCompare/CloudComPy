@@ -6,34 +6,34 @@
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "C:/Users/paulr/CloudComPy/build/${name}",
-      "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy37cQt5152",
+      "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy38",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
         {
           "name": "Qt5_DIR",
-          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Library/lib/cmake/Qt5",
           "type": "STRING"
         },
         {
           "name": "Qt5LinguistTools_DIR",
-          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5LinguistTools",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Library/lib/cmake/Qt5LinguistTools",
           "type": "STRING"
         },
         {
-          "name": "Qt5Test_DIR",
-          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5Test",
+          "name": "QT5_ROOT_PATH",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Library",
           "type": "STRING"
         },
         {
           "name": "BOOST_INCLUDEDIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Library/include",
           "type": "STRING"
         },
         {
           "name": "BOOST_LIBRARYDIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Library/lib",
           "type": "STRING"
         },
         {
@@ -43,17 +43,17 @@
         },
         {
           "name": "Python3_ROOT_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38",
           "type": "STRING"
         },
         {
           "name": "PYTHON_PREFERED_VERSION:STRING",
-          "value": "3.7",
+          "value": "3.8",
           "type": "STRING"
         },
         {
           "name": "NUMPY_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Lib/site-packages/numpy/core/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Lib/site-packages/numpy/core/include",
           "type": "STRING"
         },
         {
@@ -188,52 +188,37 @@
         },
         {
           "name": "CGAL_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/lib/cmake/CGAL",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Library/lib/cmake/CGAL",
           "type": "PATH"
-        },
-        {
-          "name": "PCL_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/cmake",
-          "type": "PATH"
-        },
-        {
-          "name": "GDAL_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/include",
-          "type": "PATH"
-        },
-        {
-          "name": "GDAL_LIBRARY",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/lib/gdal_i.lib",
-          "type": "FILEPATH"
         },
         {
           "name": "GMP_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Library/include",
           "type": "PATH"
         },
         {
           "name": "GMP_LIBRARIES",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/lib/mpir.lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Library/lib/mpir.lib",
           "type": "FILEPATH"
         },
         {
           "name": "MPFR_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Library",
           "type": "PATH"
         },
         {
           "name": "MPFR_LIBRARIES",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/lib/mpfr.lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Library/lib/mpfr.lib",
           "type": "FILEPATH"
         },
         {
           "name": "TBB_INCLUDE_DIRS",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Library/include",
           "type": "PATH"
         },
         {
           "name": "ZLIB_INCLUDE_DIRS",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy38/Library",
           "type": "PATH"
         },
         {
