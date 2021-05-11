@@ -28,12 +28,12 @@
         },
         {
           "name": "BOOST_INCLUDEDIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/include",
           "type": "STRING"
         },
         {
           "name": "BOOST_LIBRARYDIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/lib",
           "type": "STRING"
         },
         {
@@ -43,7 +43,7 @@
         },
         {
           "name": "Python3_ROOT_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try",
           "type": "STRING"
         },
         {
@@ -53,7 +53,7 @@
         },
         {
           "name": "NUMPY_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Lib/site-packages/numpy/core/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Lib/site-packages/numpy/core/include",
           "type": "STRING"
         },
         {
@@ -68,7 +68,7 @@
         },
         {
           "name": "INSTALL_PREREQUISITE_LIBRARIES",
-          "value": "OFF",
+          "value": "ON",
           "type": "STRING"
         },
         {
@@ -147,12 +147,52 @@
           "type": "BOOL"
         },
         {
-          "name": "PLUGIN_IO_QPHOTOSCAN",
+          "name": "PLUGIN_IO_QE57",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QLAS_FWF",
           "value": "False",
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_IO_QPDAL",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QPHOTOSCAN",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_MASONRY_QAUTO_SEG",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_MASONRY_QMANUAL_SEG",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QANIMATION",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_STANDARD_QBROOM",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QCANUPO",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QCOLORIMETRIC_SEGMENTER",
           "value": "True",
           "type": "BOOL"
         },
@@ -162,12 +202,47 @@
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_STANDARD_QCSF",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QFACETS",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QHOUGH_NORMALS",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QHPR",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QJSONRPC",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_STANDARD_QM3C2",
           "value": "True",
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_STANDARD_QMPLANE",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_STANDARD_QPCL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QPCV",
           "value": "True",
           "type": "BOOL"
         },
@@ -187,57 +262,117 @@
           "type": "BOOL"
         },
         {
+          "name": "POISSON_RECON_WITH_OPEN_MP",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "QANIMATION_WITH_FFMPEG_SUPPORT",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "CGAL_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/lib/cmake/CGAL",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/lib/cmake/CGAL",
+          "type": "PATH"
+        },
+        {
+          "name": "EIGEN_ROOT_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/include/eigen3",
+          "type": "PATH"
+        },
+        {
+          "name": "OPENCV_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/cmake",
           "type": "PATH"
         },
         {
           "name": "PCL_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/cmake",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/cmake",
+          "type": "PATH"
+        },
+        {
+          "name": "PDAL_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/lib/cmake/PDAL",
+          "type": "PATH"
+        },
+        {
+          "name": "FFMPEG_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "FFMPEG_LIBRARY_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/lib",
           "type": "PATH"
         },
         {
           "name": "GDAL_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/include",
           "type": "PATH"
         },
         {
           "name": "GDAL_LIBRARY",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/lib/gdal_i.lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/lib/gdal_i.lib",
           "type": "FILEPATH"
         },
         {
           "name": "GMP_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/include",
           "type": "PATH"
         },
         {
           "name": "GMP_LIBRARIES",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/lib/mpir.lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/lib/mpir.lib",
           "type": "FILEPATH"
         },
         {
+          "name": "LASLIB_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/include/laszip",
+          "type": "PATH"
+        },
+        {
+          "name": "LASLIB_RELEASE_LIBRARY",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/lib/laszip3.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "LASZIP_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/include/laszip",
+          "type": "PATH"
+        },
+        {
           "name": "MPFR_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library",
           "type": "PATH"
         },
         {
           "name": "MPFR_LIBRARIES",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/lib/mpfr.lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/lib/mpfr.lib",
           "type": "FILEPATH"
         },
         {
           "name": "TBB_INCLUDE_DIRS",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/include",
           "type": "PATH"
         },
         {
-          "name": "ZLIB_INCLUDE_DIRS",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37c/Library",
+          "name": "XercesC_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/include",
           "type": "PATH"
         },
         {
-          "name": "ZLIB_LIBRARIES",
+          "name": "XercesC_LIBRARY",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/lib/xerces-c_3.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "ZLIB_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37try/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "ZLIB_LIBRARY",
           "value": "C:/Users/paulr/anaconda3/Library/lib/zlib.lib",
           "type": "FILEPATH"
         }
