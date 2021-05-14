@@ -143,12 +143,17 @@ From Anaconda prompt:
 ```
 conda activate
 conda create --name CloudComPy37 python=3.7
+# --- erase previous env if existing
 conda activate CloudComPy37
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install qt=5.9.7 numpy psutil boost=1.68 xerces-c pcl gdal cgal cmake
+conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake pdal opencv ffmpeg mysql m2-perl-net-ssleay
 ```
 CMake from Anaconda is used to get ctest at install, not for build.
+
+I do not use Qt from conda packages, I still have a problem at runtime when reading xyz files with the HEAD of CloudCompare
+(after commit "New features (#1420)" from 2021-03-07).
+With a separate install of Qt 5.15.2 binaries, it works fine...
 
 It is necessary to configure Visual Studio 2019 with CMake.
 
@@ -175,25 +180,25 @@ Here are my json file, for the first method, with the plugins availables with An
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "buildRoot": "C:/Users/paulr/CloudComPy_v212x/build/${name}",
-      "installRoot": "C:/Users/paulr/CloudComPy_v212x/install/CloudComPy37_bnf",
+      "buildRoot": "C:/Users/paulr/CloudComPy/build/${name}",
+      "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy37",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
         {
           "name": "Qt5_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/cmake/Qt5",
+          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5",
           "type": "STRING"
         },
         {
           "name": "Qt5LinguistTools_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/cmake/Qt5LinguistTools",
+          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5LinguistTools",
           "type": "STRING"
         },
         {
-          "name": "QT5_ROOT_PATH",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library",
+          "name": "Qt5Test_DIR",
+          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5Test",
           "type": "STRING"
         },
         {
@@ -317,12 +322,57 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "BOOL"
         },
         {
-          "name": "PLUGIN_IO_QPHOTOSCAN",
+          "name": "PLUGIN_IO_QE57",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QLAS_FWF",
           "value": "False",
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_IO_QPDAL",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QPHOTOSCAN",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QSTEP",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_MASONRY_QAUTO_SEG",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_MASONRY_QMANUAL_SEG",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QANIMATION",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_STANDARD_QBROOM",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QCANUPO",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QCOLORIMETRIC_SEGMENTER",
           "value": "True",
           "type": "BOOL"
         },
@@ -332,12 +382,47 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_STANDARD_QCSF",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QFACETS",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QHOUGH_NORMALS",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QHPR",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QJSONRPC",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_STANDARD_QM3C2",
           "value": "True",
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_STANDARD_QMPLANE",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_STANDARD_QPCL",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QPCV",
           "value": "True",
           "type": "BOOL"
         },
@@ -357,9 +442,59 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "BOOL"
         },
         {
+          "name": "POISSON_RECON_WITH_OPEN_MP",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "QANIMATION_WITH_FFMPEG_SUPPORT",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "CGAL_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/cmake/CGAL",
           "type": "PATH"
+        },
+        {
+          "name": "EIGEN_ROOT_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include/eigen3",
+          "type": "PATH"
+        },
+        {
+          "name": "OPENCV_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/cmake",
+          "type": "PATH"
+        },
+        {
+          "name": "PCL_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/cmake",
+          "type": "PATH"
+        },
+        {
+          "name": "PDAL_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/cmake/PDAL",
+          "type": "PATH"
+        },
+        {
+          "name": "FFMPEG_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "FFMPEG_LIBRARY_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib",
+          "type": "PATH"
+        },
+        {
+          "name": "GDAL_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "GDAL_LIBRARY",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/gdal_i.lib",
+          "type": "FILEPATH"
         },
         {
           "name": "GMP_INCLUDE_DIR",
@@ -372,6 +507,21 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "FILEPATH"
         },
         {
+          "name": "LASLIB_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include/laszip",
+          "type": "PATH"
+        },
+        {
+          "name": "LASLIB_RELEASE_LIBRARY",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/laszip3.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "LASZIP_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include/laszip",
+          "type": "PATH"
+        },
+        {
           "name": "MPFR_INCLUDE_DIR",
           "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library",
           "type": "PATH"
@@ -382,17 +532,42 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "FILEPATH"
         },
         {
+          "name": "OPENCASCADE_INC_DIR",
+          "value": "C:/OpenCASCADE-7.5.0-vc14-64/opencascade-7.5.0/inc",
+          "type": "PATH"
+        },
+        {
+          "name": "OPENCASCADE_LIB_DIR",
+          "value": "C:/OpenCASCADE-7.5.0-vc14-64/opencascade-7.5.0/win64/vc14/lib",
+          "type": "PATH"
+        },
+        {
+          "name": "OPENCASCADE_DLL_DIR",
+          "value": "C:/OpenCASCADE-7.5.0-vc14-64/opencascade-7.5.0/win64/vc14/bin",
+          "type": "PATH"
+        },
+        {
           "name": "TBB_INCLUDE_DIRS",
           "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
           "type": "PATH"
         },
         {
-          "name": "ZLIB_INCLUDE_DIRS",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library",
+          "name": "XercesC_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
           "type": "PATH"
         },
         {
-          "name": "ZLIB_LIBRARIES",
+          "name": "XercesC_LIBRARY",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/xerces-c_3.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "ZLIB_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "ZLIB_LIBRARY",
           "value": "C:/Users/paulr/anaconda3/Library/lib/zlib.lib",
           "type": "FILEPATH"
         }

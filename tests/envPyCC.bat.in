@@ -1,4 +1,5 @@
 @echo off
-
-set PYTHONPATH=%CD%/../../CloudCompare;%PYTHONPATH%
-set PYTHONPATH=%CD%;%PYTHONPATH%
+@set PATH=.;%PATH%
+@set QT_PLUGIN_PATH=%CD%\..\..\qtplugins
+@set PYTHONPATH=%CD%/../../CloudCompare;%PYTHONPATH%
+@set PYTHONPATH=%CD%;%PYTHONPATH%
