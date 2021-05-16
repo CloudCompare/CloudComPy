@@ -1,0 +1,10 @@
+@echo off
+@set PREVPATH=%PATH%
+@set PATH=.;%PATH%
+@set QT_PLUGIN_PATH=%CD%\..\..\qtplugins
+@set PREVPYTHONPATH=%PYTHONPATH%
+@set PYTHONPATH=%CD%/../../CloudCompare;%PYTHONPATH%
+@set PYTHONPATH=%CD%;%PYTHONPATH%
+python %1
+@set PYTHONPATH=%PREVPYTHONPATH%
+@set PATH=%PREVPATH%

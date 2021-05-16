@@ -1,0 +1,134 @@
+##########################################################################
+#                                                                        #
+#                               PYCC TEST                                #
+#                                                                        #
+#  This program is free software; you can redistribute it and/or modify  #
+#  it under the terms of the GNU Library General Public License as       #
+#  published by the Free Software Foundation; version 2 or later of the  #
+#  License.                                                              #
+#                                                                        #
+#  This program is distributed in the hope that it will be useful,       #
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
+#  GNU General Public License for more details.                          #
+#                                                                        #
+#          Copyright 2020 Paul RASCLE www.openfields.fr                  #
+#                                                                        #
+##########################################################################
+
+message(STATUS "tests")
+
+enable_testing()
+
+# --- ------------
+# --- target tests
+
+set(PYTHONAPI_TEST_DIRECTORY "CloudComPyData" CACHE STRING "Directory path for tests to be created in your user directory, to store samples and generated data")
+if(WIN32)
+    set(USER_HOME "USERPROFILE")
+else()
+    set(USER_HOME "HOME")
+endif()
+
+# where to install the tests scripts
+set(PYTHONAPI_TEST_SCRIPTS_DIRECTORY doc/PythonAPI_test)
+
+# data sample generator and other utilities for test
+configure_file(gendata.py.in gendata.py)
+configure_file(DartConfiguration.tcl.in DartConfiguration.tcl)
+
+# shell scripts to execute a test, a build or install step
+if(WIN32)
+    configure_file(execTest.bat.in execTest.bat)
+    configure_file(execInstallTest.bat.in execInstallTest.bat)
+    configure_file(envPyCC.bat.in envPyCC.bat)
+    set(EXEC_TEST execTest.bat)
+	set(EXEC_INSTALL_TEST execInstallTest.bat)
+	set(ENV_INSTALL_TEST envPyCC.bat)
+else()
+    configure_file(execTest.sh.in execTest.sh)
+    configure_file(execInstallTest.sh.in execInstallTest.sh)
+    configure_file(envPyCC.sh.in envPyCC.sh)
+    set(EXEC_TEST execTest.sh)
+    set(EXEC_INSTALL_TEST execInstallTest.sh)
+    set(ENV_INSTALL_TEST envPyCC.sh)
+endif()
+
+# list of tests
+set(PYTHONAPI_TEST_SCRIPTS
+    test001.py
+    test002.py
+    test003.py
+    test004.py
+    test005.py
+    test006.py
+    test007.py
+    test008.py
+    test009.py
+    test010.py
+    test011.py
+    test012.py
+    test013.py
+    test014.py
+    test015.py
+    test016.py
+    )
+
+# list of utilities
+set(PYTHONAPI_TEST_UTILITIES
+    ${CMAKE_CURRENT_BINARY_DIR}/gendata.py
+    ${CMAKE_CURRENT_BINARY_DIR}/DartConfiguration.tcl
+    )
+
+if(WIN32)
+    install(PROGRAMS DartTestfile.win.txt
+            DESTINATION ${PYTHONAPI_TEST_SCRIPTS_DIRECTORY}
+            RENAME DartTestfile.txt
+           )
+else()
+    install(PROGRAMS DartTestfile.txt
+            DESTINATION ${PYTHONAPI_TEST_SCRIPTS_DIRECTORY}
+           )
+endif()
+
+# files to install    
+set(PYTHONAPI_TEST_FILES
+    ${PYTHONAPI_TEST_UTILITIES}
+    ${PYTHONAPI_TEST_SCRIPTS}
+    )
+
+install(PROGRAMS ${PYTHONAPI_TEST_FILES} ${CMAKE_CURRENT_BINARY_DIR}/${ENV_INSTALL_TEST}
+        DESTINATION ${PYTHONAPI_TEST_SCRIPTS_DIRECTORY}
+       )
+
+# the shell script executing a test is renamed a install step      
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${EXEC_INSTALL_TEST}
+        DESTINATION ${PYTHONAPI_TEST_SCRIPTS_DIRECTORY}
+        RENAME ${EXEC_TEST}
+       )
+
+# --- define a function to simplify adding tests
+
+function(do_test arg)
+    add_test(NAME PYCC_${arg}
+    COMMAND ${EXEC_TEST} ${arg}.py
+    )
+endfunction(do_test)
+
+do_test(test001)
+do_test(test002)
+do_test(test003)
+do_test(test004)
+do_test(test005)
+do_test(test006)
+do_test(test007)
+do_test(test008)
+do_test(test009)
+do_test(test010)
+do_test(test011)
+do_test(test012)
+do_test(test013)
+do_test(test014)
+do_test(test015)
+do_test(test016)
+
