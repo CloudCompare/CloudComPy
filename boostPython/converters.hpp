@@ -472,11 +472,16 @@ void initializeConverters()
     to_python_converter<Tuple3Tpl<unsigned char>, Tuple3Tpl_to_python_tuple<unsigned char>, false>();
     to_python_converter<Tuple3Tpl<short>, Tuple3Tpl_to_python_tuple<short>, false>();
     to_python_converter<Tuple3Tpl<int>, Tuple3Tpl_to_python_tuple<int>, false>();
+    to_python_converter<std::vector<int>, vector_to_python_list<int>, false>();
+    to_python_converter<std::vector<unsigned int>, vector_to_python_list<unsigned int>, false>();
     to_python_converter<std::vector<float>, vector_to_python_list<float>, false>();
     to_python_converter<std::vector<double>, vector_to_python_list<double>, false>();
+    to_python_converter<std::vector<unsigned long long>, vector_to_python_list<unsigned long long>, false>();
     to_python_converter<std::vector<Vector3Tpl<float> >, vector_to_python_list<Vector3Tpl<float> >, false>();
     to_python_converter<std::vector<Vector3Tpl<double> >, vector_to_python_list<Vector3Tpl<double> >, false>();
     to_python_converter<std::vector<PointDescriptor_persistent_py>, vector_to_python_list<PointDescriptor_persistent_py>, false>();
+    to_python_converter<std::vector<CCCoreLib::DgmOctree::CellDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::CellDescriptor>, false>();
+    to_python_converter<std::vector<CCCoreLib::DgmOctree::IndexAndCode>, vector_to_python_list<CCCoreLib::DgmOctree::IndexAndCode>, false>();
     // register the from-python converter
     QString_from_python_str();
     Vector2Tpl_from_python_tuple<float>();
@@ -487,8 +492,10 @@ void initializeConverters()
     Tuple3Tpl_from_python_tuple<unsigned int>();
     Tuple3Tpl_from_python_tuple<unsigned char>();
     Tuple3Tpl_from_python_tuple<short>();
+    Vector_from_python_tuple<unsigned int>();
     Vector_from_python_tuple<float>();
     Vector_from_python_tuple<double>();
+    Vector_from_python_tuple<unsigned long long>();
     ccHObjectVector_from_python_list();
 }
 
