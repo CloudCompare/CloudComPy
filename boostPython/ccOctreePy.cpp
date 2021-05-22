@@ -18,10 +18,10 @@
 
 #include "ccOctreePy.hpp"
 
-//#include <boost/python/numpy.hpp>
 #include <boost/python.hpp>
 
 #include <DgmOctree.h>
+#include <ReferenceCloud.h>
 #include <ccOctree.h>
 #include <CCGeom.h>
 
@@ -32,7 +32,6 @@
 #include <QObject>
 
 namespace bp = boost::python;
-//namespace bnp = boost::python::numpy;
 
 using namespace boost::python;
 
@@ -99,15 +98,6 @@ std::vector<Vector3Tpl<float> > DgmOctree_getBoundingBox_py(CCCoreLib::DgmOctree
     bb.push_back(b);
     return bb;
 }
-
-//bp::tuple DgmOctree_getBoundingBox_py(CCCoreLib::DgmOctree& self)
-//{
-//    CCVector3 bbMin;
-//    CCVector3 bbMax;
-//    self.getBoundingBox(bbMin, bbMax);
-//    bp::tuple res = bp::make_tuple(bbMin, bbMax);
-//    return res;
-//}
 
 std::vector<PointDescriptor_persistent_py>
 DgmOctree_getPointsInSphericalNeighbourhood_py(CCCoreLib::DgmOctree& self,

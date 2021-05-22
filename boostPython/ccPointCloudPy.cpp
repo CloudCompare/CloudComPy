@@ -91,29 +91,9 @@ int (ccPointCloud::*addScalarFieldt)(const char*) = &ccPointCloud::addScalarFiel
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_scale_overloads, scale, 3, 4)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_cloneThis_overloads, cloneThis, 0, 2)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccGenericPointCloud_computeOctree_overloads, computeOctree, 0, 2)
 
 void export_ccPointCloud()
 {
-    class_<ccHObject>("ccHObject", no_init)
-        .def("setName", &ccHObject::setName, ccHObject_setName_doc)
-        .def("getName", &ccHObject::getName, ccHObject_getName_doc)
-        ;
-
-    class_<ccShiftedObject, bases<ccHObject>, boost::noncopyable>("ccShiftedObject", no_init)
-        ;
-
-    class_<CCCoreLib::GenericIndexedCloudPersist, boost::noncopyable>("GenericIndexedCloudPersist", no_init)
-        ;
-
-    class_<ccGenericPointCloud, bases<CCCoreLib::GenericIndexedCloudPersist, ccShiftedObject>, boost::noncopyable>("ccGenericPointCloud", no_init)
-        .def("computeOctree", &ccGenericPointCloud::computeOctree, ccGenericPointCloud_computeOctree_overloads(ccGenericPointCloud_computeOctree_doc))
-        .def("getOctree", &ccGenericPointCloud::getOctree, ccGenericPointCloud_getOctree_doc)
-        .def("deleteOctree", &ccGenericPointCloud::deleteOctree, ccGenericPointCloud_deleteOctree_doc)
-        ;
-
-    class_<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>, bases<ccGenericPointCloud>, boost::noncopyable>("PointCloudTpl_ccGenericPointCloud_QString", no_init)
-        ;
 
     class_<ccPointCloud, bases<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString> > >("ccPointCloud",
                                                                                           ccPointCloudPy_ccPointCloud_doc, no_init)

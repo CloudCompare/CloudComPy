@@ -117,9 +117,6 @@ void export_distanceComputationTools()
     class_<GenericProgressCallbackWrap, boost::noncopyable>("GenericProgressCallback", no_init)
         ;
 
-    class_<CCCoreLib::ReferenceCloud>("ReferenceCloud", no_init)
-        ;
-
     class_<CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams>("Cloud2CloudDistanceComputationParams",
                                                                                       distanceComputationToolsPy_Cloud2CloudDistanceComputationParams_doc)
         .def_readwrite("octreeLevel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::octreeLevel,

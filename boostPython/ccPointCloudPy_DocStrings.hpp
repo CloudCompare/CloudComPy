@@ -19,29 +19,6 @@
 #ifndef CCPOINTCLOUDPY_DOCSTRINGS_HPP_
 #define CCPOINTCLOUDPY_DOCSTRINGS_HPP_
 
-const char* ccHObject_setName_doc= R"(
-Set the name of the entity)";
-
-const char* ccHObject_getName_doc= R"(
-get the name of the entity)";
-
-const char* ccGenericPointCloud_computeOctree_doc= R"(
-Computes the cloud octree
-The octree bounding-box is automatically defined as the smallest
-3D cube that totally encloses the cloud.
-WARNING: any previously attached octree will be deleted,
-         even if the new octree computation failed.
-param progressCb (default None), use None
-param autoAddChild (default True) whether to automatically add the computed octree as child of this cloud or not
-return the computed octree
-)";
-
-const char* ccGenericPointCloud_deleteOctree_doc= R"(
-Erases the octree)";
-
-const char* ccGenericPointCloud_getOctree_doc= R"(
-Returns the associated octree (if any))";
-
 const char* ccPointCloudPy_ccPointCloud_doc= R"(
 A 3D cloud and its associated features ( normals, scalar fields, etc.)
 A point cloud can have multiple features:
