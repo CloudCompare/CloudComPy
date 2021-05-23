@@ -54,22 +54,6 @@ maxHalfLength: Cylinder (half) length
 level: subdivision level at which to apply the extraction process
 onlyPositiveDir: Whether to look in both directions or only along the positive direction (i.e. half cylinder))";
 
-const char* DgmOctree_findBestLevelForAGivenCellNumber_doc= R"(
-Determines the best subdivision level of the octree to match a given number of cells
-param indicativeNumberOfCells 'desired' number of cells
-return the 'best' level
-)";
-
-const char* DgmOctree_findBestLevelForAGivenNeighbourhoodSizeExtraction_doc= R"(
-Determines the best level of subdivision of the octree at which to apply the nearest neighbours search algorithm (inside a sphere) depending on the sphere radius
-param radius the sphere radius
-return the 'best' level)";
-
-const char* DgmOctree_findBestLevelForAGivenPopulationPerCell_doc= R"(
-Determines the best subdivision level of the octree that gives the average population per cell closest to the input value
-param indicativeNumberOfPointsPerCell 'desired' average number of points per cell
-return the 'best' level)";
-
 const char* DgmOctree_getBoundingBox_doc= R"(
 Returns the octree bounding box
 Method to request the octree bounding box limits
@@ -162,6 +146,41 @@ Use findBestLevelForAGivenNeighbourhoodSizeExtraction to get the right
 value for 'level' (only once as it only depends on the radius or max dimension value ;).
 warning the 'squareDistd' field of each neighbour returned is not used/set)";
 
+const char* DgmOctree_getPointsInCell_doc= R"(
+Returns the points lying in a specific cell
+param cellCode the unique cell code
+param level the level of subdivision
+param[out] subset set of points lying in the cell (references, no duplication)
+param isCodeTruncated (optional, default false) specifies if the code is given in a truncated form or not
+param clearOutputCloud (optional, default true) whether to clear or not the output cloud (subest) if no points lie in the specified cell
+return the subset set of points completed)";
+
+const char* DgmOctree_getPointsInCellByCellIndex_doc= R"(
+Returns the points lying in a specific cell
+Each cell at a given level of subdivision can be recognized by the index
+in the DgmOctree structure of the first point that lies inside it. By
+construction, we are assured that every point lying in the same cell for
+a given level of subdivision are next to each others in the octree
+structure (which is the vector "m_thePointsAndTheirCellCodes" in practical).
+This is the quickest way to access the points inside a given cell (but its
+kind of hard to know directly what is the index of a given cell ;)
+param cloud ReferenceCloud to store the points lying inside the cell
+param cellIndex the cell index
+param level the level of subdivision
+param clearOutputCloud (optional, default true) whether to clear the input cloud prior to inserting the points or not
+return the input cloud completed.)";
+
+const char* DgmOctree_getPointsInCellsWithSortedCellCodes_doc= R"(
+Returns the points lying in multiple cells
+Cells are recognized here by their unique "code". They should be sorted
+along by codes, with an ascendant order. See DgmOctree::getPointsInCellByCellIndex
+for more information.
+param cellCodes the cells codes
+param level the level of subdivision
+param[out] subset set of points lying in the cell (references, no duplication)
+param areCodesTruncated (optional, default false) specifies if the codes are given in a truncated form or not
+return the set of points lying in the cell (references, no duplication))";
+
 const char* DgmOctree_getPointsInCylindricalNeighbourhood_doc= R"(
 Returns the points falling inside a cylinder
 Use findBestLevelForAGivenNeighbourhoodSizeExtraction to get the right
@@ -181,6 +200,41 @@ param sphereCenter center
 param radius radius
 param level subdivision level at which to apply the extraction process
 return neighbours points falling inside the sphere (list of PointDescriptors)";
+
+const char* DgmOctree_findBestLevelForAGivenCellNumber_doc= R"(
+Determines the best subdivision level of the octree to match a given number of cells
+param indicativeNumberOfCells 'desired' number of cells
+return the 'best' level
+)";
+
+const char* DgmOctree_findBestLevelForAGivenNeighbourhoodSizeExtraction_doc= R"(
+Determines the best level of subdivision of the octree at which to apply the nearest neighbours search algorithm (inside a sphere) depending on the sphere radius
+param radius the sphere radius
+return the 'best' level)";
+
+const char* DgmOctree_findBestLevelForAGivenPopulationPerCell_doc= R"(
+Determines the best subdivision level of the octree that gives the average population per cell closest to the input value
+param indicativeNumberOfPointsPerCell 'desired' average number of points per cell
+return the 'best' level)";
+
+const char* DgmOctree_findPointNeighbourhood_doc= R"(
+Finds the nearest neighbours around a query point
+This is the simplest form of the nearest neighbour search algorithm.
+It should only be used for unique/few requests as it is not optimized
+for repetitive search around points lying in the same octree cell (see
+DgmOctree::findNearestNeighborsStartingFromCell for example). Moreover,
+distances between each neighbour and the query aren't stored in this
+version of the algorithm.
+param _queryPoint the query point
+param Yk RefefenceCloud for the nearest neighbours
+param maxNumberOfNeighbors the maximal number of points to find
+param level the subdivision level of the octree at which to perform the search
+param maxSearchDist (optional default 0) the maximum search distance (ignored if <= 0)
+return tuple( ref cloud completed,
+              number of neighbours found, 
+              final neighborhood (half)size,
+              square distance between the farthest "nearest neighbour" and the query point
+            ))";
 
 const char* DgmOctree_IndexAndCode_doc= R"(
 Association between an index and the code of an octree cell

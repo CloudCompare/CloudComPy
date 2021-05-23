@@ -16,9 +16,6 @@
 //#                                                                        #
 //##########################################################################
 
-// original code from:
-// https://misspent.wordpress.com/2009/09/27/how-to-write-boost-python-converters/
-
 #ifndef CONVERTERS_HPP_
 #define CONVERTERS_HPP_
 
@@ -33,6 +30,7 @@
 #include <ccOctree.h>
 #include <DgmOctree.h>
 #include <ccPointCloud.h>
+#include <ReferenceCloud.h>
 #include <ccMesh.h>
 #include <ccBox.h>
 #include <ccPlane.h>
@@ -56,6 +54,14 @@ struct ccOctree_to_python
 struct ccPointCloud_to_python
 {
     static PyObject* convert(ccPointCloud* c)
+    {
+        return bp::incref(bp::object(c).ptr());
+    }
+};
+
+struct ReferenceCloud_to_python
+{
+    static PyObject* convert(CCCoreLib::ReferenceCloud* c)
     {
         return bp::incref(bp::object(c).ptr());
     }

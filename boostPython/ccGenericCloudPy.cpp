@@ -44,8 +44,25 @@ std::vector<Vector3Tpl<float> > ReferenceCloud_getBoundingBox_py(CCCoreLib::Refe
     return bb;
 }
 
+CCVector3 ReferenceCloud_getCurrentPointCoordinates(CCCoreLib::ReferenceCloud& self)
+{
+    const CCVector3* vec = self.getCurrentPointCoordinates();
+    return *vec;
+}
+
+CCVector3 ReferenceCloud_getNextPoint(CCCoreLib::ReferenceCloud& self)
+{
+    const CCVector3* vec = self.getNextPoint();
+    return *vec;
+}
+
+CCVector3 ReferenceCloud_getPoint(CCCoreLib::ReferenceCloud& self, unsigned index)
+{
+    const CCVector3* vec = self.getPoint(index);
+    return *vec;
+}
+
 CCCoreLib::GenericIndexedCloudPersist* (CCCoreLib::ReferenceCloud::*getAssCloud1)() = &CCCoreLib::ReferenceCloud::getAssociatedCloud;
-const CCVector3* (CCCoreLib::ReferenceCloud::*getPoint1)(unsigned) const= &CCCoreLib::ReferenceCloud::getPoint;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccGenericPointCloud_computeOctree_overloads, computeOctree, 0, 2)
 
@@ -77,15 +94,14 @@ void export_ccGenericCloud()
         .def("forwardIterator", &CCCoreLib::ReferenceCloud::forwardIterator, ReferenceCloud_forwardIterator_doc)
         .def("getAssociatedCloud", getAssCloud1, return_value_policy<reference_existing_object>(), ReferenceCloud_getAssociatedCloud_doc)
         .def("getBoundingBox", &ReferenceCloud_getBoundingBox_py, ReferenceCloud_getBoundingBox_doc)
-        .def("getCurrentPointCoordinates", &CCCoreLib::ReferenceCloud::getCurrentPointCoordinates,
-             return_value_policy<reference_existing_object>(), ReferenceCloud_getCurrentPointCoordinates_doc)
+        .def("getCurrentPointCoordinates", &ReferenceCloud_getCurrentPointCoordinates,
+             ReferenceCloud_getCurrentPointCoordinates_doc)
         .def("getCurrentPointGlobalIndex", &CCCoreLib::ReferenceCloud::getCurrentPointGlobalIndex,
              ReferenceCloud_getCurrentPointGlobalIndex_doc)
         .def("getCurrentPointScalarValue", &CCCoreLib::ReferenceCloud::getCurrentPointScalarValue,
              ReferenceCloud_getCurrentPointScalarValue_doc)
-        .def("getNextPoint", &CCCoreLib::ReferenceCloud::getNextPoint,
-             return_value_policy<reference_existing_object>(), ReferenceCloud_getNextPoint_doc)
-        .def("getPoint", getPoint1, return_value_policy<reference_existing_object>(), ReferenceCloud_getPoint_doc)
+        .def("getNextPoint", &ReferenceCloud_getNextPoint, ReferenceCloud_getNextPoint_doc)
+        .def("getPoint", &ReferenceCloud_getPoint, ReferenceCloud_getPoint_doc)
         .def("getPointGlobalIndex", &CCCoreLib::ReferenceCloud::getPointGlobalIndex, ReferenceCloud_getPointGlobalIndex_doc)
         .def("getPointScalarValue", &CCCoreLib::ReferenceCloud::getPointScalarValue, ReferenceCloud_getPointScalarValue_doc)
         .def("isScalarFieldEnabled", &CCCoreLib::ReferenceCloud::isScalarFieldEnabled, ReferenceCloud_isScalarFieldEnabled_doc)
