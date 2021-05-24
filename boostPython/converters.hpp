@@ -488,6 +488,7 @@ void initializeConverters()
     to_python_converter<std::vector<PointDescriptor_persistent_py>, vector_to_python_list<PointDescriptor_persistent_py>, false>();
     to_python_converter<std::vector<CCCoreLib::DgmOctree::CellDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::CellDescriptor>, false>();
     to_python_converter<std::vector<CCCoreLib::DgmOctree::IndexAndCode>, vector_to_python_list<CCCoreLib::DgmOctree::IndexAndCode>, false>();
+    to_python_converter<std::vector<CCCoreLib::DgmOctree::PointDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::PointDescriptor>, false>();
     // register the from-python converter
     QString_from_python_str();
     Vector2Tpl_from_python_tuple<float>();

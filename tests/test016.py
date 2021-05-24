@@ -36,7 +36,7 @@ neighbours = octree.getPointsInSphericalNeighbourhood((-1.500000, 2.000000, -0.0
 if len(neighbours) != 37:
     raise RuntimeError
 
-params = cc.CylindricalNeighbourhood_py()
+params = cc.CylindricalNeighbourhood()
 params.center = (-1.5, 2.0, 0.0)
 params.level = level
 params.radius = r
@@ -46,7 +46,7 @@ neighboursCyl = octree.getPointsInCylindricalNeighbourhood(params)
 if len(neighboursCyl) != 81:
     raise RuntimeError
 
-params = cc.BoxNeighbourhood_py()
+params = cc.BoxNeighbourhood()
 params.center=(-1.500000, 2.000000, -0.026529)
 params.level = level
 params.dimensions = (0.05, 0.04, 0.03)

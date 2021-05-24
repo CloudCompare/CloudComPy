@@ -19,6 +19,14 @@
 #ifndef CCOCTREEPY_DOCSTRINGS_HPP_
 #define CCOCTREEPY_DOCSTRINGS_HPP_
 
+const char* ccOctree_ccOctree_doc= R"(
+Octree structure
+Extends the CCCoreLib::DgmOctree class.
+The octree structure used throughout the library
+Implements the GenericOctree interface.
+Corresponds to the octree structure developed during Daniel
+Girardeau-Montaut's PhD (see PhD manuscript, Chapter 4).)";
+
 const char* DgmOctree_BoxNeighbourhood_doc= R"(
 Input/output parameters structure for getPointsInBoxNeighbourhood
 Use findBestLevelForAGivenNeighbourhoodSizeExtraction to get the right
@@ -53,6 +61,72 @@ radius: Cylinder radius
 maxHalfLength: Cylinder (half) length
 level: subdivision level at which to apply the extraction process
 onlyPositiveDir: Whether to look in both directions or only along the positive direction (i.e. half cylinder))";
+
+const char* DgmOctree_findBestLevelForAGivenCellNumber_doc= R"(
+Determines the best subdivision level of the octree to match a given number of cells
+param indicativeNumberOfCells 'desired' number of cells
+return the 'best' level
+)";
+
+const char* DgmOctree_findBestLevelForAGivenNeighbourhoodSizeExtraction_doc= R"(
+Determines the best level of subdivision of the octree at which to apply the nearest neighbours search algorithm
+(inside a sphere) depending on the sphere radius
+param radius the sphere radius
+return the 'best' level)";
+
+const char* DgmOctree_findBestLevelForAGivenPopulationPerCell_doc= R"(
+Determines the best subdivision level of the octree that gives the average population per cell closest to the input value
+param indicativeNumberOfPointsPerCell 'desired' average number of points per cell
+return the 'best' level)";
+
+const char* DgmOctree_findPointNeighbourhood_doc= R"(
+Finds the nearest neighbours around a query point
+This is the simplest form of the nearest neighbour search algorithm.
+It should only be used for unique/few requests as it is not optimized
+for repetitive search around points lying in the same octree cell (see
+DgmOctree::findNearestNeighborsStartingFromCell for example). Moreover,
+distances between each neighbour and the query aren't stored in this
+version of the algorithm.
+param _queryPoint the query point
+param Yk RefefenceCloud for the nearest neighbours
+param maxNumberOfNeighbors the maximal number of points to find
+param level the subdivision level of the octree at which to perform the search
+param maxSearchDist (optional default 0) the maximum search distance (ignored if <= 0)
+return tuple( ref cloud completed,
+              number of neighbours found, 
+              final neighborhood (half)size,
+              square distance between the farthest "nearest neighbour" and the query point
+            ))";
+
+const char* DgmOctree_findNearestNeighborsStartingFromCell_doc= R"(
+Advanced form of the nearest neighbours search algorithm (multiple neighbours)
+This version is optimized for a multiple nearest neighbours search
+that is applied around several query points included in the same octree
+cell. See DgmOctree::NearestNeighboursSearchStruct for more details.
+param nNSS NearestNeighboursSearchStruct search parameters
+param getOnlyPointsWithValidScalar whether to ignore points having an invalid associated scalar value
+return the number of neighbours found)";
+
+const char* DgmOctree_findNeighborsInASphereStartingFromCell_doc= R"(
+Advanced form of the nearest neighbours search algorithm (in a sphere)
+This version is optimized for a spatially bounded search instead of
+a search bounded by a number of neighbours.
+warning the number of points in the output buffer (nNSS.pointsInNeighbourhood) may be greater
+than the actual count of closest points inside the sphere! (which is returned by the method).
+Only the 'k' first points are actually inside the sphere (the others are not removed for the sake
+of performance).
+param nNSS NearestNeighboursSphericalSearchStruct a pack of parameters
+param radius the sphere radius
+param sortValues specifies if the neighbours needs to be sorted by their distance to the query point or not
+return the number of neighbours found)";
+
+const char* DgmOctree_findTheNearestNeighborStartingFromCell_doc= R"(
+Advanced form of the nearest neighbour search algorithm (unique neighbour)
+This version is optimized for a unique nearest-neighbour search.
+See DgmOctree::NearestNeighboursSearchStruct for more details.
+param nNSS NearestNeighboursSearchStruct search parameters
+return the square distance between the query point and its nearest neighbour
+       (or -1 if none was found - i.e. maxSearchDist was reached))";
 
 const char* DgmOctree_getBoundingBox_doc= R"(
 Returns the octree bounding box
@@ -152,7 +226,8 @@ param cellCode the unique cell code
 param level the level of subdivision
 param[out] subset set of points lying in the cell (references, no duplication)
 param isCodeTruncated (optional, default false) specifies if the code is given in a truncated form or not
-param clearOutputCloud (optional, default true) whether to clear or not the output cloud (subest) if no points lie in the specified cell
+param clearOutputCloud (optional, default true) whether to clear or not the output cloud (subest)
+      if no points lie in the specified cell
 return the subset set of points completed)";
 
 const char* DgmOctree_getPointsInCellByCellIndex_doc= R"(
@@ -167,7 +242,8 @@ kind of hard to know directly what is the index of a given cell ;)
 param cloud ReferenceCloud to store the points lying inside the cell
 param cellIndex the cell index
 param level the level of subdivision
-param clearOutputCloud (optional, default true) whether to clear the input cloud prior to inserting the points or not
+param clearOutputCloud (optional, default true) whether to clear the input cloud
+      prior to inserting the points or not
 return the input cloud completed.)";
 
 const char* DgmOctree_getPointsInCellsWithSortedCellCodes_doc= R"(
@@ -192,6 +268,11 @@ parameters:
 params: parameters structure
 return the extracted points)";
 
+const char* DgmOctree_getPointsInCylindricalNeighbourhoodProgressive_doc= R"(
+Same as getPointsInCylindricalNeighbourhood with progressive approach
+Can be called multiple times (the 'currentHalfLength' parameter will increase
+each time until 'maxHalfLength' is reached).)";
+
 const char* DgmOctree_getPointsInSphericalNeighbourhood_doc= R"(
 Returns the points falling inside a sphere
 Use findBestLevelForAGivenNeighbourhoodSizeExtraction to get the right
@@ -200,41 +281,6 @@ param sphereCenter center
 param radius radius
 param level subdivision level at which to apply the extraction process
 return neighbours points falling inside the sphere (list of PointDescriptors)";
-
-const char* DgmOctree_findBestLevelForAGivenCellNumber_doc= R"(
-Determines the best subdivision level of the octree to match a given number of cells
-param indicativeNumberOfCells 'desired' number of cells
-return the 'best' level
-)";
-
-const char* DgmOctree_findBestLevelForAGivenNeighbourhoodSizeExtraction_doc= R"(
-Determines the best level of subdivision of the octree at which to apply the nearest neighbours search algorithm (inside a sphere) depending on the sphere radius
-param radius the sphere radius
-return the 'best' level)";
-
-const char* DgmOctree_findBestLevelForAGivenPopulationPerCell_doc= R"(
-Determines the best subdivision level of the octree that gives the average population per cell closest to the input value
-param indicativeNumberOfPointsPerCell 'desired' average number of points per cell
-return the 'best' level)";
-
-const char* DgmOctree_findPointNeighbourhood_doc= R"(
-Finds the nearest neighbours around a query point
-This is the simplest form of the nearest neighbour search algorithm.
-It should only be used for unique/few requests as it is not optimized
-for repetitive search around points lying in the same octree cell (see
-DgmOctree::findNearestNeighborsStartingFromCell for example). Moreover,
-distances between each neighbour and the query aren't stored in this
-version of the algorithm.
-param _queryPoint the query point
-param Yk RefefenceCloud for the nearest neighbours
-param maxNumberOfNeighbors the maximal number of points to find
-param level the subdivision level of the octree at which to perform the search
-param maxSearchDist (optional default 0) the maximum search distance (ignored if <= 0)
-return tuple( ref cloud completed,
-              number of neighbours found, 
-              final neighborhood (half)size,
-              square distance between the farthest "nearest neighbour" and the query point
-            ))";
 
 const char* DgmOctree_IndexAndCode_doc= R"(
 Association between an index and the code of an octree cell
@@ -249,17 +295,122 @@ param a first IndexAndCode structure
 param b second IndexAndCode structure
 return whether the index of 'a' is smaller than the index of 'b')";
 
+#define dgm_nnss_0 R"(
+Container of in/out parameters for nearest neighbour(s) search
+This structure is generic and can be used in multiple cases.
+It is particularly useful when searching nearest neighbours around points
+that lie in the same octree cell. In this case, several informations about
+this cell should be given to the search algorithm through this structure, but only
+once,before the first search. Then the search algorithm can be called multiple times,
+and only few informations need to be updated (the query point, etc.).
+
+*** Information to set before search ***
+
+- Query point
+    Should be updated each time.
+- level
+    Level of subdivision of the octree at which to start the search
+    Should be set once and for all.
+- minNumberOfNeighbors
+    Minimal number of neighbours to find
+    used only during multiple neighbours search (see findNearestNeighborsStartingFromCell).
+    This is only indicative and not guaranteed.
+- cellPos
+    Position in the octree of the cell including the query point
+    The position is expressed for the level of subdivision at which the search will
+    be processed. Use see DgmOctree::getCellPos to determine this position.
+    This information should only be updated if the cell changes.
+- cellCenter
+    Coordinates of the center of the cell including the query point
+    Use DgmOctree::computeCellCenter to determine these coordinates.
+    This information should only be updated if the cell changes.
+- maxSearchSquareDistd 
+    Maximum neihgbours distance
+    The NN search process will stop if it reaches this radius even if it
+    hasn't find any neighbour (acceleration). To disable this behavior,
+    set the maxSearchSquareDistd to something <= 0).
+
+*** Information to set to 0 before search ***
+
+- minimalCellsSetToVisit
+    List of indexes of the cells that have been already visited by the algorithm
+    This field is updated by the search algorithm. It should only be emptied
+    if the cell that includes the query points change. Only used by the
+    "unique nearest point" search algorithm.
+- pointsInNeighbourhood
+    All the points that belong to the cubical neighbourhood of the current cell
+    This structure is only used by the "multiple nearest neighbours" search algorithms.
+    The nearest points (relatively to the query point) are stored at the beginning of
+    the vector. They are associated to their square distance to the query point.
+- alreadyVisitedNeighbourhoodSize 
+    Size of the cell neighbourhood that has been already visited by the algorithm
+    This field is updated by the search algorithm. It should only be reset to 0
+    when the cell that includes the query point changes. A value of 0 means that
+    no cell has been visited yet, 1 means that only the cell that includes the
+    query point has been visited, 2 means that this cell and its 27 neighbourhing
+    cells have been visited, etc.
+
+*** Result ***
+
+- theNearestPointIndex
+    The nearest point
+    This field is only used by the "unique nearest neighbour" search algorithm
+    (see DgmOctree::findTheNearestNeighborStartingFromCell).)"
+
+#define dgm_nnsss_1 R"(
+Container of in/out parameters for nearest neighbour(s) Spherical search,
+derived from NearestNeighboursSearchStruct:
+--- generic part ---
+)"
+
+#define dgm_nnsss_2 R"(
+--- spherical part ----
+- ready
+    Whether pointsInSphericalNeighbourhood is ready or not (see prepare method for init)
+)"
+
+#define dgm_nnsss_3 R"(
+- pointsInSphericalNeighbourhood
+    All the points that belong to the spherical neighbourhood of the current cell
+- cellsInNeighbourhood
+    Meta data describing cells neighbourhood (associated to pointsInNeighbourhoodUnsorted)
+- maxInD2
+    max SQUARE distance from query point to cell center (to be sure of total inclusion)
+- minOutD2
+    min SQUARE distance from query point to cell center (to be sure of total exclusion)
+)"
+
+const char* DgmOctree_NearestNeighboursSearchStruct_doc= dgm_nnss_0;
+
+#ifdef TEST_CELLS_FOR_SPHERICAL_NN
+const char* DgmOctree_NearestNeighboursSphericalSearchStruct_doc = dgm_nnsss_1 dgm_nnss_0 dgm_nnsss_2 dgm_nnsss_3;
+#else
+const char* DgmOctree_NearestNeighboursSphericalSearchStruct_doc = dgm_nnsss_1 dgm_nnss_0 dgm_nnsss_2;
+#endif
+
 const char* DgmOctree_PointDescriptor_doc= R"(
 Structure used during nearest neighbour search
 Association between a point, its index and its square distance to the query point.
 The structure is made persistent, by copying the coordinates.)";
 
-const char* ccOctree_ccOctree_doc= R"(
-Octree structure
-Extends the CCCoreLib::DgmOctree class.
-The octree structure used throughout the library
-Implements the GenericOctree interface.
-Corresponds to the octree structure developed during Daniel
-Girardeau-Montaut's PhD (see PhD manuscript, Chapter 4).)";
+const char* DgmOctree_ProgressiveCylindricalNeighbourhood_doc= R"(
+Input/output parameters structure for getPointsInCylindricalNeighbourhoodProgressive
+derived from CylindricalNeighbourhood.
+See CylindricalNeighbourhood for generic data members.
+Specific data members:
+----------------------
+- currentHalfLength
+    Current search depth
+- potentialCandidates
+    Vector to store potential candidates for the next pass
+    Candidates are points close enough to the cylinder's axis but too far
+    from its actual center.
+- prevMinCornerPos
+    Previous search box (min corner)
+- prevMaxCornerPos
+    Previous search box (max corner))";
+
+const char* NearestNeighboursSphericalSearchStruct_prepare_doc= R"(
+initialize ready status (false), Updates maxD2 and minD2 with search radius and cellSize)";
 
 #endif /* CCOCTREEPY_DOCSTRINGS_HPP_ */
