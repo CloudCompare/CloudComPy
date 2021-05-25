@@ -49,6 +49,19 @@ param a first IndexAndCode structure
 param b second IndexAndCode structure
 return whether the code of 'a' is smaller than the code of 'b')";
 
+const char* DgmOctree_computeCellCenter_py_doc= R"(
+Returns the cell center for a given level of subdivision of a cell designated by its code
+param code the cell code
+param level the level of subdivision
+param isCodeTruncated (optional false) indicates if the given code is truncated or not
+return center the computed center)";
+
+const char* DgmOctree_computeCellCenter2_py_doc= R"(
+Returns the cell center for a given level of subdivision of a cell designated by its position
+param cellPos the cell position
+param level the level of subdivision
+return center the computed center)";
+
 const char* DgmOctree_CylindricalNeighbourhood_doc= R"(
 parameters structure for getPointsInCylindricalNeighbourhood
 Use findBestLevelForAGivenNeighbourhoodSizeExtraction to get the right
@@ -128,6 +141,17 @@ param nNSS NearestNeighboursSearchStruct search parameters
 return the square distance between the query point and its nearest neighbour
        (or -1 if none was found - i.e. maxSearchDist was reached))";
 
+const char* DgmOctree_GenerateTruncatedCellCode_doc= R"(
+Generates the truncated cell code of a cell given its position at a given level of subdivision
+For a given level of subdivision (lets call it N), the cell position
+can be expressed as 3 integer coordinates between 0 and 2^N-1 (the
+number of cells along each dimension). This method computes the
+corresponding cell code, truncated at the level N (meaning that it
+is only valid for the Nth level, not for other levels).
+param cellPos the cell position
+param level the level of subdivision
+return the truncated cell code)";
+
 const char* DgmOctree_getBoundingBox_doc= R"(
 Returns the octree bounding box
 Method to request the octree bounding box limits
@@ -179,6 +203,13 @@ return vec the list of indexes)";
 const char* DgmOctree_getCellNumber_doc= R"(
 Returns the number of cells for a given level of subdivision
 param level)";
+
+const char* DgmOctree_getCellPos_doc= R"(
+Returns the cell position for a given level of subdivision of a cell designated by its code
+param code the cell code
+param level the level of subdivision
+param isCodeTruncated indicates if the given code is truncated or not
+return cellPos the computed position)";
 
 const char* DgmOctree_getCellSize_doc= R"(
 Returns the octree cells length for a given level of subdivision
@@ -281,6 +312,33 @@ param sphereCenter center
 param radius radius
 param level subdivision level at which to apply the extraction process
 return neighbours points falling inside the sphere (list of PointDescriptors)";
+
+const char* DgmOctree_getTheCellPosWhichIncludesThePoint_doc= R"(
+Returns the position FOR THE DEEPEST LEVEL OF SUBDIVISION of the cell that includes a given point
+The cell coordinates can be negative or greater than 2^MAX_OCTREE_LEVEL-1
+as the point can lie outside the octree bounding-box.
+param thePoint the query point
+return cellPos the computed position)";
+
+const char* DgmOctree_getTheCellPosWhichIncludesThePointL_doc= R"(
+Returns the position for a given level of subdivision of the cell that includes a given point
+The cell coordinates can be negative or greater than 2^N-1  (where N
+is the level of subdivision) as the point can lie outside the octree
+bounding-box.
+param thePoint the query point
+param level the level of subdivision
+return cellPos the computed position)";
+
+const char* DgmOctree_getTheCellPosWhichIncludesThePointLI_doc= R"(
+Returns the position for a given level of subdivision of the cell that includes a given point
+The cell coordinates can be negative or greater than 2^N-1  (where N
+is the level of subdivision) as the point can lie outside the octree
+bounding-box. In this version, method indicates if the query point
+is inside ("inbounds") or outside the octree bounding-box.
+param thePoint the query point
+param level the level of subdivision
+return tuple (cellPos the computed position, 
+              inBounds indicates if the query point is inside or outside the octree bounding-box))";
 
 const char* DgmOctree_IndexAndCode_doc= R"(
 Association between an index and the code of an octree cell
