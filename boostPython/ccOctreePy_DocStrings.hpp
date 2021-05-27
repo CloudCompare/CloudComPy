@@ -158,7 +158,9 @@ Method to request the octree bounding box limits
 return tuple ((Xmin,Ymin,Zmin), (Xmax,Ymax,Zmax)))";
 
 const char* DgmOctree_getCellCode_doc= R"(
-Returns the ith cell code)";
+Returns the ith cell code
+WARNING: i is NOT the point index in cloud! Very specific use!
+(the table giving index in cloud and CellCode is sorted by CellCodes))";
 
 const char* DgmOctree_getCellCodes_doc= R"(
 Returns the list of codes corresponding to the octree cells for a given level of subdivision
