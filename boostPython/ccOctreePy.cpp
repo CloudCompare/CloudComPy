@@ -211,10 +211,11 @@ std::vector<int> DgmOctree_getCellDistanceFromBorders_py(CCCoreLib::DgmOctree& s
                                                          const Tuple3i& cellPos,
                                                          unsigned char level)
 {
-    int cellDists[3];
+    int cellDists[6];
     self.getCellDistanceFromBorders(cellPos, level, cellDists);
     std::vector<int> res;
-    res.push_back(cellDists[0]); res.push_back(cellDists[1]); res.push_back(cellDists[2]);
+    for(int i=0; i<6; i++)
+        res.push_back(cellDists[i]);
     return res;
 }
 
@@ -223,15 +224,11 @@ std::vector<int> DgmOctree_getCellDistanceFromBordersN_py(CCCoreLib::DgmOctree& 
                                                           unsigned char level,
                                                           int neighbourhoodLength)
 {
-    int* cellDists =0;
+    int cellDists[6];
     self.getCellDistanceFromBorders(cellPos, level, neighbourhoodLength, cellDists);
     std::vector<int> res;
-    if (cellDists)
-    {
-        res.push_back(cellDists[0]);
-        res.push_back(cellDists[1]);
-        res.push_back(cellDists[2]);
-    }
+    for(int i=0; i<6; i++)
+        res.push_back(cellDists[i]);
     return res;
 }
 
@@ -501,6 +498,18 @@ void export_ccOctree()
         .def("getTheCellPosWhichIncludesThePointInbBounds", &DgmOctree_getTheCellPosWhichIncludesThePointLI_py,
              DgmOctree_getTheCellPosWhichIncludesThePointLI_doc)
         ;
+
+    // TODO: missing methods in dgmOctree ?
+    // computeCellLimits
+    // computeMeanOctreeDensity
+    // ComputeMinDistanceToCellBorder
+    // diff
+    // executeFunctionForAllCellsAtLevel
+    // extractCCs executeFunctionForAllCellsStartingAtLevel
+    // findBestLevelForComparisonWithOctree
+    // MultiThreadSupport
+    // pointsAndTheirCellCodes
+    // rayCast
 
     class_<ccOctree, QSharedPointer<ccOctree>, bases<CCCoreLib::DgmOctree>, boost::noncopyable>("ccOctree", ccOctree_ccOctree_doc, no_init)
         ;

@@ -108,6 +108,12 @@ maxIndexes = octree.getMaxFillIndexes(level)
 if minIndexes != [2, 2, 101] or maxIndexes != [509, 509, 410]:
     raise RuntimeError
 
+# --- number of cells at a given level
+
+nbCells = octree.getCellNumber(level)
+if nbCells != 425246:
+    raise RuntimeError
+
 # --- cell size in the octree at a given level
 
 cellSize0 = octree.getCellSize(0)
@@ -136,11 +142,36 @@ res= octree.getTheCellPosWhichIncludesThePointInbBounds((0,0,10),9)
 if res[1]:
     raise RuntimeError
 
+# --- cell distance from border cells
+
+cellDist1 = octree.getCellDistanceFromBorders(cellPos,level)
+if (cellDist1[0] + cellDist1[1]) != (maxIndexes[0] - minIndexes[0]): # distances along x
+    raise RuntimeError
+if (cellDist1[3] + cellDist1[2]) != (maxIndexes[1] - minIndexes[1]): # distances along y
+    raise RuntimeError
+if (cellDist1[5] + cellDist1[4]) != (maxIndexes[2] - minIndexes[2]): # distances along z
+    raise RuntimeError
+
+cellDist2 = octree.getCellDistanceFromBorders(cellPos,level, 200)   # limit to a radius of 200 cells
+for i in range(6):
+    if cellDist2[i] > 200:
+        raise RuntimeError
+
 # --- CellCode is a unique id of the cell generated with CellPos and level
 
 cellCodeT = octree.GenerateTruncatedCellCode(cellPos, level)
-#cellCode =octree.getCellCode(id) # do not work here!
+#cellCode =octree.getCellCode(id) # do not work this way, see getCellCodes below
 cellCode = octree.GenerateTruncatedCellCode(cellPosMax, 21) # 21 = level max (64bits)
+
+if octree.getCellPos(cellCodeT, level, True) != cellPos:
+    raise RuntimeError
+
+# --- cell center, from CellCode or CellPos
+
+center1 = octree.computeCellCenter(cellCodeT, level, True)
+center2 = octree.computeCellCenter(cellPos, level)
+if center1 != center2:
+    raise RuntimeError
 
 # --- get points in a given cell, at a given level, using CellCode
 #     the ReferenceCloud receive the points found
@@ -174,6 +205,9 @@ if not found:
 #     WARNING, the methods getCellCodes, getCellIndexes, getCellCodesAndIndexes
 #     return heavy vectors by copy (TODO: try with numpy, wihout copy)
 
+level2 = octree.findBestLevelForAGivenCellNumber(5000)
+if level2 != 5:
+    raise RuntimeError
 codes = octree.getCellCodes(5, True)
 indexes = octree.getCellIndexes(5)
 if len(indexes) != 2223: 
@@ -254,6 +288,14 @@ for i in range(rc.size()):
     #print(i, d)
     rc.setPointScalarValue(i,d)
 print("dmax2", dmax2)
+
+# TODO: test coverage incomplete:
+# findNearestNeighborsStartingFromCell
+# findNeighborsInASphereStartingFromCell
+# findTheNearestNeighborStartingFromCell
+# getCellCode
+# getPointsInCellsWithSortedCellCodes
+# getPointsInCylindricalNeighbourhoodProgressive
 
 # --- other ReferenceCloud methods
 
