@@ -41,6 +41,9 @@ Erases the octree)";
 const char* ccGenericPointCloud_getOctree_doc= R"(
 Returns the associated octree (if any))";
 
+const char* PointCloudTpl_ccGenericPointCloud_QString_getPoint_doc= R"(
+get the ith point in the cloud array)";
+
 const char* ReferenceCloud_Doc= R"(
 A very simple point cloud (no point duplication)
 Implements the GenericIndexedCloudPersist interface. A simple point cloud

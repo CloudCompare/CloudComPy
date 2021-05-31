@@ -107,7 +107,7 @@ bp::tuple DgmOctree_findPointNeighbourhood_py(CCCoreLib::DgmOctree& self,
     int finalNeighbourhoodSize;
     nbFound = self.findPointNeighbourhood(&_queryPoint, Yk, maxNumberOfNeighbors, level, maxSquareDist,
                                           maxSearchDist, &finalNeighbourhoodSize);
-    bp::tuple res = bp::make_tuple(Yk, nbFound, finalNeighbourhoodSize, maxSquareDist);
+    bp::tuple res = bp::make_tuple(nbFound, finalNeighbourhoodSize, maxSquareDist);
     return res;
 }
 
@@ -290,27 +290,6 @@ CCVector3 DgmOctree_getOctreeMins_py(CCCoreLib::DgmOctree& self)
     return res;
 }
 
-CCCoreLib::ReferenceCloud* DgmOctree_getPointsInCell_py(CCCoreLib::DgmOctree& self,
-                                                        CCCoreLib::DgmOctree::CellCode cellCode,
-                                                        unsigned char level,
-                                                        CCCoreLib::ReferenceCloud* subset,
-                                                        bool isCodeTruncated = false,
-                                                        bool clearOutputCloud = true)
-{
-    self.getPointsInCell(cellCode, level, subset, isCodeTruncated, clearOutputCloud);
-    return subset;
-}
-
-CCCoreLib::ReferenceCloud* DgmOctree_getPointsInCellByCellIndex_py(CCCoreLib::DgmOctree& self,
-                                                                   CCCoreLib::ReferenceCloud* cloud,
-                                                                   unsigned cellIndex,
-                                                                   unsigned char level,
-                                                                   bool clearOutputCloud = true)
-{
-    self.getPointsInCellByCellIndex(cloud, cellIndex, level, clearOutputCloud);
-    return cloud;
-}
-
 Tuple3i DgmOctree_getTheCellPosWhichIncludesThePoint_py(CCCoreLib::DgmOctree& self, CCVector3 thePoint)
 {
     Tuple3i cellPos;
@@ -337,12 +316,13 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(DgmOctree_computeCellCenter_py_overloads, DgmOct
 BOOST_PYTHON_FUNCTION_OVERLOADS(DgmOctree_findPointNeighbourhood_py_overloads, DgmOctree_findPointNeighbourhood_py, 5, 6)
 BOOST_PYTHON_FUNCTION_OVERLOADS(DgmOctree_getCellCodes_py_overloads, DgmOctree_getCellCodes_py, 2, 3)
 BOOST_PYTHON_FUNCTION_OVERLOADS(DgmOctree_getCellCodesAndIndexes_py_overloads, DgmOctree_getCellCodesAndIndexes_py, 2, 3)
-BOOST_PYTHON_FUNCTION_OVERLOADS(DgmOctree_getPointsInCellByCellIndex_py_overloads, DgmOctree_getPointsInCellByCellIndex_py, 4, 5)
-BOOST_PYTHON_FUNCTION_OVERLOADS(DgmOctree_getPointsInCell_py_overloads, DgmOctree_getPointsInCell_py, 4, 6)
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getPointsInCellsWithSortedCellCodes_overloads,
                                        CCCoreLib::DgmOctree::getPointsInCellsWithSortedCellCodes, 3, 4)
-
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getPointsInCell_overloads,
+                                       CCCoreLib::DgmOctree::getPointsInCell, 3, 5)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getPointsInCellByCellIndex_overloads,
+                                       CCCoreLib::DgmOctree::getPointsInCellByCellIndex, 3, 4)
 void export_ccOctree()
 {
     class_<PointDescriptor_persistent_py>("PointDescriptor", DgmOctree_PointDescriptor_doc)
@@ -498,12 +478,10 @@ void export_ccOctree()
         .def("getPointsInBoxNeighbourhood",
              &DgmOctree_getPointsInBoxNeighbourhood_py,
              DgmOctree_getPointsInBoxNeighbourhood_doc)
-        .def("getPointsInCell", &DgmOctree_getPointsInCell_py,
-             DgmOctree_getPointsInCell_py_overloads(DgmOctree_getPointsInCell_doc)
-             [return_value_policy<reference_existing_object>()])
-        .def("getPointsInCellByCellIndex", &DgmOctree_getPointsInCellByCellIndex_py,
-             DgmOctree_getPointsInCellByCellIndex_py_overloads(DgmOctree_getPointsInCellByCellIndex_doc)
-             [return_value_policy<reference_existing_object>()])
+        .def("getPointsInCell", &CCCoreLib::DgmOctree::getPointsInCell,
+             getPointsInCell_overloads(DgmOctree_getPointsInCell_doc))
+        .def("getPointsInCellByCellIndex", &CCCoreLib::DgmOctree::getPointsInCellByCellIndex,
+             getPointsInCellByCellIndex_overloads(DgmOctree_getPointsInCellByCellIndex_doc))
         .def("getPointsInCellsWithSortedCellCodes", &CCCoreLib::DgmOctree::getPointsInCellsWithSortedCellCodes,
              getPointsInCellsWithSortedCellCodes_overloads(DgmOctree_getPointsInCellsWithSortedCellCodes_doc)
              [return_value_policy<reference_existing_object>()])

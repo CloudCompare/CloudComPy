@@ -105,8 +105,7 @@ param Yk RefefenceCloud for the nearest neighbours
 param maxNumberOfNeighbors the maximal number of points to find
 param level the subdivision level of the octree at which to perform the search
 param maxSearchDist (optional default 0) the maximum search distance (ignored if <= 0)
-return tuple( ref cloud completed,
-              number of neighbours found, 
+return tuple( number of neighbours found, 
               final neighborhood (half)size,
               square distance between the farthest "nearest neighbour" and the query point
             ))";
@@ -166,7 +165,7 @@ const char* DgmOctree_getCellCodes_doc= R"(
 Returns the list of codes corresponding to the octree cells for a given level of subdivision
 Only the non empty cells are represented in the octree structure.
 param level the level of subdivision
-param optional truncatedCodes indicates if the resulting codes should be truncated or not
+param truncatedCodes (optional, default false) indicates if the resulting codes should be truncated or not
 return the list of codes)";
 
 const char* DgmOctree_getCellCodesAndIndexes_doc= R"(
@@ -272,6 +271,7 @@ a given level of subdivision are next to each others in the octree
 structure (which is the vector "m_thePointsAndTheirCellCodes" in practical).
 This is the quickest way to access the points inside a given cell (but its
 kind of hard to know directly what is the index of a given cell ;)
+See getCellIndexes, getCellCodesAndIndexes.
 param cloud ReferenceCloud to store the points lying inside the cell
 param cellIndex the cell index
 param level the level of subdivision

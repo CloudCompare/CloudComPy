@@ -34,6 +34,12 @@ namespace bp = boost::python;
 
 using namespace boost::python;
 
+CCVector3 PointCloudTpl_ccGenericPointCloud_QString_getPoint_py(CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>& self, unsigned index)
+{
+    const CCVector3* vec = self.getPoint(index);
+    return *vec;
+}
+
 std::vector<Vector3Tpl<float> > ReferenceCloud_getBoundingBox_py(CCCoreLib::ReferenceCloud& self)
 {
     std::vector<Vector3Tpl<float> > bb;
@@ -86,6 +92,7 @@ void export_ccGenericCloud()
         ;
 
     class_<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>, bases<ccGenericPointCloud>, boost::noncopyable>("PointCloudTpl_ccGenericPointCloud_QString", no_init)
+        .def("getPoint", &PointCloudTpl_ccGenericPointCloud_QString_getPoint_py, PointCloudTpl_ccGenericPointCloud_QString_getPoint_doc)
         ;
 
     class_<CCCoreLib::ReferenceCloud, bases<CCCoreLib::GenericIndexedCloudPersist> >("ReferenceCloud", ReferenceCloud_Doc,
