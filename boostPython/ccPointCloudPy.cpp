@@ -48,14 +48,40 @@ bool exportNormalToSF_py(ccPointCloud &self, bool x, bool y, bool z)
     return self.exportNormalToSF(b);
 }
 
+void coordsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
+{
+    if (array.get_dtype() != bnp::dtype::get_builtin<PointCoordinateType>())
+    {
+        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
+        bp::throw_error_already_set();
+    }
+    if (array.get_nd() != 2)
+    {
+        PyErr_SetString(PyExc_TypeError, "Incorrect array dimension");
+        bp::throw_error_already_set();
+    }
+    if (array.shape(1) != 3)
+    {
+        PyErr_SetString(PyExc_TypeError, "Incorrect array, 3 coordinates required");
+        bp::throw_error_already_set();
+    }
+    size_t nRows = array.shape(0);
+    self.reserve(nRows);
+    self.resize(nRows);
+    PointCoordinateType *s = reinterpret_cast<PointCoordinateType*>(array.get_data());
+    PointCoordinateType *d = (PointCoordinateType*)self.getPoint(0);
+    memcpy(d, s, 3*nRows*sizeof(PointCoordinateType));
+    CCTRACE("copied " << 3*nRows*sizeof(PointCoordinateType));
+}
+
 bnp::ndarray CoordsToNpArray_copy(ccPointCloud &self)
 {
     CCTRACE("CoordsToNpArray with copy, ownership transfered to Python");
-    bnp::dtype dt = bnp::dtype::get_builtin<float>(); // coordinates always in simple precision
+    bnp::dtype dt = bnp::dtype::get_builtin<PointCoordinateType>(); // coordinates always in simple precision
     size_t nRows = self.size();
     bp::tuple shape = bp::make_tuple(nRows, 3);
-    bp::tuple stride = bp::make_tuple(3*sizeof(float), sizeof(float));
-    float *s = (float*)self.getPoint(0);
+    bp::tuple stride = bp::make_tuple(3*sizeof(PointCoordinateType), sizeof(PointCoordinateType));
+    PointCoordinateType *s = (PointCoordinateType*)self.getPoint(0);
     bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
     return result.copy();
 }
@@ -63,12 +89,12 @@ bnp::ndarray CoordsToNpArray_copy(ccPointCloud &self)
 bnp::ndarray CoordsToNpArray_py(ccPointCloud &self)
 {
     CCTRACE("CoordsToNpArray without copy, ownership stays in C++");
-    bnp::dtype dt = bnp::dtype::get_builtin<float>(); // coordinates always in simple precision
+    bnp::dtype dt = bnp::dtype::get_builtin<PointCoordinateType>(); // coordinates always in simple precision
     size_t nRows = self.size();
     CCTRACE("nrows: " << nRows);
     bp::tuple shape = bp::make_tuple(nRows, 3);
-    bp::tuple stride = bp::make_tuple(3*sizeof(float), sizeof(float));
-    float *s = (float*)self.getPoint(0);
+    bp::tuple stride = bp::make_tuple(3*sizeof(PointCoordinateType), sizeof(PointCoordinateType));
+    PointCoordinateType *s = (PointCoordinateType*)self.getPoint(0);
     bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
     return result;
 }
@@ -96,12 +122,14 @@ void export_ccPointCloud()
 {
 
     class_<ccPointCloud, bases<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString> > >("ccPointCloud",
-                                                                                          ccPointCloudPy_ccPointCloud_doc, no_init)
+                                                                                          ccPointCloudPy_ccPointCloud_doc,
+                                                                                          init< optional<QString, unsigned> >())
         .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)
         .def("cloneThis", &ccPointCloud::cloneThis,
              ccPointCloud_cloneThis_overloads(ccPointCloudPy_cloneThis_doc)[return_value_policy<reference_existing_object>()])
         .def("computeGravityCenter", &ccPointCloud::computeGravityCenter, ccPointCloudPy_computeGravityCenter_doc)
+        .def("coordsFromNPArray_copy", &coordsFromNPArray_copy, ccPointCloudPy_coordsFromNPArray_copy_doc)
         .def("crop2D", &crop2D_py, return_value_policy<reference_existing_object>(), ccPointCloudPy_crop2D_doc)
         .def("deleteAllScalarFields", &ccPointCloud::deleteAllScalarFields, ccPointCloudPy_deleteAllScalarFields_doc)
         .def("deleteScalarField", &ccPointCloud::deleteScalarField, ccPointCloudPy_deleteScalarField_doc)

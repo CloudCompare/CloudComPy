@@ -52,6 +52,10 @@ return a copy of this entity)";
 const char* ccPointCloudPy_computeGravityCenter_doc= R"(
 Return a tuple of the 3 coordinates of the gravity center of the cloud)";
 
+const char* ccPointCloudPy_coordsFromNPArray_copy_doc= R"(
+set cloud coordinates from a Numpy array (nbPoints,3)
+cloud memory is reserved /resized automatically)";
+
 const char* ccPointCloudPy_crop2D_doc= R"(
 Crop the point cloud using a 2D polyline.
 parameters:
@@ -123,7 +127,8 @@ const char* ccPointCloudPy_reserve_doc= R"(
 Reserves memory for all the active features
 This method is meant to be called before increasing the cloud population.
 Only the already allocated features will be re-reserved.
-return true if ok, false if there's not enough memory)";
+return true if ok, false if there's not enough memory
+param number of points)";
 
 const char* ccPointCloudPy_resize_doc= R"(
 Resizes all the active features arrays
