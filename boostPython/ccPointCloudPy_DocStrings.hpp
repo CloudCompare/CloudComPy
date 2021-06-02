@@ -107,6 +107,9 @@ const char* ccPointCloudPy_getScalarField_doc= R"(
 Return a ScalarField if index is valid, otherwise None.
 param index)";
 
+const char* ccPointCloudPy_getScalarFieldDic_doc= R"(
+Return a dictionary [ScalarField name] --> ScalarField index)";
+
 const char* ccPointCloudPy_getScalarFieldName_doc= R"(
 Return the ScalarField name if index is valid, otherwise None.
 param index)";

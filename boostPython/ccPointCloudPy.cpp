@@ -20,7 +20,8 @@
 
 #include <boost/python/numpy.hpp>
 #include <boost/python.hpp>
-
+#include <boost/python/suite/indexing/map_indexing_suite.hpp>
+//#include "mapptr_indexing_suite.hpp"
 #include <ccPointCloud.h>
 #include <ccPolyline.h>
 #include <GenericProgressCallback.h>
@@ -28,6 +29,8 @@
 #include "PyScalarType.h"
 #include "pyccTrace.h"
 #include "ccPointCloudPy_DocStrings.hpp"
+
+#include <map>
 
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
@@ -72,6 +75,28 @@ void coordsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
     PointCoordinateType *d = (PointCoordinateType*)self.getPoint(0);
     memcpy(d, s, 3*nRows*sizeof(PointCoordinateType));
     CCTRACE("copied " << 3*nRows*sizeof(PointCoordinateType));
+}
+
+//std::map<QString, CCCoreLib::ScalarField*> getScalarFieldDic_py(ccPointCloud &self)
+//{
+//    std::map<QString, CCCoreLib::ScalarField*> mapSF;
+//    int nbSF = self.getNumberOfScalarFields();
+//    for (int i=0; i < nbSF; i++)
+//    {
+//        mapSF[self.getScalarFieldName(i)] = self.getScalarField(i);
+//    }
+//    return mapSF;
+//}
+
+std::map<QString, int> getScalarFieldDic_py(ccPointCloud &self)
+{
+    std::map<QString, int> mapSF;
+    int nbSF = self.getNumberOfScalarFields();
+    for (int i=0; i < nbSF; i++)
+    {
+        mapSF[self.getScalarFieldName(i)] = i;
+    }
+    return mapSF;
 }
 
 bnp::ndarray CoordsToNpArray_copy(ccPointCloud &self)
@@ -120,6 +145,9 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_cloneThis_overloads, cloneTh
 
 void export_ccPointCloud()
 {
+//    class_<std::map<QString, CCCoreLib::ScalarField*> >("dict")
+//        .def(bp::map_indexing_suite<std::map<QString, CCCoreLib::ScalarField*> >())
+//        ;
 
     class_<ccPointCloud, bases<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString> > >("ccPointCloud",
                                                                                           ccPointCloudPy_ccPointCloud_doc,
@@ -142,6 +170,7 @@ void export_ccPointCloud()
         .def("getNumberOfScalarFields", &ccPointCloud::getNumberOfScalarFields, ccPointCloudPy_getNumberOfScalarFields_doc)
         .def("getScalarField", &ccPointCloud::getScalarField,
              return_value_policy<reference_existing_object>(), ccPointCloudPy_getScalarField_doc)
+        .def("getScalarFieldDic", &getScalarFieldDic_py, ccPointCloudPy_getScalarFieldDic_doc)
         .def("getScalarFieldName", &ccPointCloud::getScalarFieldName, ccPointCloudPy_getScalarFieldName_doc)
         .def("hasScalarFields", &ccPointCloud::hasScalarFields, ccPointCloudPy_hasScalarFields_doc)
         .def("renameScalarField", &ccPointCloud::renameScalarField, ccPointCloudPy_renameScalarField_doc)

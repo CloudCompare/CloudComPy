@@ -24,6 +24,7 @@
 
 #include <QString>
 #include <vector>
+#include <map>
 
 #include <CCGeom.h>
 #include <ccHObject.h>
@@ -34,6 +35,7 @@
 #include <ccMesh.h>
 #include <ccBox.h>
 #include <ccPlane.h>
+#include <ScalarField.h>
 
 #include "ccOctreePy.hpp"
 #include "pyccTrace.h"
@@ -42,6 +44,19 @@ namespace bp = boost::python;
 
 namespace
 {
+
+template<typename K, typename V> struct map_to_python_dict
+{
+    static PyObject* convert(const std::map<K, V>& map)
+    {
+        bp::dict dictionary;
+        for (auto iter : map)
+        {
+            dictionary[iter.first] = iter.second;
+        }
+        return bp::incref(dictionary.ptr());
+    }
+};
 
 struct ccOctree_to_python
 {
@@ -54,6 +69,14 @@ struct ccOctree_to_python
 struct ccPointCloud_to_python
 {
     static PyObject* convert(ccPointCloud* c)
+    {
+        return bp::incref(bp::object(c).ptr());
+    }
+};
+
+struct ScalarField_to_python
+{
+    static PyObject* convert(CCCoreLib::ScalarField* c)
     {
         return bp::incref(bp::object(c).ptr());
     }
@@ -543,6 +566,7 @@ void initializeConverters()
     to_python_converter<ccPointCloud*, ccPointCloud_to_python, false>();
     to_python_converter<ccMesh*, ccMesh_to_python, false>();
     to_python_converter<ccPlane*, ccPlane_to_python, false>();
+    to_python_converter<CCCoreLib::ScalarField*, ScalarField_to_python, false>();
     to_python_converter<QString, QString_to_python_str, false>(); //"false" because QString_to_python_str has no member get_pytype
     to_python_converter<Vector2Tpl<float>, Vector2Tpl_to_python_tuple<float>, false>();
     to_python_converter<Vector2Tpl<double>, Vector2Tpl_to_python_tuple<double>, false>();
@@ -563,6 +587,7 @@ void initializeConverters()
     to_python_converter<std::vector<CCCoreLib::DgmOctree::CellDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::CellDescriptor>, false>();
     to_python_converter<std::vector<CCCoreLib::DgmOctree::IndexAndCode>, vector_to_python_list<CCCoreLib::DgmOctree::IndexAndCode>, false>();
     to_python_converter<std::vector<CCCoreLib::DgmOctree::PointDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::PointDescriptor>, false>();
+    to_python_converter<std::map<QString, int>, map_to_python_dict<QString, int>, false>();
     // register the from-python converter
     QString_from_python_str();
     Vector2Tpl_from_python_tuple<float>();
