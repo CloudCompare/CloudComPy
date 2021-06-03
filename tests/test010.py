@@ -48,10 +48,10 @@ cloud3 = res.aligned
 cloud3.applyRigidTransformation(tr2)
 cloud3.setName("cloud2_transformed_afterICP")
 
-params = cc.Cloud2CloudDistanceComputationParams()
+params = cc.Cloud2CloudDistancesComputationParams()
 params.maxThreadCount=12
 params.octreeLevel=6
-cc.DistanceComputationTools.computeCloud2CloudDistance(cloud2ref, cloud3, params)
+cc.DistanceComputationTools.computeCloud2CloudDistances(cloud2ref, cloud3, params)
 
 sf = cloud2ref.getScalarField(cloud2ref.getNumberOfScalarFields()-1)
 mindist = sf.getMin()

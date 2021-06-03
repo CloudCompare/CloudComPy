@@ -19,7 +19,7 @@
 #ifndef DISTANCECOMPUTATIONTOOLSPY_DOCSTRINGS_HPP_
 #define DISTANCECOMPUTATIONTOOLSPY_DOCSTRINGS_HPP_
 
-const char* distanceComputationToolsPy_Cloud2CloudDistanceComputationParams_doc= R"(
+const char* distanceComputationToolsPy_Cloud2CloudDistancesComputationParams_doc= R"(
 Cloud-to-cloud "Hausdorff" distance computation parameters)";
 
 const char* distanceComputationToolsPy_octreeLevel_doc= R"(
@@ -77,7 +77,7 @@ Whether to keep the existing distances as is (if any) or not
 By default, any previous distances/scalar values stored in the 'enabled' scalar field will be
 reset before computing them again.)";
 
-const char* distanceComputationToolsPy_Cloud2MeshDistanceComputationParams_doc= R"(
+const char* distanceComputationToolsPy_Cloud2MeshDistancesComputationParams_doc= R"(
 Cloud-to-mesh distances computation parameters)";
 
 const char* distanceComputationToolsPy_useDistanceMap_doc= R"(
@@ -96,7 +96,7 @@ Whether triangle normals should be computed in the 'direct' order (true) or 'ind
 const char* distanceComputationToolsPy_DistanceComputationTools_doc= R"(
 Several entity-to-entity distances computation algorithms (cloud-cloud, cloud-mesh, etc.))";
 
-const char* distanceComputationToolsPy_computeCloud2CloudDistance_doc= R"(
+const char* distanceComputationToolsPy_computeCloud2CloudDistances_doc= R"(
 Computes the "nearest neighbour distance" between two point clouds (formerly named "Hausdorff distance")
 The main algorithm and its different versions (with or without local modeling) are described in
 Daniel Girardeau-Montaut's PhD manuscript (Chapter 2, section 2.3). It is the standard way to compare
@@ -116,7 +116,7 @@ param compOctree the pre-computed octree of the compared cloud (warning: both oc
 param refOctree the pre-computed octree of the reference cloud (warning: both octrees must have the same cubical bounding-box - it is automatically computed if 0)
 return 0 if ok, a negative value otherwise)";
 
-const char* distanceComputationToolsPy_computeCloud2MeshDistance_doc= R"(
+const char* distanceComputationToolsPy_computeCloud2MeshDistances_doc= R"(
 Computes the distance between a point cloud and a mesh
 The algorithm, inspired from METRO by Cignoni et al., is described
 in Daniel Girardeau-Montaut's PhD manuscript (Chapter 2, section 2.2).

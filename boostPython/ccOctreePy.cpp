@@ -415,21 +415,7 @@ void export_ccOctree()
     class_< CCCoreLib::DgmOctree::NearestNeighboursSphericalSearchStruct,
             bases<CCCoreLib::DgmOctree::NearestNeighboursSearchStruct > >("NearestNeighboursSphericalSearchStruct",
                                                                           DgmOctree_NearestNeighboursSphericalSearchStruct_doc)
-#ifdef TEST_CELLS_FOR_SPHERICAL_NN
-        .add_property("pointsInSphericalNeighbourhood",
-                      make_getter(&CCCoreLib::DgmOctree::NearestNeighboursSphericalSearchStruct::pointsInSphericalNeighbourhood,
-                                  return_value_policy<return_by_value>()),
-                      make_setter(&CCCoreLib::DgmOctree::NearestNeighboursSphericalSearchStruct::pointsInSphericalNeighbourhood))
-        .add_property("cellsInNeighbourhood",
-                      make_getter(&CCCoreLib::DgmOctree::NearestNeighboursSphericalSearchStruct::cellsInNeighbourhood,
-                                  return_value_policy<return_by_value>()),
-                      make_setter(&CCCoreLib::DgmOctree::NearestNeighboursSphericalSearchStruct::cellsInNeighbourhood))
-        .def_readwrite("maxInD2", &CCCoreLib::DgmOctree::NearestNeighboursSphericalSearchStruct::maxInD2)
-        .def_readwrite("minOutD2", &CCCoreLib::DgmOctree::NearestNeighboursSphericalSearchStruct::minOutD2)
-#endif
         .def_readwrite("ready", &CCCoreLib::DgmOctree::NearestNeighboursSphericalSearchStruct::ready)
-        .def("prepare", &CCCoreLib::DgmOctree::NearestNeighboursSphericalSearchStruct::prepare,
-             NearestNeighboursSphericalSearchStruct_prepare_doc)
         ;
 
     class_<CCCoreLib::DgmOctree>("DgmOctree", no_init)
