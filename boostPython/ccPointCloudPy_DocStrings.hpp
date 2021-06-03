@@ -105,7 +105,11 @@ return the number of scalar fields associated to the cloud)";
 
 const char* ccPointCloudPy_getScalarField_doc= R"(
 Return a ScalarField if index is valid, otherwise None.
-param index)";
+param index of the ScalarField)";
+
+const char* ccPointCloudPy_getScalarFieldByName_doc= R"(
+Return a ScalarField if there is one with this name, otherwise None
+param name of the ScalarField)";
 
 const char* ccPointCloudPy_getScalarFieldDic_doc= R"(
 Return a dictionary [ScalarField name] --> ScalarField index)";
