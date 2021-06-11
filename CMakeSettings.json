@@ -396,7 +396,8 @@
           "value": "C:/Users/paulr/anaconda3/Library/lib/zlib.lib",
           "type": "FILEPATH"
         }
-      ]
+      ],
+      "intelliSenseMode": "windows-clang-x64"
     }
   ]
 }

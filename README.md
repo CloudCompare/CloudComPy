@@ -147,8 +147,10 @@ conda create --name CloudComPy37 python=3.7
 conda activate CloudComPy37
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake pdal opencv ffmpeg mysql m2-perl-net-ssleay
+conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay
 ```
+For information, the list of packages actually installed for building and testing can be found in `building/conda-list`.
+
 CMake from Anaconda is used to get ctest at install, not for build.
 
 I do not use Qt from conda packages, I still have a problem at runtime when reading xyz files with the HEAD of CloudCompare
