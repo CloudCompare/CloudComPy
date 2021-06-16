@@ -50,6 +50,60 @@ The list of available functions should quickly grow.
 
 From the Python interpreter, Docstrings provide some documentation on the available methods, the arguments.
 
+## testing a CloudComPy binary on Windows 10
+
+The binary available [here](https://drive.google.com/file/d/1KI9bL7PJQvFML_ngH0SejrBpHWJ_USW8/view?usp=sharing) is built in an Anaconda3 environment
+(see below for the corresponding building instructions).
+As CloudComPy is under development and not yet fully stabilized, these instructions and the link are subject to change from time to time...
+
+You need a recent installation of Anaconda3.
+
+You need to create an environment for CloudComPy in Anaconda3, with the Anaconda3 prompt console:
+
+```
+conda activate
+conda create --name CloudComPy37 python=3.7
+   # --- erase previous env if existing
+conda activate CloudComPy37
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay
+```
+
+Install the binary in the directory of your choice.
+From the Anaconda3 prompt, you can test :
+
+### Testing CloudCompare:
+
+```
+conda activate CloudComPy37
+cd <path install>\CloudComPy37\CloudCompare
+CloudCompare.exe
+```
+
+### Python tests:
+
+```
+conda activate CloudComPy37
+cd  <path install>\CloudComPy37\doc\PythonAPI_test
+```
+
+To execute all the tests (about one minute)
+
+```
+ctest
+```
+
+To complete the pythonpath and run a script
+
+```
+envPyCC.bat
+python test001.py
+```
+
+The files created with the tests are in your user space: %USERPROFILE%\CloudComPy\data
+
+
 ## how to build CloudComPy?
 
 Prerequisites for CloudComPy are Python3, BoostPython and Numpy plus, of course, everything needed to build CloudCompare.
@@ -147,8 +201,10 @@ conda create --name CloudComPy37 python=3.7
 conda activate CloudComPy37
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake pdal opencv ffmpeg mysql m2-perl-net-ssleay
+conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay
 ```
+For information, the list of packages actually installed for building and testing can be found in `building/conda-list`.
+
 CMake from Anaconda is used to get ctest at install, not for build.
 
 I do not use Qt from conda packages, I still have a problem at runtime when reading xyz files with the HEAD of CloudCompare

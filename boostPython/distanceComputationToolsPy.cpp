@@ -67,11 +67,11 @@ struct GenericProgressCallbackWrap : CCCoreLib::GenericProgressCallback, wrapper
     }
 };
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2CloudDistance_overloads, CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance, 3, 6)
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2MeshDistance_overloads, CCCoreLib::DistanceComputationTools::computeCloud2MeshDistance, 3, 5)
+BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2CloudDistances_overloads, CCCoreLib::DistanceComputationTools::computeCloud2CloudDistances, 3, 6)
+BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2MeshDistances_overloads, CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances, 3, 5)
 BOOST_PYTHON_FUNCTION_OVERLOADS(computeApproxCloud2CloudDistance_overloads, CCCoreLib::DistanceComputationTools::computeApproxCloud2CloudDistance, 3, 7)
 
-bool setSplitDistances(CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& self, size_t count)
+bool setSplitDistances(CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams& self, size_t count)
 {
     bool success = true;
     for (unsigned j = 0; j < 3; ++j)
@@ -104,7 +104,7 @@ bool setSplitDistances(CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceC
     return success;
 }
 
-CCCoreLib::ScalarField* getSplitDistance(CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams& self, int index)
+CCCoreLib::ScalarField* getSplitDistance(CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams& self, int index)
 {
     if (index < 0 || index > 2)
         return nullptr;
@@ -117,69 +117,66 @@ void export_distanceComputationTools()
     class_<GenericProgressCallbackWrap, boost::noncopyable>("GenericProgressCallback", no_init)
         ;
 
-    class_<CCCoreLib::ReferenceCloud>("ReferenceCloud", no_init)
-        ;
-
-    class_<CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams>("Cloud2CloudDistanceComputationParams",
-                                                                                      distanceComputationToolsPy_Cloud2CloudDistanceComputationParams_doc)
-        .def_readwrite("octreeLevel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::octreeLevel,
+    class_<CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams>("Cloud2CloudDistancesComputationParams",
+                                                                                      distanceComputationToolsPy_Cloud2CloudDistancesComputationParams_doc)
+        .def_readwrite("octreeLevel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::octreeLevel,
                        distanceComputationToolsPy_octreeLevel_doc)
-        .def_readwrite("maxSearchDist", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::maxSearchDist,
+        .def_readwrite("maxSearchDist", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::maxSearchDist,
                        distanceComputationToolsPy_maxSearchDist_doc)
-        .def_readwrite("multiThread", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::multiThread,
+        .def_readwrite("multiThread", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::multiThread,
                        distanceComputationToolsPy_multiThread_doc)
-        .def_readwrite("maxThreadCount", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::maxThreadCount,
+        .def_readwrite("maxThreadCount", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::maxThreadCount,
                        distanceComputationToolsPy_maxThreadCount_doc)
-        .def_readwrite("localModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::localModel,
+        .def_readwrite("localModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::localModel,
                        distanceComputationToolsPy_localModel_doc)
-        .def_readwrite("useSphericalSearchForLocalModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::useSphericalSearchForLocalModel,
+        .def_readwrite("useSphericalSearchForLocalModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::useSphericalSearchForLocalModel,
                        distanceComputationToolsPy_useSphericalSearchForLocalModel_doc)
-        .def_readwrite("kNNForLocalModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::kNNForLocalModel,
+        .def_readwrite("kNNForLocalModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::kNNForLocalModel,
                        distanceComputationToolsPy_kNNForLocalModel_doc)
-        .def_readwrite("radiusForLocalModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::radiusForLocalModel,
+        .def_readwrite("radiusForLocalModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::radiusForLocalModel,
                        distanceComputationToolsPy_radiusForLocalModel_doc)
-        .def_readwrite("reuseExistingLocalModels", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::reuseExistingLocalModels,
+        .def_readwrite("reuseExistingLocalModels", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::reuseExistingLocalModels,
                        distanceComputationToolsPy_reuseExistingLocalModels_doc)
-        .def_readwrite("CPSet", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::CPSet,
+        .def_readwrite("CPSet", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::CPSet,
                        distanceComputationToolsPy_CPSet_doc)
         .def("setSplitDistances", &setSplitDistances,
              distanceComputationToolsPy_setSplitDistances_doc)
         .def("getSplitDistance", &getSplitDistance,distanceComputationToolsPy_getSplitDistance_doc,
              return_value_policy<reference_existing_object>())
-        .def_readwrite("resetFormerDistances", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistanceComputationParams::resetFormerDistances,
+        .def_readwrite("resetFormerDistances", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::resetFormerDistances,
                        distanceComputationToolsPy_resetFormerDistances_doc)
         ;
 
-    class_<CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams>("Cloud2MeshDistanceComputationParams",
-                                                                                     distanceComputationToolsPy_Cloud2MeshDistanceComputationParams_doc)
-        .def_readwrite("octreeLevel", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::octreeLevel,
+    class_<CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams>("Cloud2MeshDistancesComputationParams",
+                                                                                     distanceComputationToolsPy_Cloud2MeshDistancesComputationParams_doc)
+        .def_readwrite("octreeLevel", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams::octreeLevel,
                        distanceComputationToolsPy_octreeLevel_doc)
-        .def_readwrite("maxSearchDist", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::maxSearchDist,
+        .def_readwrite("maxSearchDist", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams::maxSearchDist,
                        distanceComputationToolsPy_maxSearchDist_doc)
-        .def_readwrite("useDistanceMap", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::useDistanceMap,
+        .def_readwrite("useDistanceMap", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams::useDistanceMap,
                        distanceComputationToolsPy_useDistanceMap_doc)
-        .def_readwrite("signedDistances", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::signedDistances,
+        .def_readwrite("signedDistances", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams::signedDistances,
                        distanceComputationToolsPy_signedDistances_doc)
-        .def_readwrite("flipNormals", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::flipNormals,
+        .def_readwrite("flipNormals", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams::flipNormals,
                        distanceComputationToolsPy_flipNormals_doc)
-        .def_readwrite("multiThread", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::multiThread,
+        .def_readwrite("multiThread", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams::multiThread,
                        distanceComputationToolsPy_multiThread_doc)
-        .def_readwrite("maxThreadCount", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::maxThreadCount,
+        .def_readwrite("maxThreadCount", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams::maxThreadCount,
                        distanceComputationToolsPy_maxThreadCount_doc)
-        .def_readwrite("CPSet", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams::CPSet,
+        .def_readwrite("CPSet", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams::CPSet,
                        distanceComputationToolsPy_CPSet_doc)
         ;
 
     class_<CCCoreLib::DistanceComputationTools, boost::noncopyable>("DistanceComputationTools",
                                                                     distanceComputationToolsPy_DistanceComputationTools_doc, no_init)
-        .def("computeCloud2CloudDistance",
-             &CCCoreLib::DistanceComputationTools::computeCloud2CloudDistance,
-             computeCloud2CloudDistance_overloads(distanceComputationToolsPy_computeCloud2CloudDistance_doc))
-            .staticmethod("computeCloud2CloudDistance")
-        .def("computeCloud2MeshDistance",
-             &CCCoreLib::DistanceComputationTools::computeCloud2MeshDistance,
-             computeCloud2MeshDistance_overloads(distanceComputationToolsPy_computeCloud2MeshDistance_doc))
-            .staticmethod("computeCloud2MeshDistance")
+        .def("computeCloud2CloudDistances",
+             &CCCoreLib::DistanceComputationTools::computeCloud2CloudDistances,
+             computeCloud2CloudDistances_overloads(distanceComputationToolsPy_computeCloud2CloudDistances_doc))
+            .staticmethod("computeCloud2CloudDistances")
+        .def("computeCloud2MeshDistances",
+             &CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances,
+             computeCloud2MeshDistances_overloads(distanceComputationToolsPy_computeCloud2MeshDistances_doc))
+            .staticmethod("computeCloud2MeshDistances")
         .def("computeApproxCloud2CloudDistance",
              &CCCoreLib::DistanceComputationTools::computeApproxCloud2CloudDistance,
              computeApproxCloud2CloudDistance_overloads(distanceComputationToolsPy_computeApproxCloud2CloudDistance_doc))

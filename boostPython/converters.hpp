@@ -16,9 +16,6 @@
 //#                                                                        #
 //##########################################################################
 
-// original code from:
-// https://misspent.wordpress.com/2009/09/27/how-to-write-boost-python-converters/
-
 #ifndef CONVERTERS_HPP_
 #define CONVERTERS_HPP_
 
@@ -27,15 +24,18 @@
 
 #include <QString>
 #include <vector>
+#include <map>
 
 #include <CCGeom.h>
 #include <ccHObject.h>
 #include <ccOctree.h>
 #include <DgmOctree.h>
 #include <ccPointCloud.h>
+#include <ReferenceCloud.h>
 #include <ccMesh.h>
 #include <ccBox.h>
 #include <ccPlane.h>
+#include <ScalarField.h>
 
 #include "ccOctreePy.hpp"
 #include "pyccTrace.h"
@@ -44,6 +44,19 @@ namespace bp = boost::python;
 
 namespace
 {
+
+template<typename K, typename V> struct map_to_python_dict
+{
+    static PyObject* convert(const std::map<K, V>& map)
+    {
+        bp::dict dictionary;
+        for (auto iter : map)
+        {
+            dictionary[iter.first] = iter.second;
+        }
+        return bp::incref(dictionary.ptr());
+    }
+};
 
 struct ccOctree_to_python
 {
@@ -56,6 +69,22 @@ struct ccOctree_to_python
 struct ccPointCloud_to_python
 {
     static PyObject* convert(ccPointCloud* c)
+    {
+        return bp::incref(bp::object(c).ptr());
+    }
+};
+
+struct ScalarField_to_python
+{
+    static PyObject* convert(CCCoreLib::ScalarField* c)
+    {
+        return bp::incref(bp::object(c).ptr());
+    }
+};
+
+struct ReferenceCloud_to_python
+{
+    static PyObject* convert(CCCoreLib::ReferenceCloud* c)
     {
         return bp::incref(bp::object(c).ptr());
     }
@@ -376,6 +405,80 @@ template<typename T> struct Vector_from_python_tuple // T double or float
     }
 };
 
+template<typename T> struct Vector_from_python_tuple_tuple // tuple(Vector3Tpl<T>), T in double, float, long
+{
+    Vector_from_python_tuple_tuple()
+    {
+        CCTRACE("register Vector_from_python_tuple_tuple");
+        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<std::vector<Vector3Tpl<T> > >());
+    }
+
+    // Determine if obj_ptr can be converted in a std::vector<T> size 6
+    static void* convertible(PyObject* obj_ptr)
+    {
+        CCTRACE("convertible to std::vector<Vector3Tpl<T> >?");
+        if (!PyTuple_Check(obj_ptr))
+            return 0;
+        Py_ssize_t nbElems = PyTuple_GET_SIZE(obj_ptr);
+        CCTRACE("nbElems:" << nbElems);
+        for (Py_ssize_t i=0; i<nbElems; i++)
+        {
+            PyObject* iptr = PyTuple_GET_ITEM(obj_ptr, i);
+            if (!PyTuple_Check(iptr))
+                return 0;
+            Py_ssize_t nbElems2 = PyTuple_GET_SIZE(iptr);
+            CCTRACE("nbElems2:" << nbElems2);
+            if (nbElems2 != 3)
+                return 0;
+            for (Py_ssize_t j=0; j<nbElems2; j++)
+            {
+                PyObject* jptr = PyTuple_GET_ITEM(iptr, j);
+                if (!PyFloat_Check(jptr) && !PyLong_Check(jptr))
+                    return 0;
+            }
+        }
+        return obj_ptr;
+    }
+
+    // Convert obj_ptr into a std::vector<Vector3Tpl<T> >
+    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
+    {
+        CCTRACE("construct");
+        // Extract the components (check already done by convertible)
+        Py_ssize_t nbElems = PyTuple_GET_SIZE(obj_ptr);
+        std::vector<Vector3Tpl<T> > val;
+        val.resize(nbElems);
+        for (Py_ssize_t i=0; i<nbElems; i++)
+        {
+            PyObject* iptr = PyTuple_GetItem(obj_ptr, i);
+            Py_ssize_t nbElems2 = PyTuple_GET_SIZE(iptr);
+            for (Py_ssize_t j=0; j<nbElems2; j++)
+            {
+                PyObject* jptr = PyTuple_GET_ITEM(iptr, j);
+                if (PyFloat_Check(jptr))
+                    val[i][j] = PyFloat_AS_DOUBLE(jptr);
+                else if (PyLong_Check(jptr))
+                    val[i][j] = PyLong_AsDouble(jptr);
+                else
+                    bp::throw_error_already_set();
+            }
+        }
+
+        // Grab pointer to memory into which to construct the new T*
+        void* storage = ((bp::converter::rvalue_from_python_storage<std::vector<Vector3Tpl<T> > >*) data)->storage.bytes;
+
+        // in-place construct the new Vector3Tpl<T> using the character data
+        // extracted from the Python object
+        std::vector<Vector3Tpl<T> > *res = new (storage) std::vector<Vector3Tpl<T> >;
+        res->resize(nbElems);
+        for (Py_ssize_t i=0; i<nbElems; i++)
+            (*res)[i] = val[i];
+
+        // Stash the memory chunk pointer for later use by boost.python
+        data->convertible = storage;
+    }
+};
+
 struct ccHObjectVector_from_python_list
 {
     ccHObjectVector_from_python_list()
@@ -463,6 +566,7 @@ void initializeConverters()
     to_python_converter<ccPointCloud*, ccPointCloud_to_python, false>();
     to_python_converter<ccMesh*, ccMesh_to_python, false>();
     to_python_converter<ccPlane*, ccPlane_to_python, false>();
+    to_python_converter<CCCoreLib::ScalarField*, ScalarField_to_python, false>();
     to_python_converter<QString, QString_to_python_str, false>(); //"false" because QString_to_python_str has no member get_pytype
     to_python_converter<Vector2Tpl<float>, Vector2Tpl_to_python_tuple<float>, false>();
     to_python_converter<Vector2Tpl<double>, Vector2Tpl_to_python_tuple<double>, false>();
@@ -472,11 +576,18 @@ void initializeConverters()
     to_python_converter<Tuple3Tpl<unsigned char>, Tuple3Tpl_to_python_tuple<unsigned char>, false>();
     to_python_converter<Tuple3Tpl<short>, Tuple3Tpl_to_python_tuple<short>, false>();
     to_python_converter<Tuple3Tpl<int>, Tuple3Tpl_to_python_tuple<int>, false>();
+    to_python_converter<std::vector<int>, vector_to_python_list<int>, false>();
+    to_python_converter<std::vector<unsigned int>, vector_to_python_list<unsigned int>, false>();
     to_python_converter<std::vector<float>, vector_to_python_list<float>, false>();
     to_python_converter<std::vector<double>, vector_to_python_list<double>, false>();
+    to_python_converter<std::vector<unsigned long long>, vector_to_python_list<unsigned long long>, false>();
     to_python_converter<std::vector<Vector3Tpl<float> >, vector_to_python_list<Vector3Tpl<float> >, false>();
     to_python_converter<std::vector<Vector3Tpl<double> >, vector_to_python_list<Vector3Tpl<double> >, false>();
     to_python_converter<std::vector<PointDescriptor_persistent_py>, vector_to_python_list<PointDescriptor_persistent_py>, false>();
+    to_python_converter<std::vector<CCCoreLib::DgmOctree::CellDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::CellDescriptor>, false>();
+    to_python_converter<std::vector<CCCoreLib::DgmOctree::IndexAndCode>, vector_to_python_list<CCCoreLib::DgmOctree::IndexAndCode>, false>();
+    to_python_converter<std::vector<CCCoreLib::DgmOctree::PointDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::PointDescriptor>, false>();
+    to_python_converter<std::map<QString, int>, map_to_python_dict<QString, int>, false>();
     // register the from-python converter
     QString_from_python_str();
     Vector2Tpl_from_python_tuple<float>();
@@ -487,8 +598,12 @@ void initializeConverters()
     Tuple3Tpl_from_python_tuple<unsigned int>();
     Tuple3Tpl_from_python_tuple<unsigned char>();
     Tuple3Tpl_from_python_tuple<short>();
+    Vector_from_python_tuple<unsigned int>();
     Vector_from_python_tuple<float>();
     Vector_from_python_tuple<double>();
+    Vector_from_python_tuple<unsigned long long>();
+    Vector_from_python_tuple_tuple<float>();
+    Vector_from_python_tuple_tuple<double>();
     ccHObjectVector_from_python_list();
 }
 

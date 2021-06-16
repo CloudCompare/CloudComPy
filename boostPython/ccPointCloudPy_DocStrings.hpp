@@ -19,29 +19,6 @@
 #ifndef CCPOINTCLOUDPY_DOCSTRINGS_HPP_
 #define CCPOINTCLOUDPY_DOCSTRINGS_HPP_
 
-const char* ccHObject_setName_doc= R"(
-Set the name of the entity)";
-
-const char* ccHObject_getName_doc= R"(
-get the name of the entity)";
-
-const char* ccGenericPointCloud_computeOctree_doc= R"(
-Computes the cloud octree
-The octree bounding-box is automatically defined as the smallest
-3D cube that totally encloses the cloud.
-WARNING: any previously attached octree will be deleted,
-         even if the new octree computation failed.
-param progressCb (default None), use None
-param autoAddChild (default True) whether to automatically add the computed octree as child of this cloud or not
-return the computed octree
-)";
-
-const char* ccGenericPointCloud_deleteOctree_doc= R"(
-Erases the octree)";
-
-const char* ccGenericPointCloud_getOctree_doc= R"(
-Returns the associated octree (if any))";
-
 const char* ccPointCloudPy_ccPointCloud_doc= R"(
 A 3D cloud and its associated features ( normals, scalar fields, etc.)
 A point cloud can have multiple features:
@@ -74,6 +51,10 @@ return a copy of this entity)";
 
 const char* ccPointCloudPy_computeGravityCenter_doc= R"(
 Return a tuple of the 3 coordinates of the gravity center of the cloud)";
+
+const char* ccPointCloudPy_coordsFromNPArray_copy_doc= R"(
+set cloud coordinates from a Numpy array (nbPoints,3)
+cloud memory is reserved /resized automatically)";
 
 const char* ccPointCloudPy_crop2D_doc= R"(
 Crop the point cloud using a 2D polyline.
@@ -124,7 +105,14 @@ return the number of scalar fields associated to the cloud)";
 
 const char* ccPointCloudPy_getScalarField_doc= R"(
 Return a ScalarField if index is valid, otherwise None.
-param index)";
+param index of the ScalarField)";
+
+const char* ccPointCloudPy_getScalarFieldByName_doc= R"(
+Return a ScalarField if there is one with this name, otherwise None
+param name of the ScalarField)";
+
+const char* ccPointCloudPy_getScalarFieldDic_doc= R"(
+Return a dictionary [ScalarField name] --> ScalarField index)";
 
 const char* ccPointCloudPy_getScalarFieldName_doc= R"(
 Return the ScalarField name if index is valid, otherwise None.
@@ -146,7 +134,8 @@ const char* ccPointCloudPy_reserve_doc= R"(
 Reserves memory for all the active features
 This method is meant to be called before increasing the cloud population.
 Only the already allocated features will be re-reserved.
-return true if ok, false if there's not enough memory)";
+return true if ok, false if there's not enough memory
+param number of points)";
 
 const char* ccPointCloudPy_resize_doc= R"(
 Resizes all the active features arrays

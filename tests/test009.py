@@ -92,17 +92,17 @@ if dish.getName() != 'aDish':
 if dish.size() != 2520:
     raise RuntimeError
 
-params = cc.Cloud2MeshDistanceComputationParams()
+params = cc.Cloud2MeshDistancesComputationParams()
 params.maxThreadCount=12
 params.octreeLevel=6
-cc.DistanceComputationTools.computeCloud2MeshDistance(cloud, cylinder, params)
+cc.DistanceComputationTools.computeCloud2MeshDistances(cloud, cylinder, params)
 
-cc.DistanceComputationTools.computeCloud2MeshDistance(cone.getAssociatedCloud(), sphere, params)
+cc.DistanceComputationTools.computeCloud2MeshDistances(cone.getAssociatedCloud(), sphere, params)
 
-params2 = cc.Cloud2CloudDistanceComputationParams()
+params2 = cc.Cloud2CloudDistancesComputationParams()
 params2.maxThreadCount=12
 params2.octreeLevel=6
-cc.DistanceComputationTools.computeCloud2CloudDistance(dish.getAssociatedCloud(), box.getAssociatedCloud(), params2)
+cc.DistanceComputationTools.computeCloud2CloudDistances(dish.getAssociatedCloud(), box.getAssociatedCloud(), params2)
 
 cc.SaveEntities([cloud, box, cone, cylinder, plane, sphere, torus, quadric, dish], os.path.join(dataDir, "entities2.bin"))
 

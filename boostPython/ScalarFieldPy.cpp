@@ -59,6 +59,7 @@ bnp::ndarray ToNpArray_py(CCCoreLib::ScalarField &self)
     bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
     return result;
 }
+
 void fromNPArray_copy(CCCoreLib::ScalarField &self, bnp::ndarray const & array)
 {
     if (array.get_dtype() != bnp::dtype::get_builtin<PyScalarType>())

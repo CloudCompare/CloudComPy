@@ -19,12 +19,10 @@
 #include <boost/python/numpy.hpp>
 #include <boost/python.hpp>
 
-//#define BOOST_LIB_NAME "boost_python"
-//#include <boost/config/auto_link.hpp>
-
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include "converters.hpp"
 #include "ScalarFieldPy.hpp"
+#include "ccGenericCloudPy.hpp"
 #include "ccOctreePy.hpp"
 #include "ccPointCloudPy.hpp"
 #include "ccMeshPy.hpp"
@@ -131,6 +129,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
     initializeConverters();
 
     export_ScalarField();
+    export_ccGenericCloud();
     export_ccPolyline();
     export_ccOctree();
     export_ccPointCloud();

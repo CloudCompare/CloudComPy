@@ -34,6 +34,7 @@
 #include <ccScalarField.h>
 #include <ccSensor.h>
 #include <ccMesh.h>
+#include <ccGLMatrix.h>
 
 //libs/qCC_io
 #include<AsciiFilter.h>
@@ -755,7 +756,7 @@ bool ICP(
     int transformationFilters,
     int maxThreadCount)
 {
-    // TODO duplicated code from ccRegistrationTools::ICP
+    // TODO duplicated code from qCC / ccRegistrationTools::ICP
 
     // Default number of points sampled on the 'data' mesh (if any)
     const unsigned s_defaultSampledPointsOnDataMesh = 50000;
@@ -847,14 +848,14 @@ bool ICP(
         int result = -1;
         if (modelMesh)
         {
-            CCCoreLib::DistanceComputationTools::Cloud2MeshDistanceComputationParams c2mParams;
+            CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams c2mParams;
             c2mParams.octreeLevel = gridLevel;
             c2mParams.maxSearchDist = 0;
             c2mParams.useDistanceMap = true;
             c2mParams.signedDistances = false;
             c2mParams.flipNormals = false;
             c2mParams.multiThread = false;
-            result = CCCoreLib::DistanceComputationTools::computeCloud2MeshDistance(dataCloud, modelMesh, c2mParams);
+            result = CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances(dataCloud, modelMesh, c2mParams);
         }
         else
         {
@@ -993,7 +994,7 @@ bool ICP(
     }
     else if (result == CCCoreLib::ICPRegistrationTools::ICP_APPLY_TRANSFO)
     {
-        transMat = FromCCLibMatrix<PointCoordinateType, float>(transform.R, transform.T, transform.s);
+        transMat = FromCCLibMatrix<double, float>(transform.R, transform.T, transform.s);
         finalScale = transform.s;
     }
 
