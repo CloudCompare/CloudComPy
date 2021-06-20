@@ -42,7 +42,7 @@ Returns the number of segments)";
 
 const char* ccPolylinePy_set2DMode_doc= R"(
 Defines if the polyline is considered as 2D or 3D
-param state if true, the polyline is 2D)";
+param state if `True`, the polyline is 2D)";
 
 const char* ccPolylinePy_setClosed_doc= R"(
 Sets whether the polyline is closed or not)";

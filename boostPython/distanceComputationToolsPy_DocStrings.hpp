@@ -44,22 +44,22 @@ Default: NO_MODEL. Otherwise see CC_LOCAL_MODEL_TYPES.)";
 
 const char* distanceComputationToolsPy_useSphericalSearchForLocalModel_doc= R"(
 Whether to use a fixed number of neighbors or a (sphere) radius for nearest neighbours search
-For local models only (i.e. ignored if localModel = NO_MODEL). Default false)";
+For local models only (i.e. ignored if localModel = NO_MODEL). Default `False`)";
 
 const char* distanceComputationToolsPy_kNNForLocalModel_doc= R"(
 Number of neighbours for nearest neighbours search (local model)
 For local models only (i.e. ignored if localModel = NO_MODEL).
-Ignored if useSphericalSearchForLocalModel is true. Default 0)";
+Ignored if useSphericalSearchForLocalModel is `True`. Default 0)";
 
 const char* distanceComputationToolsPy_radiusForLocalModel_doc= R"(
 Radius for nearest neighbours search (local model)
 For local models only (i.e. ignored if localModel = NO_MODEL).
-Ignored if useSphericalSearchForLocalModel is true. Default 0)";
+Ignored if useSphericalSearchForLocalModel is `True`. Default 0)";
 
 const char* distanceComputationToolsPy_reuseExistingLocalModels_doc= R"(
 Whether to use an approximation for local model computation
 For local models only (i.e. ignored if localModel = NO_MODEL).
-Computation is much faster but less "controlled". Default false)";
+Computation is much faster but less "controlled". Default `False`)";
 
 const char* distanceComputationToolsPy_CPSet_doc= R"(
 Container of (references to) points to store the "Closest Point Set"
@@ -82,16 +82,16 @@ Cloud-to-mesh distances computation parameters)";
 
 const char* distanceComputationToolsPy_useDistanceMap_doc= R"(
 Use distance map (acceleration)
-If true the distances will be approximated by a Distance Transform.
-warning Incompatible with signed distances or Closest Point Set. Default false)";
+If `True` the distances will be approximated by a Distance Transform.
+warning Incompatible with signed distances or Closest Point Set. Default `False`)";
 
 const char* distanceComputationToolsPy_signedDistances_doc= R"(
 Whether to compute signed distances or not
-If true, the computed distances will be signed (in this case, the Distance Transform can't be used
-and therefore useDistanceMap will be ignored). Default false)";
+If `True`, the computed distances will be signed (in this case, the Distance Transform can't be used
+and therefore useDistanceMap will be ignored). Default `False`)";
 
 const char* distanceComputationToolsPy_flipNormals_doc= R"(
-Whether triangle normals should be computed in the 'direct' order (true) or 'indirect' (false). Default false)";
+Whether triangle normals should be computed in the 'direct' order (`True`) or 'indirect' (`False`). Default `False`)";
 
 const char* distanceComputationToolsPy_DistanceComputationTools_doc= R"(
 Several entity-to-entity distances computation algorithms (cloud-cloud, cloud-mesh, etc.))";
@@ -103,7 +103,7 @@ Daniel Girardeau-Montaut's PhD manuscript (Chapter 2, section 2.3). It is the st
 directly two dense (and globally close) point clouds.
 warning The current scalar field of the compared cloud should be enabled. By default it will be reset to
 NAN_VALUE but one can avoid this by defining the Cloud2CloudDistanceComputationParams::resetFormerDistances
-parameters to false. But even in this case, only values above Cloud2CloudDistanceComputationParams::maxSearchDist
+parameters to `False`. But even in this case, only values above Cloud2CloudDistanceComputationParams::maxSearchDist
 will remain untouched.
 warning Max search distance (Cloud2CloudDistanceComputationParams::maxSearchDist > 0) is not compatible with the
 determination of the Closest Point Set (Cloud2CloudDistanceComputationParams::CPSet)

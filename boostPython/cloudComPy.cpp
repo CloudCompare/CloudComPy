@@ -204,8 +204,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
         ;
 
     def("loadPointCloud", loadPointCloud,
-        loadPointCloud_overloads(args("mode", "skip", "x", "y", "z", "filename"),
-                                 cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
+        loadPointCloud_overloads(cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
 
     def("loadPolyline", loadPolyline,
         loadPolyline_overloads(args("mode", "skip", "x", "y", "z", "filename"),

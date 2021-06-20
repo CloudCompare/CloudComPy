@@ -25,9 +25,9 @@ parameters:
 - densityBased: boolean, the sampling method is based on a surface density or a number of points
 - samplingParameter: double, either the surface density or the number of points
 optional: 
-- withNormals: boolean, default True
-- withRGB: boolean, default True
-- withTexture: boolean, default True
+- withNormals: boolean, default `True`
+- withRGB: boolean, default `True`
+- withTexture: boolean, default `True`
 - pDl: progress dialog, default None)";
 
 const char* ccMeshPy_ccMesh_doc= R"(
@@ -59,7 +59,7 @@ fitting plane. The triangulation is in 2D (in the plane) but the
 may present however several topological aberrations ;).
 param cloud a point cloud
 param type the triangulation strategy
-param updateNormals boolean (default false)
+param updateNormals boolean (default `False`)
 param maxEdgeLength max edge length for output triangles (default 0 = ignored)
 param dim projection dimension (for axis-aligned meshes) (default 2))";
 

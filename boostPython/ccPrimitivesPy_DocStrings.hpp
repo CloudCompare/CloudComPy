@@ -115,7 +115,7 @@ Torus is defined in the XY plane by default
 param insideRadius inside radius
 param outsideRadius outside radius
 param angle rad optional (default 2*pi) subtended angle (in radians)
-param rectangularSection optional (default false) whether section is rectangular or round
+param rectangularSection optional (default `False`) whether section is rectangular or round
 param rectSectionHeight optional section height (if rectangular torus)
 param transMat optional (default 0) 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
 param name optional name, default 'Torus'

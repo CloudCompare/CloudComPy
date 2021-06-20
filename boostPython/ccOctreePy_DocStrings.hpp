@@ -53,7 +53,7 @@ const char* DgmOctree_computeCellCenter_py_doc= R"(
 Returns the cell center for a given level of subdivision of a cell designated by its code
 param code the cell code
 param level the level of subdivision
-param isCodeTruncated (optional false) indicates if the given code is truncated or not
+param isCodeTruncated (optional `False`) indicates if the given code is truncated or not
 return center the computed center)";
 
 const char* DgmOctree_computeCellCenter2_py_doc= R"(
@@ -63,11 +63,14 @@ param level the level of subdivision
 return center the computed center)";
 
 const char* DgmOctree_CylindricalNeighbourhood_doc= R"(
-parameters structure for getPointsInCylindricalNeighbourhood
+Parameters structure for getPointsInCylindricalNeighbourhood.
+
 Use findBestLevelForAGivenNeighbourhoodSizeExtraction to get the right
-value for 'level' (only once as it only depends on the radius value ;).
+value for 'level' (only once as it only depends on the radius value).
+
 data members:
 -------------
+
 center: Cylinder center
 dir: Cylinder axis (direction)
 radius: Cylinder radius
@@ -76,9 +79,11 @@ level: subdivision level at which to apply the extraction process
 onlyPositiveDir: Whether to look in both directions or only along the positive direction (i.e. half cylinder))";
 
 const char* DgmOctree_findBestLevelForAGivenCellNumber_doc= R"(
-Determines the best subdivision level of the octree to match a given number of cells
-param indicativeNumberOfCells 'desired' number of cells
-return the 'best' level
+Determines the best subdivision level of the octree to match a given number of cells.
+
+:param indicativeNumberOfCells: 'desired' number of cells
+
+:return: the 'best' level
 )";
 
 const char* DgmOctree_findBestLevelForAGivenNeighbourhoodSizeExtraction_doc= R"(
@@ -88,36 +93,47 @@ param radius the sphere radius
 return the 'best' level)";
 
 const char* DgmOctree_findBestLevelForAGivenPopulationPerCell_doc= R"(
-Determines the best subdivision level of the octree that gives the average population per cell closest to the input value
-param indicativeNumberOfPointsPerCell 'desired' average number of points per cell
-return the 'best' level)";
+Determines the best subdivision level of the octree that gives the average population per cell closest to the input value.
+
+:param indicativeNumberOfPointsPerCell: 'desired' average number of points per cell
+
+:return: the 'best' level
+)";
 
 const char* DgmOctree_findPointNeighbourhood_doc= R"(
-Finds the nearest neighbours around a query point
+Finds the nearest neighbours around a query point.
+
 This is the simplest form of the nearest neighbour search algorithm.
 It should only be used for unique/few requests as it is not optimized
 for repetitive search around points lying in the same octree cell (see
 DgmOctree::findNearestNeighborsStartingFromCell for example). Moreover,
 distances between each neighbour and the query aren't stored in this
 version of the algorithm.
-param _queryPoint the query point
-param Yk RefefenceCloud for the nearest neighbours
-param maxNumberOfNeighbors the maximal number of points to find
-param level the subdivision level of the octree at which to perform the search
-param maxSearchDist (optional default 0) the maximum search distance (ignored if <= 0)
-return tuple( number of neighbours found, 
-              final neighborhood (half)size,
-              square distance between the farthest "nearest neighbour" and the query point
-            ))";
+
+:param _queryPoint: the query point
+:param Yk: RefefenceCloud for the nearest neighbours
+:param maxNumberOfNeighbors: the maximal number of points to find
+:param level: the subdivision level of the octree at which to perform the search
+:param maxSearchDist: (optional default 0) the maximum search distance (ignored if <= 0)
+
+:return: tuple( number of neighbours found, 
+                final neighborhood (half)size,
+                square distance between the farthest "nearest neighbour" and the query point
+              )
+)";
 
 const char* DgmOctree_findNearestNeighborsStartingFromCell_doc= R"(
-Advanced form of the nearest neighbours search algorithm (multiple neighbours)
+Advanced form of the nearest neighbours search algorithm (multiple neighbours).
+
 This version is optimized for a multiple nearest neighbours search
 that is applied around several query points included in the same octree
 cell. See DgmOctree::NearestNeighboursSearchStruct for more details.
-param nNSS NearestNeighboursSearchStruct search parameters
-param getOnlyPointsWithValidScalar whether to ignore points having an invalid associated scalar value
-return the number of neighbours found)";
+
+:param nNSS: NearestNeighboursSearchStruct search parameters
+:param getOnlyPointsWithValidScalar: whether to ignore points having an invalid associated scalar value
+
+:return: the number of neighbours found
+)";
 
 const char* DgmOctree_findNeighborsInASphereStartingFromCell_doc= R"(
 Advanced form of the nearest neighbours search algorithm (in a sphere)
@@ -133,12 +149,15 @@ param sortValues specifies if the neighbours needs to be sorted by their distanc
 return the number of neighbours found)";
 
 const char* DgmOctree_findTheNearestNeighborStartingFromCell_doc= R"(
-Advanced form of the nearest neighbour search algorithm (unique neighbour)
+Advanced form of the nearest neighbour search algorithm (unique neighbour).
+
 This version is optimized for a unique nearest-neighbour search.
 See DgmOctree::NearestNeighboursSearchStruct for more details.
-param nNSS NearestNeighboursSearchStruct search parameters
-return the square distance between the query point and its nearest neighbour
-       (or -1 if none was found - i.e. maxSearchDist was reached))";
+
+:param nNSS: NearestNeighboursSearchStruct search parameters
+
+:return: the square distance between the query point and its nearest neighbour
+(or -1 if none was found - i.e. maxSearchDist was reached))";
 
 const char* DgmOctree_GenerateTruncatedCellCode_doc= R"(
 Generates the truncated cell code of a cell given its position at a given level of subdivision
@@ -165,7 +184,7 @@ const char* DgmOctree_getCellCodes_doc= R"(
 Returns the list of codes corresponding to the octree cells for a given level of subdivision
 Only the non empty cells are represented in the octree structure.
 param level the level of subdivision
-param truncatedCodes (optional, default false) indicates if the resulting codes should be truncated or not
+param truncatedCodes (optional, default `False`) indicates if the resulting codes should be truncated or not
 return the list of codes)";
 
 const char* DgmOctree_getCellCodesAndIndexes_doc= R"(
@@ -253,17 +272,20 @@ value for 'level' (only once as it only depends on the radius or max dimension v
 warning the 'squareDistd' field of each neighbour returned is not used/set)";
 
 const char* DgmOctree_getPointsInCell_doc= R"(
-Returns the points lying in a specific cell
-param cellCode the unique cell code
-param level the level of subdivision
-param[out] subset set of points lying in the cell (references, no duplication)
-param isCodeTruncated (optional, default false) specifies if the code is given in a truncated form or not
-param clearOutputCloud (optional, default true) whether to clear or not the output cloud (subest)
-      if no points lie in the specified cell
-return the subset set of points completed)";
+Returns the points lying in a specific cell.
+
+:param cellCode: the unique cell code
+:param level: the level of subdivision
+:param [out] subset: set of points lying in the cell (references, no duplication)
+:param isCodeTruncated: (optional, default `False`) specifies if the code is given in a truncated form or not
+ param clearOutputCloud: (optional, default `True`) whether to clear or not the output cloud (subest)
+if no points lie in the specified cell
+
+:return: the subset set of points completed)";
 
 const char* DgmOctree_getPointsInCellByCellIndex_doc= R"(
-Returns the points lying in a specific cell
+Returns the points lying in a specific cell.
+
 Each cell at a given level of subdivision can be recognized by the index
 in the DgmOctree structure of the first point that lies inside it. By
 construction, we are assured that every point lying in the same cell for
@@ -272,12 +294,14 @@ structure (which is the vector "m_thePointsAndTheirCellCodes" in practical).
 This is the quickest way to access the points inside a given cell (but its
 kind of hard to know directly what is the index of a given cell ;)
 See getCellIndexes, getCellCodesAndIndexes.
-param cloud ReferenceCloud to store the points lying inside the cell
-param cellIndex the cell index
-param level the level of subdivision
-param clearOutputCloud (optional, default true) whether to clear the input cloud
-      prior to inserting the points or not
-return the input cloud completed.)";
+
+:param cloud: ReferenceCloud to store the points lying inside the cell
+:param cellIndex: the cell index
+:param level: the level of subdivision
+:param clearOutputCloud: (optional, default `True`) whether to clear the input cloud
+prior to inserting the points or not
+
+:return: the input cloud completed.)";
 
 const char* DgmOctree_getPointsInCellsWithSortedCellCodes_doc= R"(
 Returns the points lying in multiple cells
@@ -287,7 +311,7 @@ for more information.
 param cellCodes the cells codes
 param level the level of subdivision
 param[out] subset set of points lying in the cell (references, no duplication)
-param areCodesTruncated (optional, default false) specifies if the codes are given in a truncated form or not
+param areCodesTruncated (optional, default `False`) specifies if the codes are given in a truncated form or not
 return the set of points lying in the cell (references, no duplication))";
 
 const char* DgmOctree_getPointsInCylindricalNeighbourhood_doc= R"(
@@ -316,31 +340,41 @@ param level subdivision level at which to apply the extraction process
 return neighbours points falling inside the sphere (list of PointDescriptors)";
 
 const char* DgmOctree_getTheCellPosWhichIncludesThePoint_doc= R"(
-Returns the position FOR THE DEEPEST LEVEL OF SUBDIVISION of the cell that includes a given point
+Returns the position FOR THE DEEPEST LEVEL OF SUBDIVISION of the cell that includes a given point.
+
 The cell coordinates can be negative or greater than 2^MAX_OCTREE_LEVEL-1
 as the point can lie outside the octree bounding-box.
-param thePoint the query point
-return cellPos the computed position)";
+
+:param thePoint: the query point
+
+:return: cellPos the computed position)";
 
 const char* DgmOctree_getTheCellPosWhichIncludesThePointL_doc= R"(
-Returns the position for a given level of subdivision of the cell that includes a given point
+Returns the position for a given level of subdivision of the cell that includes a given point.
+
 The cell coordinates can be negative or greater than 2^N-1  (where N
 is the level of subdivision) as the point can lie outside the octree
 bounding-box.
-param thePoint the query point
-param level the level of subdivision
-return cellPos the computed position)";
+
+:param thePoint: the query point
+:param level: the level of subdivision
+
+:return: cellPos the computed position)";
 
 const char* DgmOctree_getTheCellPosWhichIncludesThePointLI_doc= R"(
-Returns the position for a given level of subdivision of the cell that includes a given point
+Returns the position for a given level of subdivision of the cell that includes a given point.
+
 The cell coordinates can be negative or greater than 2^N-1  (where N
 is the level of subdivision) as the point can lie outside the octree
 bounding-box. In this version, method indicates if the query point
 is inside ("inbounds") or outside the octree bounding-box.
-param thePoint the query point
-param level the level of subdivision
-return tuple (cellPos the computed position, 
-              inBounds indicates if the query point is inside or outside the octree bounding-box))";
+
+:param thePoint: the query point
+:param level: the level of subdivision
+
+:return: tuple (cellPos the computed position, 
+                inBounds indicates if the query point is inside or outside the octree bounding-box)
+)";
 
 const char* DgmOctree_IndexAndCode_doc= R"(
 Association between an index and the code of an octree cell
@@ -471,6 +505,6 @@ Specific data members:
     Previous search box (max corner))";
 
 const char* NearestNeighboursSphericalSearchStruct_prepare_doc= R"(
-initialize ready status (false), Updates maxD2 and minD2 with search radius and cellSize)";
+initialize ready status (`False`), Updates maxD2 and minD2 with search radius and cellSize)";
 
 #endif /* CCOCTREEPY_DOCSTRINGS_HPP_ */

@@ -119,7 +119,7 @@ Return the ScalarField name if index is valid, otherwise None.
 param index)";
 
 const char* ccPointCloudPy_hasScalarFields_doc= R"(
-Return True or False.)";
+Return `True` or `False`.)";
 
 const char* ccPointCloudPy_renameScalarField_doc= R"(
 Rename the ScalarField if index is valid.
@@ -128,13 +128,13 @@ TODO: check the names in use.
 parameters
 - index of the ScalarField
 - new name
-return True in case of success)";
+return `True` in case of success)";
 
 const char* ccPointCloudPy_reserve_doc= R"(
 Reserves memory for all the active features
 This method is meant to be called before increasing the cloud population.
 Only the already allocated features will be re-reserved.
-return true if ok, false if there's not enough memory
+return `True` if ok, `False` if there's not enough memory
 param number of points)";
 
 const char* ccPointCloudPy_resize_doc= R"(
@@ -142,7 +142,7 @@ Resizes all the active features arrays
 This method is meant to be called after having increased the cloud population
 (if the final number of insterted point is lower than the reserved size).
 Otherwise, it fills all new elements with blank values.
-return true if ok, false if there's not enough memory)";
+return `True` if ok, `False` if there's not enough memory)";
 
 const char* ccPointCloudPy_scale_doc= R"(
 Scale the cloud with separate factors along the 3 directions x,y,z and an optional center (default: (0,0,0)).

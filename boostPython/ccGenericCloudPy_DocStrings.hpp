@@ -32,7 +32,7 @@ The octree bounding-box is automatically defined as the smallest
 WARNING: any previously attached octree will be deleted,
          even if the new octree computation failed.
 param progressCb (default None), use None
-param autoAddChild (default True) whether to automatically add the computed octree as child of this cloud or not
+param autoAddChild (default `True`) whether to automatically add the computed octree as child of this cloud or not
 return the computed octree)";
 
 const char* ccGenericPointCloud_deleteOctree_doc= R"(
@@ -113,7 +113,7 @@ const char* ReferenceCloud_getPointScalarValue_doc= R"(
 Returns the ith point associated scalar value)";
 
 const char* ReferenceCloud_isScalarFieldEnabled_doc= R"(
-Returns true if the scalar field is enabled, false otherwise)";
+Returns `True` if the scalar field is enabled, `False` otherwise)";
 
 const char* ReferenceCloud_placeIteratorAtBeginning_doc= R"(
 Sets the cloud iterator at the beginning
