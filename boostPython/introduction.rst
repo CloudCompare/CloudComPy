@@ -1,7 +1,7 @@
 
-#############################
-Introduction
-#############################
+=============================
+cloudComPy: a first example
+=============================
 
 This project is a draft of what could be a Python module to interface to CloudCompare,
 of equivalent level to the command mode of CloudCompare.

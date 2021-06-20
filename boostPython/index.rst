@@ -17,10 +17,28 @@ CloudComPy: a Python interface for CloudCompare
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+#############################
+Introduction
+#############################
+
 .. toctree::
    :numbered:
    :maxdepth: 3
 
    introduction.rst
 
+#############################
+Reference documentation
+#############################
+
+.. toctree::
+   :numbered:
+   :maxdepth: 3
+
    cloudComPy.rst
+   ccPointCloud.rst
+   ccPolyline.rst
+   ccOctree.rst
+   ccMesh.rst
+   ccPrimitives.rst
+   ScalarField.rst

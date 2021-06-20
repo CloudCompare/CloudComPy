@@ -25,7 +25,7 @@
 
 #include "PyScalarType.h"
 #include "pyccTrace.h"
-#include "scalarFieldPy_DocStrings.hpp"
+#include "ScalarFieldPy_DocStrings.hpp"
 
 #include <vector>
 

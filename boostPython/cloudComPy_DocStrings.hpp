@@ -31,41 +31,39 @@ Python3 access to cloudCompare objects is done like this:
  )";
 
 const char* cloudComPy_ICPres_doc=R"(
-result parameters on ICP registration
+result values on ICP registration
 
-:property aligned: the point cloud on which the transformation must be applied
+:ivar ccPointCloud aligned: the point cloud on which the transformation must be applied
 
-:property transMat: the resulting transformation to apply
+:ivar ccGLMatrix transMat: the resulting transformation to apply
 
-:property finalScale: calculated scale if rescale required
+:ivar float finalScale: calculated scale if rescale required
 
-:property finalRMS: final error (RMS)
+:ivar float finalRMS: final error (RMS)
 
-:property finalPointCount: number of points used to compute the final RMS
+:ivar int finalPointCount: number of points used to compute the final RMS
 )";
 
 const char* cloudComPy_ICP_doc=R"(
 Applies ICP registration on two entities.
 
-parameters:
+:param ccHObject data: cloud to align.
+:param ccHObject model: reference cloud.
+:param float minRMSDecrease: The minimum error (RMS) reduction between two consecutive steps to continue process,
+       if CONVERGENCE_TYPE == MAX_ERROR_CONVERGENCE.
+:param int maxIterationCount: Stop after this number of iterations,
+       if CONVERGENCE_TYPE == MAX_ITER_CONVERGENCE.
+:param int randomSamplingLimit: Limit above which clouds should be randomly resampled.
+:param bool removeFarthestPoints: If `True`, the algorithm will automatically ignore farthest points from the reference.
+       This is a trick to improve registration for slightly different clouds.
+:param CONVERGENCE_TYPE method: Mode of convergence, CONVERGENCE_TYPE.MAX_ITER_CONVERGENCE or CONVERGENCE_TYPE.MAX_ERROR_CONVERGENCE.
+:param bool adjustScale: Whether to release the scale parameter during the registration procedure or not.
+:param float,optional finalOverlapRatio: Theoretical overlap ratio (at each iteration, only this percentage (between 0 and 1).
+       Will be used for registration (default 1.0).
+:param bool,optional useDataSFAsWeights: Weights for data points (default `False`).
+:param bool,optional useModelSFAsWeights: Weights for model points (default `False`).
+:param int,optional transformationFilters: Filters to be applied on the resulting transformation at each step (default 0).
 
-- data: cloud to align
-- model: reference cloud
-- minRMSDecrease: The minimum error (RMS) reduction between two consecutive steps to continue process,
-                  if CONVERGENCE_TYPE == MAX_ERROR_CONVERGENCE
-- maxIterationCount: Stop after this number of iterations,
-                     if CONVERGENCE_TYPE == MAX_ITER_CONVERGENCE
-- randomSamplingLimit: Limit above which clouds should be randomly resampled
-- removeFarthestPoints: If `True`, the algorithm will automatically ignore farthest points from the reference.
-                        This is a trick to improve registration for slightly different clouds.
-- method: Mode of convergence, CONVERGENCE_TYPE.MAX_ITER_CONVERGENCE or CONVERGENCE_TYPE.MAX_ERROR_CONVERGENCE
-- adjustScale: Whether to release the scale parameter during the registration procedure or not
-- finalOverlapRatio: Theoretical overlap ratio (at each iteration, only this percentage (between 0 and 1).
-                     Will be used for registration (optional, default 1.0)
-- useDataSFAsWeights: Weights for data points (optional, default `False`) = `False`,
-- useModelSFAsWeights: Weights for model points (optional, default `False`)
-- transformationFilters: Filters to be applied on the resulting transformation at each step.
-                         Integer (optional, default 0)
    - SKIP_NONE           = 0
    - SKIP_RXY            = 1
    - SKIP_RYZ            = 2
@@ -75,7 +73,8 @@ parameters:
    - SKIP_TY             = 16
    - SKIP_TZ             = 32
    - SKIP_TRANSLATION    = 56
-- maxThreadCount: Maximum number of threads to use (optional, default 0 = max))";
+
+:param int,optional maxThreadCount: Maximum number of threads to use (default 0 = max))";
 
 const char* cloudComPy_initCC_doc= R"(
 Should be done once before using plugins!)";
@@ -84,15 +83,15 @@ const char* cloudComPy_loadPointCloud_doc= R"(
 Load a 3D cloud from a file.
 
 :param filename:
-:type filename: string
+:type filename: str
 :param shiftMode: shift mode from (`CC_SHIFT_MODE.AUTO`, `CC_SHIFT_MODE.XYZ`),  optional, default `AUTO`.
 
   - `CC_SHIFT_MODE.AUTO`: automatic shift of coordinates
   - `CC_SHIFT_MODE.XYZ`:  coordinates shift given by x, y, z parameters
   
 :type shiftMode: CC_SHIFT_MODE
-:param skip: optional parameter not used yet! default 0
-:type skip: int
+:param skip: parameter not used yet! default 0
+:type skip: int, optional
 :param x: shift value for coordinates (mode XYZ),  default 0
 :type x: float, optional
 :param y: shift value for coordinates (mode XYZ),  default 0
@@ -106,92 +105,91 @@ Load a 3D cloud from a file.
 const char* cloudComPy_loadPolyline_doc= R"(
 Load a polyline from a file.
 
-parameters:
+:param str filename: The polyline file.
+:param CC_SHIFT_MODE,optional shift mode: from (AUTO, XYZ),  optional, default AUTO.
 
-- filename
-- shift mode from (AUTO, XYZ),  optional, default AUTO
   - AUTO: automatic shift of coordinates
   - XYZ:  coordinates shift given by x, y, z parameters
-- skip: optional parameter not used yet! default 0
-- x, y, z: optional shift values for coordinates (mode XYZ),  default 0
 
-return a ccPolyline object.
+:param int,optional skip: not used yet! default 0.
+:param float,optional x: optional shift value for coordinates (mode XYZ), default 0
+:param float,optional y: optional shift value for coordinates (mode XYZ), default 0
+:param float,optional z: optional shift value for coordinates (mode XYZ), default 0
+
+:return: a ccPolyline object.
+:rtype: ccPolyline
 
 Usage: see ccPolyline doc.)";
 
 const char* cloudComPy_SavePointCloud_doc= R"(
 Save a 3D cloud in a file.
 
-parameters:
+:param ccPointCloud cloud: the cloud to save.
+:param str filename: The cloud file.
 
-- cloud: ccPointCloud
-- filename
-
-return 0 or I/O error.)";
+:return: 0 or I/O error.
+:rtype: CC_FILE_ERROR)";
 
 const char* cloudComPy_SaveEntities_doc= R"(
 Save a list of entities (cloud, meshes, primitives...) in a file: use bin format!
 
-parameters:
+:param entities: list of entities
+:type entities: list of :py:class:`ccHObject`
+:param str filename: The entities file.
 
-- list of entities
-- filename
+:return: 0 or I/O error.
+:rtype: CC_FILE_ERROR)";
 
-return 0 or I/O error.)";
-
-const char* cloudComPy_computeCurvature_doc= R"("
+const char* cloudComPy_computeCurvature_doc= R"(
 Compute the curvature on a list of point clouds (create a scalarField).
 
-parameters:
+:param CurvatureType cvt: from CurvatureType.GAUSSIAN_CURV, CurvatureType.MEAN_CURV, CurvatureType.NORMAL_CHANGE_RATE.
+:param float radius: try value obtained by GetPointCloudRadius.
+:param clouds: list of clouds
+:type clouds: list of :py:class:`ccHObject`)";
 
-- CurvatureType from cloudCompare.GAUSSIAN_CURV, cloudCompare.MEAN_CURV, cloudCompare.NORMAL_CHANGE_RATE
-- radius: try value obtained by GetPointCloudRadius
-- list of clouds)";
-
-const char* cloudComPy_filterBySFValue_doc= R"("
+const char* cloudComPy_filterBySFValue_doc= R"(
 Create a new point cloud by filtering points using the current out ScalarField (see cloud.setCurrentOutScalarField).
 Keep the points whose ScalarField value is between the min and max parameters.
 
-parameters:
+:param float min: minimum value to keep
+:param float max: maximum value to keep
+:param ccPointCloud cloud: the input cloud
 
-- minimum value
-- maximum value
-- cloud: ccPointCloud
+:return: a ccPointCloud object.
+:rtype: ccPointCloud )";
 
-return a ccPointCloud object.)";
-
-const char* cloudComPy_GetPointCloudRadius_doc= R"("
+const char* cloudComPy_GetPointCloudRadius_doc= R"(
 Compute an estimate radius to use in computeCurvature.
 
-parameters:
+:param clouds: list of clouds
+:type clouds: list of :py:class:`ccHObject`
+:param int nodes: number of nodes wanted within the radius
 
-- list of clouds
-- number of nodes wanted within the radius
-
-return estimated radius)";
+:return: estimated radius
+:rtype: float )";
 
 const char* cloudComPy_getScalarType_doc= R"(
-Get the scalar type used in cloudCompare under the form defined in Numpy: 'float32' or 'float64')";
+Get the scalar type used in cloudCompare under the form defined in Numpy: 'float32' or 'float64'
+
+:return: scalar type
+:rtype: str )";
 
 const char* cloudComPy_computeNormals_doc= R"(
 Compute normals on a list of clouds and meshes.
 
-parameters:
-
-- selectedEntities: list of entities (clouds, meshes)
-
-optional parameters:
-
-- model: default = LOCAL_MODEL_TYPES.LS (Least Square best fitting plane)
-- useScanGridsForComputation: default `True`, whether to use ScanGrids when available
-- defaultRadius: default 0.0,
-- minGridAngle_deg: default 1.0,
-- orientNormals: default `True`
-- useScanGridsForOrientation: default `True`, when ScanGrids available
-- useSensorsForOrientation: default `True`, when Sensors available
-- preferredOrientation: default ccNormalVectors::UNDEFINED
-- orientNormalsMST: default `True`, use Minimum Spanning Tree
-- mstNeighbors: default 6, for Minimum Spanning Tree
-- computePerVertexNormals: default `True`, apply on mesh, if `True`, compute on vertices, if `False`, compute on triangles)";
+:param selectedEntities: list of entities (clouds, meshes)
+:type selectedEntities: list of :py:class:`ccHObject`
+:param LOCAL_MODEL_TYPES,optional model: default = LOCAL_MODEL_TYPES.LS (Least Square best fitting plane)
+:param bool,optional useScanGridsForComputation: default `True`, whether to use ScanGrids when available
+:param float,optional defaultRadius: default 0.0
+:param float,optional minGridAngle_deg: default 1.0
+:param bool,optional orientNormals: default `True`
+:param bool,optional useScanGridsForOrientation: default `True`, when ScanGrids available
+:param bool,optional useSensorsForOrientation: default `True`, when Sensors available
+:param Orientation,optional preferredOrientation: default Orientation.UNDEFINED
+:param bool,optional orientNormalsMST: default `True`, use Minimum Spanning Tree
+:param int,optional mstNeighbors: default 6, for Minimum Spanning Tree
+:param bool,optional computePerVertexNormals: default `True`, apply on mesh, if `True`, compute on vertices, if `False`, compute on triangles)";
 
 #endif /* CLOUDCOMPY_DOCSTRINGS_HPP_ */
