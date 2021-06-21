@@ -33,6 +33,10 @@ for instance to save the list of objects on a file.
    :members:
    :show-inheritance:
 
+.. autoclass:: ReferenceCloud
+   :members:
+   :show-inheritance:
+
 .. autoclass:: GenericIndexedCloudPersist
    :members:
    :show-inheritance:
