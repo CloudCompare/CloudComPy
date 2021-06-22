@@ -30,3 +30,7 @@ bases classes for Meshes
    :members:
    :inherited-members:
    :show-inheritance:
+
+.. autoclass:: TRIANGULATION_TYPES
+   :members:
+   :undoc-members:
