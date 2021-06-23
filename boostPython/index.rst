@@ -42,3 +42,4 @@ Reference documentation
    ccMesh.rst
    ccPrimitives.rst
    ScalarField.rst
+   DistanceComputationTools.rst

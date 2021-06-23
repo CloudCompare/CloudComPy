@@ -141,9 +141,17 @@ endif()
 # Sphinx Documentation
 
 set(RSTFILES
+    ccMesh.rst
+    ccOctree.rst
+    ccPointCloud.rst
+    ccPolyline.rst
+    ccPrimitives.rst
+    cloudComPy.rst
+    DistanceComputationTools.rst
     index.rst
     introduction.rst
-    cloudComPy.rst )
+    ScalarField.rst
+    )
 
 configure_file(conf.py.in conf.py)
 
