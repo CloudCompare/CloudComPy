@@ -31,7 +31,7 @@ Python3 access to cloudCompare objects is done like this:
  )";
 
 const char* cloudComPy_ICPres_doc=R"(
-result values on ICP registration
+Result values on ICP registration.
 
 :ivar ccPointCloud aligned: the point cloud on which the transformation must be applied
 
