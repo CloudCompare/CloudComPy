@@ -66,7 +66,13 @@ A very simple point cloud (no point duplication).
 Implements the GenericIndexedCloudPersist interface. A simple point cloud
 that stores references to Generic3dPoint instances in a vector.
 Partial thread safety for all methods that can change the size of the cloud
-or that change or rely on point ordering.)";
+or that change or rely on point ordering.
+
+Several methods provide a ReferenceCloud as a result, which can be seen as a selection
+on an original ccPointCloud (the associatedCloud).
+The ReferenceCloud can be transformed in a ccPointCloud, using the partialClone method
+of the associated ccPointCloud.
+)";
 
 const char* ReferenceCloud_enableScalarField_doc= R"(
 Enables the scalar field associated to the cloud.
@@ -75,7 +81,8 @@ If the scalar field structure is not yet initialized/allocated,
 this method gives the signal for its creation. Otherwise, if possible
 the structure size should be pre-reserved with the same number of
 elements as the point cloud.
-warning If the cloud is empty, the scalar field will be empty as well.
+
+**Warning** If the cloud is empty, the scalar field will be empty as well.
 The scalar field will be reserved with the same capacity as the cloud.
 
 :return: success

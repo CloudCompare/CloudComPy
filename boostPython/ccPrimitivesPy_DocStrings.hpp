@@ -136,8 +136,8 @@ const char* ccPrimitivesPy_ccSphere_doc= R"(
 :param float radius: sphere radius.
 :param ccGLMatrix,optional transMat: (default 0) 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
 :param str,optional name: optional name, default 'Sphere'
-param int,optional precision: optional drawing precision (angular step = 360/precision), default 24
-param int,optional uniqueID: optional unique ID (handle with care))";
+:param int,optional precision: optional drawing precision (angular step = 360/precision), default 24
+:param int,optional uniqueID: optional unique ID (handle with care))";
 
 const char* ccPrimitivesPy_ccTorus_doc= R"(
 Torus is defined in the XY plane by default.

@@ -180,6 +180,21 @@ Return whether the cloud has ScalarFields.
 :rtype: bool
 )";
 
+const char* ccPointCloudPy_partialClone_doc= R"(
+Creates a new point cloud object from a ReferenceCloud (selection)
+
+'Reference clouds' are a set of indexes referring to a real point cloud.
+See CClib documentation for more information about ReferenceClouds.
+
+**Warning**: the ReferenceCloud structure must refer to this cloud.
+
+:param ReferenceCloud selection: a ReferenceCloud structure (pointing to source)
+
+:return: a tuple(ccPointCloud, warning) warning status, if not 0, 
+         indicate out of memory errors (see CLONE_WARNINGS)
+:rtype: tuple
+)";
+
 const char* ccPointCloudPy_renameScalarField_doc= R"(
 Rename the ScalarField if index is valid.
 

@@ -30,6 +30,7 @@
 #include "ccPolylinePy.hpp"
 #include "distanceComputationToolsPy.hpp"
 #include "registrationToolsPy.hpp"
+#include "cloudSamplingToolsPy.hpp"
 
 #include "initCC.h"
 #include "pyCC.h"
@@ -137,6 +138,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
     export_ccPrimitives();
     export_distanceComputationTools();
     export_registrationTools();
+    export_cloudSamplingTools();
 
     // TODO: function load entities ("file.bin")
     // TODO: more methods on distanceComputationTools

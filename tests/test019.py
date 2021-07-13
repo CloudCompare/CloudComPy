@@ -27,29 +27,47 @@ import cloudComPy as cc
 
 cc.initCC()  # to do once before using plugins or dealing with numpy
 
-cloud = cc.loadPointCloud(getSampleCloud(2.0))
-ok = cloud.exportCoordToSF(True, True, True)
+cloud = cc.loadPointCloud(getSampleCloud(5.0))
 
-# --- access to ScalarField by name
-
-dic= cloud.getScalarFieldDic()
-dic  # {'Coord. X': 0, 'Coord. Y': 1, 'Coord. Z': 2}
-sf0 = cloud.getScalarField(dic['Coord. X'])
-if sf0.getName() != 'Coord. X':
+refCloud = cc.CloudSamplingTools.subsampleCloudRandomly(cloud, 50000)
+if refCloud.size() != 50000:
     raise RuntimeError
-sf1 = cloud.getScalarField('Coord. Y')
-if sf1.getName() != 'Coord. Y':
+if refCloud.__class__ != cc.ReferenceCloud:
     raise RuntimeError
 
-# --- check write and read ply format
-
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.ply"))
-
-cloud2 = cc.loadPointCloud(os.path.join(dataDir, "cloud.ply"))
-if cloud2.size() != cloud.size():
+origCloud = refCloud.getAssociatedCloud()
+(randomCloud, res) = origCloud.partialClone(refCloud)
+if res != 0:
     raise RuntimeError
 
-dic2= cloud.getScalarFieldDic()
-if dic2 != dic:
+
+refCloud = cc.CloudSamplingTools.subsampleCloudWithOctreeAtLevel(cloud, 5,
+                                                                 cc.SUBSAMPLING_CELL_METHOD.NEAREST_POINT_TO_CELL_CENTER)
+if refCloud.size() != 2223:
     raise RuntimeError
-    
+(subOctLevCloud, res) = cloud.partialClone(refCloud)
+if res != 0:
+    raise RuntimeError
+
+
+refCloud = cc.CloudSamplingTools.subsampleCloudWithOctree(cloud, 25000,
+                                                          cc.SUBSAMPLING_CELL_METHOD.RANDOM_POINT)
+if refCloud.size() != 36450:
+    raise RuntimeError
+(subOctreeCloud, res) = cloud.partialClone(refCloud)
+if res != 0:
+    raise RuntimeError
+
+
+resOctrCloud = cc.CloudSamplingTools.resampleCloudWithOctree(randomCloud, 5000,
+                                         cc.RESAMPLING_CELL_METHOD.CELL_CENTER)
+if resOctrCloud.size() < 7800 or resOctrCloud.size() > 7900:
+    raise RuntimeError
+
+resOctrAlCloud  = cc.CloudSamplingTools.resampleCloudWithOctreeAtLevel(randomCloud, 5,
+                                         cc.RESAMPLING_CELL_METHOD.CELL_CENTER)
+if resOctrAlCloud.size() < 2050 or resOctrAlCloud.size() > 2100:
+    raise RuntimeError
+
+
+cc.SaveEntities([randomCloud, subOctLevCloud, subOctreeCloud, resOctrCloud, resOctrAlCloud], os.path.join(dataDir, "samplings.bin"))
