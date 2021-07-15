@@ -201,9 +201,10 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .value("MINUS_Z", ccNormalVectors::MINUS_Z )
         .value("PLUS_BARYCENTER", ccNormalVectors::PLUS_BARYCENTER )
         .value("MINUS_BARYCENTER", ccNormalVectors::MINUS_BARYCENTER )
-        .value("PLUS_ZERO", ccNormalVectors::PLUS_ZERO )
-        .value("MINUS_ZERO", ccNormalVectors::MINUS_ZERO )
+        .value("PLUS_ORIGIN", ccNormalVectors::PLUS_ORIGIN )
+        .value("MINUS_ORIGIN", ccNormalVectors::MINUS_ORIGIN )
         .value("PREVIOUS", ccNormalVectors::PREVIOUS )
+        .value("SENSOR_ORIGIN", ccNormalVectors::SENSOR_ORIGIN )
         .value("UNDEFINED", ccNormalVectors::UNDEFINED )
         ;
 
