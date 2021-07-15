@@ -43,4 +43,5 @@ Reference documentation
    ccPrimitives.rst
    ScalarField.rst
    DistanceComputationTools.rst
+   GeometricalAnalysisTools.rst
    cloudSamplingTools.rst

@@ -102,6 +102,19 @@ if res != 0:
     raise RuntimeError
 subOctLevCloud.setName("subOctLevCloud")
 
+cloud.fuse(randomCloud)   # fuse to clouds to have duplicated points
+if cloud.size() != 1050000:
+    raise RuntimeError
 
-entities = [noiseCloud, spatialCloud, randomCloud, resOctrCloud, resOctrAlCloud, sorCloud, subOctreeCloud, subOctLevCloud]
+dupSFindex = cloud.addScalarField("DuplicateFlags")
+cloud.setCurrentScalarField(dupSFindex)
+ret = cc.GeometricalAnalysisTools.FlagDuplicatePoints(cloud) # identify duplicated points
+if ret != cc.ErrorCode.NoError:
+    raise RuntimeError
+noDuplicateCloud = cloud.filterPointsByScalarValue(0., 0., False) # remove duplicated points
+if noDuplicateCloud.size() != 1000000:
+    raise RuntimeError
+
+
+entities = [noiseCloud, spatialCloud, randomCloud, resOctrCloud, resOctrAlCloud, sorCloud, subOctreeCloud, subOctLevCloud, cloud, noDuplicateCloud]
 cc.SaveEntities(entities, os.path.join(dataDir, "samplings.bin"))

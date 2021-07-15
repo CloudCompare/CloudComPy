@@ -119,6 +119,45 @@ Export normals to ScalarFields.
 :rtype: bool
 )";
 
+const char* ccPointCloudPy_filterPointsByScalarValue_doc= R"(
+Filters out points whose scalar values falls into an interval.
+
+Threshold values should be expressed relatively to the current displayed scalar field.
+See :py:meth:`setCurrentDisplayedScalarField` method.
+
+:param float minVal: minimum value
+:param float maxVal: maximum value
+:param bool,optional outside: default False, whether to select the points inside or outside of the specified interval
+
+:return: resulting cloud (remaining points)
+:rtype: ccPointCloud
+)";
+
+const char* ccPointCloudPy_fuse_doc= R"(
+Append in place another cloud.
+
+No return.
+
+:param ccPointCloud other: cloud to fuse with this one, modification in place.
+)";
+const char* ccPointCloudPy_getCurrentDisplayedScalarField_doc= R"(
+Returns the currently displayed scalar (or None if none)
+
+Current displayed scalar field is used in some methods such as :py:meth:`filterPointsByScalarValue`
+
+:return: currently displayed scalar field
+:rtype: ScalarField or None
+)";
+
+const char* ccPointCloudPy_getCurrentDisplayedScalarFieldIndex_doc= R"(
+Returns the currently displayed scalar field index (or -1 if none)
+
+Current displayed scalar field is used in some methods such as :py:meth:`filterPointsByScalarValue`
+
+:return: currently displayed scalar field index
+:rtype: int
+)";
+
 const char* ccPointCloudPy_getCurrentInScalarField_doc= R"(
 Return the current 'in' ScalarField if there is one, otherwise None.
 
@@ -238,6 +277,21 @@ Scale the cloud with separate factors along the 3 directions x,y,z and an option
 :param float y: scale y
 :param float z: scale z
 :param tuple,optional center: (xc, yc, zc), default (0,0,0))";
+
+const char* ccPointCloudPy_setCurrentDisplayedScalarField_doc= R"(
+Sets the currently displayed scalar field.
+
+Current displayed scalar field is used in some methods such as :py:meth:`filterPointsByScalarValue`
+
+**Warning**: this scalar field will automatically be set as the OUTPUT one!
+
+:param int index: index of the displayed ScalarField
+)";
+
+const char* ccPointCloudPy_setCurrentScalarField_doc= R"(
+Set the current 'in' and 'out ScalarField index. No validity check. Use -1 to set None.
+
+:param int index: index of the 'in' and 'out' ScalarField)";
 
 const char* ccPointCloudPy_setCurrentInScalarField_doc= R"(
 Set the current 'in' ScalarField index. No validity check. Use -1 to set None.

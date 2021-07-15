@@ -29,6 +29,7 @@
 #include "ccPrimitivesPy.hpp"
 #include "ccPolylinePy.hpp"
 #include "distanceComputationToolsPy.hpp"
+#include "geometricalAnalysisToolsPy.hpp"
 #include "registrationToolsPy.hpp"
 #include "cloudSamplingToolsPy.hpp"
 
@@ -137,6 +138,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
     export_ccMesh();
     export_ccPrimitives();
     export_distanceComputationTools();
+    export_geometricalAnalysisTools();
     export_registrationTools();
     export_cloudSamplingTools();
 
