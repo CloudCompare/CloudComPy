@@ -29,7 +29,9 @@
 #include "ccPrimitivesPy.hpp"
 #include "ccPolylinePy.hpp"
 #include "distanceComputationToolsPy.hpp"
+#include "geometricalAnalysisToolsPy.hpp"
 #include "registrationToolsPy.hpp"
+#include "cloudSamplingToolsPy.hpp"
 
 #include "initCC.h"
 #include "pyCC.h"
@@ -136,7 +138,9 @@ BOOST_PYTHON_MODULE(cloudComPy)
     export_ccMesh();
     export_ccPrimitives();
     export_distanceComputationTools();
+    export_geometricalAnalysisTools();
     export_registrationTools();
+    export_cloudSamplingTools();
 
     // TODO: function load entities ("file.bin")
     // TODO: more methods on distanceComputationTools
@@ -197,15 +201,15 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .value("MINUS_Z", ccNormalVectors::MINUS_Z )
         .value("PLUS_BARYCENTER", ccNormalVectors::PLUS_BARYCENTER )
         .value("MINUS_BARYCENTER", ccNormalVectors::MINUS_BARYCENTER )
-        .value("PLUS_ZERO", ccNormalVectors::PLUS_ZERO )
-        .value("MINUS_ZERO", ccNormalVectors::MINUS_ZERO )
+        .value("PLUS_ORIGIN", ccNormalVectors::PLUS_ORIGIN )
+        .value("MINUS_ORIGIN", ccNormalVectors::MINUS_ORIGIN )
         .value("PREVIOUS", ccNormalVectors::PREVIOUS )
+        .value("SENSOR_ORIGIN", ccNormalVectors::SENSOR_ORIGIN )
         .value("UNDEFINED", ccNormalVectors::UNDEFINED )
         ;
 
     def("loadPointCloud", loadPointCloud,
-        loadPointCloud_overloads(args("mode", "skip", "x", "y", "z", "filename"),
-                                 cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
+        loadPointCloud_overloads(cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
 
     def("loadPolyline", loadPolyline,
         loadPolyline_overloads(args("mode", "skip", "x", "y", "z", "filename"),

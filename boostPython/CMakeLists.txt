@@ -67,7 +67,9 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     ${CMAKE_CURRENT_LIST_DIR}/ccPrimitivesPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ccPolylinePy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/distanceComputationToolsPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/geometricalAnalysisToolsPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/registrationToolsPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/cloudSamplingToolsPy.cpp
     )
 
 target_include_directories( ${PROJECT_NAME} PUBLIC
@@ -136,4 +138,41 @@ if(WIN32)
 
     install( DIRECTORY ${Qt5_DIR}/../../../plugins/ DESTINATION qtplugins )
   endif()
+endif()
+
+# Sphinx Documentation
+if( WIN32 OR APPLE)
+else()
+    set(RSTFILES
+        ccMesh.rst
+        ccOctree.rst
+        ccPointCloud.rst
+        ccPolyline.rst
+        ccPrimitives.rst
+        cloudComPy.rst
+        DistanceComputationTools.rst
+        index.rst
+        introduction.rst
+        ScalarField.rst
+        )
+
+    configure_file(conf.py.in conf.py)
+
+    set(SPHINXOPTS )
+    set(SOURCEDIR ${CMAKE_CURRENT_SOURCE_DIR})
+    set(ALLSPHINXOPTS -d doctrees ${SPHINXOPTS} ${SOURCEDIR})
+    set(SPHINXBUILD sphinx-build)
+
+    add_custom_target(BUILD_HTML ALL
+      COMMAND ${CMAKE_COMMAND} -E make_directory html
+      COMMAND ${CMAKE_COMMAND} -E make_directory doctrees
+      COMMAND ${SPHINXBUILD} -c ${CMAKE_BINARY_DIR}/boostPython -b html ${ALLSPHINXOPTS} html
+      DEPENDS ${RSTFILES}  ${PROJECT_NAME}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
+
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html/
+      DESTINATION doc/CloudComPy
+      PATTERN ".buildinfo" EXCLUDE
+      )
 endif()

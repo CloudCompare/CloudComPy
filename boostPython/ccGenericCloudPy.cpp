@@ -120,5 +120,6 @@ void export_ccGenericCloud()
         .def("size", &CCCoreLib::ReferenceCloud::size, ReferenceCloud_size_doc)
         ;
 
+    // TODO: some methods may lead to abort: for instance getPoint with bad index
 }
 

@@ -1,6 +1,10 @@
 # CloudComPy
 Python wrapper for CloudCompare
 
+## Project site (under construction)
+This [site](https://www.simulation.openfields.fr/index.php/projets/cloudcompy) already contains reference material,
+and Windows 10 binaries for an Anaconda3 environment (see below).
+
 ## What is CloudComPy?
 This project is a draft of what could be a Python module to interface to CloudCompare, 
 of equivalent level to the command mode of CloudCompare.
@@ -52,7 +56,7 @@ From the Python interpreter, Docstrings provide some documentation on the availa
 
 ## testing a CloudComPy binary on Windows 10
 
-The binary available [here](https://drive.google.com/file/d/1KI9bL7PJQvFML_ngH0SejrBpHWJ_USW8/view?usp=sharing) is built in an Anaconda3 environment
+The binary *CloudComPy37_-date-.7z* available in this [directory](https://www.simulation.openfields.fr/binaries/) is built in an Anaconda3 environment
 (see below for the corresponding building instructions).
 As CloudComPy is under development and not yet fully stabilized, these instructions and the link are subject to change from time to time...
 
@@ -101,8 +105,7 @@ envPyCC.bat
 python test001.py
 ```
 
-The files created with the tests are in your user space: %USERPROFILE%\CloudComPy\data
-
+The files created with the tests are in your user space: %USERPROFILE%\CloudComPy\dat
 
 ## how to build CloudComPy?
 
