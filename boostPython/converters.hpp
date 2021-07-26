@@ -587,6 +587,9 @@ void initializeConverters()
     to_python_converter<std::vector<CCCoreLib::DgmOctree::CellDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::CellDescriptor>, false>();
     to_python_converter<std::vector<CCCoreLib::DgmOctree::IndexAndCode>, vector_to_python_list<CCCoreLib::DgmOctree::IndexAndCode>, false>();
     to_python_converter<std::vector<CCCoreLib::DgmOctree::PointDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::PointDescriptor>, false>();
+    to_python_converter<std::vector<ccHObject*>, vector_to_python_list<ccHObject*>, false>();
+    to_python_converter<std::vector<ccMesh*>, vector_to_python_list<ccMesh*>, false>();
+    to_python_converter<std::vector<ccPointCloud*>, vector_to_python_list<ccPointCloud*>, false>();
     to_python_converter<std::map<QString, int>, map_to_python_dict<QString, int>, false>();
     // register the from-python converter
     QString_from_python_str();

@@ -303,6 +303,175 @@ ccPolyline* loadPolyline(
     return nullptr;
 }
 
+std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode, double x, double y, double z)
+{
+    CCTRACE("Opening file: " << filename << " mode: " << mode << " x: " << x << " y: " << y << " z: " << z);
+    // TODO adapted code from ccCommandLineParser::importFile
+    pyCC* capi = initCloudCompare();
+    FileIOFilter::Shared filter = nullptr;
+    std::vector<ccHObject*> entities;
+    QString fileName(filename);
+
+    //whether Global (coordinate) shift has already been defined
+    bool s_firstCoordinatesShiftEnabled = false;
+    //global shift (if defined)
+    CCVector3d s_firstGlobalShift;
+
+    //default Global Shift handling parameters
+    capi->m_loadingParameters.shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG;
+    capi->m_loadingParameters.m_coordinatesShiftEnabled = false;
+    capi->m_loadingParameters.m_coordinatesShift = CCVector3d(0, 0, 0);
+
+    switch (mode)
+    {
+    case CC_SHIFT_MODE::AUTO:
+        //let CC handle the global shift automatically
+        capi->m_loadingParameters.shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG_AUTO_SHIFT;
+        break;
+
+    case CC_SHIFT_MODE::FIRST_GLOBAL_SHIFT:
+        //use the first encountered global shift value (if any)
+        capi->m_loadingParameters.shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG_AUTO_SHIFT;
+        capi->m_loadingParameters.m_coordinatesShiftEnabled = s_firstCoordinatesShiftEnabled;
+        capi->m_loadingParameters.m_coordinatesShift = s_firstGlobalShift;
+        break;
+
+    case CC_SHIFT_MODE::XYZ:
+        //set the user defined shift vector as default shift information
+        capi->m_loadingParameters.m_coordinatesShiftEnabled = true;
+        capi->m_loadingParameters.m_coordinatesShift = CCVector3d(x, y, z);
+        break;
+
+    default:
+        //nothing to do
+        break;
+    }
+
+    CC_FILE_ERROR result = CC_FERR_NO_ERROR;
+    ccHObject* db = nullptr;
+    if (filter)
+    {
+        db = FileIOFilter::LoadFromFile(fileName, capi->m_loadingParameters, filter, result);
+    }
+    else
+    {
+        db = FileIOFilter::LoadFromFile(fileName, capi->m_loadingParameters, result, QString());
+    }
+
+    if (!db)
+    {
+        CCTRACE("LoadFromFile returns no entities");
+        return entities;
+    }
+
+    if (mode != CC_SHIFT_MODE::NO_GLOBAL_SHIFT)
+    {
+        bool s_firstTime = true;
+        if (s_firstTime)
+        {
+            // remember the first Global Shift parameters used
+            s_firstCoordinatesShiftEnabled = capi->m_loadingParameters.m_coordinatesShiftEnabled;
+            s_firstGlobalShift = capi->m_loadingParameters.m_coordinatesShift;
+            s_firstTime = false;
+        }
+    }
+
+    std::unordered_set<unsigned> verticesIDs;
+    //first look for meshes inside loaded DB (so that we don't consider mesh vertices as clouds!)
+    {
+        ccHObject::Container meshes;
+        size_t count = 0;
+        //first look for all REAL meshes (so as to no consider sub-meshes)
+        if (db->filterChildren(meshes, true, CC_TYPES::MESH, true) != 0)
+        {
+            count += meshes.size();
+            for (size_t i = 0; i < meshes.size(); ++i)
+            {
+                ccGenericMesh* mesh = ccHObjectCaster::ToGenericMesh(meshes[i]);
+                if (mesh->getParent())
+                {
+                    mesh->getParent()->detachChild(mesh);
+                }
+
+                ccGenericPointCloud* vertices = mesh->getAssociatedCloud();
+                if (vertices)
+                {
+                    verticesIDs.insert(vertices->getUniqueID());
+                    CCTRACE("Found one mesh with " << mesh->size() << " faces and " << mesh->getAssociatedCloud()->size() << " vertices: " << mesh->getName().toStdString());
+                    capi->m_meshes.emplace_back(mesh, fileName, count == 1 ? -1 : static_cast<int>(i));
+                    entities.push_back(mesh);
+                }
+                else
+                {
+                    delete mesh;
+                    mesh = nullptr;
+                    assert(false);
+                }
+            }
+        }
+
+        //then look for the other meshes
+        meshes.clear();
+        if (db->filterChildren(meshes, true, CC_TYPES::MESH, false) != 0)
+        {
+            size_t countBefore = count;
+            count += meshes.size();
+            for (size_t i = 0; i < meshes.size(); ++i)
+            {
+                ccGenericMesh* mesh = ccHObjectCaster::ToGenericMesh(meshes[i]);
+                if (mesh->getParent())
+                    mesh->getParent()->detachChild(mesh);
+
+                ccGenericPointCloud* vertices = mesh->getAssociatedCloud();
+                if (vertices)
+                {
+                    verticesIDs.insert(vertices->getUniqueID());
+                    CCTRACE("Found one mesh with " << mesh->size() << " faces and " << mesh->getAssociatedCloud()->size() << " vertices: " << mesh->getName().toStdString());
+                    capi->m_meshes.emplace_back(mesh, fileName, count == 1 ? -1 : static_cast<int>(countBefore + i));
+                    entities.push_back(mesh);
+                }
+                else
+                {
+                    delete mesh;
+                    mesh = nullptr;
+                    assert(false);
+                }
+            }
+        }
+    }
+
+    //now look for the remaining clouds inside loaded DB
+    {
+        ccHObject::Container clouds;
+        db->filterChildren(clouds, true, CC_TYPES::POINT_CLOUD);
+        size_t count = clouds.size();
+        for (size_t i = 0; i < count; ++i)
+        {
+            ccPointCloud* pc = static_cast<ccPointCloud*>(clouds[i]);
+            if (pc->getParent())
+            {
+                pc->getParent()->detachChild(pc);
+            }
+
+            //if the cloud is a set of vertices, we ignore it!
+            if (verticesIDs.find(pc->getUniqueID()) != verticesIDs.end())
+            {
+                capi->m_orphans.addChild(pc);
+                continue;
+            }
+            CCTRACE("Found one cloud with " << pc->size() << " points");
+            capi->m_clouds.emplace_back(pc, fileName, count == 1 ? -1 : static_cast<int>(i));
+            entities.push_back(pc);
+        }
+    }
+
+    delete db;
+    db = nullptr;
+
+    return entities;
+
+}
+
 ccPointCloud* loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int skip, double x, double y, double z)
 {
     CCTRACE("Opening file: " << filename << " mode: " << mode << " skip: " << skip << " x: " << x << " y: " << y << " z: " << z);
@@ -362,7 +531,7 @@ ccPointCloud* loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int skip,
             continue;
         }
         CCTRACE("Found one cloud with " << pc->size() << " points");
-        capi->m_clouds.emplace_back(pc, filename, count == 1 ? -1 : static_cast<int>(i));
+        capi->m_clouds.emplace_back(pc, fileName, count == 1 ? -1 : static_cast<int>(i));
     }
 
     delete db;

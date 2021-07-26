@@ -30,6 +30,20 @@ Python3 access to cloudCompare objects is done like this:
  
  )";
 
+const char* cloudComPy_importFile_doc= R"(
+Load any kind of entities (cloud or mesh) from a file
+
+:param filename file Name
+:param shiftMode,optional mode default AUTO, 
+       value from AUTO, XYZ, FIRST_GLOBAL_SHIFT, NO_GLOBAL_SHIFT
+:param float,optional x default 0
+:param float,optional y default 0
+:param float,optional z default 0
+
+:return: a tuple (list of meshes, list of clouds)
+:rtype: tuple
+)";
+
 const char* cloudComPy_ICPres_doc=R"(
 Result values on ICP registration.
 

@@ -39,8 +39,12 @@
 
 enum CC_SHIFT_MODE
 {
-    AUTO = 0, XYZ = 1
+    AUTO = 0, XYZ = 1, FIRST_GLOBAL_SHIFT = 2, NO_GLOBAL_SHIFT = 3
 };
+//enum GLOBAL_SHIFT_MODE
+//{
+//    AUTO_GLOBAL_SHIFT = 0, CUSTOM_GLOBAL_SHIFT = 1, FIRST_GLOBAL_SHIFT = 2, NO_GLOBAL_SHIFT = 3
+//};
 
 //! load a Polyline from file
 /*! TODO process optional skip parameter following ccCommandLineInterface::processGlobalShiftCommand
@@ -60,11 +64,26 @@ ccPolyline* loadPolyline(
     double y = 0,
     double z = 0);
 
+//! load any kind of entities (cloud or mesh) from a file
+/*! adapted from ccCommandLineInterface::importFile
+ * \param filename
+ * \param mode optional default AUTO
+ * \param skip optional default 0
+ * \param x optional default 0
+ * \param y optional default 0
+ * \param z optional default 0
+ * \return a vector of entities, empty if problem
+ */
+std::vector<ccHObject*> importFile(const char* filename,
+    CC_SHIFT_MODE mode = AUTO,
+    double x = 0,
+    double y = 0,
+    double z = 0);
+
 //! load a point cloud from file
 /*! TODO process optional skip parameter following ccCommandLineInterface::processGlobalShiftCommand
  * \param filename
  * \param mode optional default AUTO
- * \param skip optional default 0
  * \param x optional default 0
  * \param y optional default 0
  * \param z optional default 0

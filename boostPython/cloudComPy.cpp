@@ -41,6 +41,7 @@
 #include <ccPointCloud.h>
 #include <ScalarField.h>
 #include <ccNormalVectors.h>
+#include <ccHObjectCaster.h>
 
 #include <QString>
 #include <vector>
@@ -116,7 +117,36 @@ ICPres ICP_py(  ccHObject* data,
     return a;
 }
 
+bp::tuple importFilePy(const char* filename,
+    CC_SHIFT_MODE mode = AUTO,
+    double x = 0,
+    double y = 0,
+    double z = 0)
+{
+    std::vector<ccMesh*> meshes;
+    std::vector<ccPointCloud*> clouds;
+    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z);
+    for( auto entity : entities)
+    {
+        ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
+        if (mesh)
+        {
+            meshes.push_back(mesh);
+        }
+        else
+        {
+            ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(entity);
+            if (cloud)
+            {
+                clouds.push_back(cloud);
+            }
+        }
+    }
+    bp::tuple res = bp::make_tuple(meshes, clouds);
+    return res;
+}
 
+BOOST_PYTHON_FUNCTION_OVERLOADS(importFilePy_overloads, importFilePy, 1, 5);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(GetPointCloudRadius_overloads, GetPointCloudRadius, 1, 2);
@@ -145,9 +175,10 @@ BOOST_PYTHON_MODULE(cloudComPy)
     // TODO: function load entities ("file.bin")
     // TODO: more methods on distanceComputationTools
     // TODO: methods from ccEntityAction.h to transpose without dialogs
-    // TODO: compute octree
-    // TODO: mesh Delaunay
     // TODO: explore menus edit, tools, plugins
+    // TODO: 2D Polygon (cf. ccFacet.h)           <== issue Github
+    // TODO: load/save mesh (incuding .fbx)       <== issue Github
+    // TODO: save histogram as .csv or .png       <== issue Github
 
     scope().attr("__doc__") = cloudComPy_doc;
 
@@ -156,6 +187,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
     enum_<CC_SHIFT_MODE>("CC_SHIFT_MODE")
         .value("AUTO", AUTO)
         .value("XYZ", XYZ)
+        .value("FIRST_GLOBAL_SHIFT", FIRST_GLOBAL_SHIFT)
+        .value("NO_GLOBAL_SHIFT", NO_GLOBAL_SHIFT)
         ;
 
     enum_<CC_FILE_ERROR>("CC_FILE_ERROR")
@@ -207,6 +240,9 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .value("SENSOR_ORIGIN", ccNormalVectors::SENSOR_ORIGIN )
         .value("UNDEFINED", ccNormalVectors::UNDEFINED )
         ;
+
+    def("importFile", importFilePy,
+        importFilePy_overloads(cloudComPy_importFile_doc));
 
     def("loadPointCloud", loadPointCloud,
         loadPointCloud_overloads(cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
