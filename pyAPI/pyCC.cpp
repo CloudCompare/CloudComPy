@@ -59,6 +59,11 @@
 #include <QString>
 #include <exception>
 
+#include "optdefines.h"
+#ifdef PLUGIN_IO_QFBX
+#include <FBXFilter.h>
+#endif
+
 // --- internal struct
 
 //* Extended file loading parameters, from plugins/ccCommandLineInterface.h
@@ -472,76 +477,6 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode, dou
 
 }
 
-ccPointCloud* loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int skip, double x, double y, double z)
-{
-    CCTRACE("Opening file: " << filename << " mode: " << mode << " skip: " << skip << " x: " << x << " y: " << y << " z: " << z);
-    // TODO process optional parameter skip
-    // TODO duplicated code from ccCommandLineParser::importFile
-    pyCC* capi = initCloudCompare();
-    ::CC_FILE_ERROR result = CC_FERR_NO_ERROR;
-    ccHObject* db = nullptr;
-
-    FileIOFilter::Shared filter = nullptr;
-    QString fileName(filename);
-    if (mode == AUTO)
-    {
-        capi->m_loadingParameters.m_coordinatesShiftEnabled = false;
-        capi->m_loadingParameters.shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG_AUTO_SHIFT;
-    }
-    else
-    {
-        capi->m_loadingParameters.m_coordinatesShiftEnabled = true;
-        capi->m_loadingParameters.shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG;
-        capi->m_loadingParameters.m_coordinatesShift = CCVector3d(x, y, z);
-    }
-    if (filter)
-    {
-        db = FileIOFilter::LoadFromFile(fileName, capi->m_loadingParameters, filter, result);
-    }
-    else
-    {
-        db = FileIOFilter::LoadFromFile(fileName, capi->m_loadingParameters, result, QString());
-    }
-
-    if (!db)
-    {
-        CCTRACE("LoadFromFile returns nullptr");
-        return nullptr;
-    }
-
-    std::unordered_set<unsigned> verticesIDs;
-
-    // look for the remaining clouds inside loaded DB
-    ccHObject::Container clouds;
-    db->filterChildren(clouds, true, CC_TYPES::POINT_CLOUD);
-    size_t count = clouds.size();
-    CCTRACE("number of clouds: " << count);
-    for (size_t i = 0; i < count; ++i)
-    {
-        ccPointCloud* pc = static_cast<ccPointCloud*>(clouds[i]);
-        if (pc->getParent())
-        {
-            pc->getParent()->detachChild(pc);
-        }
-
-        //if the cloud is a set of vertices, we ignore it!
-        if (verticesIDs.find(pc->getUniqueID()) != verticesIDs.end())
-        {
-            capi->m_orphans.addChild(pc);
-            continue;
-        }
-        CCTRACE("Found one cloud with " << pc->size() << " points");
-        capi->m_clouds.emplace_back(pc, fileName, count == 1 ? -1 : static_cast<int>(i));
-    }
-
-    delete db;
-    db = nullptr;
-
-    if (count > 0)
-        return capi->m_clouds.back().pc;
-    return nullptr;
-}
-
 ::CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename)
 {
     CCTRACE("saving cloud");
@@ -567,6 +502,46 @@ ccPointCloud* loadPointCloud(const char* filename, CC_SHIFT_MODE mode, int skip,
     }
     CCTRACE("fileFilter: " << fileFilter.toStdString());
     ::CC_FILE_ERROR result = FileIOFilter::SaveToFile(cloud, filename, parameters, fileFilter); //AsciiFilter::GetFileFilter());
+    return result;
+}
+
+::CC_FILE_ERROR SaveMesh(ccMesh* mesh, const QString& filename)
+{
+    CCTRACE("saving mesh");
+    pyCC* capi = initCloudCompare();
+    if ((mesh == nullptr) || filename.isEmpty())
+        return ::CC_FERR_BAD_ARGUMENT;
+    CCTRACE("mesh: " << mesh->getName().toStdString() << " file: " << filename.toStdString());
+    FileIOFilter::SaveParameters parameters;
+    parameters.alwaysDisplaySaveDialog = false;
+    QFileInfo fi(filename);
+    QString ext = fi.suffix();
+    CCTRACE("ext: " << ext.toStdString());
+    QString fileFilter = "";
+    const std::vector<FileIOFilter::Shared>& filters = FileIOFilter::GetFilters();
+    for (const auto filter : filters)
+    {
+        QStringList theFilters = filter->getFileFilters(false);
+        QStringList matches = theFilters.filter(ext);
+        for ( const auto match : matches)
+            CCTRACE("  match: " << match.toStdString());
+        if (matches.size())
+        {
+            fileFilter = matches.first();
+            break;
+        }
+    }
+
+#ifdef PLUGIN_IO_QFBX
+    if (ext == "fbx")
+    {
+        CCTRACE("SetDefaultOutputFormat: FBX_ascii");
+        FBXFilter::SetDefaultOutputFormat("FBX_ascii");
+    }
+#endif
+
+    CCTRACE("fileFilter: " << fileFilter.toStdString());
+    ::CC_FILE_ERROR result = FileIOFilter::SaveToFile(mesh, filename, parameters, fileFilter); //AsciiFilter::GetFileFilter());
     return result;
 }
 

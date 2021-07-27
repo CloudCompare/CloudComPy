@@ -80,23 +80,6 @@ std::vector<ccHObject*> importFile(const char* filename,
     double y = 0,
     double z = 0);
 
-//! load a point cloud from file
-/*! TODO process optional skip parameter following ccCommandLineInterface::processGlobalShiftCommand
- * \param filename
- * \param mode optional default AUTO
- * \param x optional default 0
- * \param y optional default 0
- * \param z optional default 0
- * \return cloud if success, or nullptr
- */
-ccPointCloud* loadPointCloud(
-    const char* filename,
-    CC_SHIFT_MODE mode = AUTO,
-    int skip = 0,
-    double x = 0,
-    double y = 0,
-    double z = 0);
-
 //! save a point cloud to a file
 /*! the file type is given by the extension
  * \param cloud
@@ -104,6 +87,15 @@ ccPointCloud* loadPointCloud(
  * \return IO status
  */
 CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename);
+
+//! save a mesh to a file
+/*! the file type is given by the extension
+ * \param mesh
+ * \param filename
+ * \return IO status
+ */
+CC_FILE_ERROR SaveMesh(ccMesh* mesh, const QString& filename);
+
 
 //! save a vector of entities
 /*! the file type is given by the extension (use .bin)

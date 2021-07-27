@@ -146,8 +146,77 @@ bp::tuple importFilePy(const char* filename,
     return res;
 }
 
+ccPointCloud* loadPointCloudPy(
+    const char* filename,
+    CC_SHIFT_MODE mode = AUTO,
+    int skip = 0,
+    double x = 0,
+    double y = 0,
+    double z = 0)
+{
+    std::vector<ccMesh*> meshes;
+    std::vector<ccPointCloud*> clouds;
+    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z);
+    for( auto entity : entities)
+    {
+        ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
+        if (mesh)
+        {
+            meshes.push_back(mesh);
+        }
+        else
+        {
+            ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(entity);
+            if (cloud)
+            {
+                clouds.push_back(cloud);
+            }
+        }
+    }
+    if (clouds.size())
+        return clouds.back();
+    else
+        return nullptr;
+}
+
+
+ccMesh* loadMeshPy(
+    const char* filename,
+    CC_SHIFT_MODE mode = AUTO,
+    int skip = 0,
+    double x = 0,
+    double y = 0,
+    double z = 0)
+{
+    std::vector<ccMesh*> meshes;
+    std::vector<ccPointCloud*> clouds;
+    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z);
+    for( auto entity : entities)
+    {
+        ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
+        if (mesh)
+        {
+            meshes.push_back(mesh);
+        }
+        else
+        {
+            ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(entity);
+            if (cloud)
+            {
+                clouds.push_back(cloud);
+            }
+        }
+    }
+    if (meshes.size())
+        return meshes.back();
+    else
+        return nullptr;
+}
+
+
 BOOST_PYTHON_FUNCTION_OVERLOADS(importFilePy_overloads, importFilePy, 1, 5);
-BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloud_overloads, loadPointCloud, 1, 6);
+BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloudPy_overloads, loadPointCloudPy, 1, 6);
+BOOST_PYTHON_FUNCTION_OVERLOADS(loadMeshPy_overloads, loadMeshPy, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(GetPointCloudRadius_overloads, GetPointCloudRadius, 1, 2);
 BOOST_PYTHON_FUNCTION_OVERLOADS(ICP_py_overloads, ICP_py, 8, 13);
@@ -176,8 +245,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
     // TODO: more methods on distanceComputationTools
     // TODO: methods from ccEntityAction.h to transpose without dialogs
     // TODO: explore menus edit, tools, plugins
+    // TODO: parameters on save mesh or clouds
     // TODO: 2D Polygon (cf. ccFacet.h)           <== issue Github
-    // TODO: load/save mesh (incuding .fbx)       <== issue Github
     // TODO: save histogram as .csv or .png       <== issue Github
 
     scope().attr("__doc__") = cloudComPy_doc;
@@ -244,13 +313,18 @@ BOOST_PYTHON_MODULE(cloudComPy)
     def("importFile", importFilePy,
         importFilePy_overloads(cloudComPy_importFile_doc));
 
-    def("loadPointCloud", loadPointCloud,
-        loadPointCloud_overloads(cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
+    def("loadPointCloud", loadPointCloudPy,
+        loadPointCloudPy_overloads(cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
+
+    def("loadMesh", loadMeshPy,
+        loadMeshPy_overloads(cloudComPy_loadMesh_doc)[return_value_policy<reference_existing_object>()]);
 
     def("loadPolyline", loadPolyline,
         loadPolyline_overloads(args("mode", "skip", "x", "y", "z", "filename"),
                                cloudComPy_loadPolyline_doc)
         [return_value_policy<reference_existing_object>()]);
+
+    def("SaveMesh", SaveMesh, cloudComPy_SaveMesh_doc);
 
     def("SavePointCloud", SavePointCloud, cloudComPy_SavePointCloud_doc);
 

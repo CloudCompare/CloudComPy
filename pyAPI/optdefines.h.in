@@ -1,0 +1,6 @@
+#ifndef __OPTDEFINES_H__
+#define __OPTDEFINES_H__
+
+#cmakedefine PLUGIN_IO_QFBX
+
+#endif
