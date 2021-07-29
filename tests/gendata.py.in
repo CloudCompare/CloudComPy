@@ -61,6 +61,21 @@ def getSamplePoly(polyname="poly1"):
                 f.write("%f %f %f\n" % (x, y, 0.))
     return sample
 
+def getSamplePoly2(polyname="poly2"):
+    dataName = "%s.poly" % polyname
+    sample = os.path.join(dataDir, dataName)
+    if not os.path.exists(sample):
+        vx = []
+        vy = []
+        if polyname == "poly2":
+            vx = [-4.,  0.,  4., 3.5,  4.,  0., -4.,-3.5]
+            vy = [ 4., 3.5,  4.,  0., -4.,-3.5, -4.,  0.]
+        with open(sample, 'w') as f:
+            for x,y in zip(vx, vy):
+                f.write("%f %f %f\n" % (x, y, 0.))
+    return sample
+
+
 def createSymbolicLinks():
     modulePath = cc.__file__
     mpath = os.path.dirname(modulePath)

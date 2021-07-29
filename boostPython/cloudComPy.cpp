@@ -32,6 +32,7 @@
 #include "geometricalAnalysisToolsPy.hpp"
 #include "registrationToolsPy.hpp"
 #include "cloudSamplingToolsPy.hpp"
+#include "ccFacetPy.hpp"
 
 #include "initCC.h"
 #include "pyCC.h"
@@ -240,6 +241,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
     export_geometricalAnalysisTools();
     export_registrationTools();
     export_cloudSamplingTools();
+    export_ccFacet();
 
     // TODO: function load entities ("file.bin")
     // TODO: more methods on distanceComputationTools

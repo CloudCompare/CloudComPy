@@ -70,6 +70,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     ${CMAKE_CURRENT_LIST_DIR}/geometricalAnalysisToolsPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/registrationToolsPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/cloudSamplingToolsPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ccFacetPy.cpp
     )
 
 target_include_directories( ${PROJECT_NAME} PUBLIC
@@ -144,6 +145,7 @@ endif()
 if( WIN32 OR APPLE)
 else()
     set(RSTFILES
+        ccFacet.rst
         ccMesh.rst
         ccOctree.rst
         ccPointCloud.rst

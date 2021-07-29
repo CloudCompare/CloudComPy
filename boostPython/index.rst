@@ -45,3 +45,4 @@ Reference documentation
    DistanceComputationTools.rst
    GeometricalAnalysisTools.rst
    cloudSamplingTools.rst
+   ccFacet.rst
