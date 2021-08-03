@@ -71,7 +71,7 @@ conda create --name CloudComPy37 python=3.7
 conda activate CloudComPy37
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay
+conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay matplotlib
 ```
 
 Install the binary in the directory of your choice.
@@ -204,7 +204,7 @@ conda create --name CloudComPy37 python=3.7
 conda activate CloudComPy37
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay
+conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay matplotlib
 ```
 For information, the list of packages actually installed for building and testing can be found in `building/conda-list`.
 
@@ -213,6 +213,8 @@ CMake from Anaconda is used to get ctest at install, not for build.
 I do not use Qt from conda packages, I still have a problem at runtime when reading xyz files with the HEAD of CloudCompare
 (after commit "New features (#1420)" from 2021-03-07).
 With a separate install of Qt 5.15.2 binaries, it works fine...
+
+To use FBX format plugin, install the FBX SDK, not provided by an Anaconda package.
 
 It is necessary to configure Visual Studio 2019 with CMake.
 
@@ -386,6 +388,11 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_IO_QFBX",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_IO_QLAS_FWF",
           "value": "False",
           "type": "BOOL"
@@ -546,6 +553,26 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "PATH"
         },
         {
+          "name": "FBX_SDK_INCLUDE_DIR",
+          "value": "C:/Program Files/Autodesk/FBX/FBX SDK/2020.2.1/include",
+          "type": "PATH"
+        },
+        {
+          "name": "FBX_SDK_LIBRARY_FILE",
+          "value": "C:/Program Files/Autodesk/FBX/FBX SDK/2020.2.1/lib/vs2019/x64/release/libfbxsdk-md.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "FBX_XML2_LIBRARY_FILE",
+          "value": "C:/Program Files/Autodesk/FBX/FBX SDK/2020.2.1/lib/vs2019/x64/release/libxml2-md.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "FBX_ZLIB_LIBRARY_FILE",
+          "value": "C:/Program Files/Autodesk/FBX/FBX SDK/2020.2.1/lib/vs2019/x64/release/zlib-md.lib",
+          "type": "FILEPATH"
+        },
+        {
           "name": "GDAL_INCLUDE_DIR",
           "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
           "type": "PATH"
@@ -630,7 +657,8 @@ Here are my json file, for the first method, with the plugins availables with An
           "value": "C:/Users/paulr/anaconda3/Library/lib/zlib.lib",
           "type": "FILEPATH"
         }
-      ]
+      ],
+      "intelliSenseMode": "windows-clang-x64"
     }
   ]
 }

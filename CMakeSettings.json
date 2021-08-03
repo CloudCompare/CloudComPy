@@ -152,6 +152,11 @@
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_IO_QFBX",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_IO_QLAS_FWF",
           "value": "False",
           "type": "BOOL"
@@ -310,6 +315,26 @@
           "name": "FFMPEG_LIBRARY_DIR",
           "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib",
           "type": "PATH"
+        },
+        {
+          "name": "FBX_SDK_INCLUDE_DIR",
+          "value": "C:/Program Files/Autodesk/FBX/FBX SDK/2020.2.1/include",
+          "type": "PATH"
+        },
+        {
+          "name": "FBX_SDK_LIBRARY_FILE",
+          "value": "C:/Program Files/Autodesk/FBX/FBX SDK/2020.2.1/lib/vs2019/x64/release/libfbxsdk-md.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "FBX_XML2_LIBRARY_FILE",
+          "value": "C:/Program Files/Autodesk/FBX/FBX SDK/2020.2.1/lib/vs2019/x64/release/libxml2-md.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "FBX_ZLIB_LIBRARY_FILE",
+          "value": "C:/Program Files/Autodesk/FBX/FBX SDK/2020.2.1/lib/vs2019/x64/release/zlib-md.lib",
+          "type": "FILEPATH"
         },
         {
           "name": "GDAL_INCLUDE_DIR",

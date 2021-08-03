@@ -533,11 +533,13 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode, dou
     }
 
 #ifdef PLUGIN_IO_QFBX
-    if (ext == "fbx")
-    {
-        CCTRACE("SetDefaultOutputFormat: FBX_ascii");
-        FBXFilter::SetDefaultOutputFormat("FBX_ascii");
-    }
+    #ifdef Q_OS_LINUX
+        if (ext == "fbx")
+        {
+            CCTRACE("SetDefaultOutputFormat: FBX_ascii");
+            FBXFilter::SetDefaultOutputFormat("FBX_ascii");
+        }
+    #endif
 #endif
 
     CCTRACE("fileFilter: " << fileFilter.toStdString());
