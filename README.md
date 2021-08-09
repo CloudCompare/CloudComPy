@@ -60,6 +60,8 @@ The binary *CloudComPy37_-date-.7z* available in this [directory](https://www.si
 (see below for the corresponding building instructions).
 As CloudComPy is under development and not yet fully stabilized, these instructions and the link are subject to change from time to time...
 
+**This binary works only on Windows 10, and with Anaconda3 as described below, not anywhere else!**
+
 You need a recent installation of Anaconda3.
 
 You need to create an environment for CloudComPy in Anaconda3, with the Anaconda3 prompt console:
@@ -135,7 +137,7 @@ Second example: Windows 10, Visual Studio 2019, Anaconda3 to get all the prerequ
 ### Ubuntu 20.04
 
 On Ubuntu 20.04, you can install the development versions of the prerequisites with:
-TODO: complete the list...
+**TODO: complete the list, many packages are required...**
 
 ```
 sudo apt-get intall qtbase5-dev python3 libpython3-dev python3-numpy cmake
