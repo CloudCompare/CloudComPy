@@ -77,3 +77,5 @@ if not math.isclose(surface4, 56, rel_tol=1e-02):
 
 cc.SaveEntities([cloud, cloudCropZ, vert1, vert2, vert3, vert4], os.path.join(dataDir, "polygons2D.bin"))
 
+mesh1 = polygon1.getPolygon()
+cc.SaveMesh(mesh1, os.path.join(dataDir, "mesh1.ply"))

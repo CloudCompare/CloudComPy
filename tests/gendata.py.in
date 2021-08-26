@@ -10,9 +10,9 @@ dataDir = os.path.join(os.environ["@USER_HOME@"], "@PYTHONAPI_TEST_DIRECTORY@")
 if not os.path.exists(dataDir):
     os.makedirs(dataDir)
 
-def isCoordEqual(vals, refs):
+def isCoordEqual(vals, refs, tol=1.e-6):
     for val, ref in zip(vals, refs):
-        if not math.isclose(val, ref, rel_tol=1e-06):
+        if not math.isclose(val, ref, rel_tol=tol):
             return False
     return True
 
