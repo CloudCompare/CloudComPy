@@ -127,15 +127,15 @@ struct pyCC
 
 static pyCC* s_pyCCInternals = nullptr;
 
+static int pyCC_argc = 1;
+static char* pyCC_argv[] = { strdup("cloudComPy"), NULL };
+
 pyCC* initCloudCompare()
 {
     if (!s_pyCCInternals)
     {
         CCTRACE("initCloudCompare");
-        int argc =1;
-        char** argv = new char*[1];
-        argv[0] = "cloudComPy";
-        QApplication* app = new QApplication(argc, argv);
+        QApplication* app = new QApplication(pyCC_argc, pyCC_argv);
         s_pyCCInternals = new pyCC;
         s_pyCCInternals->m_silentMode = false;
         s_pyCCInternals->m_autoSaveMode = true;
