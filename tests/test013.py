@@ -34,11 +34,10 @@ if octree is not None:
 octree = cloud.computeOctree()
 
 bb = octree.getBoundingBox()
-if not isCoordEqual(bb[0], (-5.049950122833252, -5.049950122833252, -3.088034152984619)):
+if not isCoordEqual(bb[0], (-5.004994869232178, -5.004994869232178, -3.043078899383545)):
     raise RuntimeError
-if not isCoordEqual(bb[1], (5.039949893951416, 5.039949893951416, 7.001865863800049)):
+if not isCoordEqual(bb[1], (4.994994640350342, 4.994994640350342, 6.956910610198975)):
     raise RuntimeError
-
 nb = octree.getNumberOfProjectedPoints()
 if nb != 1000000:
     raise RuntimeError
