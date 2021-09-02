@@ -174,10 +174,10 @@ else()
           DEPENDS ${RSTFILES}  ${PROJECT_NAME}
           WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         )
-    endif()
 
-    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html/
-      DESTINATION doc/CloudComPy
-      PATTERN ".buildinfo" EXCLUDE
-      )
+        install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html/
+          DESTINATION doc/CloudComPy
+          PATTERN ".buildinfo" EXCLUDE
+          )
+    endif()
 endif()

@@ -2,6 +2,7 @@
 
 # to be sourced before using cloudCompare module and tests in Python3
 
-export PYTHONPATH=@CMAKE_INSTALL_PREFIX@/lib/cloudcompare:$PYTHONPATH
-export PYTHONPATH=@CMAKE_INSTALL_PREFIX@/@PYTHONAPI_TEST_SCRIPTS_DIRECTORY@:$PYTHONPATH
-export LD_LIBRARY_PATH=@CMAKE_INSTALL_PREFIX@/lib/cloudcompare/plugins:$LD_LIBRARY_PATH
+CLOUDCOMPY_ROOT=`pwd`/../..
+export PYTHONPATH=$CLOUDCOMPY_ROOT/lib/cloudcompare:$PYTHONPATH
+export PYTHONPATH=$CLOUDCOMPY_ROOT/doc/PythonAPI_test:$PYTHONPATH
+export LD_LIBRARY_PATH=$CLOUDCOMPY_ROOT/lib/cloudcompare/plugins:$LD_LIBRARY_PATH
