@@ -34,6 +34,8 @@ else()
 	message(STATUS "scalar type float")
 endif()
 
+configure_file(optdefines.h.in optdefines.h)
+
 target_sources( PYCC_LIB
     PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/pyCC.h
@@ -73,7 +75,17 @@ target_include_directories( PYCC_LIB PUBLIC
 
 target_link_libraries( PYCC_LIB
     CCAppCommon
-   )
+    )
+
+if( PLUGIN_IO_QFBX )
+    target_include_directories( PYCC_LIB PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/plugins/core/IO/qFBXIO/include
+        )
+    
+    target_link_libraries( PYCC_LIB
+        QFBX_IO_PLUGIN
+        )
+endif()
 
 # Qt libraries
 

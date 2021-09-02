@@ -86,14 +86,14 @@ if (math.sqrt(sd) > r):
 
 mins = octree.getOctreeMins()
 maxs = octree.getOctreeMaxs()
-dmin = np.array([-5.05, -5.05, -3.09]) - mins
-dmax = np.array([ 5.04,  5.04,  7.00]) - maxs
+dmin = np.array([-5.00499, -5.00499, -3.04308]) - mins
+dmax = np.array([ 4.99499,  4.99499,  6.95691]) - maxs
 if np.dot(dmin,dmin) > 1.e-5 or np.dot(dmax,dmax) > 1.e-5:
     raise RuntimeError
 
 bbox= octree.getBoundingBox()
-dmin = np.array([-5.05, -5.05, -3.09]) - bbox[0]
-dmax = np.array([ 5.04,  5.04,  7.00]) - bbox[1]
+dmin = np.array([-5.00499, -5.00499, -3.04308]) - bbox[0]
+dmax = np.array([ 4.99499,  4.99499,  6.95691]) - bbox[1]
 if np.dot(dmin,dmin) > 1.e-5 or np.dot(dmax,dmax) > 1.e-5:
     raise RuntimeError
 
@@ -105,19 +105,19 @@ if octree.getMinFillIndexes(2) != [0, 0, 0] or octree.getMaxFillIndexes(2) != [3
 
 minIndexes = octree.getMinFillIndexes(level)
 maxIndexes = octree.getMaxFillIndexes(level)
-if minIndexes != [2, 2, 101] or maxIndexes != [509, 509, 410]:
+if minIndexes != [0, 0, 100] or maxIndexes != [511, 511, 411]:
     raise RuntimeError
 
 # --- number of cells at a given level
 
 nbCells = octree.getCellNumber(level)
-if nbCells != 425246:
+if nbCells != 429425:
     raise RuntimeError
 
 # --- cell size in the octree at a given level
 
 cellSize0 = octree.getCellSize(0)
-if not math.isclose(cellSize0 , 10.09, rel_tol=1.e-4):
+if not math.isclose(cellSize0 , 10.000, rel_tol=1.e-4):
     raise RuntimeError
 
 cellSize9 = octree.getCellSize(9)
@@ -210,7 +210,7 @@ if level2 != 5:
     raise RuntimeError
 codes = octree.getCellCodes(5, True)
 indexes = octree.getCellIndexes(5)
-if len(indexes) != 2223: 
+if len(indexes) != 2262: 
     raise RuntimeError
 if len(indexes) != len(codes):
     raise RuntimeError

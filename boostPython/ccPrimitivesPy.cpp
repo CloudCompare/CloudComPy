@@ -54,12 +54,14 @@ ccPlane* plane_Fit_py(CCCoreLib::GenericIndexedCloudPersist * cloud)
 {
     return ccPlane::Fit(cloud, nullptr);
 }
+
 std::vector<double> plane_getEquation_py(ccPlane& self)
 {
     const PointCoordinateType* coefs = self.getEquation();
     std::vector<double> vec = {coefs[0], coefs[1], coefs[2], coefs[3]};
     return vec;
 }
+
 struct ccGenericPrimitiveWrap : ccGenericPrimitive, wrapper<ccGenericPrimitive>
 {
     virtual QString getTypeName()

@@ -1,4 +1,4 @@
-# CloudComPy
+# CloudComPy: Introduction
 Python wrapper for CloudCompare
 
 ## Project site (under construction)
@@ -9,7 +9,7 @@ and Windows 10 binaries for an Anaconda3 environment (see below).
 This project is a draft of what could be a Python module to interface to CloudCompare, 
 of equivalent level to the command mode of CloudCompare.
 
-There are still few features available in this prototype, 
+There are still missing features in this prototype, 
 the idea is to collect feedback from interested users to guide future developments.
 
 Here is an example of a Python script:
@@ -54,11 +54,15 @@ The list of available functions should quickly grow.
 
 From the Python interpreter, Docstrings provide some documentation on the available methods, the arguments.
 
-## testing a CloudComPy binary on Windows 10
+# CloudComPy: availables binaries
+
+## testing a CloudComPy binary on Windows 10, with Anaconda 3
 
 The binary *CloudComPy37_-date-.7z* available in this [directory](https://www.simulation.openfields.fr/binaries/) is built in an Anaconda3 environment
 (see below for the corresponding building instructions).
 As CloudComPy is under development and not yet fully stabilized, these instructions and the link are subject to change from time to time...
+
+**This binary works only on Windows 10, and with Anaconda3 as described below, not anywhere else!**
 
 You need a recent installation of Anaconda3.
 
@@ -71,7 +75,7 @@ conda create --name CloudComPy37 python=3.7
 conda activate CloudComPy37
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay
+conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay matplotlib
 ```
 
 Install the binary in the directory of your choice.
@@ -107,7 +111,75 @@ python test001.py
 
 The files created with the tests are in your user space: %USERPROFILE%\CloudComPy\dat
 
-## how to build CloudComPy?
+## testing a CloudComPy binary on Linux, with Anaconda 3
+
+The binary *CloudComPy_Conda39_Linux64_-date-.tgz* available in this [directory](https://www.simulation.openfields.fr/binaries/) is built in an Anaconda3 environment
+(see below for the corresponding building instructions).
+As CloudComPy is under development and not yet fully stabilized, these instructions and the link are subject to change from time to time...
+
+**This binary works only on Linux 64, and with Anaconda3 as described below, not anywhere else!**
+
+**Only tested un Ubuntu 20.04, please report any problems on other distributions.**
+
+You need a recent installation of Anaconda3.
+
+You need to create an environment for CloudComPy in Anaconda3, from the terminal
+(here, I chose to activate Anaconda environment on demand: please adapt the instructions to your installation):
+
+```
+. ~/anaconda3/etc/profile.d/conda.sh
+conda activate
+conda create --name CloudComPy39 python=3.9
+# --- erase previous env if existing
+conda activate CloudComPy39
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+conda install qt numpy psutil boost xerces-c pcl gdal cgal cmake pdal opencv ffmpeg mysql "qhull=2019.1" matplotlib "eigen=3.3.9"
+```
+
+Install the binary in the directory of your choice.
+Before using CloudCompare or CloudComPy, you need to load the environment. 
+From a new prompt (replace <path install> by its value): 
+
+```
+. ~/anaconda3/etc/profile.d/conda.sh
+conda activate CloudComPy39
+export LD_LIBRARY_PATH=~/anaconda3/envs/CloudComPy39/lib:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=<path install>/lib/cloudcompare:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=<path install>/lib/cloudcompare/plugins:${LD_LIBRARY_PATH}
+```
+/
+From the prompt, you can test :
+
+### Testing CloudCompare:
+
+```
+<path install>/bin/CloudCompare
+```
+
+### Python tests:
+
+```
+cd  <path install>/doc/PythonAPI_test
+```
+
+To execute all the tests (about one minute)
+
+```
+ctest
+```
+
+To complete the pythonpath and run a script
+
+```
+. envPyCC
+python test001.py
+```
+
+The files created with the tests are in your user space: %USERPROFILE%\CloudComPy\data
+
+
+# CloudComPy: building
 
 Prerequisites for CloudComPy are Python3, BoostPython and Numpy plus, of course, everything needed to build CloudCompare.
 
@@ -115,7 +187,7 @@ With CloudComPy you build CloudCompare and the associated Python module.
 
 Compilation is done with CMake, minimum version 3.10, recommended version 3.13 or newer (a lot of false warnings with 3.10).
 
-### prerequisites versions
+## prerequisites versions
 The minimum required version of each prerequisite is not always precisely identified. Examples of constructions that work are given here.
 
 First example: Linux, Ubuntu 20.04, all native packages.
@@ -132,10 +204,10 @@ Second example: Windows 10, Visual Studio 2019, Anaconda3 to get all the prerequ
 
 
 
-### Ubuntu 20.04
+## Ubuntu 20.04, native packages
 
 On Ubuntu 20.04, you can install the development versions of the prerequisites with:
-TODO: complete the list...
+**TODO: complete the list, many packages are required...**
 
 ```
 sudo apt-get intall qtbase5-dev python3 libpython3-dev python3-numpy cmake
@@ -148,7 +220,7 @@ Commandline options (adapt the paths):
 -DPYTHON_PREFERED_VERSION:STRING="3.8" -DPLUGIN_STANDARD_QM3C2:BOOL="1" -DBUILD_PY_TESTING:BOOL="1" -DPYTHONAPI_TEST_DIRECTORY:STRING="projets/CloudComPy/Data" -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo" -DCCCORELIB_USE_CGAL:BOOL="1" -DPLUGIN_STANDARD_QRANSAC_SD:BOOL="1" -DPLUGIN_EXAMPLE_IO:BOOL="1" -DCMAKE_INSTALL_PREFIX:PATH="/home/paul/projets/CloudComPy/installRelease" -DBUILD_TESTING:BOOL="1" -DOPTION_USE_GDAL:BOOL="1" -DPLUGIN_GL_QEDL:BOOL="1" -DPLUGIN_IO_QCSV_MATRIX:BOOL="1" -DPLUGIN_GL_QSSAO:BOOL="1" -DPLUGIN_STANDARD_QPCL:BOOL="0" -DPLUGIN_IO_QADDITIONAL:BOOL="1" -DPLUGIN_STANDARD_QCOMPASS:BOOL="1" -DPLUGIN_STANDARD_QMPLANE:BOOL="1" -DPLUGIN_IO_QPHOTOSCAN:BOOL="1" -DPYTHONAPI_TRACES:BOOL="1" -DPLUGIN_IO_QE57:BOOL="1" -DPLUGIN_STANDARD_QBROOM:BOOL="1" -DPLUGIN_EXAMPLE_STANDARD:BOOL="1" -DPLUGIN_STANDARD_QPOISSON_RECON:BOOL="1" -DPLUGIN_EXAMPLE_GL:BOOL="1"```
 ```
 
-Options to set with cmake-gui or ccmake (adapt the paths):
+I use clang series compilers, but it should work with g++,gcc as well. Options to set with cmake-gui or ccmake (adapt the paths):
 
 ```
 BUILD_PY_TESTING:BOOL=1
@@ -190,7 +262,7 @@ When in `<install-dir>/doc/PythonAPI_test`, `ctest` launches all the tests.
 
 The CloudCompare GUI is installed in  `<install-dir>/bin/CloudCompare`, and works as usual.	
 
-### Windows 10
+## Windows 10, with Anaconda3
 
 There are several methods to install the prerequisites on Windows 10. 
 I chose to install Anaconda, which is a very complete and large Python-based tools environment. 
@@ -204,7 +276,7 @@ conda create --name CloudComPy37 python=3.7
 conda activate CloudComPy37
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay
+conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay matplotlib
 ```
 For information, the list of packages actually installed for building and testing can be found in `building/conda-list`.
 
@@ -213,6 +285,8 @@ CMake from Anaconda is used to get ctest at install, not for build.
 I do not use Qt from conda packages, I still have a problem at runtime when reading xyz files with the HEAD of CloudCompare
 (after commit "New features (#1420)" from 2021-03-07).
 With a separate install of Qt 5.15.2 binaries, it works fine...
+
+To use FBX format plugin, install the FBX SDK, not provided by an Anaconda package.
 
 It is necessary to configure Visual Studio 2019 with CMake.
 
@@ -386,6 +460,11 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_IO_QFBX",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_IO_QLAS_FWF",
           "value": "False",
           "type": "BOOL"
@@ -546,6 +625,26 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "PATH"
         },
         {
+          "name": "FBX_SDK_INCLUDE_DIR",
+          "value": "C:/Program Files/Autodesk/FBX/FBX SDK/2020.2.1/include",
+          "type": "PATH"
+        },
+        {
+          "name": "FBX_SDK_LIBRARY_FILE",
+          "value": "C:/Program Files/Autodesk/FBX/FBX SDK/2020.2.1/lib/vs2019/x64/release/libfbxsdk-md.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "FBX_XML2_LIBRARY_FILE",
+          "value": "C:/Program Files/Autodesk/FBX/FBX SDK/2020.2.1/lib/vs2019/x64/release/libxml2-md.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "FBX_ZLIB_LIBRARY_FILE",
+          "value": "C:/Program Files/Autodesk/FBX/FBX SDK/2020.2.1/lib/vs2019/x64/release/zlib-md.lib",
+          "type": "FILEPATH"
+        },
+        {
           "name": "GDAL_INCLUDE_DIR",
           "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
           "type": "PATH"
@@ -630,7 +729,8 @@ Here are my json file, for the first method, with the plugins availables with An
           "value": "C:/Users/paulr/anaconda3/Library/lib/zlib.lib",
           "type": "FILEPATH"
         }
-      ]
+      ],
+      "intelliSenseMode": "windows-clang-x64"
     }
   ]
 }
@@ -644,7 +744,78 @@ When in `<install-dir>/doc/PythonAPI_test`, `ctest` launches all the tests.
 
 The CloudCompare GUI is installed in  `<install-dir>/bin/CloudCompare`, and works as usual. 
 
-There is still a lot of work to do to make a correct packaging, but it is already possible to test the Python interface.
+## Ubuntu 20.04, with Anaconda3
 
-In addition to feedback on the interface itself and the extensions to be made, I take advice on best practices 
-for configuration and use of Visual Studio tools :-)
+You need a recent installation of Anaconda3.
+
+You need to create an environment for CloudComPy in Anaconda3, from the terminal
+(here, I chose to activate Anaconda environment on demand: please adapt the instructions to your installation):
+
+```
+. ~/anaconda3/etc/profile.d/conda.sh
+conda activate
+conda create --name CloudComPy39 python=3.9
+# --- erase previous env if existing
+conda activate CloudComPy39
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+conda install qt numpy psutil boost xerces-c pcl gdal cgal cmake pdal opencv ffmpeg mysql "qhull=2019.1" matplotlib "eigen=3.3.9"
+```
+
+Before building CloudComPy and CloudCompare or using them, you need to load the environment. 
+From a new prompt: 
+
+```
+. ~/anaconda3/etc/profile.d/conda.sh
+conda activate CloudComPy39
+export LD_LIBRARY_PATH=~/anaconda3/envs/CloudComPy39/lib:${LD_LIBRARY_PATH}
+```
+
+I use clang series compilers, but it should work with g++,gcc as well. Options to set with cmake-gui or ccmake (adapt the paths):
+
+```
+BUILD_PY_TESTING:BOOL=1
+BUILD_TESTING:BOOL=1
+CCCORELIB_USE_CGAL:BOOL=1
+CCCORELIB_USE_TBB:BOOL=1
+CMAKE_BUILD_TYPE:STRING=RelWithDebInfo
+CMAKE_INSTALL_PREFIX:PATH=/home/paul/projets/CloudComPy/installConda39
+FBX_SDK_INCLUDE_DIR:PATH=/home/paul/projets/CloudComPy/fbxSdk/include
+FBX_SDK_LIBRARY_FILE:FILEPATH=/home/paul/projets/CloudComPy/fbxSdk/lib/gcc/x64/release/libfbxsdk.a
+GDAL_CONFIG:FILEPATH=/home/paul/anaconda3/envs/CloudComPy39/bin/gdal-config
+GDAL_INCLUDE_DIR:PATH=/home/paul/anaconda3/envs/CloudComPy39/include
+GDAL_LIBRARY:FILEPATH=/home/paul/anaconda3/envs/CloudComPy39/lib/libgdal.so
+GMP_INCLUDE_DIR:PATH=/home/paul/anaconda3/envs/CloudComPy39/include
+GMP_LIBRARIES:FILEPATH=/home/paul/anaconda3/envs/CloudComPy39/lib/libgmp.so
+GMP_LIBRARIES_DIR:FILEPATH=/home/paul/anaconda3/envs/CloudComPy39/
+MPFR_INCLUDE_DIR:PATH=/home/paul/anaconda3/envs/CloudComPy39/include
+MPFR_LIBRARIES:FILEPATH=/home/paul/anaconda3/envs/CloudComPy39/lib/libmpfr.so
+MPFR_LIBRARIES_DIR:FILEPATH=/home/paul/anaconda3/envs/CloudComPy39/
+OPTION_USE_GDAL:BOOL=1
+PLUGIN_EXAMPLE_GL:BOOL=1
+PLUGIN_EXAMPLE_IO:BOOL=1
+PLUGIN_EXAMPLE_STANDARD:BOOL=1
+PLUGIN_GL_QEDL:BOOL=1
+PLUGIN_GL_QSSAO:BOOL=1
+PLUGIN_IO_QADDITIONAL:BOOL=1
+PLUGIN_IO_QCSV_MATRIX:BOOL=1
+PLUGIN_IO_QE57:BOOL=1
+PLUGIN_IO_QFBX:BOOL=1
+PLUGIN_IO_QPDAL:BOOL=1
+PLUGIN_IO_QPHOTOSCAN:BOOL=1
+PLUGIN_STANDARD_QBROOM:BOOL=1
+PLUGIN_STANDARD_QCOMPASS:BOOL=1
+PLUGIN_STANDARD_QHPR:BOOL=1
+PLUGIN_STANDARD_QM3C2:BOOL=1
+PLUGIN_STANDARD_QPCL:BOOL=1
+PLUGIN_STANDARD_QPOISSON_RECON:BOOL=1
+PLUGIN_STANDARD_QRANSAC_SD:BOOL=1
+PYTHONAPI_TEST_DIRECTORY:STRING=CloudComPy/data
+PYTHONAPI_TRACES:BOOL=1
+PYTHON_PREFERED_VERSION:STRING=3.9
+XercesC_INCLUDE_DIR:PATH=/home/paul/anaconda3/envs/CloudComPy39/include
+XercesC_LIBRARY_RELEASE:FILEPATH=/home/paul/anaconda3/envs/CloudComPy39/lib/libxerces-c.so
+ZLIB_INCLUDE_DIR:PATH=/home/paul/anaconda3/envs/CloudComPy39/include
+ZLIB_LIBRARY_RELEASE:FILEPATH=/home/paul/anaconda3/envs/CloudComPy39/lib/libz.so
+```
+

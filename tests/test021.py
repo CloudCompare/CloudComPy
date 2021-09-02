@@ -21,23 +21,61 @@
 import os
 import sys
 import math
-from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual, createSymbolicLinks
+import numpy as np
+
+from gendata import getSampleCloud, getSamplePoly2, dataDir, isCoordEqual, createSymbolicLinks
 import cloudComPy as cc
 createSymbolicLinks() # required for tests on build, before cc.initCC
 
 cc.initCC()  # to do once before using plugins or dealing with numpy
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
-octree = cloud.getOctree() 
-if octree is not None:
-    raise RuntimeError
-octree = cloud.computeOctree()
+poly = cc.loadPolyline(getSamplePoly2("poly2"))
+poly.setClosed(True)
+cloudCropZ = cloud.crop2D(poly, 2, True)
 
-bb = octree.getBoundingBox()
-if not isCoordEqual(bb[0], (-5.004994869232178, -5.004994869232178, -3.043078899383545)):
+
+polygon1 = cc.ccFacet.Create(cloudCropZ)
+center1 = polygon1.getCenter()
+normal1 = polygon1.getNormal()
+eq1 = polygon1.getPlaneEquation()
+contour1 = polygon1.getContour()
+vert1 = polygon1.getContourVertices()
+surface1 = polygon1.getSurface()
+if not math.isclose(surface1, 64, rel_tol=1e-02):
     raise RuntimeError
-if not isCoordEqual(bb[1], (4.994994640350342, 4.994994640350342, 6.956910610198975)):
+
+polygon2 = cc.ccFacet.Create(cloudCropZ, 0.05)
+center2 = polygon2.getCenter()
+normal2 = polygon2.getNormal()
+eq2 = polygon2.getPlaneEquation()
+contour2 = polygon2.getContour()
+vert2 = polygon2.getContourVertices()
+surface2 = polygon2.getSurface()
+if not math.isclose(surface2, 56, rel_tol=1e-02):
     raise RuntimeError
-nb = octree.getNumberOfProjectedPoints()
-if nb != 1000000:
+
+polygon3 = cc.ccFacet.Create(cloudCropZ, 0.5)
+center3 = polygon3.getCenter()
+normal3 = polygon3.getNormal()
+eq3 = polygon3.getPlaneEquation()
+contour3 = polygon3.getContour()
+vert3 = polygon3.getContourVertices()
+surface3 = polygon3.getSurface()
+if not math.isclose(surface3, 56, rel_tol=2e-02):
     raise RuntimeError
+
+polygon4 = cc.ccFacet.Create(cloudCropZ, 0.05, False, (0., 0., 1., 0.))
+center4 = polygon4.getCenter()
+normal4 = polygon4.getNormal()
+eq4 = polygon4.getPlaneEquation()
+contour4 = polygon4.getContour()
+vert4 = polygon4.getContourVertices()
+surface4 = polygon4.getSurface()
+if not math.isclose(surface4, 56, rel_tol=1e-02):
+    raise RuntimeError
+
+cc.SaveEntities([cloud, cloudCropZ, vert1, vert2, vert3, vert4], os.path.join(dataDir, "polygons2D.bin"))
+
+mesh1 = polygon1.getPolygon()
+cc.SaveMesh(mesh1, os.path.join(dataDir, "mesh1.ply"))

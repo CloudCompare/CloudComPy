@@ -22,7 +22,7 @@ message(STATUS "Python3 and BoostPython processing")
 # --- Python detection: if several versions installed, select one with all the required packages installed
 
 set(PYTHON_PREFERED_VERSION "3.6" CACHE STRING "Select a Python version: it should be installed with all packages required for CloudCompare (pyqt, sip, numpy)")
-set_property(CACHE PYTHON_PREFERED_VERSION PROPERTY STRINGS "3.6" "3.7" "3.8")
+set_property(CACHE PYTHON_PREFERED_VERSION PROPERTY STRINGS "3.6" "3.7" "3.8" "3.9")
 message(STATUS "  python prefered version: " ${PYTHON_PREFERED_VERSION})
 set(Python_ADDITIONAL_VERSIONS ${PYTHON_PREFERED_VERSION}) # priority to this version 
 find_package (Python3 COMPONENTS Interpreter Development)
@@ -70,6 +70,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     ${CMAKE_CURRENT_LIST_DIR}/geometricalAnalysisToolsPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/registrationToolsPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/cloudSamplingToolsPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ccFacetPy.cpp
     )
 
 target_include_directories( ${PROJECT_NAME} PUBLIC
@@ -144,6 +145,7 @@ endif()
 if( WIN32 OR APPLE)
 else()
     set(RSTFILES
+        ccFacet.rst
         ccMesh.rst
         ccOctree.rst
         ccPointCloud.rst
@@ -163,16 +165,19 @@ else()
     set(ALLSPHINXOPTS -d doctrees ${SPHINXOPTS} ${SOURCEDIR})
     set(SPHINXBUILD sphinx-build)
 
-    add_custom_target(BUILD_HTML ALL
-      COMMAND ${CMAKE_COMMAND} -E make_directory html
-      COMMAND ${CMAKE_COMMAND} -E make_directory doctrees
-      COMMAND ${SPHINXBUILD} -c ${CMAKE_BINARY_DIR}/boostPython -b html ${ALLSPHINXOPTS} html
-      DEPENDS ${RSTFILES}  ${PROJECT_NAME}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
+    option( BUILD_REFERENCE_DOC "Build reference documentation for CloudComPy" OFF )
+    if ( BUILD_REFERENCE_DOC )
+        add_custom_target(BUILD_HTML ALL
+          COMMAND ${CMAKE_COMMAND} -E make_directory html
+          COMMAND ${CMAKE_COMMAND} -E make_directory doctrees
+          COMMAND ${SPHINXBUILD} -c ${CMAKE_BINARY_DIR}/boostPython -b html ${ALLSPHINXOPTS} html
+          DEPENDS ${RSTFILES}  ${PROJECT_NAME}
+          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        )
 
-    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html/
-      DESTINATION doc/CloudComPy
-      PATTERN ".buildinfo" EXCLUDE
-      )
+        install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html/
+          DESTINATION doc/CloudComPy
+          PATTERN ".buildinfo" EXCLUDE
+          )
+    endif()
 endif()

@@ -6,5 +6,8 @@
 @set PYTHONPATH=%CD%/../../CloudCompare;%PYTHONPATH%
 @set PYTHONPATH=%CD%;%PYTHONPATH%
 python %1
+set PythonError=%errorlevel%
+echo "Python exit code = %PythonError%"
 @set PYTHONPATH=%PREVPYTHONPATH%
 @set PATH=%PREVPATH%
+exit %PythonError%

@@ -30,6 +30,19 @@ Python3 access to cloudCompare objects is done like this:
  
  )";
 
+const char* cloudComPy_importFile_doc= R"(
+Load any kind of entities (cloud or mesh) from a file.
+
+:param filename: file Name
+:param shiftMode,optional mode: default AUTO, value from AUTO, XYZ, FIRST_GLOBAL_SHIFT, NO_GLOBAL_SHIFT
+:param float,optional x: default 0
+:param float,optional y: default 0
+:param float,optional z: default 0
+
+:return: a tuple (list of meshes, list of clouds)
+:rtype: tuple
+)";
+
 const char* cloudComPy_ICPres_doc=R"(
 Result values on ICP registration.
 
@@ -84,10 +97,12 @@ Load a 3D cloud from a file.
 
 :param filename:
 :type filename: str
-:param shiftMode: shift mode from (`CC_SHIFT_MODE.AUTO`, `CC_SHIFT_MODE.XYZ`),  optional, default `AUTO`.
+:param shiftMode: shift mode from `CC_SHIFT_MODE` enum,  optional, default `AUTO`.
 
   - `CC_SHIFT_MODE.AUTO`: automatic shift of coordinates
   - `CC_SHIFT_MODE.XYZ`:  coordinates shift given by x, y, z parameters
+  - `CC_SHIFT_MODE.FIRST_GLOBAL_SHIFT`: use the first encountered global shift value (if any)
+  - `CC_SHIFT_MODE.NO_GLOBAL_SHIFT`: no shift at all 
   
 :type shiftMode: CC_SHIFT_MODE
 :param skip: parameter not used yet! default 0
@@ -101,6 +116,31 @@ Load a 3D cloud from a file.
 
 :return: a `ccPointCloud` object. Usage: see ccPointCloud doc.
 :rtype: ccPointCloud)";
+
+const char* cloudComPy_loadMesh_doc= R"(
+Load a Mesh from a file.
+
+:param filename:
+:type filename: str
+:param shiftMode: shift mode from `CC_SHIFT_MODE` enum,  optional, default `AUTO`.
+
+  - `CC_SHIFT_MODE.AUTO`: automatic shift of coordinates
+  - `CC_SHIFT_MODE.XYZ`:  coordinates shift given by x, y, z parameters
+  - `CC_SHIFT_MODE.FIRST_GLOBAL_SHIFT`: use the first encountered global shift value (if any)
+  - `CC_SHIFT_MODE.NO_GLOBAL_SHIFT`: no shift at all 
+  
+:type shiftMode: CC_SHIFT_MODE
+:param skip: parameter not used yet! default 0
+:type skip: int, optional
+:param x: shift value for coordinates (mode XYZ),  default 0
+:type x: float, optional
+:param y: shift value for coordinates (mode XYZ),  default 0
+:type y: float, optional
+:param z: shift value for coordinates (mode XYZ),  default 0
+:type z: float, optional
+
+:return: a `ccMesh` object. Usage: see ccMesh doc.
+:rtype: ccMesh)";
 
 const char* cloudComPy_loadPolyline_doc= R"(
 Load a polyline from a file.
@@ -124,8 +164,21 @@ Usage: see ccPolyline doc.)";
 const char* cloudComPy_SavePointCloud_doc= R"(
 Save a 3D cloud in a file.
 
+The file name extension determines the format (.asc .las .E57 .sbf .ply .vtk .dxf .pcd .pn .pv .bin)
+
 :param ccPointCloud cloud: the cloud to save.
 :param str filename: The cloud file.
+
+:return: 0 or I/O error.
+:rtype: CC_FILE_ERROR)";
+
+const char* cloudComPy_SaveMesh_doc= R"(
+Save a 3D mesh in a file.
+
+The file name extension determines the format (.ma .dxf .off .stl .vtk .obj .ply .bin .fbx)
+
+:param ccMesh mesh: the mesh to save.
+:param str filename: The mesh file.
 
 :return: 0 or I/O error.
 :rtype: CC_FILE_ERROR)";

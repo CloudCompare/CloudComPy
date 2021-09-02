@@ -10,9 +10,9 @@ dataDir = os.path.join(os.environ["@USER_HOME@"], "@PYTHONAPI_TEST_DIRECTORY@")
 if not os.path.exists(dataDir):
     os.makedirs(dataDir)
 
-def isCoordEqual(vals, refs):
+def isCoordEqual(vals, refs, tol=1.e-6):
     for val, ref in zip(vals, refs):
-        if not math.isclose(val, ref, rel_tol=1e-06):
+        if not math.isclose(val, ref, rel_tol=tol):
             return False
     return True
 
@@ -60,6 +60,21 @@ def getSamplePoly(polyname="poly1"):
             for x,y in zip(vx, vy):
                 f.write("%f %f %f\n" % (x, y, 0.))
     return sample
+
+def getSamplePoly2(polyname="poly2"):
+    dataName = "%s.poly" % polyname
+    sample = os.path.join(dataDir, dataName)
+    if not os.path.exists(sample):
+        vx = []
+        vy = []
+        if polyname == "poly2":
+            vx = [-4.,  0.,  4., 3.5,  4.,  0., -4.,-3.5]
+            vy = [ 4., 3.5,  4.,  0., -4.,-3.5, -4.,  0.]
+        with open(sample, 'w') as f:
+            for x,y in zip(vx, vy):
+                f.write("%f %f %f\n" % (x, y, 0.))
+    return sample
+
 
 def createSymbolicLinks():
     modulePath = cc.__file__

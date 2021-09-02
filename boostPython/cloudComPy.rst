@@ -7,9 +7,15 @@ cloudComPy module, functions
 
 .. autofunction:: initCC
 
+.. autofunction:: importFile
+
+.. autofunction:: loadMesh
+
 .. autofunction:: loadPointCloud
 
 .. autofunction:: loadPolyline
+
+.. autofunction:: SaveMesh
 
 .. autofunction:: SavePointCloud
 

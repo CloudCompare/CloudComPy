@@ -39,8 +39,12 @@
 
 enum CC_SHIFT_MODE
 {
-    AUTO = 0, XYZ = 1
+    AUTO = 0, XYZ = 1, FIRST_GLOBAL_SHIFT = 2, NO_GLOBAL_SHIFT = 3
 };
+//enum GLOBAL_SHIFT_MODE
+//{
+//    AUTO_GLOBAL_SHIFT = 0, CUSTOM_GLOBAL_SHIFT = 1, FIRST_GLOBAL_SHIFT = 2, NO_GLOBAL_SHIFT = 3
+//};
 
 //! load a Polyline from file
 /*! TODO process optional skip parameter following ccCommandLineInterface::processGlobalShiftCommand
@@ -60,20 +64,18 @@ ccPolyline* loadPolyline(
     double y = 0,
     double z = 0);
 
-//! load a point cloud from file
-/*! TODO process optional skip parameter following ccCommandLineInterface::processGlobalShiftCommand
+//! load any kind of entities (cloud or mesh) from a file
+/*! adapted from ccCommandLineInterface::importFile
  * \param filename
  * \param mode optional default AUTO
  * \param skip optional default 0
  * \param x optional default 0
  * \param y optional default 0
  * \param z optional default 0
- * \return cloud if success, or nullptr
+ * \return a vector of entities, empty if problem
  */
-ccPointCloud* loadPointCloud(
-    const char* filename,
+std::vector<ccHObject*> importFile(const char* filename,
     CC_SHIFT_MODE mode = AUTO,
-    int skip = 0,
     double x = 0,
     double y = 0,
     double z = 0);
@@ -85,6 +87,15 @@ ccPointCloud* loadPointCloud(
  * \return IO status
  */
 CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename);
+
+//! save a mesh to a file
+/*! the file type is given by the extension
+ * \param mesh
+ * \param filename
+ * \return IO status
+ */
+CC_FILE_ERROR SaveMesh(ccMesh* mesh, const QString& filename);
+
 
 //! save a vector of entities
 /*! the file type is given by the extension (use .bin)
