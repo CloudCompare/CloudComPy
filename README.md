@@ -179,7 +179,7 @@ python test001.py
 The files created with the tests are in your user space: %USERPROFILE%\CloudComPy\data
 
 
-#CloudComPy: building
+# CloudComPy: building
 
 Prerequisites for CloudComPy are Python3, BoostPython and Numpy plus, of course, everything needed to build CloudCompare.
 
