@@ -58,7 +58,7 @@ From the Python interpreter, Docstrings provide some documentation on the availa
 
 ## testing a CloudComPy binary on Windows 10, with Anaconda 3
 
-The binary *CloudComPy37_-date-.7z* available in this [directory](https://www.simulation.openfields.fr/binaries/) is built in an Anaconda3 environment
+The binary *CloudComPy37_-date-.7z* available [here](https://www.simulation.openfields.fr/index.php/download-binaries) is built in an Anaconda3 environment
 (see below for the corresponding building instructions).
 As CloudComPy is under development and not yet fully stabilized, these instructions and the link are subject to change from time to time...
 
@@ -113,7 +113,7 @@ The files created with the tests are in your user space: %USERPROFILE%\CloudComP
 
 ## testing a CloudComPy binary on Linux, with Anaconda 3
 
-The binary *CloudComPy_Conda39_Linux64_-date-.tgz* available in this [directory](https://www.simulation.openfields.fr/binaries/) is built in an Anaconda3 environment
+The binary *CloudComPy_Conda39_Linux64_-date-.tgz* available [here](https://www.simulation.openfields.fr/index.php/download-binaries) is built in an Anaconda3 environment
 (see below for the corresponding building instructions).
 As CloudComPy is under development and not yet fully stabilized, these instructions and the link are subject to change from time to time...
 
