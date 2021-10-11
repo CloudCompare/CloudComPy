@@ -33,6 +33,8 @@ cloudComPy module, functions
 
 .. autofunction:: computeNormals
 
+.. autofunction:: ComputeVolume25D
+
 .. autoclass:: ICPres
    :members:
    :undoc-members:
@@ -56,3 +58,9 @@ cloudComPy module, functions
 .. autoclass:: Orientation
    :members:
    :undoc-members:
+   
+.. autoclass:: ReportInfoVol
+   :members:
+   :undoc-members:
+   
+   

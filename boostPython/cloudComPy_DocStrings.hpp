@@ -30,6 +30,23 @@ Python3 access to cloudCompare objects is done like this:
  
  )";
 
+const char* cloudComPy_ComputeVolume25D_doc= R"(
+Compute a 2.5D volume between a cloud and a ground plane,or two clouds,following a given direction (X, Y or Z).
+
+If only one cloud is given, the direction (X, Y or Z) define the normal to the plane used for calculation.
+
+:param reportInfo ReportInfoVol: the object instance to be completed with results
+:param ccPointCloud ground: either a point cloud or None
+:param ccPointCloud ceil: either a point cloud or None
+:param int vertDim: direction from (0,1,2): 0: X, 1: Y, 2: Z
+:param float gridStep: size of the grid step
+:param float groundHeight: altitude of the ground plane along the direction, if ground is None
+:param float ceilHeight: altitude of the ceil plane along the direction, if ceil is None
+
+:return: True if success, False if problem detected in parameters
+:rtype: bool
+)";
+
 const char* cloudComPy_importFile_doc= R"(
 Load any kind of entities (cloud or mesh) from a file.
 
@@ -47,13 +64,9 @@ const char* cloudComPy_ICPres_doc=R"(
 Result values on ICP registration.
 
 :ivar ccPointCloud aligned: the point cloud on which the transformation must be applied
-
 :ivar ccGLMatrix transMat: the resulting transformation to apply
-
 :ivar float finalScale: calculated scale if rescale required
-
 :ivar float finalRMS: final error (RMS)
-
 :ivar int finalPointCount: number of points used to compute the final RMS
 )";
 
@@ -160,6 +173,22 @@ Load a polyline from a file.
 :rtype: ccPolyline
 
 Usage: see ccPolyline doc.)";
+
+const char* cloudComPy_ReportInfoVol_doc= R"(
+Result values on 2.5D volume calculation. See :py:class:`ComputeVolume25D`
+
+The volume is considered between a point cloud and a ground plane following a given direction (X, Y or Z),
+or between two point clouds.
+
+:ivar float volume: the resulting volume
+:ivar float addedVolume: the positive part of the volume (ceil > floor)
+:ivar float removedVolume: the negative part of the volume (ceil < floor)
+:ivar float surface: the section of the point cloud along in the given direction
+:ivar float matchingPercent: percentage of the section matching ceil and floor
+:ivar float ceilNonMatchingPercent: percentage of the ceil section non matching floor
+:ivar float groundNonMatchingPercent: percentage of the floor section non matching ceil
+:ivar int averageNeighborsPerCell: average Neighbor number per cell (see 'gridStep' in :py:meth`ComputeVolume25D`)
+)";
 
 const char* cloudComPy_SavePointCloud_doc= R"(
 Save a 3D cloud in a file.

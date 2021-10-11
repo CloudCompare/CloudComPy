@@ -28,12 +28,13 @@
   #endif
 #endif
 
-#include <ccCommandLineInterface.h>
 #include <GeometricalAnalysisTools.h>
 #include <ccPolyline.h>
 #include <ccPointCloud.h>
 #include <RegistrationTools.h>
 #include <ccNormalVectors.h>
+#include <ccProgressDialog.h>
+#include <ccCommandLineInterface.h>
 
 // --- for Python3 interface
 
@@ -169,6 +170,32 @@ bool computeNormals(std::vector<ccHObject*> selectedEntities,
     int mstNeighbors = 6,
     bool computePerVertexNormals = true);
 
+
+//! Report info volume TODO: copied from Report info qCC/ccVolumeCalcTool.h
+struct ReportInfoVol
+{
+    ReportInfoVol();
+
+    //QString toText(int precision = 6) const;
+
+    double volume;
+    double addedVolume;
+    double removedVolume;
+    double surface;
+    float matchingPercent;
+    float ceilNonMatchingPercent;
+    float groundNonMatchingPercent;
+    double averageNeighborsPerCell;
+};
+
+bool ComputeVolume25D(  ReportInfoVol* reportInfo,
+                        ccGenericPointCloud* ground,
+                        ccGenericPointCloud* ceil,
+                        unsigned char vertDim,
+                        double gridStep,
+                        double groundHeight,
+                        double ceilHeight);
+
 // --- internal functions (not wrapped in the Python API) ---------------------
 
 //! initialize internal structures: should be done once, multiples calls allowed (does nothing)
@@ -225,7 +252,5 @@ struct CLPolyDesc : CLEntityDesc
     const ccHObject* getEntity() const override { return static_cast<ccHObject*>(pc); }
     CL_ENTITY_TYPE getCLEntityType() const override { return CL_ENTITY_TYPE::CLOUD; }
 };
-
-
 
 #endif /* CLOUDCOMPY_PYAPI_PYCC_H_ */

@@ -357,4 +357,17 @@ BOOST_PYTHON_MODULE(cloudComPy)
     def("ICP", ICP_py, ICP_py_overloads(cloudComPy_ICP_doc));
 
     def("computeNormals", computeNormals, computeNormals_overloads(cloudComPy_computeNormals_doc));
+
+    class_<ReportInfoVol>("ReportInfoVol", cloudComPy_ReportInfoVol_doc)
+		.def_readonly("volume", &ReportInfoVol::volume)
+		.def_readonly("addedVolume", &ReportInfoVol::addedVolume)
+		.def_readonly("removedVolume", &ReportInfoVol::removedVolume)
+		.def_readonly("surface", &ReportInfoVol::surface)
+		.def_readonly("matchingPercent", &ReportInfoVol::matchingPercent)
+		.def_readonly("ceilNonMatchingPercent", &ReportInfoVol::ceilNonMatchingPercent)
+		.def_readonly("groundNonMatchingPercent", &ReportInfoVol::groundNonMatchingPercent)
+		.def_readonly("averageNeighborsPerCell", &ReportInfoVol::averageNeighborsPerCell)
+		;
+
+    def("ComputeVolume25D", ComputeVolume25D, cloudComPy_ComputeVolume25D_doc);
 }

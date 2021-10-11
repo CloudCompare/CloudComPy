@@ -35,6 +35,7 @@
 #include <ccSensor.h>
 #include <ccMesh.h>
 #include <ccGLMatrix.h>
+#include <ccRasterGrid.h>
 
 //libs/qCC_io
 #include<AsciiFilter.h>
@@ -51,6 +52,7 @@
 
 //system
 #include <unordered_set>
+#include <cmath>
 
 //Qt
 #include <QApplication>
@@ -875,9 +877,9 @@ PointCoordinateType pyCC_GetDefaultCloudKernelSize(ccGenericPointCloud* cloud, u
         ccBBox box = cloud->getOwnBB();
         CCVector3 d = box.getDiagVec();
         PointCoordinateType volume = d[0] * d[1] * d[2];
-        PointCoordinateType surface = pow(volume, static_cast<PointCoordinateType>(2.0 / 3.0));
+        PointCoordinateType surface = std::pow(volume, static_cast<PointCoordinateType>(2.0 / 3.0));
         PointCoordinateType surfacePerPoint = surface / cloud->size();
-        return sqrt(surfacePerPoint * knn);
+        return std::sqrt(surfacePerPoint * knn);
     }
 
     return -CCCoreLib::PC_ONE;
@@ -989,7 +991,7 @@ bool ICP(
         //level = 7 if < 1.000.000
         //level = 8 if < 10.000.000
         //level = 9 if > 10.000.000
-        int gridLevel = static_cast<int>(floor(log10(static_cast<double>(std::max(dataCloud->size(), modelCloud->size()))))) + 2;
+        int gridLevel = static_cast<int>(std::floor(std::log10(static_cast<long double>(std::max(dataCloud->size(), modelCloud->size()))))) + 2;
             gridLevel = std::min(std::max(gridLevel, 7), 9);
         int result = -1;
         if (modelMesh)
@@ -1425,3 +1427,318 @@ bool computeNormals(std::vector<ccHObject*> selectedEntities,
 
     return true;
 }
+
+
+//! TODO: Copied/adpated from qCC/ccVolumeCalcTool::ComputeVolume
+bool ComputeVolume_(    ccRasterGrid& grid,
+                        ccGenericPointCloud* ground,
+                        ccGenericPointCloud* ceil,
+                        const ccBBox& gridBox,
+                        unsigned char vertDim,
+                        double gridStep,
+                        unsigned gridWidth,
+                        unsigned gridHeight,
+                        ccRasterGrid::ProjectionType projectionType,
+                        ccRasterGrid::EmptyCellFillOption groundEmptyCellFillStrategy,
+                        ccRasterGrid::EmptyCellFillOption ceilEmptyCellFillStrategy,
+                        ReportInfoVol* reportInfo,
+                        double groundHeight = std::numeric_limits<double>::quiet_NaN(),
+                        double ceilHeight = std::numeric_limits<double>::quiet_NaN())
+{
+    if (    gridStep <= 1.0e-8
+        ||  gridWidth == 0
+        ||  gridHeight == 0
+        ||  vertDim > 2)
+    {
+        ccLog::Warning("[Volume] Invalid input parameters");
+        CCTRACE("[Volume] Invalid input parameters");
+        return false;
+    }
+
+    if (!ground && !ceil)
+    {
+        ccLog::Warning("[Volume] No valid input cloud");
+        CCTRACE("[Volume] No valid input cloud");
+        return false;
+    }
+
+    if (!gridBox.isValid())
+    {
+        ccLog::Warning("[Volume] Invalid bounding-box");
+        CCTRACE("[Volume] Invalid bounding-box");
+        return false;
+    }
+
+    //grid size
+    unsigned gridTotalSize = gridWidth * gridHeight;
+//    if (gridTotalSize == 1)
+//    {
+//        if (parentWidget && QMessageBox::question(parentWidget, "Unexpected grid size", "The generated grid will only have 1 cell! Do you want to proceed anyway?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+//            return false;
+//    }
+//    else if (gridTotalSize > 10000000)
+//    {
+//        if (parentWidget && QMessageBox::question(parentWidget, "Big grid size", "The generated grid will have more than 10.000.000 cells! Do you want to proceed anyway?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+//            return false;
+//    }
+
+    //memory allocation
+    CCVector3d minCorner = gridBox.minCorner();
+    if (!grid.init(gridWidth, gridHeight, gridStep, minCorner))
+    {
+        //not enough memory
+        //return SendError("Not enough memory", parentWidget);
+        ccLog::Error(QObject::tr("Not enough memory!"));
+        CCTRACE("Not enough memory!");
+        return false;
+    }
+
+    //progress dialog
+    QScopedPointer<ccProgressDialog> pDlg(nullptr);
+//    if (parentWidget)
+//    {
+//        pDlg.reset(new ccProgressDialog(true, parentWidget));
+//    }
+
+    ccRasterGrid groundRaster;
+    if (ground)
+    {
+        if (!groundRaster.init(gridWidth, gridHeight, gridStep, minCorner))
+        {
+            //not enough memory
+            //return SendError("Not enough memory", parentWidget);
+            ccLog::Error(QObject::tr("Not enough memory!"));
+            CCTRACE("Not enough memory!");
+            return false;
+        }
+
+        if (groundRaster.fillWith(  ground,
+                                    vertDim,
+                                    projectionType,
+                                    groundEmptyCellFillStrategy == ccRasterGrid::INTERPOLATE,
+                                    ccRasterGrid::INVALID_PROJECTION_TYPE,
+                                    pDlg.data()))
+        {
+            groundRaster.fillEmptyCells(groundEmptyCellFillStrategy, groundHeight);
+            ccLog::Print(QString("[Volume] Ground raster grid: size: %1 x %2 / heights: [%3 ; %4]").arg(groundRaster.width).arg(groundRaster.height).arg(groundRaster.minHeight).arg(groundRaster.maxHeight));
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //ceil
+    ccRasterGrid ceilRaster;
+    if (ceil)
+    {
+        if (!ceilRaster.init(gridWidth, gridHeight, gridStep, minCorner))
+        {
+            //not enough memory
+            //return SendError("Not enough memory", parentWidget);
+            ccLog::Error(QObject::tr("Not enough memory!"));
+            CCTRACE("Not enough memory!");
+            return false;
+        }
+
+        if (ceilRaster.fillWith(ceil,
+                                vertDim,
+                                projectionType,
+                                ceilEmptyCellFillStrategy == ccRasterGrid::INTERPOLATE,
+                                ccRasterGrid::INVALID_PROJECTION_TYPE,
+                                pDlg.data()))
+        {
+            ceilRaster.fillEmptyCells(ceilEmptyCellFillStrategy, ceilHeight);
+            ccLog::Print(QString("[Volume] Ceil raster grid: size: %1 x %2 / heights: [%3 ; %4]").arg(ceilRaster.width).arg(ceilRaster.height).arg(ceilRaster.minHeight).arg(ceilRaster.maxHeight));
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //update grid and compute volume
+    {
+//        if (pDlg)
+//        {
+//            pDlg->setMethodTitle(QObject::tr("Volume computation"));
+//            pDlg->setInfo(QObject::tr("Cells: %1 x %2").arg(grid.width).arg(grid.height));
+//            pDlg->start();
+//            pDlg->show();
+//            QCoreApplication::processEvents();
+//        }
+//        CCCoreLib::NormalizedProgress nProgress(pDlg.data(), grid.width * grid.height);
+
+        size_t ceilNonMatchingCount = 0;
+        size_t groundNonMatchingCount = 0;
+        size_t cellCount = 0;
+
+        //at least one of the grid is based on a cloud
+        grid.nonEmptyCellCount = 0;
+        for (unsigned i = 0; i < grid.height; ++i)
+        {
+            for (unsigned j = 0; j < grid.width; ++j)
+            {
+                ccRasterCell& cell = grid.rows[i][j];
+
+                bool validGround = true;
+                cell.minHeight = groundHeight;
+                if (ground)
+                {
+                    cell.minHeight = groundRaster.rows[i][j].h;
+                    validGround = std::isfinite(cell.minHeight);
+                }
+
+                bool validCeil = true;
+                cell.maxHeight = ceilHeight;
+                if (ceil)
+                {
+                    cell.maxHeight = ceilRaster.rows[i][j].h;
+                    validCeil = std::isfinite(cell.maxHeight);
+                }
+
+                if (validGround && validCeil)
+                {
+                    cell.h = cell.maxHeight - cell.minHeight;
+                    cell.nbPoints = 1;
+
+                    reportInfo->volume += cell.h;
+                    if (cell.h < 0)
+                    {
+                        reportInfo->removedVolume -= cell.h;
+                    }
+                    else if (cell.h > 0)
+                    {
+                        reportInfo->addedVolume += cell.h;
+                    }
+                    reportInfo->surface += 1.0;
+                    ++grid.nonEmptyCellCount; // matching count
+                    ++cellCount;
+                }
+                else
+                {
+                    if (validGround)
+                    {
+                        ++cellCount;
+                        ++groundNonMatchingCount;
+                    }
+                    else if (validCeil)
+                    {
+                        ++cellCount;
+                        ++ceilNonMatchingCount;
+                    }
+                    cell.h = std::numeric_limits<double>::quiet_NaN();
+                    cell.nbPoints = 0;
+                }
+
+                cell.avgHeight = (groundHeight + ceilHeight) / 2;
+                cell.stdDevHeight = 0;
+
+//                if (pDlg && !nProgress.oneStep())
+//                {
+//                    ccLog::Warning("[Volume] Process cancelled by the user");
+//                    return false;
+//                }
+            }
+        }
+        grid.validCellCount = grid.nonEmptyCellCount;
+
+        //count the average number of valid neighbors
+        {
+            size_t validNeighborsCount = 0;
+            size_t count = 0;
+            for (unsigned i = 1; i < grid.height - 1; ++i)
+            {
+                for (unsigned j = 1; j < grid.width - 1; ++j)
+                {
+                    ccRasterCell& cell = grid.rows[i][j];
+                    if (cell.h == cell.h)
+                    {
+                        for (unsigned k = i - 1; k <= i + 1; ++k)
+                        {
+                            for (unsigned l = j - 1; l <= j + 1; ++l)
+                            {
+                                if (k != i || l != j)
+                                {
+                                    ccRasterCell& otherCell = grid.rows[k][l];
+                                    if (std::isfinite(otherCell.h))
+                                    {
+                                        ++validNeighborsCount;
+                                    }
+                                }
+                            }
+                        }
+
+                        ++count;
+                    }
+                }
+            }
+
+            if (count)
+            {
+                reportInfo->averageNeighborsPerCell = static_cast<double>(validNeighborsCount) / count;
+            }
+        }
+
+        reportInfo->matchingPercent = static_cast<float>(grid.validCellCount * 100) / cellCount;
+        reportInfo->groundNonMatchingPercent = static_cast<float>(groundNonMatchingCount * 100) / cellCount;
+        reportInfo->ceilNonMatchingPercent = static_cast<float>(ceilNonMatchingCount * 100) / cellCount;
+        float cellArea = static_cast<float>(grid.gridStep * grid.gridStep);
+        reportInfo->volume *= cellArea;
+        reportInfo->addedVolume *= cellArea;
+        reportInfo->removedVolume *= cellArea;
+        reportInfo->surface *= cellArea;
+    }
+
+    grid.setValid(true);
+
+    return true;
+}
+
+bool ComputeVolume25D(  ReportInfoVol* reportInfo,
+                        ccGenericPointCloud* ground,
+                        ccGenericPointCloud* ceil,
+                        unsigned char vertDim,
+                        double gridStep,
+                        double groundHeight,
+                        double ceilHeight)
+{
+    ccRasterGrid grid;
+    ccBBox gridBBox = ceil ? ceil->getOwnBB() : ccBBox();
+    if (ground)
+    {
+        gridBBox += ground->getOwnBB();
+    }
+    //compute the grid size
+    unsigned gridWidth = 0;
+    unsigned gridHeight = 0;
+    if (!ccRasterGrid::ComputeGridSize(vertDim, gridBBox, gridStep, gridWidth, gridHeight))
+    {
+        ccLog::Error(QObject::tr("Failed to compute the grid dimensions (check input cloud(s) bounding-box)"));
+        CCTRACE("Failed to compute the grid dimensions (check input cloud(s) bounding-box)");
+    }
+
+    bool ret = ComputeVolume_( grid,
+                               ground,
+                               ceil,
+                               gridBBox,
+                               vertDim,
+                               gridStep,
+                               gridWidth,
+                               gridHeight,
+                               ccRasterGrid::PROJ_AVERAGE_VALUE,
+                               ccRasterGrid::LEAVE_EMPTY,
+                               ccRasterGrid::LEAVE_EMPTY,
+                               reportInfo,
+                               groundHeight,
+                               ceilHeight);
+    return ret;
+}
+
+ReportInfoVol::ReportInfoVol() :
+    volume(0), addedVolume(0), removedVolume(0), surface(0),
+    matchingPercent(0), ceilNonMatchingPercent(0), groundNonMatchingPercent(0),
+    averageNeighborsPerCell(0)
+{
+}
+
