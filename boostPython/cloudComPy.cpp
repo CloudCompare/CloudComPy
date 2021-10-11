@@ -308,7 +308,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .value("PLUS_ORIGIN", ccNormalVectors::PLUS_ORIGIN )
         .value("MINUS_ORIGIN", ccNormalVectors::MINUS_ORIGIN )
         .value("PREVIOUS", ccNormalVectors::PREVIOUS )
-        .value("SENSOR_ORIGIN", ccNormalVectors::SENSOR_ORIGIN )
+        .value("PLUS_SENSOR_ORIGIN", ccNormalVectors::PLUS_SENSOR_ORIGIN )
+        .value("MINUS_SENSOR_ORIGIN", ccNormalVectors::MINUS_SENSOR_ORIGIN )
         .value("UNDEFINED", ccNormalVectors::UNDEFINED )
         ;
 
