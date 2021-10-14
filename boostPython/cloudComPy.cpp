@@ -33,6 +33,7 @@
 #include "registrationToolsPy.hpp"
 #include "cloudSamplingToolsPy.hpp"
 #include "ccFacetPy.hpp"
+#include "NeighbourhoodPy.hpp"
 
 #include "initCC.h"
 #include "pyCC.h"
@@ -242,6 +243,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
     export_registrationTools();
     export_cloudSamplingTools();
     export_ccFacet();
+    export_Neighbourhood();
 
     // TODO: function load entities ("file.bin")
     // TODO: more methods on distanceComputationTools
@@ -336,6 +338,16 @@ BOOST_PYTHON_MODULE(cloudComPy)
     def("initCC", &initCC_py, cloudComPy_initCC_doc);
 
     def("computeCurvature", computeCurvature, cloudComPy_computeCurvature_doc);
+
+    def("computeFeature", computeFeature, cloudComPy_computeFeature_doc);
+
+    def("computeLocalDensity", computeLocalDensity, cloudComPy_computeLocalDensity_doc);
+
+    def("computeApproxLocalDensity", computeApproxLocalDensity, cloudComPy_computeApproxLocalDensity_doc);
+
+    def("computeRoughness", computeRoughness, cloudComPy_computeRoughness_doc);
+
+    def("computeMomentOrder1", computeMomentOrder1, cloudComPy_computeMomentOrder1_doc);
 
     def("filterBySFValue", filterBySFValue, return_value_policy<reference_existing_object>(), cloudComPy_filterBySFValue_doc);
 

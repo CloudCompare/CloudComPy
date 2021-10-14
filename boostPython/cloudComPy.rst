@@ -5,35 +5,26 @@ cloudComPy module, functions
 
 .. automodule:: cloudComPy
 
-.. autofunction:: initCC
-
-.. autofunction:: importFile
-
-.. autofunction:: loadMesh
-
-.. autofunction:: loadPointCloud
-
-.. autofunction:: loadPolyline
-
-.. autofunction:: SaveMesh
-
-.. autofunction:: SavePointCloud
-
-.. autofunction:: SaveEntities
-
+.. autofunction:: computeApproxLocalDensity
 .. autofunction:: computeCurvature
-
-.. autofunction:: filterBySFValue
-
-.. autofunction:: GetPointCloudRadius
-
-.. autofunction:: getScalarType
-
-.. autofunction:: ICP
-
+.. autofunction:: computeFeature
+.. autofunction:: computeLocalDensity
+.. autofunction:: computeMomentOrder1
 .. autofunction:: computeNormals
-
+.. autofunction:: computeRoughness
 .. autofunction:: ComputeVolume25D
+.. autofunction:: filterBySFValue
+.. autofunction:: GetPointCloudRadius
+.. autofunction:: getScalarType
+.. autofunction:: ICP
+.. autofunction:: importFile
+.. autofunction:: initCC
+.. autofunction:: loadMesh
+.. autofunction:: loadPointCloud
+.. autofunction:: loadPolyline
+.. autofunction:: SaveEntities
+.. autofunction:: SaveMesh
+.. autofunction:: SavePointCloud
 
 .. autoclass:: ICPres
    :members:

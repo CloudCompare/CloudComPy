@@ -35,6 +35,7 @@
 #include <ccNormalVectors.h>
 #include <ccProgressDialog.h>
 #include <ccCommandLineInterface.h>
+#include <Neighbourhood.h>
 
 // --- for Python3 interface
 
@@ -119,6 +120,16 @@ enum CurvatureType
  * \return status
  */
 bool computeCurvature(CurvatureType option, double radius, std::vector<ccHObject*> clouds);
+
+bool computeFeature(CCCoreLib::Neighbourhood::GeomFeature option, double radius, std::vector<ccHObject*> clouds);
+
+bool computeLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density option, double radius, std::vector<ccHObject*> clouds);
+
+bool computeApproxLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density option, double radius, std::vector<ccHObject*> clouds);
+
+bool computeRoughness(double radius, std::vector<ccHObject*> clouds);
+
+bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds);
 
 //! Filters out points whose scalar values falls into an interval(see ccPointCloud::filterBySFValue)
 /** Threshold values should be expressed relatively to the current displayed scalar field.

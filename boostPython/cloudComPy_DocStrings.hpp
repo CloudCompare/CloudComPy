@@ -35,7 +35,7 @@ Compute a 2.5D volume between a cloud and a ground plane,or two clouds,following
 
 If only one cloud is given, the direction (X, Y or Z) define the normal to the plane used for calculation.
 
-:param reportInfo ReportInfoVol: the object instance to be completed with results
+:param ReportInfoVol reportInfo: the object instance to be completed with results
 :param ccPointCloud ground: either a point cloud or None
 :param ccPointCloud ceil: either a point cloud or None
 :param int vertDim: direction from (0,1,2): 0: X, 1: Y, 2: Z
@@ -225,10 +225,96 @@ Save a list of entities (cloud, meshes, primitives...) in a file: use bin format
 const char* cloudComPy_computeCurvature_doc= R"(
 Compute the curvature on a list of point clouds (create a scalarField).
 
+The curvature at each point is estimated by best fitting a quadric around it.
+If there's not enough neighbors to compute a quadric (i.e. less than 6) an invalid scalar value (NaN) is set for this point.
+This point will appear in grey (or not at all if you uncheck the 'display NaN values in grey' option of the scalar field parameters).
+
 :param CurvatureType cvt: from CurvatureType.GAUSSIAN_CURV, CurvatureType.MEAN_CURV, CurvatureType.NORMAL_CHANGE_RATE.
 :param float radius: try value obtained by GetPointCloudRadius.
 :param clouds: list of clouds
-:type clouds: list of :py:class:`ccHObject`)";
+:type clouds: list of :py:class:`ccHObject`
+
+:return: True if OK, else False
+:rtype: bool)";
+
+const char* cloudComPy_computeFeature_doc= R"(
+Compute a geometric characteristic on a list of points clouds (create a scalarField).
+
+Geometric feature computed from eigen values/vectors.
+Most of them are defined in "Contour detection in unstructured 3D point clouds", Hackel et al, 2016.
+PCA1 and PCA2 are defined in "3D terrestrial lidar data classification of complex natural scenes
+using a multi-scale dimensionality criterion: Applications in geomorphology", Brodu and Lague, 2012.
+
+:param GeomFeature feature: from GeomFeature enum
+:param float radius: try value obtained by GetPointCloudRadius.
+:param clouds: list of clouds
+:type clouds: list of :py:class:`ccHObject`
+
+:return: True if OK, else False
+:rtype: bool)";
+
+const char* cloudComPy_computeLocalDensity_doc=R"(
+Computes the local density on a list of points clouds (create a scalarField).
+
+The density output can be:
+
+- the number of neighbors N (only available in 'Precise' mode)
+- a surface density: number of neighbors divided by the neighborhood surface = N / (Pi.R2)
+- a volume density: number of neighbors divided by the neighborhood volume = N / (4/3.Pi.R3)
+
+:param Density density: from Density enum
+:param float radius: try value obtained by GetPointCloudRadius.
+:param clouds: list of clouds
+:type clouds: list of :py:class:`ccHObject`
+
+:return: True if OK, else False
+:rtype: bool)";
+
+const char* cloudComPy_computeApproxLocalDensity_doc=R"(
+Computes the local density (approximate) on a list of points clouds (create a scalarField).
+
+Old method (based only on the distance to the nearest neighbor).
+
+**Warning** As only one neighbor is extracted, the DENSITY_KNN type corresponds in fact to the (inverse) distance to the nearest neighbor.
+
+The density output can be:
+
+- the number of neighbors N (only available in 'Precise' mode)
+- a surface density: number of neighbors divided by the neighborhood surface = N / (Pi.R2)
+- a volume density: number of neighbors divided by the neighborhood volume = N / (4/3.Pi.R3)
+
+:param Density density: from Density enum
+:param float radius: try value obtained by GetPointCloudRadius.
+:param clouds: list of clouds
+:type clouds: list of :py:class:`ccHObject`
+
+:return: True if OK, else False
+:rtype: bool)";
+
+const char* cloudComPy_computeRoughness_doc=R"(
+Computes the roughness on a list of points clouds (create a scalarField).
+
+Roughness estimation is very... simple: for each point, the 'roughness' value is equal to the distance between this point
+and the best fitting plane computed on its nearest neighbors.
+If there's not enough neighbors to compute a LS plane (i.e. less than 3) an invalid scalar value (NaN) is set for this point.
+This point will appear in grey (or not at all if you uncheck the 'display NaN values in grey' option in the scalar field properties).
+
+:param float radius: try value obtained by GetPointCloudRadius.
+:param clouds: list of clouds
+:type clouds: list of :py:class:`ccHObject`
+
+:return: True if OK, else False
+:rtype: bool)";
+
+const char* cloudComPy_computeMomentOrder1_doc=R"(
+Computes the first order moment on a list of points clouds (create a scalarField).
+
+:param float radius: try value obtained by GetPointCloudRadius.
+:param clouds: list of clouds
+:type clouds: list of :py:class:`ccHObject`
+
+:return: True if OK, else False
+:rtype: bool)";
 
 const char* cloudComPy_filterBySFValue_doc= R"(
 Create a new point cloud by filtering points using the current out ScalarField (see cloud.setCurrentOutScalarField).

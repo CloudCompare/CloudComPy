@@ -14,3 +14,10 @@ Geometrical Analysis
    :inherited-members:
    :show-inheritance:
 
+.. autoclass:: Density
+   :members:
+   :undoc-members:
+
+.. autoclass:: ErrorCode
+   :members:
+   :undoc-members:

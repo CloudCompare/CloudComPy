@@ -26,6 +26,7 @@
 #include <PointCloud.h>
 #include <DgmOctree.h>
 #include <ccScalarField.h>
+#include <CCToolbox.h>
 #include <GeometricalAnalysisTools.h>
 #include <GenericProgressCallback.h>
 #include <ccMesh.h>
@@ -43,7 +44,11 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(FlagDuplicatePoints_overloads, CCCoreLib::Geomet
 
 void export_geometricalAnalysisTools()
 {
-
+	enum_<CCCoreLib::GeometricalAnalysisTools::Density>("Density")
+		.value("DENSITY_KNN", CCCoreLib::GeometricalAnalysisTools::DENSITY_KNN)
+		.value("DENSITY_2D", CCCoreLib::GeometricalAnalysisTools::DENSITY_2D)
+		.value("DENSITY_3D", CCCoreLib::GeometricalAnalysisTools::DENSITY_3D)
+     	;
 
     enum_<CCCoreLib::GeometricalAnalysisTools::ErrorCode>("ErrorCode")
         .value("NoError", CCCoreLib::GeometricalAnalysisTools::NoError)

@@ -591,6 +591,31 @@ bool computeCurvature(CurvatureType option, double radius, std::vector<ccHObject
     return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::Curvature, option, radius, clouds);
 }
 
+bool computeFeature(CCCoreLib::Neighbourhood::GeomFeature option, double radius, std::vector<ccHObject*> clouds)
+{
+	return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::Feature, option, radius, clouds);
+}
+
+bool computeLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density option, double radius, std::vector<ccHObject*> clouds)
+{
+	return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::LocalDensity, option, radius, clouds);
+}
+
+bool computeApproxLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density option, double radius, std::vector<ccHObject*> clouds)
+{
+	return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::ApproxLocalDensity, option, radius, clouds);
+}
+
+bool computeRoughness(double radius, std::vector<ccHObject*> clouds)
+{
+	return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::Roughness, 0, radius, clouds);
+}
+
+bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds)
+{
+	return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::MomentOrder1, 0, radius, clouds);
+}
+
 ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
 {
     CCTRACE("filterBySFValue min: " << minVal << " max: " << maxVal << " cloudName: " << cloud->getName().toStdString());
@@ -826,6 +851,8 @@ bool pyCC_ComputeGeomCharacteristic(
                     sfIdx = -1;
                 }
 
+                ccLog::Error(errorMessage);
+                CCTRACE(errorMessage.toStdString());
                 return false;
             }
         }
