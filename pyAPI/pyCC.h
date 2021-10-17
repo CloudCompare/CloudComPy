@@ -36,8 +36,14 @@
 #include <ccProgressDialog.h>
 #include <ccCommandLineInterface.h>
 #include <Neighbourhood.h>
+#include <ccRasterGrid.h>
 
 // --- for Python3 interface
+
+enum CC_DIRECTION
+{
+    X = 0, Y = 1, Z = 2
+};
 
 enum CC_SHIFT_MODE
 {
@@ -207,6 +213,51 @@ bool ComputeVolume25D(  ReportInfoVol* reportInfo,
                         double groundHeight,
                         double ceilHeight);
 
+ccPointCloud* RasterizeToCloud(
+	ccGenericPointCloud* cloud,
+	double gridStep,
+	CC_DIRECTION vertDir = CC_DIRECTION::Z,
+	bool outputRasterZ = false,
+	bool outputRasterSFs = false,
+	bool outputRasterRGB = false,
+	std::string pathToImages = ".",
+	bool resample = false,
+	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+	double customHeight = std::numeric_limits<double>::quiet_NaN(),
+	ccBBox gridBBox = ccBBox());
+
+ccMesh* RasterizeToMesh(
+	ccGenericPointCloud* cloud,
+	double gridStep,
+	CC_DIRECTION vertDir = CC_DIRECTION::Z,
+	bool outputRasterZ = false,
+	bool outputRasterSFs = false,
+	bool outputRasterRGB = false,
+	std::string pathToImages = ".",
+	bool resample = false,
+	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+	double customHeight = std::numeric_limits<double>::quiet_NaN(),
+	ccBBox gridBBox = ccBBox());
+
+ccHObject* RasterizeGeoTiffOnly(
+	ccGenericPointCloud* cloud,
+	double gridStep,
+	CC_DIRECTION vertDir = CC_DIRECTION::Z,
+	bool outputRasterZ = false,
+	bool outputRasterSFs = false,
+	bool outputRasterRGB = false,
+	std::string pathToImages = ".",
+	bool resample = false,
+	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+	double customHeight = std::numeric_limits<double>::quiet_NaN(),
+	ccBBox gridBBox = ccBBox());
+
 // --- internal functions (not wrapped in the Python API) ---------------------
 
 //! initialize internal structures: should be done once, multiples calls allowed (does nothing)
@@ -231,6 +282,23 @@ QString pyCC_GetDensitySFName(
 
 //! copied from ccLibAlgorithms::GetDefaultCloudKernelSize
 PointCoordinateType pyCC_GetDefaultCloudKernelSize(ccGenericPointCloud* cloud, unsigned knn = 12);
+
+//! adapted from CommandRasterize::process
+ccHObject* Rasterize_(
+	ccGenericPointCloud* cloud,
+	double gridStep,
+	unsigned short vertDir = 2,            // Z direction by default
+	unsigned short outputCloudOrMesh = 1,  // 0: nothing, 1: cloud, 2: mesh
+	bool outputRasterZ = false,
+	bool outputRasterSFs = false,
+	bool outputRasterRGB = false,
+	std::string pathToImages = ".",
+	bool resample = false,
+	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+	double customHeight = std::numeric_limits<double>::quiet_NaN(),
+	ccBBox gridBBox = ccBBox());
 
 //! Loaded polyline description (not in ccCommandLineInterface.h)
 struct CLPolyDesc : CLEntityDesc

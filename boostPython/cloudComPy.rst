@@ -22,15 +22,18 @@ cloudComPy module, functions
 .. autofunction:: loadMesh
 .. autofunction:: loadPointCloud
 .. autofunction:: loadPolyline
+.. autofunction:: RasterizeGeoTiffOnly
+.. autofunction:: RasterizeToCloud
+.. autofunction:: RasterizeToMesh
 .. autofunction:: SaveEntities
 .. autofunction:: SaveMesh
 .. autofunction:: SavePointCloud
 
-.. autoclass:: ICPres
+.. autoclass:: ccBBox
    :members:
    :undoc-members:
 
-.. autoclass:: CC_SHIFT_MODE
+.. autoclass:: CC_DIRECTION
    :members:
    :undoc-members:
 
@@ -38,7 +41,19 @@ cloudComPy module, functions
    :members:
    :undoc-members:
 
+.. autoclass:: CC_SHIFT_MODE
+   :members:
+   :undoc-members:
+
 .. autoclass:: CurvatureType
+   :members:
+   :undoc-members:
+
+.. autoclass:: EmptyCellFillOption
+   :members:
+   :undoc-members:
+
+.. autoclass:: ICPres
    :members:
    :undoc-members:
 
@@ -49,7 +64,11 @@ cloudComPy module, functions
 .. autoclass:: Orientation
    :members:
    :undoc-members:
-   
+ 
+.. autoclass:: ProjectionType
+   :members:
+   :undoc-members:
+  
 .. autoclass:: ReportInfoVol
    :members:
    :undoc-members:

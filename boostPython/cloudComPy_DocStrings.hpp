@@ -360,4 +360,73 @@ Compute normals on a list of clouds and meshes.
 :param int,optional mstNeighbors: default 6, for Minimum Spanning Tree
 :param bool,optional computePerVertexNormals: default `True`, apply on mesh, if `True`, compute on vertices, if `False`, compute on triangles)";
 
+const char* cloudComPy_RasterizeToCloud_doc= R"(
+Compute a Raster cloud from a point cloud, given a grid step and a direction, plus an optional GeoTiff file.
+
+GeoTiff files are only available with the GDAL plugin.
+
+:param ccGenericPointCloud* cloud: the original cloud
+:param float gridStep: the raster grid step
+:param CC_DIRECTION,optional vertDir: default = CC_DIRECTION.Z, direction of projection
+:param bool,optional outputRasterZ: default False, create also a GeoTiff file (3D tiff with altitude)
+:param bool,optional outputRasterSFs: default False, add scalar fields to the GeoTiff file (requires outputRasterZ)
+:param bool,optional outputRasterRGB: default False, create also a GeoTiff file with GRB values (choose either Z or RGB, not the two)
+:param string,optional pathToImages: default "." for current directory, directory for the GeoTiff file, name basesd on Cloud name plus suffix
+:param bool,optional resample: default False, resample the point cloud
+:param ProjectionType,optional projectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
+:param ProjectionType,optional sfProjectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
+:param EmptyCellFillOption,optional emptyCellFillStrategy: default EmptyCellFillOption.LEAVE_EMPTY
+:param float,optional customHeight: default float('nan')
+:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
+
+:return: the raster cloud
+:rtype: ccPointCloud
+)";
+
+const char* cloudComPy_RasterizeToMesh_doc= R"(
+Compute a Raster mesh from a point cloud, given a grid step and a direction, plus an optional GeoTiff file.
+
+GeoTiff files are only available with the GDAL plugin.
+
+:param ccGenericPointCloud* cloud: the original cloud
+:param float gridStep: the raster grid step
+:param CC_DIRECTION,optional vertDir: default = CC_DIRECTION.Z, direction of projection
+:param bool,optional outputRasterZ: default False, create also a GeoTiff file (3D tiff with altitude)
+:param bool,optional outputRasterSFs: default False, add scalar fields to the GeoTiff file (requires outputRasterZ)
+:param bool,optional outputRasterRGB: default False, create also a GeoTiff file with GRB values (choose either Z or RGB, not the two)
+:param string,optional pathToImages: default "." for current directory, directory for the GeoTiff file, name basesd on Cloud name plus suffix
+:param bool,optional resample: default False, resample the point cloud
+:param ProjectionType,optional projectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
+:param ProjectionType,optional sfProjectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
+:param EmptyCellFillOption,optional emptyCellFillStrategy: default EmptyCellFillOption.LEAVE_EMPTY
+:param float,optional customHeight: default float('nan')
+:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
+
+:return: the raster mesh
+:rtype: ccMesh
+)";
+
+const char* cloudComPy_RasterizeGeoTiffOnly_doc= R"(
+Compute a GeoTiff file from a point cloud, given a grid step and a direction.
+
+GeoTiff files are only available with the GDAL plugin.
+
+:param ccGenericPointCloud* cloud: the original cloud
+:param float gridStep: the raster grid step
+:param CC_DIRECTION,optional vertDir: default = CC_DIRECTION.Z, direction of projection
+:param bool,optional outputRasterZ: default False, create a GeoTiff file (3D tiff with altitude)
+:param bool,optional outputRasterSFs: default False, add scalar fields to the GeoTiff file (requires outputRasterZ)
+:param bool,optional outputRasterRGB: default False, create a GeoTiff file with GRB values (choose either Z or RGB, not the two)
+:param string,optional pathToImages: default "." for current directory, directory for the GeoTiff file, name basesd on Cloud name plus suffix
+:param bool,optional resample: default False, resample the point cloud
+:param ProjectionType,optional projectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
+:param ProjectionType,optional sfProjectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
+:param EmptyCellFillOption,optional emptyCellFillStrategy: default EmptyCellFillOption.LEAVE_EMPTY
+:param float,optional customHeight: default float('nan')
+:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
+
+:return: None
+:rtype: None
+)";
+
 #endif /* CLOUDCOMPY_DOCSTRINGS_HPP_ */
