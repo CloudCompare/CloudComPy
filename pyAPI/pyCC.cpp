@@ -2263,7 +2263,7 @@ ccHObject* Rasterize_(
 		CCTRACE("[Rasterize] The filling strategy is set to 'fill with custom height' but no custom height was defined...");
 		return nullptr;
 	}
-    if ((gridBBox.minCorner().norm2() < 1.e-12) and (gridBBox.maxCorner().norm2() < 1.e-12))
+    if ((gridBBox.minCorner().norm2() < 1.e-12) && (gridBBox.maxCorner().norm2() < 1.e-12))
     {
     	gridBBox = cloud->getOwnBB();
     }
