@@ -78,6 +78,8 @@ conda config --set channel_priority strict
 conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay matplotlib
 ```
 
+The result of conda list command is provided in the sources in [building directory](https://github.com/prascle/CloudComPy/tree/master/building)
+
 Install the binary in the directory of your choice.
 From the Anaconda3 prompt, you can test :
 
@@ -117,9 +119,15 @@ The binary *CloudComPy_Conda39_Linux64_-date-.tgz* available [here](https://www.
 (see below for the corresponding building instructions).
 As CloudComPy is under development and not yet fully stabilized, these instructions and the link are subject to change from time to time...
 
-**This binary works only on Linux 64, and with Anaconda3 as described below, not anywhere else!**
+**This binary works only on Linux 64, on recent distributions, and with Anaconda3 as described below, not anywhere else!**
 
-**Only tested un Ubuntu 20.04, please report any problems on other distributions.**
+**Only tested un Ubuntu 20.04 (focal) and Debian 11 (bullseye), please report any problems on other distributions.**
+
+GLIBC version should be 2.29 or more. To know your version of GLIBC::
+
+```
+ldd --version
+```
 
 You need a recent installation of Anaconda3.
 
@@ -134,8 +142,10 @@ conda create --name CloudComPy39 python=3.9
 conda activate CloudComPy39
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install qt numpy psutil boost xerces-c pcl gdal cgal cmake pdal opencv ffmpeg mysql "qhull=2019.1" matplotlib "eigen=3.3.9"
+conda install qt numpy psutil boost xerces-c pcl gdal cgal cmake pdal opencv ffmpeg mysql "qhull=2019.1" matplotlib "eigen=3.3.9" tbb openmp
 ```
+
+The result of conda list command is provided in the sources in [building directory](https://github.com/prascle/CloudComPy/tree/master/building)
 
 Install the binary in the directory of your choice.
 Before using CloudCompare or CloudComPy, you need to load the environment. 
@@ -228,6 +238,10 @@ BUILD_TESTING:BOOL=1
 CCCORELIB_USE_CGAL:BOOL=1
 CMAKE_BUILD_TYPE:STRING=RelWithDebInfo
 CMAKE_INSTALL_PREFIX:PATH=/home/paul/projets/CloudComPy/installRelease
+FBX_SDK_INCLUDE_DIR:PATH=/home/paul/projets/CloudComPy/fbxSdk/include
+FBX_SDK_LIBRARY_FILE:FILEPATH=/home/paul/projets/CloudComPy/fbxSdk/lib/gcc/x64/release/libfbxsdk.a
+FBX_XML2_LIBRARY_FILE:FILEPATH=
+FBX_ZLIB_LIBRARY_FILE:FILEPATH=
 OPTION_USE_GDAL:BOOL=1
 PLUGIN_EXAMPLE_GL:BOOL=1
 PLUGIN_EXAMPLE_IO:BOOL=1
@@ -235,14 +249,15 @@ PLUGIN_EXAMPLE_STANDARD:BOOL=1
 PLUGIN_GL_QEDL:BOOL=1
 PLUGIN_GL_QSSAO:BOOL=1
 PLUGIN_IO_QADDITIONAL:BOOL=1
+PLUGIN_IO_QCORE:BOOL=1
 PLUGIN_IO_QCSV_MATRIX:BOOL=1
 PLUGIN_IO_QE57:BOOL=1
+PLUGIN_IO_QFBX:BOOL=1
 PLUGIN_IO_QPHOTOSCAN:BOOL=1
 PLUGIN_STANDARD_QBROOM:BOOL=1
 PLUGIN_STANDARD_QCOMPASS:BOOL=1
 PLUGIN_STANDARD_QM3C2:BOOL=1
-PLUGIN_STANDARD_QMPLANE:BOOL=1
-PLUGIN_STANDARD_QPCL:BOOL=0
+PLUGIN_STANDARD_QPCL:BOOL=1
 PLUGIN_STANDARD_QPOISSON_RECON:BOOL=1
 PLUGIN_STANDARD_QRANSAC_SD:BOOL=1
 PYTHONAPI_TEST_DIRECTORY:STRING=projets/CloudComPy/Data
