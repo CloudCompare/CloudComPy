@@ -21,6 +21,7 @@
 #include <boost/python/numpy.hpp>
 #include <boost/python.hpp>
 
+#include <ccBBox.h>
 #include <ReferenceCloud.h>
 #include <ccGenericPointCloud.h>
 #include <PointCloudTpl.h>
@@ -68,6 +69,23 @@ CCVector3 ReferenceCloud_getPoint(CCCoreLib::ReferenceCloud& self, unsigned inde
     return *vec;
 }
 
+CCVector3 ccBBox_minCorner(ccBBox& self)
+{
+	const CCVector3& vec = self.minCorner();
+	return vec;
+}
+
+CCVector3 ccBBox_maxCorner(ccBBox& self)
+{
+	const CCVector3& vec = self.maxCorner();
+	return vec;
+}
+
+ccBBox ccGenericPointCloud_getOwnBB(ccGenericPointCloud& self)
+{
+	return self.getOwnBB(false);
+}
+
 CCCoreLib::GenericIndexedCloudPersist* (CCCoreLib::ReferenceCloud::*getAssCloud1)() = &CCCoreLib::ReferenceCloud::getAssociatedCloud;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccGenericPointCloud_computeOctree_overloads, computeOctree, 0, 2)
@@ -85,10 +103,17 @@ void export_ccGenericCloud()
     class_<CCCoreLib::GenericIndexedCloudPersist, boost::noncopyable>("GenericIndexedCloudPersist", no_init)
         ;
 
+    class_<ccBBox>("ccBBox", ccBBox_doc)
+    		.def(init<const CCVector3&, const CCVector3&>())
+			.def("minCorner", &ccBBox_minCorner, ccBBox_minCorner_doc)
+			.def("maxCorner", &ccBBox_maxCorner, ccBBox_maxCorner_doc)
+		;
+
     class_<ccGenericPointCloud, bases<CCCoreLib::GenericIndexedCloudPersist, ccShiftedObject>, boost::noncopyable>("ccGenericPointCloud", no_init)
         .def("computeOctree", &ccGenericPointCloud::computeOctree, ccGenericPointCloud_computeOctree_overloads(ccGenericPointCloud_computeOctree_doc))
         .def("getOctree", &ccGenericPointCloud::getOctree, ccGenericPointCloud_getOctree_doc)
         .def("deleteOctree", &ccGenericPointCloud::deleteOctree, ccGenericPointCloud_deleteOctree_doc)
+		.def("getOwnBB", &ccGenericPointCloud_getOwnBB, ccGenericPointCloud_getOwnBB_doc)
         ;
 
     class_<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>, bases<ccGenericPointCloud>, boost::noncopyable>("PointCloudTpl_ccGenericPointCloud_QString", no_init)

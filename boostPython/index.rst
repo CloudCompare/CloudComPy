@@ -46,3 +46,5 @@ Reference documentation
    GeometricalAnalysisTools.rst
    cloudSamplingTools.rst
    ccFacet.rst
+   Neighbourhood.rst
+   

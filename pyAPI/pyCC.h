@@ -28,14 +28,22 @@
   #endif
 #endif
 
-#include <ccCommandLineInterface.h>
 #include <GeometricalAnalysisTools.h>
 #include <ccPolyline.h>
 #include <ccPointCloud.h>
 #include <RegistrationTools.h>
 #include <ccNormalVectors.h>
+#include <ccProgressDialog.h>
+#include <ccCommandLineInterface.h>
+#include <Neighbourhood.h>
+#include <ccRasterGrid.h>
 
 // --- for Python3 interface
+
+enum CC_DIRECTION
+{
+    X = 0, Y = 1, Z = 2
+};
 
 enum CC_SHIFT_MODE
 {
@@ -119,6 +127,16 @@ enum CurvatureType
  */
 bool computeCurvature(CurvatureType option, double radius, std::vector<ccHObject*> clouds);
 
+bool computeFeature(CCCoreLib::Neighbourhood::GeomFeature option, double radius, std::vector<ccHObject*> clouds);
+
+bool computeLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density option, double radius, std::vector<ccHObject*> clouds);
+
+bool computeApproxLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density option, double radius, std::vector<ccHObject*> clouds);
+
+bool computeRoughness(double radius, std::vector<ccHObject*> clouds);
+
+bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds);
+
 //! Filters out points whose scalar values falls into an interval(see ccPointCloud::filterBySFValue)
 /** Threshold values should be expressed relatively to the current displayed scalar field.
  \param minVal minimum value
@@ -169,6 +187,77 @@ bool computeNormals(std::vector<ccHObject*> selectedEntities,
     int mstNeighbors = 6,
     bool computePerVertexNormals = true);
 
+
+//! Report info volume TODO: copied from Report info qCC/ccVolumeCalcTool.h
+struct ReportInfoVol
+{
+    ReportInfoVol();
+
+    //QString toText(int precision = 6) const;
+
+    double volume;
+    double addedVolume;
+    double removedVolume;
+    double surface;
+    float matchingPercent;
+    float ceilNonMatchingPercent;
+    float groundNonMatchingPercent;
+    double averageNeighborsPerCell;
+};
+
+bool ComputeVolume25D(  ReportInfoVol* reportInfo,
+                        ccGenericPointCloud* ground,
+                        ccGenericPointCloud* ceil,
+                        unsigned char vertDim,
+                        double gridStep,
+                        double groundHeight,
+                        double ceilHeight);
+
+ccPointCloud* RasterizeToCloud(
+	ccGenericPointCloud* cloud,
+	double gridStep,
+	CC_DIRECTION vertDir = CC_DIRECTION::Z,
+	bool outputRasterZ = false,
+	bool outputRasterSFs = false,
+	bool outputRasterRGB = false,
+	std::string pathToImages = ".",
+	bool resample = false,
+	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+	double customHeight = std::numeric_limits<double>::quiet_NaN(),
+	ccBBox gridBBox = ccBBox());
+
+ccMesh* RasterizeToMesh(
+	ccGenericPointCloud* cloud,
+	double gridStep,
+	CC_DIRECTION vertDir = CC_DIRECTION::Z,
+	bool outputRasterZ = false,
+	bool outputRasterSFs = false,
+	bool outputRasterRGB = false,
+	std::string pathToImages = ".",
+	bool resample = false,
+	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+	double customHeight = std::numeric_limits<double>::quiet_NaN(),
+	ccBBox gridBBox = ccBBox());
+
+ccHObject* RasterizeGeoTiffOnly(
+	ccGenericPointCloud* cloud,
+	double gridStep,
+	CC_DIRECTION vertDir = CC_DIRECTION::Z,
+	bool outputRasterZ = false,
+	bool outputRasterSFs = false,
+	bool outputRasterRGB = false,
+	std::string pathToImages = ".",
+	bool resample = false,
+	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+	double customHeight = std::numeric_limits<double>::quiet_NaN(),
+	ccBBox gridBBox = ccBBox());
+
 // --- internal functions (not wrapped in the Python API) ---------------------
 
 //! initialize internal structures: should be done once, multiples calls allowed (does nothing)
@@ -193,6 +282,23 @@ QString pyCC_GetDensitySFName(
 
 //! copied from ccLibAlgorithms::GetDefaultCloudKernelSize
 PointCoordinateType pyCC_GetDefaultCloudKernelSize(ccGenericPointCloud* cloud, unsigned knn = 12);
+
+//! adapted from CommandRasterize::process
+ccHObject* Rasterize_(
+	ccGenericPointCloud* cloud,
+	double gridStep,
+	unsigned short vertDir = 2,            // Z direction by default
+	unsigned short outputCloudOrMesh = 1,  // 0: nothing, 1: cloud, 2: mesh
+	bool outputRasterZ = false,
+	bool outputRasterSFs = false,
+	bool outputRasterRGB = false,
+	std::string pathToImages = ".",
+	bool resample = false,
+	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+	double customHeight = std::numeric_limits<double>::quiet_NaN(),
+	ccBBox gridBBox = ccBBox());
 
 //! Loaded polyline description (not in ccCommandLineInterface.h)
 struct CLPolyDesc : CLEntityDesc
@@ -225,7 +331,5 @@ struct CLPolyDesc : CLEntityDesc
     const ccHObject* getEntity() const override { return static_cast<ccHObject*>(pc); }
     CL_ENTITY_TYPE getCLEntityType() const override { return CL_ENTITY_TYPE::CLOUD; }
 };
-
-
 
 #endif /* CLOUDCOMPY_PYAPI_PYCC_H_ */

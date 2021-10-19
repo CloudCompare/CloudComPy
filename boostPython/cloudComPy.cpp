@@ -33,6 +33,7 @@
 #include "registrationToolsPy.hpp"
 #include "cloudSamplingToolsPy.hpp"
 #include "ccFacetPy.hpp"
+#include "NeighbourhoodPy.hpp"
 
 #include "initCC.h"
 #include "pyCC.h"
@@ -43,6 +44,7 @@
 #include <ScalarField.h>
 #include <ccNormalVectors.h>
 #include <ccHObjectCaster.h>
+#include <ccRasterGrid.h>
 
 #include <QString>
 #include <vector>
@@ -214,7 +216,6 @@ ccMesh* loadMeshPy(
         return nullptr;
 }
 
-
 BOOST_PYTHON_FUNCTION_OVERLOADS(importFilePy_overloads, importFilePy, 1, 5);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloudPy_overloads, loadPointCloudPy, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadMeshPy_overloads, loadMeshPy, 1, 6);
@@ -222,6 +223,10 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(GetPointCloudRadius_overloads, GetPointCloudRadius, 1, 2);
 BOOST_PYTHON_FUNCTION_OVERLOADS(ICP_py_overloads, ICP_py, 8, 13);
 BOOST_PYTHON_FUNCTION_OVERLOADS(computeNormals_overloads, computeNormals, 1, 12);
+BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToCloud_overloads, RasterizeToCloud, 2, 13);
+BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToMesh_overloads, RasterizeToMesh, 2, 13);
+BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeGeoTiffOnly_overloads, RasterizeGeoTiffOnly, 2, 13);
+
 
 BOOST_PYTHON_MODULE(cloudComPy)
 {
@@ -242,6 +247,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
     export_registrationTools();
     export_cloudSamplingTools();
     export_ccFacet();
+    export_Neighbourhood();
 
     // TODO: function load entities ("file.bin")
     // TODO: more methods on distanceComputationTools
@@ -261,6 +267,12 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .value("FIRST_GLOBAL_SHIFT", FIRST_GLOBAL_SHIFT)
         .value("NO_GLOBAL_SHIFT", NO_GLOBAL_SHIFT)
         ;
+
+	enum_<CC_DIRECTION>("CC_DIRECTION")
+		.value("X", CC_DIRECTION::X)
+		.value("Y", CC_DIRECTION::Y)
+		.value("Z", CC_DIRECTION::Z)
+		;
 
     enum_<CC_FILE_ERROR>("CC_FILE_ERROR")
         .value("CC_FERR_NO_ERROR", CC_FERR_NO_ERROR)
@@ -308,9 +320,26 @@ BOOST_PYTHON_MODULE(cloudComPy)
         .value("PLUS_ORIGIN", ccNormalVectors::PLUS_ORIGIN )
         .value("MINUS_ORIGIN", ccNormalVectors::MINUS_ORIGIN )
         .value("PREVIOUS", ccNormalVectors::PREVIOUS )
-        .value("SENSOR_ORIGIN", ccNormalVectors::SENSOR_ORIGIN )
+        .value("PLUS_SENSOR_ORIGIN", ccNormalVectors::PLUS_SENSOR_ORIGIN )
+        .value("MINUS_SENSOR_ORIGIN", ccNormalVectors::MINUS_SENSOR_ORIGIN )
         .value("UNDEFINED", ccNormalVectors::UNDEFINED )
         ;
+
+	enum_<ccRasterGrid::ProjectionType>("ProjectionType")
+		.value("PROJ_MINIMUM_VALUE", ccRasterGrid::PROJ_MINIMUM_VALUE)
+		.value("PROJ_AVERAGE_VALUE", ccRasterGrid::PROJ_AVERAGE_VALUE)
+		.value("PROJ_MAXIMUM_VALUE", ccRasterGrid::PROJ_MAXIMUM_VALUE)
+		.value("INVALID_PROJECTION_TYPE", ccRasterGrid::INVALID_PROJECTION_TYPE)
+		;
+
+	enum_<ccRasterGrid::EmptyCellFillOption>("EmptyCellFillOption")
+		.value("LEAVE_EMPTY", ccRasterGrid::LEAVE_EMPTY)
+		.value("FILL_MINIMUM_HEIGHT", ccRasterGrid::FILL_MINIMUM_HEIGHT)
+		.value("FILL_MAXIMUM_HEIGHT", ccRasterGrid::FILL_MAXIMUM_HEIGHT)
+		.value("FILL_CUSTOM_HEIGHT", ccRasterGrid::FILL_CUSTOM_HEIGHT)
+		.value("FILL_AVERAGE_HEIGHT", ccRasterGrid::FILL_AVERAGE_HEIGHT)
+		.value("INTERPOLATE", ccRasterGrid::INTERPOLATE)
+		;
 
     def("importFile", importFilePy,
         importFilePy_overloads(cloudComPy_importFile_doc));
@@ -336,6 +365,16 @@ BOOST_PYTHON_MODULE(cloudComPy)
 
     def("computeCurvature", computeCurvature, cloudComPy_computeCurvature_doc);
 
+    def("computeFeature", computeFeature, cloudComPy_computeFeature_doc);
+
+    def("computeLocalDensity", computeLocalDensity, cloudComPy_computeLocalDensity_doc);
+
+    def("computeApproxLocalDensity", computeApproxLocalDensity, cloudComPy_computeApproxLocalDensity_doc);
+
+    def("computeRoughness", computeRoughness, cloudComPy_computeRoughness_doc);
+
+    def("computeMomentOrder1", computeMomentOrder1, cloudComPy_computeMomentOrder1_doc);
+
     def("filterBySFValue", filterBySFValue, return_value_policy<reference_existing_object>(), cloudComPy_filterBySFValue_doc);
 
     def("GetPointCloudRadius", GetPointCloudRadius, GetPointCloudRadius_overloads(args("knn", "clouds"), cloudComPy_GetPointCloudRadius_doc));
@@ -357,4 +396,27 @@ BOOST_PYTHON_MODULE(cloudComPy)
     def("ICP", ICP_py, ICP_py_overloads(cloudComPy_ICP_doc));
 
     def("computeNormals", computeNormals, computeNormals_overloads(cloudComPy_computeNormals_doc));
+
+    class_<ReportInfoVol>("ReportInfoVol", cloudComPy_ReportInfoVol_doc)
+		.def_readonly("volume", &ReportInfoVol::volume)
+		.def_readonly("addedVolume", &ReportInfoVol::addedVolume)
+		.def_readonly("removedVolume", &ReportInfoVol::removedVolume)
+		.def_readonly("surface", &ReportInfoVol::surface)
+		.def_readonly("matchingPercent", &ReportInfoVol::matchingPercent)
+		.def_readonly("ceilNonMatchingPercent", &ReportInfoVol::ceilNonMatchingPercent)
+		.def_readonly("groundNonMatchingPercent", &ReportInfoVol::groundNonMatchingPercent)
+		.def_readonly("averageNeighborsPerCell", &ReportInfoVol::averageNeighborsPerCell)
+		;
+
+    def("ComputeVolume25D", ComputeVolume25D, cloudComPy_ComputeVolume25D_doc);
+
+    def("RasterizeToCloud", RasterizeToCloud,
+    		RasterizeToCloud_overloads(cloudComPy_RasterizeToCloud_doc)[return_value_policy<reference_existing_object>()]);
+
+    def("RasterizeToMesh", RasterizeToMesh,
+    		RasterizeToMesh_overloads(cloudComPy_RasterizeToMesh_doc)[return_value_policy<reference_existing_object>()]);
+
+    def("RasterizeGeoTiffOnly", RasterizeGeoTiffOnly,
+    		RasterizeGeoTiffOnly_overloads(cloudComPy_RasterizeGeoTiffOnly_doc)[return_value_policy<reference_existing_object>()]);
+
 }

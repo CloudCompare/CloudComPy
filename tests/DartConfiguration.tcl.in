@@ -88,8 +88,8 @@ SlurmRunCommand: SLURM_SRUN_COMMAND-NOTFOUND
 # TimeOut is the amount of time in seconds to wait for processes
 # to complete during testing.  After TimeOut seconds, the
 # process will be summarily terminated.
-# Currently set to 30 seconds per test
-TimeOut: 30
+# Currently set to 40 seconds per test
+TimeOut: 40
 
 # During parallel testing CTest will not start a new test if doing
 # so would cause the system load to exceed this value.

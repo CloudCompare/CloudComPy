@@ -30,6 +30,23 @@ Python3 access to cloudCompare objects is done like this:
  
  )";
 
+const char* cloudComPy_ComputeVolume25D_doc= R"(
+Compute a 2.5D volume between a cloud and a ground plane,or two clouds,following a given direction (X, Y or Z).
+
+If only one cloud is given, the direction (X, Y or Z) define the normal to the plane used for calculation.
+
+:param ReportInfoVol reportInfo: the object instance to be completed with results
+:param ccPointCloud ground: either a point cloud or None
+:param ccPointCloud ceil: either a point cloud or None
+:param int vertDim: direction from (0,1,2): 0: X, 1: Y, 2: Z
+:param float gridStep: size of the grid step
+:param float groundHeight: altitude of the ground plane along the direction, if ground is None
+:param float ceilHeight: altitude of the ceil plane along the direction, if ceil is None
+
+:return: True if success, False if problem detected in parameters
+:rtype: bool
+)";
+
 const char* cloudComPy_importFile_doc= R"(
 Load any kind of entities (cloud or mesh) from a file.
 
@@ -47,13 +64,9 @@ const char* cloudComPy_ICPres_doc=R"(
 Result values on ICP registration.
 
 :ivar ccPointCloud aligned: the point cloud on which the transformation must be applied
-
 :ivar ccGLMatrix transMat: the resulting transformation to apply
-
 :ivar float finalScale: calculated scale if rescale required
-
 :ivar float finalRMS: final error (RMS)
-
 :ivar int finalPointCount: number of points used to compute the final RMS
 )";
 
@@ -161,6 +174,22 @@ Load a polyline from a file.
 
 Usage: see ccPolyline doc.)";
 
+const char* cloudComPy_ReportInfoVol_doc= R"(
+Result values on 2.5D volume calculation. See :py:class:`ComputeVolume25D`
+
+The volume is considered between a point cloud and a ground plane following a given direction (X, Y or Z),
+or between two point clouds.
+
+:ivar float volume: the resulting volume
+:ivar float addedVolume: the positive part of the volume (ceil > floor)
+:ivar float removedVolume: the negative part of the volume (ceil < floor)
+:ivar float surface: the section of the point cloud along in the given direction
+:ivar float matchingPercent: percentage of the section matching ceil and floor
+:ivar float ceilNonMatchingPercent: percentage of the ceil section non matching floor
+:ivar float groundNonMatchingPercent: percentage of the floor section non matching ceil
+:ivar int averageNeighborsPerCell: average Neighbor number per cell (see 'gridStep' in :py:meth`ComputeVolume25D`)
+)";
+
 const char* cloudComPy_SavePointCloud_doc= R"(
 Save a 3D cloud in a file.
 
@@ -196,10 +225,96 @@ Save a list of entities (cloud, meshes, primitives...) in a file: use bin format
 const char* cloudComPy_computeCurvature_doc= R"(
 Compute the curvature on a list of point clouds (create a scalarField).
 
+The curvature at each point is estimated by best fitting a quadric around it.
+If there's not enough neighbors to compute a quadric (i.e. less than 6) an invalid scalar value (NaN) is set for this point.
+This point will appear in grey (or not at all if you uncheck the 'display NaN values in grey' option of the scalar field parameters).
+
 :param CurvatureType cvt: from CurvatureType.GAUSSIAN_CURV, CurvatureType.MEAN_CURV, CurvatureType.NORMAL_CHANGE_RATE.
 :param float radius: try value obtained by GetPointCloudRadius.
 :param clouds: list of clouds
-:type clouds: list of :py:class:`ccHObject`)";
+:type clouds: list of :py:class:`ccHObject`
+
+:return: True if OK, else False
+:rtype: bool)";
+
+const char* cloudComPy_computeFeature_doc= R"(
+Compute a geometric characteristic on a list of points clouds (create a scalarField).
+
+Geometric feature computed from eigen values/vectors.
+Most of them are defined in "Contour detection in unstructured 3D point clouds", Hackel et al, 2016.
+PCA1 and PCA2 are defined in "3D terrestrial lidar data classification of complex natural scenes
+using a multi-scale dimensionality criterion: Applications in geomorphology", Brodu and Lague, 2012.
+
+:param GeomFeature feature: from GeomFeature enum
+:param float radius: try value obtained by GetPointCloudRadius.
+:param clouds: list of clouds
+:type clouds: list of :py:class:`ccHObject`
+
+:return: True if OK, else False
+:rtype: bool)";
+
+const char* cloudComPy_computeLocalDensity_doc=R"(
+Computes the local density on a list of points clouds (create a scalarField).
+
+The density output can be:
+
+- the number of neighbors N (only available in 'Precise' mode)
+- a surface density: number of neighbors divided by the neighborhood surface = N / (Pi.R2)
+- a volume density: number of neighbors divided by the neighborhood volume = N / (4/3.Pi.R3)
+
+:param Density density: from Density enum
+:param float radius: try value obtained by GetPointCloudRadius.
+:param clouds: list of clouds
+:type clouds: list of :py:class:`ccHObject`
+
+:return: True if OK, else False
+:rtype: bool)";
+
+const char* cloudComPy_computeApproxLocalDensity_doc=R"(
+Computes the local density (approximate) on a list of points clouds (create a scalarField).
+
+Old method (based only on the distance to the nearest neighbor).
+
+**Warning** As only one neighbor is extracted, the DENSITY_KNN type corresponds in fact to the (inverse) distance to the nearest neighbor.
+
+The density output can be:
+
+- the number of neighbors N (only available in 'Precise' mode)
+- a surface density: number of neighbors divided by the neighborhood surface = N / (Pi.R2)
+- a volume density: number of neighbors divided by the neighborhood volume = N / (4/3.Pi.R3)
+
+:param Density density: from Density enum
+:param float radius: try value obtained by GetPointCloudRadius.
+:param clouds: list of clouds
+:type clouds: list of :py:class:`ccHObject`
+
+:return: True if OK, else False
+:rtype: bool)";
+
+const char* cloudComPy_computeRoughness_doc=R"(
+Computes the roughness on a list of points clouds (create a scalarField).
+
+Roughness estimation is very... simple: for each point, the 'roughness' value is equal to the distance between this point
+and the best fitting plane computed on its nearest neighbors.
+If there's not enough neighbors to compute a LS plane (i.e. less than 3) an invalid scalar value (NaN) is set for this point.
+This point will appear in grey (or not at all if you uncheck the 'display NaN values in grey' option in the scalar field properties).
+
+:param float radius: try value obtained by GetPointCloudRadius.
+:param clouds: list of clouds
+:type clouds: list of :py:class:`ccHObject`
+
+:return: True if OK, else False
+:rtype: bool)";
+
+const char* cloudComPy_computeMomentOrder1_doc=R"(
+Computes the first order moment on a list of points clouds (create a scalarField).
+
+:param float radius: try value obtained by GetPointCloudRadius.
+:param clouds: list of clouds
+:type clouds: list of :py:class:`ccHObject`
+
+:return: True if OK, else False
+:rtype: bool)";
 
 const char* cloudComPy_filterBySFValue_doc= R"(
 Create a new point cloud by filtering points using the current out ScalarField (see cloud.setCurrentOutScalarField).
@@ -244,5 +359,74 @@ Compute normals on a list of clouds and meshes.
 :param bool,optional orientNormalsMST: default `True`, use Minimum Spanning Tree
 :param int,optional mstNeighbors: default 6, for Minimum Spanning Tree
 :param bool,optional computePerVertexNormals: default `True`, apply on mesh, if `True`, compute on vertices, if `False`, compute on triangles)";
+
+const char* cloudComPy_RasterizeToCloud_doc= R"(
+Compute a Raster cloud from a point cloud, given a grid step and a direction, plus an optional GeoTiff file.
+
+GeoTiff files are only available with the GDAL plugin.
+
+:param ccGenericPointCloud* cloud: the original cloud
+:param float gridStep: the raster grid step
+:param CC_DIRECTION,optional vertDir: default = CC_DIRECTION.Z, direction of projection
+:param bool,optional outputRasterZ: default False, create also a GeoTiff file (3D tiff with altitude)
+:param bool,optional outputRasterSFs: default False, add scalar fields to the GeoTiff file (requires outputRasterZ)
+:param bool,optional outputRasterRGB: default False, create also a GeoTiff file with GRB values (choose either Z or RGB, not the two)
+:param string,optional pathToImages: default "." for current directory, directory for the GeoTiff file, name basesd on Cloud name plus suffix
+:param bool,optional resample: default False, resample the point cloud
+:param ProjectionType,optional projectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
+:param ProjectionType,optional sfProjectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
+:param EmptyCellFillOption,optional emptyCellFillStrategy: default EmptyCellFillOption.LEAVE_EMPTY
+:param float,optional customHeight: default float('nan')
+:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
+
+:return: the raster cloud
+:rtype: ccPointCloud
+)";
+
+const char* cloudComPy_RasterizeToMesh_doc= R"(
+Compute a Raster mesh from a point cloud, given a grid step and a direction, plus an optional GeoTiff file.
+
+GeoTiff files are only available with the GDAL plugin.
+
+:param ccGenericPointCloud* cloud: the original cloud
+:param float gridStep: the raster grid step
+:param CC_DIRECTION,optional vertDir: default = CC_DIRECTION.Z, direction of projection
+:param bool,optional outputRasterZ: default False, create also a GeoTiff file (3D tiff with altitude)
+:param bool,optional outputRasterSFs: default False, add scalar fields to the GeoTiff file (requires outputRasterZ)
+:param bool,optional outputRasterRGB: default False, create also a GeoTiff file with GRB values (choose either Z or RGB, not the two)
+:param string,optional pathToImages: default "." for current directory, directory for the GeoTiff file, name basesd on Cloud name plus suffix
+:param bool,optional resample: default False, resample the point cloud
+:param ProjectionType,optional projectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
+:param ProjectionType,optional sfProjectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
+:param EmptyCellFillOption,optional emptyCellFillStrategy: default EmptyCellFillOption.LEAVE_EMPTY
+:param float,optional customHeight: default float('nan')
+:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
+
+:return: the raster mesh
+:rtype: ccMesh
+)";
+
+const char* cloudComPy_RasterizeGeoTiffOnly_doc= R"(
+Compute a GeoTiff file from a point cloud, given a grid step and a direction.
+
+GeoTiff files are only available with the GDAL plugin.
+
+:param ccGenericPointCloud* cloud: the original cloud
+:param float gridStep: the raster grid step
+:param CC_DIRECTION,optional vertDir: default = CC_DIRECTION.Z, direction of projection
+:param bool,optional outputRasterZ: default False, create a GeoTiff file (3D tiff with altitude)
+:param bool,optional outputRasterSFs: default False, add scalar fields to the GeoTiff file (requires outputRasterZ)
+:param bool,optional outputRasterRGB: default False, create a GeoTiff file with GRB values (choose either Z or RGB, not the two)
+:param string,optional pathToImages: default "." for current directory, directory for the GeoTiff file, name basesd on Cloud name plus suffix
+:param bool,optional resample: default False, resample the point cloud
+:param ProjectionType,optional projectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
+:param ProjectionType,optional sfProjectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
+:param EmptyCellFillOption,optional emptyCellFillStrategy: default EmptyCellFillOption.LEAVE_EMPTY
+:param float,optional customHeight: default float('nan')
+:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
+
+:return: None
+:rtype: None
+)";
 
 #endif /* CLOUDCOMPY_DOCSTRINGS_HPP_ */

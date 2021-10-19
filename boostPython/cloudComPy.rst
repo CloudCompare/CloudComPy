@@ -5,39 +5,35 @@ cloudComPy module, functions
 
 .. automodule:: cloudComPy
 
-.. autofunction:: initCC
-
+.. autofunction:: computeApproxLocalDensity
+.. autofunction:: computeCurvature
+.. autofunction:: computeFeature
+.. autofunction:: computeLocalDensity
+.. autofunction:: computeMomentOrder1
+.. autofunction:: computeNormals
+.. autofunction:: computeRoughness
+.. autofunction:: ComputeVolume25D
+.. autofunction:: filterBySFValue
+.. autofunction:: GetPointCloudRadius
+.. autofunction:: getScalarType
+.. autofunction:: ICP
 .. autofunction:: importFile
-
+.. autofunction:: initCC
 .. autofunction:: loadMesh
-
 .. autofunction:: loadPointCloud
-
 .. autofunction:: loadPolyline
-
+.. autofunction:: RasterizeGeoTiffOnly
+.. autofunction:: RasterizeToCloud
+.. autofunction:: RasterizeToMesh
+.. autofunction:: SaveEntities
 .. autofunction:: SaveMesh
-
 .. autofunction:: SavePointCloud
 
-.. autofunction:: SaveEntities
-
-.. autofunction:: computeCurvature
-
-.. autofunction:: filterBySFValue
-
-.. autofunction:: GetPointCloudRadius
-
-.. autofunction:: getScalarType
-
-.. autofunction:: ICP
-
-.. autofunction:: computeNormals
-
-.. autoclass:: ICPres
+.. autoclass:: ccBBox
    :members:
    :undoc-members:
 
-.. autoclass:: CC_SHIFT_MODE
+.. autoclass:: CC_DIRECTION
    :members:
    :undoc-members:
 
@@ -45,7 +41,19 @@ cloudComPy module, functions
    :members:
    :undoc-members:
 
+.. autoclass:: CC_SHIFT_MODE
+   :members:
+   :undoc-members:
+
 .. autoclass:: CurvatureType
+   :members:
+   :undoc-members:
+
+.. autoclass:: EmptyCellFillOption
+   :members:
+   :undoc-members:
+
+.. autoclass:: ICPres
    :members:
    :undoc-members:
 
@@ -56,3 +64,13 @@ cloudComPy module, functions
 .. autoclass:: Orientation
    :members:
    :undoc-members:
+ 
+.. autoclass:: ProjectionType
+   :members:
+   :undoc-members:
+  
+.. autoclass:: ReportInfoVol
+   :members:
+   :undoc-members:
+   
+   

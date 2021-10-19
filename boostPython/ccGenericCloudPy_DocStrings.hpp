@@ -19,6 +19,23 @@
 #ifndef CCGENERICCLOUDPY_DOCSTRINGS_HPP_
 #define CCGENERICCLOUDPY_DOCSTRINGS_HPP_
 
+const char* ccBBox_doc= R"(
+BoundingBox object.
+
+Can be initialized with a tuple of coordinates (minCorner, maxCorner))";
+
+const char* ccBBox_minCorner_doc= R"(
+Get the min corner of the bounding box
+
+:return: min corner (tuple of coordinates)
+:rtype: tuple)";
+
+const char* ccBBox_maxCorner_doc= R"(
+Get the max corner of the bounding box
+
+:return: max corner (tuple of coordinates)
+:rtype: tuple)";
+
 const char* ccHObject_setName_doc= R"(
 Set the name of the entity
 
@@ -53,6 +70,12 @@ Returns the associated octree (if any).
 
 :return: octree
 :rtype: ccOctree or None)";
+
+const char* ccGenericPointCloud_getOwnBB_doc= R"(
+Returns the bounding box object.
+
+:return: bounding box
+:rtype: ccBBox)";
 
 const char* PointCloudTpl_ccGenericPointCloud_QString_getPoint_doc= R"(
 get the ith point in the cloud array.
