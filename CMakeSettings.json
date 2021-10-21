@@ -7,53 +7,15 @@
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "C:/Users/paulr/CloudComPy/build/${name}",
       "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy37",
+      "anacondaRoot": "C:/Users/paulr/anaconda3/envs/CloudComPy37",
+      "Qt5Root": "C:/Qt/5.15.2/msvc2019_64",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
         {
-          "name": "Qt5_DIR",
-          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5",
-          "type": "STRING"
-        },
-        {
-          "name": "Qt5LinguistTools_DIR",
-          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5LinguistTools",
-          "type": "STRING"
-        },
-        {
-          "name": "Qt5Test_DIR",
-          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5Test",
-          "type": "STRING"
-        },
-        {
-          "name": "BOOST_INCLUDEDIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
-          "type": "STRING"
-        },
-        {
-          "name": "BOOST_LIBRARYDIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib",
-          "type": "STRING"
-        },
-        {
-          "name": "Boost_DEBUG:BOOL",
-          "value": "OFF",
-          "type": "STRING"
-        },
-        {
-          "name": "Python3_ROOT_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37",
-          "type": "STRING"
-        },
-        {
           "name": "PYTHON_PREFERED_VERSION:STRING",
           "value": "3.7",
-          "type": "STRING"
-        },
-        {
-          "name": "NUMPY_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Lib/site-packages/numpy/core/include",
           "type": "STRING"
         },
         {
@@ -67,11 +29,6 @@
           "type": "STRING"
         },
         {
-          "name": "INSTALL_PREREQUISITE_LIBRARIES",
-          "value": "OFF",
-          "type": "STRING"
-        },
-        {
           "name": "BUILD_PY_TESTING:BOOL",
           "value": "ON",
           "type": "STRING"
@@ -82,7 +39,7 @@
           "type": "STRING"
         },
         {
-          "name": "OPTION_SCALAR_DOUBLE:BOOL",
+          "name": "INSTALL_PREREQUISITE_LIBRARIES",
           "value": "OFF",
           "type": "STRING"
         },
@@ -95,6 +52,16 @@
           "name": "CCCORELIB_USE_QT_CONCURRENT",
           "value": "True",
           "type": "BOOL"
+        },
+        {
+          "name": "Boost_DEBUG:BOOL",
+          "value": "OFF",
+          "type": "STRING"
+        },
+        {
+          "name": "OPTION_SCALAR_DOUBLE:BOOL",
+          "value": "OFF",
+          "type": "STRING"
         },
         {
           "name": "OPTION_USE_GDAL",
@@ -282,38 +249,73 @@
           "type": "BOOL"
         },
         {
+          "name": "Qt5_DIR",
+          "value": "${Qt5Root}/lib/cmake/Qt5",
+          "type": "STRING"
+        },
+        {
+          "name": "Qt5LinguistTools_DIR",
+          "value": "${Qt5Root}/lib/cmake/Qt5LinguistTools",
+          "type": "STRING"
+        },
+        {
+          "name": "Qt5Test_DIR",
+          "value": "${Qt5Root}/lib/cmake/Qt5Test",
+          "type": "STRING"
+        },
+        {
+          "name": "BOOST_INCLUDEDIR",
+          "value": "${anacondaRoot}/Library/include",
+          "type": "STRING"
+        },
+        {
+          "name": "BOOST_LIBRARYDIR",
+          "value": "${anacondaRoot}/Library/lib",
+          "type": "STRING"
+        },
+        {
+          "name": "Python3_ROOT_DIR",
+          "value": "${anacondaRoot}",
+          "type": "STRING"
+        },
+        {
+          "name": "NUMPY_INCLUDE_DIR",
+          "value": "${anacondaRoot}/Lib/site-packages/numpy/core/include",
+          "type": "STRING"
+        },
+        {
           "name": "CGAL_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/cmake/CGAL",
+          "value": "${anacondaRoot}/Library/lib/cmake/CGAL",
           "type": "PATH"
         },
         {
           "name": "EIGEN_ROOT_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include/eigen3",
+          "value": "${anacondaRoot}/Library/include/eigen3",
           "type": "PATH"
         },
         {
           "name": "OPENCV_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/cmake",
+          "value": "${anacondaRoot}/Library/cmake",
           "type": "PATH"
         },
         {
           "name": "PCL_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/cmake",
+          "value": "${anacondaRoot}/Library/cmake",
           "type": "PATH"
         },
         {
           "name": "PDAL_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/cmake/PDAL",
+          "value": "${anacondaRoot}/Library/lib/cmake/PDAL",
           "type": "PATH"
         },
         {
           "name": "FFMPEG_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "value": "${anacondaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "FFMPEG_LIBRARY_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib",
+          "value": "${anacondaRoot}/Library/lib",
           "type": "PATH"
         },
         {
@@ -338,47 +340,47 @@
         },
         {
           "name": "GDAL_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "value": "${anacondaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "GDAL_LIBRARY",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/gdal_i.lib",
+          "value": "${anacondaRoot}/Library/lib/gdal_i.lib",
           "type": "FILEPATH"
         },
         {
           "name": "GMP_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "value": "${anacondaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "GMP_LIBRARIES",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/mpir.lib",
+          "value": "${anacondaRoot}/Library/lib/mpir.lib",
           "type": "FILEPATH"
         },
         {
           "name": "LASLIB_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include/laszip",
+          "value": "${anacondaRoot}/Library/include/laszip",
           "type": "PATH"
         },
         {
           "name": "LASLIB_RELEASE_LIBRARY",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/laszip3.lib",
+          "value": "${anacondaRoot}/Library/lib/laszip3.lib",
           "type": "FILEPATH"
         },
         {
           "name": "LASZIP_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include/laszip",
+          "value": "${anacondaRoot}/Library/include/laszip",
           "type": "PATH"
         },
         {
           "name": "MPFR_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library",
+          "value": "${anacondaRoot}/Library",
           "type": "PATH"
         },
         {
           "name": "MPFR_LIBRARIES",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/mpfr.lib",
+          "value": "${anacondaRoot}/Library/lib/mpfr.lib",
           "type": "FILEPATH"
         },
         {
@@ -398,22 +400,22 @@
         },
         {
           "name": "TBB_INCLUDE_DIRS",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "value": "${anacondaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "XercesC_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "value": "${anacondaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "XercesC_LIBRARY",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/xerces-c_3.lib",
+          "value": "${anacondaRoot}/Library/lib/xerces-c_3.lib",
           "type": "FILEPATH"
         },
         {
           "name": "ZLIB_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "value": "${anacondaRoot}/Library/include",
           "type": "PATH"
         },
         {
