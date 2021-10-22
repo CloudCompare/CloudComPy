@@ -6,8 +6,8 @@
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "C:/Users/paulr/CloudComPy/build/${name}",
-      "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy37",
-      "anacondaRoot": "C:/Users/paulr/anaconda3/envs/CloudComPy37",
+      "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy39",
+      "anacondaRoot": "C:/Users/paulr/anaconda3/envs/CloudComPy39",
       "Qt5Root": "C:/Qt/5.15.2/msvc2019_64",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
@@ -15,7 +15,7 @@
       "variables": [
         {
           "name": "PYTHON_PREFERED_VERSION:STRING",
-          "value": "3.7",
+          "value": "3.9",
           "type": "STRING"
         },
         {
