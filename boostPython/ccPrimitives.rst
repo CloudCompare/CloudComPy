@@ -87,6 +87,10 @@ Generic primitive
    :inherited-members:
    :show-inheritance:
 
+=============================
+transformations
+=============================
+
 ----------------------------
 Rotation Translation Matrix
 ----------------------------
