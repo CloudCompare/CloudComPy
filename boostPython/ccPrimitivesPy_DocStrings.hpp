@@ -23,13 +23,109 @@ const char* ccPrimitivesPy_ccGLMatrix_doc= R"(
 A 4x4 'transformation' matrix (column major order).
 
 Transformation (M) is composed by a rotation (R) and a translation (T):
-M*X = R*X + T)";
+M*X = R*X + T.
+Default constructor (no parameter) gives identity.
+Alternate constructor:
+
+:param tuple X: 3 first elements of the 1st column (last one is 0)
+:param tuple Y: 3 first elements of the 2nd column (last one is 0)
+:param tuple Z: 3 first elements of the 3rd column (last one is 0)
+:param tuple Tr: 3 first elements of the last column (last one is 1))";
 
 const char* ccPrimitivesPy_ccGLMatrixd_doc= R"(
 A 4x4 'transformation' matrix (column major order).
 
 Transformation (M) is composed by a rotation (R) and a translation (T):
-M*X = R*X + T)";
+M*X = R*X + T.
+Default constructor (no parameter) gives identity.
+Alternate constructor:
+
+:param tuple X: 3 first elements of the 1st column (last one is 0)
+:param tuple Y: 3 first elements of the 2nd column (last one is 0)
+:param tuple Z: 3 first elements of the 3rd column (last one is 0)
+:param tuple Tr: 3 first elements of the last column (last one is 1))";
+
+const char* ccPrimitivesPy_Interpolate_doc= R"(
+Interpolates two matrices at relative position 'coef'
+
+:param float coef: interpolation position (should be between 0 and 1).
+:param ccGLMatrix glMat1: 'left' matrix
+:param ccGLMatrix glMat2: 'right' matrix
+
+:return: interpolated matrix
+:rtype: ccGLMatrix)";
+
+const char* ccPrimitivesPy_FromToRotation_doc= R"(
+Creates a transformation matrix that rotates a vector to another.
+
+Adapted from  "Efficiently Building a Matrix to Rotate One Vector to Another"
+By Tomas Möller, John Hughes, Journal of Graphics Tools, 4(4):1-4, 1999
+
+:param tuple from: normalized non-zero source vector
+:param tuple to: normalized non-zero destination vector
+
+:return: transformation matrix
+:rtype: ccGLMatrix)";
+
+const char* ccPrimitivesPy_FromViewDirAndUpDir_doc= R"(
+Generates a 'viewing' matrix from a looking vector and a 'up' direction.
+
+*warning* No translation is applied (pure rotation matrix).
+
+:param tuple forward: forward 'view' vector
+:param tuple up: up vector
+
+:return: rotation matrix
+:rtype: ccGLMatrix)";
+
+const char* ccPrimitivesPy_xRotation_doc= R"(
+Returns the rotation component around X only.
+
+:return: rotation matrix
+:rtype: ccGLMatrix)";
+
+const char* ccPrimitivesPy_yRotation_doc= R"(
+Returns the rotation component around Y only.
+
+:return: rotation matrix
+:rtype: ccGLMatrix)";
+
+const char* ccPrimitivesPy_zRotation_doc= R"(
+Returns the rotation component around Z only.
+
+:return: rotation matrix
+:rtype: ccGLMatrix)";
+
+const char* ccPrimitivesPy_clearTranslation_doc= R"(
+Clears translation.
+
+Translation is set to (0,0,0).)";
+
+const char* ccPrimitivesPy_invert_doc= R"(
+Inverts transformation (in place).)";
+
+const char* ccPrimitivesPy_inverse_doc= R"(
+Returns inverse transformation.
+
+:return: inverse transformation matrix
+:rtype: ccGLMatrix)";
+
+const char* ccPrimitivesPy_transpose_doc= R"(
+Transposes matrix (in place))";
+
+const char* ccPrimitivesPy_transposed_doc= R"(
+Returns transposed matrix.
+
+:return: transposed matrix
+:rtype: ccGLMatrix)";
+
+const char* ccPrimitivesPy_getColumn_doc= R"(
+Returns a column of the transformation, given its index.
+
+:param int index: column index (between 0 and 3)
+
+:return: column
+:rtype: tuple)";
 
 const char* ccPrimitivesPy_initFromParameters1_doc= R"(
 Inits transformation from a rotation axis, an angle and a translation.

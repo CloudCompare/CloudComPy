@@ -50,6 +50,15 @@ template<typename T> QString toString_def_py(ccGLMatrixTpl<T>&self)
     return self.toString();
 }
 
+template<typename T> std::vector<double> getColumn_py(ccGLMatrixTpl<T>&self, unsigned index)
+{
+	T* res = self.getColumn(index);
+	std::vector<double> vec;
+	if (index < 4)
+		vec = {(double)res[0], (double)res[1], (double)res[2], (double)res[3]};
+	return vec;
+}
+
 ccPlane* plane_Fit_py(CCCoreLib::GenericIndexedCloudPersist * cloud)
 {
     return ccPlane::Fit(cloud, nullptr);
@@ -139,15 +148,41 @@ void export_ccPrimitives()
     // TODO: expose more construtors
 
     class_<ccGLMatrixTpl<float> >("ccGLMatrixTpl_float")
+    	.def(init<const Vector3Tpl<float>&,Vector3Tpl<float>&,Vector3Tpl<float>&,Vector3Tpl<float>&>())
         .def("initFromParameters", initFromParameters1<float>, ccPrimitivesPy_initFromParameters1_doc)
         .def("initFromParameters", initFromParameters2<float>, ccPrimitivesPy_initFromParameters2_doc)
         .def("toString", &toString_def_py<float>, ccPrimitivesPy_toString_doc)
-        ;
+		.def("getColumn", &getColumn_py<float>, ccPrimitivesPy_getColumn_doc)
+		.def("Interpolate", &ccGLMatrixTpl<float>::Interpolate, ccPrimitivesPy_Interpolate_doc)
+		.def("FromToRotation", &ccGLMatrixTpl<float>::FromToRotation, ccPrimitivesPy_FromToRotation_doc)
+		.def("FromViewDirAndUpDir", &ccGLMatrixTpl<float>::FromViewDirAndUpDir, ccPrimitivesPy_FromViewDirAndUpDir_doc)
+		.def("xRotation", &ccGLMatrixTpl<float>::xRotation, ccPrimitivesPy_xRotation_doc)
+		.def("yRotation", &ccGLMatrixTpl<float>::yRotation, ccPrimitivesPy_yRotation_doc)
+		.def("zRotation", &ccGLMatrixTpl<float>::zRotation, ccPrimitivesPy_zRotation_doc)
+		.def("clearTranslation", &ccGLMatrixTpl<float>::clearTranslation, ccPrimitivesPy_clearTranslation_doc)
+		.def("invert", &ccGLMatrixTpl<float>::invert, ccPrimitivesPy_invert_doc)
+		.def("inverse", &ccGLMatrixTpl<float>::inverse, ccPrimitivesPy_inverse_doc)
+		.def("transpose", &ccGLMatrixTpl<float>::transpose, ccPrimitivesPy_transpose_doc)
+		.def("transposed", &ccGLMatrixTpl<float>::transposed, ccPrimitivesPy_transposed_doc)
+      ;
 
     class_<ccGLMatrixTpl<double> >("ccGLMatrixTpl_double")
+    	.def(init<const Vector3Tpl<double>&,Vector3Tpl<double>&,Vector3Tpl<double>&,Vector3Tpl<double>&>())
         .def("initFromParameters", initFromParameters1<double>, ccPrimitivesPy_initFromParameters1_doc)
         .def("initFromParameters", initFromParameters2<double>, ccPrimitivesPy_initFromParameters2_doc)
         .def("toString", &toString_def_py<double>, ccPrimitivesPy_toString_doc)
+		.def("getColumn", &getColumn_py<double>, ccPrimitivesPy_getColumn_doc)
+		.def("Interpolate", &ccGLMatrixTpl<double>::Interpolate, ccPrimitivesPy_Interpolate_doc)
+		.def("FromToRotation", &ccGLMatrixTpl<double>::FromToRotation, ccPrimitivesPy_FromToRotation_doc)
+		.def("FromViewDirAndUpDir", &ccGLMatrixTpl<double>::FromViewDirAndUpDir, ccPrimitivesPy_FromViewDirAndUpDir_doc)
+		.def("xRotation", &ccGLMatrixTpl<double>::xRotation, ccPrimitivesPy_xRotation_doc)
+		.def("yRotation", &ccGLMatrixTpl<double>::yRotation, ccPrimitivesPy_yRotation_doc)
+		.def("zRotation", &ccGLMatrixTpl<double>::zRotation, ccPrimitivesPy_zRotation_doc)
+		.def("clearTranslation", &ccGLMatrixTpl<double>::clearTranslation, ccPrimitivesPy_clearTranslation_doc)
+		.def("invert", &ccGLMatrixTpl<double>::invert, ccPrimitivesPy_invert_doc)
+		.def("inverse", &ccGLMatrixTpl<double>::inverse, ccPrimitivesPy_inverse_doc)
+		.def("transpose", &ccGLMatrixTpl<double>::transpose, ccPrimitivesPy_transpose_doc)
+		.def("transposed", &ccGLMatrixTpl<double>::transposed, ccPrimitivesPy_transposed_doc)
         ;
 
     class_<ccGLMatrix, bases<ccGLMatrixTpl<float> > >("ccGLMatrix", ccPrimitivesPy_ccGLMatrix_doc)
