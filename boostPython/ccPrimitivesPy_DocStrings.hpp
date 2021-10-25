@@ -119,6 +119,12 @@ Returns transposed matrix.
 :return: transposed matrix
 :rtype: ccGLMatrix)";
 
+const char* ccPrimitivesPy_data_doc= R"(
+Returns internal data of the ccGLMatrix
+
+:return: one dim. data array of 16 float in the order col. 1, col. 2, col. 3, col. 4
+:rtype: tuple)";
+
 const char* ccPrimitivesPy_getColumn_doc= R"(
 Returns a column of the transformation, given its index.
 

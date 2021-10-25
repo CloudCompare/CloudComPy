@@ -59,6 +59,16 @@ template<typename T> std::vector<double> getColumn_py(ccGLMatrixTpl<T>&self, uns
 	return vec;
 }
 
+template<typename T> std::vector<double> getData_py(ccGLMatrixTpl<T>&self)
+{
+	const T* res = self.data();
+	std::vector<double> vec;
+	vec.resize(OPENGL_MATRIX_SIZE);
+	for (int i=0; i<OPENGL_MATRIX_SIZE; i++)
+		vec[i] = (double)res[i];
+	return vec;
+}
+
 ccPlane* plane_Fit_py(CCCoreLib::GenericIndexedCloudPersist * cloud)
 {
     return ccPlane::Fit(cloud, nullptr);
@@ -153,6 +163,7 @@ void export_ccPrimitives()
         .def("initFromParameters", initFromParameters2<float>, ccPrimitivesPy_initFromParameters2_doc)
         .def("toString", &toString_def_py<float>, ccPrimitivesPy_toString_doc)
 		.def("getColumn", &getColumn_py<float>, ccPrimitivesPy_getColumn_doc)
+		.def("data", &getData_py<float>, ccPrimitivesPy_data_doc)
 		.def("Interpolate", &ccGLMatrixTpl<float>::Interpolate, ccPrimitivesPy_Interpolate_doc)
 		.def("FromToRotation", &ccGLMatrixTpl<float>::FromToRotation, ccPrimitivesPy_FromToRotation_doc)
 		.def("FromViewDirAndUpDir", &ccGLMatrixTpl<float>::FromViewDirAndUpDir, ccPrimitivesPy_FromViewDirAndUpDir_doc)
@@ -172,6 +183,7 @@ void export_ccPrimitives()
         .def("initFromParameters", initFromParameters2<double>, ccPrimitivesPy_initFromParameters2_doc)
         .def("toString", &toString_def_py<double>, ccPrimitivesPy_toString_doc)
 		.def("getColumn", &getColumn_py<double>, ccPrimitivesPy_getColumn_doc)
+		.def("data", &getData_py<double>, ccPrimitivesPy_data_doc)
 		.def("Interpolate", &ccGLMatrixTpl<double>::Interpolate, ccPrimitivesPy_Interpolate_doc)
 		.def("FromToRotation", &ccGLMatrixTpl<double>::FromToRotation, ccPrimitivesPy_FromToRotation_doc)
 		.def("FromViewDirAndUpDir", &ccGLMatrixTpl<double>::FromViewDirAndUpDir, ccPrimitivesPy_FromViewDirAndUpDir_doc)
