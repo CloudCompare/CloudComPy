@@ -296,6 +296,60 @@ template<typename T> struct Vector3Tpl_from_python_tuple // T double or float
     }
 };
 
+template<typename T> struct Vector3Tpl_from_python_list // T double or float
+{
+    Vector3Tpl_from_python_list()
+    {
+        CCTRACE("register Vector3Tpl_from_python_list");
+        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<Vector3Tpl<T> >());
+    }
+
+    // Determine if obj_ptr can be converted in a Vector3Tpl<T>
+    static void* convertible(PyObject* obj_ptr)
+    {
+        CCTRACE("convertible to Vector3Tpl<T>?");
+        if (!PyList_Check(obj_ptr))
+            return 0;
+        if (PyList_GET_SIZE(obj_ptr) != 3)
+            return 0;
+        for (int i=0; i<3; i++)
+        {
+            PyObject* iptr = PyList_GetItem(obj_ptr, i);
+            if (!PyFloat_Check(iptr) && !PyLong_Check(iptr))
+                return 0;
+        }
+        return obj_ptr;
+    }
+
+    // Convert obj_ptr into a Vector3Tpl<T>
+    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
+    {
+        CCTRACE("construct");
+        // Extract the 3 components (check already done by convertible)
+        T val[3];
+        for (int i=0; i<3; i++)
+        {
+            PyObject* iptr = PyList_GetItem(obj_ptr, i);
+            if (PyFloat_Check(iptr))
+                val[i] = PyFloat_AS_DOUBLE(iptr);
+            else if (PyLong_Check(iptr))
+                val[i] = PyLong_AsDouble(iptr);
+            else
+                bp::throw_error_already_set();
+        }
+
+        // Grab pointer to memory into which to construct the new Vector3Tpl<T>
+        void* storage = ((bp::converter::rvalue_from_python_storage<Vector3Tpl<T> >*) data)->storage.bytes;
+
+        // in-place construct the new Vector3Tpl<T> using the character data
+        // extracted from the Python object
+        new (storage) Vector3Tpl<T>(val);
+
+        // Stash the memory chunk pointer for later use by boost.python
+        data->convertible = storage;
+    }
+};
+
 template<typename T> struct Tuple3Tpl_from_python_tuple // T int, short, unsigned int, unsigned char
 {
     Tuple3Tpl_from_python_tuple()
@@ -597,6 +651,8 @@ void initializeConverters()
     Vector2Tpl_from_python_tuple<double>();
     Vector3Tpl_from_python_tuple<float>();
     Vector3Tpl_from_python_tuple<double>();
+    Vector3Tpl_from_python_list<float>();
+    Vector3Tpl_from_python_list<double>();
     Tuple3Tpl_from_python_tuple<int>();
     Tuple3Tpl_from_python_tuple<unsigned int>();
     Tuple3Tpl_from_python_tuple<unsigned char>();

@@ -198,9 +198,11 @@ void export_ccPrimitives()
         ;
 
     class_<ccGLMatrix, bases<ccGLMatrixTpl<float> > >("ccGLMatrix", ccPrimitivesPy_ccGLMatrix_doc)
+        .def(init<const ccGLMatrixTpl<float>&>())
         ;
 
     class_<ccGLMatrixd, bases<ccGLMatrixTpl<double> > >("ccGLMatrixd", ccPrimitivesPy_ccGLMatrixd_doc)
+        .def(init<const ccGLMatrixTpl<double>&>())
         ;
 
     class_<ccGenericPrimitiveWrap, bases<ccMesh>, boost::noncopyable>("ccGenericPrimitive", no_init)
