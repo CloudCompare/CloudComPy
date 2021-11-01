@@ -45,6 +45,86 @@ template<typename T> void (ccGLMatrixTpl<T>::*initFromParameters1)(T, const Vect
 template<typename T> void (ccGLMatrixTpl<T>::*initFromParameters2)(T, T, T, const Vector3Tpl<T>&) = &ccGLMatrixTpl<T>::initFromParameters;
 //template<typename T> QString (ccGLMatrixTpl<T>::*toString12Space)(int, char) = &ccGLMatrixTpl<T>::toString;
 
+ccGLMatrix FromToRotation_float(const Vector3Tpl<float>& from, const Vector3Tpl<float>& to)
+{
+    return ccGLMatrix(ccGLMatrixTpl<float>::FromToRotation(from, to));
+}
+
+ccGLMatrixd FromToRotation_double(const Vector3Tpl<double>& from, const Vector3Tpl<double>& to)
+{
+    return ccGLMatrixd(ccGLMatrixTpl<double>::FromToRotation(from, to));
+}
+
+ccGLMatrix Interpolate_float(float coef, const ccGLMatrixTpl<float>& glMat1, const ccGLMatrixTpl<float>& glMat2)
+{
+    return ccGLMatrix(ccGLMatrixTpl<float>::Interpolate(coef, glMat1, glMat2));
+}
+
+ccGLMatrixd Interpolate_double(double coef, const ccGLMatrixTpl<double>& glMat1, const ccGLMatrixTpl<double>& glMat2)
+{
+    return ccGLMatrixd(ccGLMatrixTpl<double>::Interpolate(coef, glMat1, glMat2));
+}
+
+ccGLMatrix FromViewDirAndUpDir_float(const Vector3Tpl<float>& forward, const Vector3Tpl<float>& up)
+{
+    return ccGLMatrix(ccGLMatrixTpl<float>::FromViewDirAndUpDir(forward, up));
+}
+
+ccGLMatrixd FromViewDirAndUpDir_double(const Vector3Tpl<double>& forward, const Vector3Tpl<double>& up)
+{
+    return ccGLMatrixd(ccGLMatrixTpl<double>::FromViewDirAndUpDir(forward, up));
+}
+
+ccGLMatrix xRotation_float(ccGLMatrixTpl<float>& self)
+{
+    return ccGLMatrix(self.xRotation());
+}
+
+ccGLMatrixd xRotation_double(ccGLMatrixTpl<double>& self)
+{
+    return ccGLMatrixd(self.xRotation());
+}
+
+ccGLMatrix yRotation_float(ccGLMatrixTpl<float>& self)
+{
+    return ccGLMatrix(self.yRotation());
+}
+
+ccGLMatrixd yRotation_double(ccGLMatrixTpl<double>& self)
+{
+    return ccGLMatrixd(self.yRotation());
+}
+
+ccGLMatrix zRotation_float(ccGLMatrixTpl<float>& self)
+{
+    return ccGLMatrix(self.zRotation());
+}
+
+ccGLMatrixd zRotation_double(ccGLMatrixTpl<double>& self)
+{
+    return ccGLMatrixd(self.zRotation());
+}
+
+ccGLMatrix transposed_float(ccGLMatrixTpl<float>& self)
+{
+    return ccGLMatrix(self.transposed());
+}
+
+ccGLMatrixd transposed_double(ccGLMatrixTpl<double>& self)
+{
+    return ccGLMatrixd(self.transposed());
+}
+
+ccGLMatrix inverse_float(ccGLMatrixTpl<float>& self)
+{
+    return ccGLMatrix(self.inverse());
+}
+
+ccGLMatrixd inverse_double(ccGLMatrixTpl<double>& self)
+{
+    return ccGLMatrixd(self.inverse());
+}
+
 template<typename T> QString toString_def_py(ccGLMatrixTpl<T>&self)
 {
     return self.toString();
@@ -199,10 +279,26 @@ void export_ccPrimitives()
 
     class_<ccGLMatrix, bases<ccGLMatrixTpl<float> > >("ccGLMatrix", ccPrimitivesPy_ccGLMatrix_doc)
         .def(init<const ccGLMatrixTpl<float>&>())
+        .def("FromToRotation", &FromToRotation_float, ccPrimitivesPy_FromToRotation_doc)
+        .def("Interpolate", &Interpolate_float, ccPrimitivesPy_Interpolate_doc)
+        .def("FromViewDirAndUpDir", &FromViewDirAndUpDir_float, ccPrimitivesPy_FromViewDirAndUpDir_doc)
+        .def("xRotation", &xRotation_float, ccPrimitivesPy_xRotation_doc)
+        .def("yRotation", &yRotation_float, ccPrimitivesPy_yRotation_doc)
+        .def("zRotation", &zRotation_float, ccPrimitivesPy_zRotation_doc)
+        .def("inverse", &inverse_float, ccPrimitivesPy_inverse_doc)
+        .def("transposed", &transposed_float, ccPrimitivesPy_transposed_doc)
         ;
 
     class_<ccGLMatrixd, bases<ccGLMatrixTpl<double> > >("ccGLMatrixd", ccPrimitivesPy_ccGLMatrixd_doc)
         .def(init<const ccGLMatrixTpl<double>&>())
+        .def("FromToRotation", &FromToRotation_double, ccPrimitivesPy_FromToRotation_doc)
+        .def("Interpolate", &Interpolate_double, ccPrimitivesPy_Interpolate_doc)
+        .def("FromViewDirAndUpDir", &FromViewDirAndUpDir_double, ccPrimitivesPy_FromViewDirAndUpDir_doc)
+        .def("xRotation", &xRotation_double, ccPrimitivesPy_xRotation_doc)
+        .def("yRotation", &yRotation_double, ccPrimitivesPy_yRotation_doc)
+        .def("zRotation", &zRotation_double, ccPrimitivesPy_zRotation_doc)
+        .def("inverse", &inverse_double, ccPrimitivesPy_inverse_doc)
+        .def("transposed", &transposed_double, ccPrimitivesPy_transposed_doc)
         ;
 
     class_<ccGenericPrimitiveWrap, bases<ccMesh>, boost::noncopyable>("ccGenericPrimitive", no_init)
