@@ -88,6 +88,11 @@ template<typename T> ccGLMatrixParams2<T>  getParameters2_py(ccGLMatrixTpl<T>& s
     return params;
 }
 
+ccGLMatrix fromDouble_py(ccGLMatrixTpl<double>& dblmat)
+{
+    return ccGLMatrix(dblmat.data());
+}
+
 ccGLMatrix FromToRotation_float(const Vector3Tpl<float>& from, const Vector3Tpl<float>& to)
 {
     return ccGLMatrix(ccGLMatrixTpl<float>::FromToRotation(from, to));
@@ -326,6 +331,8 @@ void export_ccPrimitives()
 
     class_<ccGLMatrixTpl<float> >("ccGLMatrixTpl_float")
     	.def(init<const Vector3Tpl<float>&,Vector3Tpl<float>&,Vector3Tpl<float>&,Vector3Tpl<float>&>())
+        .def("fromDouble", &fromDouble_py, ccPrimitivesPy_fromDouble_doc)
+            .staticmethod("fromDouble")
         .def("initFromParameters", initFromParameters1<float>, ccPrimitivesPy_initFromParameters1_doc)
         .def("initFromParameters", initFromParameters2<float>, ccPrimitivesPy_initFromParameters2_doc)
         .def("toString", &toString_def_py<float>, ccPrimitivesPy_toString_doc)

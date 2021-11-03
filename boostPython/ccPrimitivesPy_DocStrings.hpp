@@ -68,6 +68,14 @@ See `<http://en.wikipedia.org/wiki/Euler_angles>`_ (Tait-Bryan Z1Y2X3)
 :ivar float psi_rad: Psi angle (in radians)
 :ivar tuple t3D: translation)";
 
+const char* ccPrimitivesPy_fromDouble_doc= R"(
+Converts a ccGLMatrixd (double precision) in a ccGLMatrix (simple precision).
+
+:param ccGLMatrix_double dblmat: double precision ccGLMatrix
+
+:return: simple precision ccGLMatrix
+:rtype: ccGLMatrix)";
+
 const char* ccPrimitivesPy_getParameters1_py_doc= R"(
 Returns equivalent parameters: a rotation axis, an angle and a translation.
 
