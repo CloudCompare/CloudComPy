@@ -104,3 +104,24 @@ Rotation Translation Matrix
    :members:
    :inherited-members:
    :show-inheritance:
+   
+.. autoclass:: ccGLMatrixParams1_float
+   :members:
+   :inherited-members:
+   :show-inheritance:
+   
+.. autoclass:: ccGLMatrixParams2_float
+   :members:
+   :inherited-members:
+   :show-inheritance:
+
+.. autoclass:: ccGLMatrixParams1_double
+   :members:
+   :inherited-members:
+   :show-inheritance:
+
+.. autoclass:: ccGLMatrixParams2_double
+   :members:
+   :inherited-members:
+   :show-inheritance:
+   

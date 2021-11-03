@@ -20,10 +20,13 @@
 #define CCPRIMITIVESPY_DOCSTRINGS_HPP_
 
 const char* ccPrimitivesPy_ccGLMatrix_doc= R"(
-A 4x4 'transformation' matrix (column major order).
+A 4x4 'transformation' matrix (column major order), simple precision (float).
 
 Transformation (M) is composed by a rotation (R) and a translation (T):
-M*X = R*X + T.
+``M*X = R*X + T``. See OpenGL transformations.
+
+Available operators: ``+= -= *= *``
+
 Default constructor (no parameter) gives identity.
 Alternate constructor:
 
@@ -33,10 +36,13 @@ Alternate constructor:
 :param tuple Tr: 3 first elements of the last column (last one is 1))";
 
 const char* ccPrimitivesPy_ccGLMatrixd_doc= R"(
-A 4x4 'transformation' matrix (column major order).
+A 4x4 'transformation' matrix (column major order), double precision (double).
 
 Transformation (M) is composed by a rotation (R) and a translation (T):
-M*X = R*X + T.
+``M*X = R*X + T``. See OpenGL transformations.
+
+Available operators: ``+= -= *= *``
+
 Default constructor (no parameter) gives identity.
 Alternate constructor:
 
@@ -44,6 +50,35 @@ Alternate constructor:
 :param tuple Y: 3 first elements of the 2nd column (last one is 0)
 :param tuple Z: 3 first elements of the 3rd column (last one is 0)
 :param tuple Tr: 3 first elements of the last column (last one is 1))";
+
+const char* ccPrimitivesPy_ccGLMatrixParams1_doc= R"(
+Equivalent parameters of a ccGLMatrix transformation: a rotation axis, an angle and a translation.
+
+:ivar float alpha_rad: rotation angle in radians (in [0;pi])
+:ivar tuple axis3D: unit rotation axis
+:ivar tuple t3D: translation)";
+
+const char* ccPrimitivesPy_ccGLMatrixParams2_doc= R"(
+Equivalent parameters of a ccGLMatrix transformation: 3 rotation angles and a translation.
+
+See `<http://en.wikipedia.org/wiki/Euler_angles>`_ (Tait-Bryan Z1Y2X3)
+
+:ivar float phi_rad: Phi angle (in radians)
+:ivar float theta_rad: Theta angle (in radians)
+:ivar float psi_rad: Psi angle (in radians)
+:ivar tuple t3D: translation)";
+
+const char* ccPrimitivesPy_getParameters1_py_doc= R"(
+Returns equivalent parameters: a rotation axis, an angle and a translation.
+
+:return: equivalent parameters structure
+:rtype: ccGLMatrixParams1_float or ccGLMatrixParams1_double)";
+
+const char* ccPrimitivesPy_getParameters2_py_doc= R"(
+Returns equivalent parameters: 3 rotation angles and a translation.
+
+:return: equivalent parameters structure
+:rtype: ccGLMatrixParams2_float or ccGLMatrixParams2_double)";
 
 const char* ccPrimitivesPy_Interpolate_doc= R"(
 Interpolates two matrices at relative position 'coef'
@@ -144,7 +179,7 @@ Inits transformation from a rotation axis, an angle and a translation.
 const char* ccPrimitivesPy_initFromParameters2_doc= R"(
 Inits transformation from 3 rotation angles and a translation.
 
-See http://en.wikipedia.org/wiki/Euler_angles (Tait-Bryan Z1Y2X3)
+See `<http://en.wikipedia.org/wiki/Euler_angles>`_ (Tait-Bryan Z1Y2X3)
 
 :param float phi_rad: Phi angle (in radians)
 :param float theta_rad: Theta angle (in radians)
@@ -219,7 +254,7 @@ The cloud can be either a pointCloud or a Polyline.
 const char* ccPrimitivesPy_ccPlane_getEquation_doc= R"(
 Returns the equation of the plane.
 
-:return: Plane equation : [a, b, c, d] as 'ax+by+cz=d'
+:return: Plane equation : [a, b, c, d] as ``ax+by+cz=d``
 :rtype: tuple)";
 
 const char* ccPrimitivesPy_ccQuadric_doc= R"(

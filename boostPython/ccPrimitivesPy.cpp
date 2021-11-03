@@ -45,6 +45,49 @@ template<typename T> void (ccGLMatrixTpl<T>::*initFromParameters1)(T, const Vect
 template<typename T> void (ccGLMatrixTpl<T>::*initFromParameters2)(T, T, T, const Vector3Tpl<T>&) = &ccGLMatrixTpl<T>::initFromParameters;
 //template<typename T> QString (ccGLMatrixTpl<T>::*toString12Space)(int, char) = &ccGLMatrixTpl<T>::toString;
 
+template<typename T> struct ccGLMatrixParams1
+{
+    T alpha_rad;
+    Vector3Tpl<T> axis3D;
+    Vector3Tpl<T> t3D;
+};
+
+template<typename T> struct ccGLMatrixParams2
+{
+    T phi_rad;
+    T theta_rad;
+    T psi_rad;
+    Vector3Tpl<T> t3D;
+};
+
+template<typename T> ccGLMatrixParams1<T> getParameters1_py(ccGLMatrixTpl<T>& self)
+{
+    T alpha_rad;
+    Vector3Tpl<T> axis3D;
+    Vector3Tpl<T> t3D;
+    self.getParameters(alpha_rad, axis3D, t3D);
+    ccGLMatrixParams1<T> params;
+    params.alpha_rad = alpha_rad;
+    params.axis3D = axis3D;
+    params.t3D = t3D;
+    return params;
+}
+
+template<typename T> ccGLMatrixParams2<T>  getParameters2_py(ccGLMatrixTpl<T>& self)
+{
+    T phi_rad;
+    T theta_rad;
+    T psi_rad;
+    Vector3Tpl<T> t3D;
+    self.getParameters(phi_rad, theta_rad, psi_rad, t3D);
+    ccGLMatrixParams2<T> params;
+    params.phi_rad = phi_rad;
+    params.theta_rad = theta_rad;
+    params.psi_rad = psi_rad;
+    params.t3D = t3D;
+    return params;
+}
+
 ccGLMatrix FromToRotation_float(const Vector3Tpl<float>& from, const Vector3Tpl<float>& to)
 {
     return ccGLMatrix(ccGLMatrixTpl<float>::FromToRotation(from, to));
@@ -237,12 +280,58 @@ void export_ccPrimitives()
 {
     // TODO: expose more construtors
 
+    class_<ccGLMatrixParams1<float> >("ccGLMatrixParams1_float", ccPrimitivesPy_ccGLMatrixParams1_doc)
+        .def_readwrite("alpha_rad", &ccGLMatrixParams1<float>::alpha_rad)
+        .add_property("axis3D",
+                      make_getter(&ccGLMatrixParams1<float>::axis3D,
+                      return_value_policy<return_by_value>()),
+                      make_setter(&ccGLMatrixParams1<float>::axis3D))
+        .add_property("t3D",
+                      make_getter(&ccGLMatrixParams1<float>::t3D,
+                      return_value_policy<return_by_value>()),
+                      make_setter(&ccGLMatrixParams1<float>::t3D))
+        ;
+
+    class_<ccGLMatrixParams1<double> >("ccGLMatrixParams1_double", ccPrimitivesPy_ccGLMatrixParams1_doc)
+        .def_readwrite("alpha_rad", &ccGLMatrixParams1<double>::alpha_rad)
+        .add_property("axis3D",
+                      make_getter(&ccGLMatrixParams1<double>::axis3D,
+                      return_value_policy<return_by_value>()),
+                      make_setter(&ccGLMatrixParams1<double>::axis3D))
+        .add_property("t3D",
+                      make_getter(&ccGLMatrixParams1<double>::t3D,
+                      return_value_policy<return_by_value>()),
+                      make_setter(&ccGLMatrixParams1<double>::t3D))
+        ;
+
+    class_<ccGLMatrixParams2<float> >("ccGLMatrixParams2_float", ccPrimitivesPy_ccGLMatrixParams2_doc)
+        .def_readwrite("phi_rad", &ccGLMatrixParams2<float>::phi_rad)
+        .def_readwrite("theta_rad", &ccGLMatrixParams2<float>::theta_rad)
+        .def_readwrite("psi_rad", &ccGLMatrixParams2<float>::psi_rad)
+        .add_property("t3D",
+                      make_getter(&ccGLMatrixParams2<float>::t3D,
+                      return_value_policy<return_by_value>()),
+                      make_setter(&ccGLMatrixParams2<float>::t3D))
+        ;
+
+    class_<ccGLMatrixParams2<double> >("ccGLMatrixParams2_double", ccPrimitivesPy_ccGLMatrixParams2_doc)
+        .def_readwrite("phi_rad", &ccGLMatrixParams2<double>::phi_rad)
+        .def_readwrite("theta_rad", &ccGLMatrixParams2<double>::theta_rad)
+        .def_readwrite("psi_rad", &ccGLMatrixParams2<double>::psi_rad)
+        .add_property("t3D",
+                      make_getter(&ccGLMatrixParams2<double>::t3D,
+                      return_value_policy<return_by_value>()),
+                      make_setter(&ccGLMatrixParams2<double>::t3D))
+        ;
+
     class_<ccGLMatrixTpl<float> >("ccGLMatrixTpl_float")
     	.def(init<const Vector3Tpl<float>&,Vector3Tpl<float>&,Vector3Tpl<float>&,Vector3Tpl<float>&>())
         .def("initFromParameters", initFromParameters1<float>, ccPrimitivesPy_initFromParameters1_doc)
         .def("initFromParameters", initFromParameters2<float>, ccPrimitivesPy_initFromParameters2_doc)
         .def("toString", &toString_def_py<float>, ccPrimitivesPy_toString_doc)
 		.def("getColumn", &getColumn_py<float>, ccPrimitivesPy_getColumn_doc)
+        .def("getParameters1", &getParameters1_py<float>, ccPrimitivesPy_getParameters1_py_doc)
+        .def("getParameters2", &getParameters2_py<float>, ccPrimitivesPy_getParameters2_py_doc)
 		.def("data", &getData_py<float>, ccPrimitivesPy_data_doc)
 		.def("Interpolate", &ccGLMatrixTpl<float>::Interpolate, ccPrimitivesPy_Interpolate_doc)
 		.def("FromToRotation", &ccGLMatrixTpl<float>::FromToRotation, ccPrimitivesPy_FromToRotation_doc)
@@ -255,6 +344,10 @@ void export_ccPrimitives()
 		.def("inverse", &ccGLMatrixTpl<float>::inverse, ccPrimitivesPy_inverse_doc)
 		.def("transpose", &ccGLMatrixTpl<float>::transpose, ccPrimitivesPy_transpose_doc)
 		.def("transposed", &ccGLMatrixTpl<float>::transposed, ccPrimitivesPy_transposed_doc)
+        .def(self += self)
+        .def(self -= self)
+        .def(self *= self)
+        .def(self * self)
       ;
 
     class_<ccGLMatrixTpl<double> >("ccGLMatrixTpl_double")
@@ -263,6 +356,8 @@ void export_ccPrimitives()
         .def("initFromParameters", initFromParameters2<double>, ccPrimitivesPy_initFromParameters2_doc)
         .def("toString", &toString_def_py<double>, ccPrimitivesPy_toString_doc)
 		.def("getColumn", &getColumn_py<double>, ccPrimitivesPy_getColumn_doc)
+        .def("getParameters1", &getParameters1_py<double>, ccPrimitivesPy_getParameters1_py_doc)
+        .def("getParameters2", &getParameters2_py<double>, ccPrimitivesPy_getParameters2_py_doc)
 		.def("data", &getData_py<double>, ccPrimitivesPy_data_doc)
 		.def("Interpolate", &ccGLMatrixTpl<double>::Interpolate, ccPrimitivesPy_Interpolate_doc)
 		.def("FromToRotation", &ccGLMatrixTpl<double>::FromToRotation, ccPrimitivesPy_FromToRotation_doc)
@@ -275,6 +370,10 @@ void export_ccPrimitives()
 		.def("inverse", &ccGLMatrixTpl<double>::inverse, ccPrimitivesPy_inverse_doc)
 		.def("transpose", &ccGLMatrixTpl<double>::transpose, ccPrimitivesPy_transpose_doc)
 		.def("transposed", &ccGLMatrixTpl<double>::transposed, ccPrimitivesPy_transposed_doc)
+        .def(self += self)
+        .def(self -= self)
+        .def(self *= self)
+        .def(self * self)
         ;
 
     class_<ccGLMatrix, bases<ccGLMatrixTpl<float> > >("ccGLMatrix", ccPrimitivesPy_ccGLMatrix_doc)
