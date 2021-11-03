@@ -216,6 +216,11 @@ ccMesh* loadMeshPy(
         return nullptr;
 }
 
+void deleteEntity(ccHObject* entity)
+{
+    delete entity;
+}
+
 BOOST_PYTHON_FUNCTION_OVERLOADS(importFilePy_overloads, importFilePy, 1, 5);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloudPy_overloads, loadPointCloudPy, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadMeshPy_overloads, loadMeshPy, 1, 6);
@@ -354,6 +359,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
         loadPolyline_overloads(args("mode", "skip", "x", "y", "z", "filename"),
                                cloudComPy_loadPolyline_doc)
         [return_value_policy<reference_existing_object>()]);
+
+    def("deleteEntity", deleteEntity, cloudComPy_deleteEntity_doc);
 
     def("SaveMesh", SaveMesh, cloudComPy_SaveMesh_doc);
 

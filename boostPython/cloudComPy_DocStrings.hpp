@@ -47,6 +47,17 @@ If only one cloud is given, the direction (X, Y or Z) define the normal to the p
 :rtype: bool
 )";
 
+const char* cloudComPy_deleteEntity_doc= R"(
+Delete an entity and its children (mesh, cloud...)
+
+**Warning** No automatic action on the Python side on the variables referencing the C++ object!
+::
+
+    cc.deleteEntity(anEntity)
+    anEntity = None
+
+:param ccHObject entity: the entity to remove)";
+
 const char* cloudComPy_importFile_doc= R"(
 Load any kind of entities (cloud or mesh) from a file.
 

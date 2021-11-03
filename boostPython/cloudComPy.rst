@@ -13,6 +13,7 @@ cloudComPy module, functions
 .. autofunction:: computeNormals
 .. autofunction:: computeRoughness
 .. autofunction:: ComputeVolume25D
+.. autofunction:: deleteEntity
 .. autofunction:: filterBySFValue
 .. autofunction:: GetPointCloudRadius
 .. autofunction:: getScalarType
