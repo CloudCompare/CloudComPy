@@ -33,6 +33,7 @@
 #include <ccPointCloud.h>
 #include <ReferenceCloud.h>
 #include <ccMesh.h>
+#include <ccPolyline.h>
 #include <ccBox.h>
 #include <ccPlane.h>
 #include <ScalarField.h>
@@ -622,6 +623,12 @@ struct ccHObjectVector_from_python_list
                 CCTRACE("  OK ccMesh" << i);
                 continue;
             }
+            bp::extract<ccPolyline*> po(iptr);
+            if (po.check())
+            {
+                CCTRACE("  OK ccPolyline" << i);
+                continue;
+            }
             CCTRACE("  NOK " << i);
             return 0;
         }
@@ -656,6 +663,13 @@ struct ccHObjectVector_from_python_list
             {
                 CCTRACE("  OK ccMesh" << i);
                 (*res)[i] = mh();
+                continue;
+            }
+            bp::extract<ccPolyline*> po(iptr);
+            if (po.check())
+            {
+                CCTRACE("  OK ccPolyline" << i);
+                (*res)[i] = po();
                 continue;
             }
         }

@@ -303,6 +303,9 @@ Set the current 'out' ScalarField index. No validity check. Use -1 to set None.
 
 :param int index: index of the 'out' ScalarField)";
 
+const char* ccPointCloudPy_shrinkToFit_doc= R"(
+Removes unused capacity)";
+
 const char* ccPointCloudPy_size_doc= R"(
 Return the number of points in the cloud.
 

@@ -19,9 +19,23 @@
 #ifndef CCPOLYLINEPY_DOCSTRINGS_HPP_
 #define CCPOLYLINEPY_DOCSTRINGS_HPP_
 
+const char* ccPolylinePy_Polyline_doc= R"(
+A simple polyline class (base class)
+
+The polyline is considered as a cloud of points
+(in a specific order) with a open/closed state information.
+
+Constructor:
+
+:param GenericIndexedCloudPersist associatedCloud: the associated point cloud (i.e. the vertices))";
+
 const char* ccPolylinePy_ccPolyline_doc= R"(
 The polyline is considered as a cloud of points
-(in a specific order) with a open/closed state information.)";
+(in a specific order) with a open/closed state information.
+
+Constructor:
+
+:param GenericIndexedCloudPersist associatedCloud: the associated point cloud (i.e. the vertices))";
 
 const char* ccPolylinePy_computeLength_doc= R"(
 Computes the polyline length.
