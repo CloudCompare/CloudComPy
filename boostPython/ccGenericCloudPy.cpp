@@ -96,10 +96,15 @@ ccBBox ccGenericPointCloud_getOwnBB(ccGenericPointCloud& self)
 	return self.getOwnBB(false);
 }
 
+bool addChild_py(ccHObject& self, ccHObject* child, int dependencyFlags = ccHObject::DEPENDENCY_FLAGS::DP_NONE, int insertIndex = -1)
+{
+	return self.addChild(child, dependencyFlags, insertIndex);
+}
+
 CCCoreLib::GenericIndexedCloudPersist* (CCCoreLib::ReferenceCloud::*getAssCloud1)() = &CCCoreLib::ReferenceCloud::getAssociatedCloud;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccGenericPointCloud_computeOctree_overloads, computeOctree, 0, 2)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccHObject_addChild_overloads, addChild, 1, 3)
+BOOST_PYTHON_FUNCTION_OVERLOADS(addChild_py_overloads, addChild_py, 2, 4)
 
 void export_ccGenericCloud()
 {
@@ -114,7 +119,7 @@ void export_ccGenericCloud()
     class_<ccHObject>("ccHObject", no_init)
         .def("setName", &ccHObject::setName, ccHObject_setName_doc)
         .def("getName", &ccHObject::getName, ccHObject_getName_doc)
-		.def("addChild", &ccHObject::addChild, ccHObject_addChild_overloads(ccHObject_addChild_doc))
+		.def("addChild", &addChild_py, addChild_py_overloads(ccHObject_addChild_doc))
         ;
 
     class_<ccShiftedObject, bases<ccHObject>, boost::noncopyable>("ccShiftedObject", no_init)

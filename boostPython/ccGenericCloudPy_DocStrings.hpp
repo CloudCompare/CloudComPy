@@ -50,12 +50,11 @@ Get the name of the entity
 const char* ccHObject_addChild_doc= R"(
 Adds a child.
 
-Optional C++ parameters not available in Python (dependencyFlags, insertIndex)
-**warning** by default (i.e. with the DP_PARENT_OF_OTHER flag) the child's parent
-will be automatically replaced by this instance. Moreover the child will be deleted.
+**warning** the C++ default for DEPENDENCY_FLAGS (DP_PARENT_OF_OTHER) is replaced by DP_NONE in Python:
+The other values may induce a delete of the original child object in C++, not handled correctly on the Python side.
 
 :param ccHObject child: child instance to append to the child list
-:param DEPENDENCY_FLAGS,optional dependencyFlags: dependency flags, default DP_PARENT_OF_OTHER
+:param DEPENDENCY_FLAGS,optional dependencyFlags: dependency flags, default DP_NONE
 :param int,optional insertIndex: insertion index, default -1: if <0, child is simply appended to the children list.
 
 :return: success
