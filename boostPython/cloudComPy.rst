@@ -73,5 +73,13 @@ cloudComPy module, functions
 .. autoclass:: ReportInfoVol
    :members:
    :undoc-members:
-   
+ 
+.. autoclass:: TRANSFORMATION_FILTERS
+   :members:
+   :undoc-members:
+ 
+.. autoclass:: CONVERGENCE_TYPE
+   :members:
+   :undoc-members:
+  
    

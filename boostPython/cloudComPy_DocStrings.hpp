@@ -62,7 +62,7 @@ const char* cloudComPy_importFile_doc= R"(
 Load any kind of entities (cloud or mesh) from a file.
 
 :param filename: file Name
-:param shiftMode,optional mode: default AUTO, value from AUTO, XYZ, FIRST_GLOBAL_SHIFT, NO_GLOBAL_SHIFT
+:param CC_SHIFT_MODE,optional mode: default AUTO, value from AUTO, XYZ, FIRST_GLOBAL_SHIFT, NO_GLOBAL_SHIFT
 :param float,optional x: default 0
 :param float,optional y: default 0
 :param float,optional z: default 0
@@ -99,7 +99,7 @@ Applies ICP registration on two entities.
        Will be used for registration (default 1.0).
 :param bool,optional useDataSFAsWeights: Weights for data points (default `False`).
 :param bool,optional useModelSFAsWeights: Weights for model points (default `False`).
-:param int,optional transformationFilters: Filters to be applied on the resulting transformation at each step (default 0).
+:param TRANSFORMATION_FILTERS,optional transformationFilters: Filters to be applied on the resulting transformation at each step (default 0).
 
    - SKIP_NONE           = 0
    - SKIP_RXY            = 1

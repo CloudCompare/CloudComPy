@@ -229,8 +229,8 @@ See CClib documentation for more information about ReferenceClouds.
 
 :param ReferenceCloud selection: a ReferenceCloud structure (pointing to source)
 
-:return: a tuple(ccPointCloud, warning) warning status, if not 0, 
-         indicate out of memory errors (see CLONE_WARNINGS)
+:return: a tuple(:class:`ccPointCloud`, :class:`CLONE_WARNINGS`) warning status, if not 0, 
+         indicate out of memory errors (see :class:`CLONE_WARNINGS`)
 :rtype: tuple
 )";
 
