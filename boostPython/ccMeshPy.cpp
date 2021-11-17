@@ -71,7 +71,7 @@ void export_ccMesh()
              mesh_samplePoints_py_overloads(ccGenericMeshPy_samplePoints_doc)[return_value_policy<reference_existing_object>()])
         ;
 
-    class_<ccMesh, bases<ccGenericMesh> >("ccMesh", ccMeshPy_ccMesh_doc, no_init)
+    class_<ccMesh, bases<ccGenericMesh>, boost::noncopyable>("ccMesh", ccMeshPy_ccMesh_doc, no_init)
         .def("cloneMesh", &cloneMesh_py, return_value_policy<reference_existing_object>(), ccMeshPy_cloneMesh_doc)
         .def("size", &ccMesh::size)
         .def("getAssociatedCloud", &ccMesh::getAssociatedCloud,

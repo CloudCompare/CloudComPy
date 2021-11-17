@@ -166,6 +166,17 @@ template<typename T> struct vector_to_python_list
     }
 };
 
+template<typename T> struct vector_to_python_listref
+{
+    static PyObject* convert(std::vector<T> v)
+    {
+        bp::list vec;
+        for (int i=0; i<v.size(); i++)
+            vec.append(boost::ref(v[i]));
+        return bp::incref(vec.ptr());
+    }
+};
+
 template<typename T> struct Vector2Tpl_to_python_tuple
 {
     static PyObject* convert(Vector2Tpl<T> v)
@@ -795,7 +806,7 @@ void initializeConverters()
     to_python_converter<std::vector<CCCoreLib::DgmOctree::IndexAndCode>, vector_to_python_list<CCCoreLib::DgmOctree::IndexAndCode>, false>();
     to_python_converter<std::vector<CCCoreLib::DgmOctree::PointDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::PointDescriptor>, false>();
     to_python_converter<std::vector<ccHObject*>, vector_to_python_list<ccHObject*>, false>();
-    to_python_converter<std::vector<ccMesh*>, vector_to_python_list<ccMesh*>, false>();
+    to_python_converter<std::vector<ccMesh*>, vector_to_python_listref<ccMesh*>, false>();
     to_python_converter<std::vector<ccPointCloud*>, vector_to_python_list<ccPointCloud*>, false>();
     to_python_converter<std::map<QString, int>, map_to_python_dict<QString, int>, false>();
     // register the from-python converter

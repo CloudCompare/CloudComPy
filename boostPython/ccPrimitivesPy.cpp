@@ -411,21 +411,21 @@ void export_ccPrimitives()
         .def("getTypeName", pure_virtual(&ccGenericPrimitive::getTypeName), ccPrimitivesPy_getTypeName_doc)
         ;
 
-    class_<ccBox, bases<ccGenericPrimitive> >("ccBox", ccPrimitivesPy_ccBox_doc, init<QString>())
+    class_<ccBox, bases<ccGenericPrimitive>, boost::noncopyable>("ccBox", ccPrimitivesPy_ccBox_doc, init<QString>())
         .def(init<const CCVector3&, optional<const ccGLMatrix*, QString> >())
         ;
 
-    class_<ccCone, bases<ccGenericPrimitive> >("ccCone", ccPrimitivesPy_ccCone_doc, init<QString>())
+    class_<ccCone, bases<ccGenericPrimitive>, boost::noncopyable>("ccCone", ccPrimitivesPy_ccCone_doc, init<QString>())
         .def(init<PointCoordinateType, PointCoordinateType, PointCoordinateType,
              optional<PointCoordinateType, PointCoordinateType,const ccGLMatrix*, QString, unsigned, unsigned> >())
         ;
 
-    class_<ccCylinder, bases<ccGenericPrimitive> >("ccCylinder", ccPrimitivesPy_ccCylinder_doc, init<QString>())
+    class_<ccCylinder, bases<ccGenericPrimitive>, boost::noncopyable>("ccCylinder", ccPrimitivesPy_ccCylinder_doc, init<QString>())
         .def(init<PointCoordinateType, PointCoordinateType,
              optional<const ccGLMatrix*, QString, unsigned, unsigned> >())
         ;
 
-    class_<ccPlane, bases<ccGenericPrimitive> >("ccPlane", ccPrimitivesPy_ccPlane_doc, init<QString>())
+    class_<ccPlane, bases<ccGenericPrimitive>, boost::noncopyable>("ccPlane", ccPrimitivesPy_ccPlane_doc, init<QString>())
         .def(init<PointCoordinateType, PointCoordinateType,
              optional<const ccGLMatrix*, QString> >())
         .def("Fit", &plane_Fit_py, ccPrimitivesPy_ccPlane_Fit_doc, return_value_policy<reference_existing_object>())
@@ -433,7 +433,7 @@ void export_ccPrimitives()
         .def("getEquation", &plane_getEquation_py, ccPrimitivesPy_ccPlane_getEquation_doc)
         ;
 
-    class_<ccQuadric, boost::shared_ptr<ccQuadric>, bases<ccGenericPrimitive> >("ccQuadric", ccPrimitivesPy_ccQuadric_doc, no_init)
+    class_<ccQuadric, boost::shared_ptr<ccQuadric>, bases<ccGenericPrimitive>, boost::noncopyable >("ccQuadric", ccPrimitivesPy_ccQuadric_doc, no_init)
         .def("__init__", make_constructor(&ccQuadricWrap::initWrapper1 ))
         .def("__init__", make_constructor(&ccQuadricWrap::initWrapper2 ))
         .def("__init__", make_constructor(&ccQuadricWrap::initWrapper3 ))
@@ -441,17 +441,17 @@ void export_ccPrimitives()
         .def("__init__", make_constructor(&ccQuadricWrap::initWrapper5 ))
         ;
 
-    class_<ccSphere, bases<ccGenericPrimitive> >("ccSphere", ccPrimitivesPy_ccSphere_doc, init<QString>())
+    class_<ccSphere, bases<ccGenericPrimitive>, boost::noncopyable >("ccSphere", ccPrimitivesPy_ccSphere_doc, init<QString>())
         .def(init<PointCoordinateType,
              optional<const ccGLMatrix*, QString, unsigned, unsigned> >())
         ;
 
-    class_<ccTorus, bases<ccGenericPrimitive> >("ccTorus", ccPrimitivesPy_ccTorus_doc, init<QString>())
+    class_<ccTorus, bases<ccGenericPrimitive>, boost::noncopyable >("ccTorus", ccPrimitivesPy_ccTorus_doc, init<QString>())
         .def(init<PointCoordinateType, PointCoordinateType,
              optional<double, bool, PointCoordinateType, const ccGLMatrix*, QString, unsigned, unsigned> >())
         ;
 
-    class_<ccDish, bases<ccGenericPrimitive> >("ccDish", ccPrimitivesPy_ccDish_doc, init<QString>())
+    class_<ccDish, bases<ccGenericPrimitive>, boost::noncopyable >("ccDish", ccPrimitivesPy_ccDish_doc, init<QString>())
         .def(init<PointCoordinateType, PointCoordinateType,
              optional<PointCoordinateType, const ccGLMatrix*, QString, unsigned> >())
         ;
