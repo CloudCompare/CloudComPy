@@ -4,6 +4,7 @@ Cloud Sampling Tools
 =============================
 
 .. py:module:: cloudComPy
+    :noindex:
 
 -----------------------------
 cloud sampling

@@ -4,6 +4,7 @@ Distance Computation Tools
 =============================
 
 .. py:module:: cloudComPy
+    :noindex:
 
 -----------------------------
 Distance computation

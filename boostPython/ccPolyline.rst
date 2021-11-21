@@ -6,6 +6,7 @@ Polylines
 
 
 .. py:module:: cloudComPy
+    :noindex:
 
 -------------------------------
 ccPolyline

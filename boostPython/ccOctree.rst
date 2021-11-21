@@ -4,6 +4,7 @@ Octrees, descriptors and neighbourhood
 ======================================
 
 .. py:module:: cloudComPy
+    :noindex:
 
 -----------------------
 Octrees

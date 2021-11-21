@@ -241,7 +241,7 @@ If there's not enough neighbors to compute a quadric (i.e. less than 6) an inval
 This point will appear in grey (or not at all if you uncheck the 'display NaN values in grey' option of the scalar field parameters).
 
 :param CurvatureType cvt: from CurvatureType.GAUSSIAN_CURV, CurvatureType.MEAN_CURV, CurvatureType.NORMAL_CHANGE_RATE.
-:param float radius: try value obtained by GetPointCloudRadius.
+:param float radius: try value obtained by :py:meth:`GetPointCloudRadius`.
 :param clouds: list of clouds
 :type clouds: list of :py:class:`ccHObject`
 
@@ -257,7 +257,7 @@ PCA1 and PCA2 are defined in "3D terrestrial lidar data classification of comple
 using a multi-scale dimensionality criterion: Applications in geomorphology", Brodu and Lague, 2012.
 
 :param GeomFeature feature: from GeomFeature enum
-:param float radius: try value obtained by GetPointCloudRadius.
+:param float radius: try value obtained by :py:meth:`GetPointCloudRadius`.
 :param clouds: list of clouds
 :type clouds: list of :py:class:`ccHObject`
 
@@ -274,7 +274,7 @@ The density output can be:
 - a volume density: number of neighbors divided by the neighborhood volume = N / (4/3.Pi.R3)
 
 :param Density density: from Density enum
-:param float radius: try value obtained by GetPointCloudRadius.
+:param float radius: try value obtained by :py:meth:`GetPointCloudRadius`.
 :param clouds: list of clouds
 :type clouds: list of :py:class:`ccHObject`
 
@@ -295,7 +295,7 @@ The density output can be:
 - a volume density: number of neighbors divided by the neighborhood volume = N / (4/3.Pi.R3)
 
 :param Density density: from Density enum
-:param float radius: try value obtained by GetPointCloudRadius.
+:param float radius: try value obtained by :py:meth:`GetPointCloudRadius`.
 :param clouds: list of clouds
 :type clouds: list of :py:class:`ccHObject`
 
@@ -310,7 +310,7 @@ and the best fitting plane computed on its nearest neighbors.
 If there's not enough neighbors to compute a LS plane (i.e. less than 3) an invalid scalar value (NaN) is set for this point.
 This point will appear in grey (or not at all if you uncheck the 'display NaN values in grey' option in the scalar field properties).
 
-:param float radius: try value obtained by GetPointCloudRadius.
+:param float radius: try value obtained by :py:meth:`GetPointCloudRadius`.
 :param clouds: list of clouds
 :type clouds: list of :py:class:`ccHObject`
 
@@ -320,7 +320,7 @@ This point will appear in grey (or not at all if you uncheck the 'display NaN va
 const char* cloudComPy_computeMomentOrder1_doc=R"(
 Computes the first order moment on a list of points clouds (create a scalarField).
 
-:param float radius: try value obtained by GetPointCloudRadius.
+:param float radius: try value obtained by :py:meth:`GetPointCloudRadius`.
 :param clouds: list of clouds
 :type clouds: list of :py:class:`ccHObject`
 
