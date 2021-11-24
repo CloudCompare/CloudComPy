@@ -47,8 +47,6 @@ if(WIN32)
 	set(ENV_INSTALL_TEST envPyCC.bat)
 else()
     configure_file(execTest.sh.in execTest.sh)
-    configure_file(execInstallTest.sh.in execInstallTest.sh)
-    configure_file(envPyCC.sh.in envPyCC.sh)
     set(EXEC_TEST execTest.sh)
     set(EXEC_INSTALL_TEST execInstallTest.sh)
     set(ENV_INSTALL_TEST envPyCC.sh)
@@ -108,12 +106,12 @@ set(PYTHONAPI_TEST_FILES
     ${PYTHONAPI_TEST_SCRIPTS}
     )
 
-install(PROGRAMS ${PYTHONAPI_TEST_FILES} ${CMAKE_CURRENT_BINARY_DIR}/${ENV_INSTALL_TEST}
+install(PROGRAMS ${PYTHONAPI_TEST_FILES} ${ENV_INSTALL_TEST}
         DESTINATION ${PYTHONAPI_TEST_SCRIPTS_DIRECTORY}
        )
 
 # the shell script executing a test is renamed a install step      
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${EXEC_INSTALL_TEST}
+install(PROGRAMS ${EXEC_INSTALL_TEST}
         DESTINATION ${PYTHONAPI_TEST_SCRIPTS_DIRECTORY}
         RENAME ${EXEC_TEST}
        )
