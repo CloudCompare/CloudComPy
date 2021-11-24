@@ -55,6 +55,17 @@
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
 
+#ifdef _PYTHONAPI_DEBUG_
+bool ccTrace::_isTrace = false;
+void ccTrace::settrace()
+{
+    const char * cstr = std::getenv("_CCTRACE_");
+    std::string var;
+    if (cstr != nullptr) var = cstr;
+    if (var == "1") ccTrace::_isTrace = true;
+}
+#endif
+
 char const* greet()
 {
    return "hello, world, this is CloudCompare Python Interface: 'CloudComPy'";

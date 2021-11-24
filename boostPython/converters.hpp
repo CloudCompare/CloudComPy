@@ -777,7 +777,9 @@ struct ccGLMatrixd_from_python_ccGLMatrixTpl
 void initializeConverters()
 {
     using namespace boost::python;
-
+#ifdef _PYTHONAPI_DEBUG_
+    ccTrace::settrace();
+#endif
     // register the to-python converter
     CCTRACE("initializeConverters");
     to_python_converter<ccOctree*, ccOctree_to_python, false>();
