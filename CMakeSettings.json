@@ -39,6 +39,16 @@
           "type": "STRING"
         },
         {
+          "name": "BUILD_REFERENCE_DOC:BOOL",
+          "value": "OFF",
+          "type": "STRING"
+        },
+        {
+          "name": "USE_CONDA_PACKAGES",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "INSTALL_PREREQUISITE_LIBRARIES",
           "value": "OFF",
           "type": "STRING"
@@ -51,6 +61,11 @@
         {
           "name": "CCCORELIB_USE_QT_CONCURRENT",
           "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "CCCORELIB_USE_TBB",
+          "value": "False",
           "type": "BOOL"
         },
         {
@@ -399,8 +414,8 @@
           "type": "PATH"
         },
         {
-          "name": "TBB_INCLUDE_DIRS",
-          "value": "${anacondaRoot}/Library/include",
+          "name": "TBB_DIR",
+          "value": "${anacondaRoot}/Library/lib/cmake/TBB",
           "type": "PATH"
         },
         {
