@@ -40,8 +40,6 @@ configure_file(DartConfiguration.tcl.in DartConfiguration.tcl)
 # shell scripts to execute a test, a build or install step
 if(WIN32)
     configure_file(execTest.bat.in execTest.bat)
-    #configure_file(execInstallTest.bat.in execInstallTest.bat)
-    #configure_file(envPyCC.bat.in envPyCC.bat)
     set(EXEC_TEST execTest.bat)
 	set(EXEC_INSTALL_TEST execInstallTest.bat)
 	set(ENV_INSTALL_TEST envPyCC.bat)
