@@ -61,22 +61,28 @@ SCRIPT_PATH=$(readlink -f "${BASH_SOURCE[0]}")
 SCRIPT_NAME=$(basename "$SCRIPT_PATH")
 SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
 CLOUDCOMPY_ROOT=$(realpath "$SCRIPT_DIR/..")
+PROG=$(basename $0)
+# $PROG is the name of the shell (i.e. bash) when sourced, or the script name when executed
 
-case $# in
-    1 ) if [ "$1" = "deactivate" ]; then
-            deactivate
-        else
-            usage
-        fi
-        ;;
-    2 ) if [ "$1" = "activate" ]; then
-            activate $2
-        else
-            usage
-        fi
-        ;;
-    * ) usage
-esac
+if [ $PROG == $SCRIPT_NAME ]; then
+    echo "this script must be sourced (with source or '.')"
+else
+    case $# in
+        1 ) if [ "$1" = "deactivate" ]; then
+                deactivate
+            else
+                usage
+            fi
+            ;;
+        2 ) if [ "$1" = "activate" ]; then
+                activate $2
+            else
+                usage
+            fi
+            ;;
+        * ) usage
+    esac
+fi
 
 export LD_LIBRARY_PATH
 export LD_LIBRARY_PATH_SAVED
