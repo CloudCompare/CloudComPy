@@ -1268,7 +1268,7 @@ bool computeNormals(std::vector<ccHObject*> selectedEntities,
                 if (defaultRadius == 0.0)
                 {
                     //default radius
-                    defaultRadius = ccNormalVectors::GuessNaiveRadius(cloud);
+                    defaultRadius = ccOctree::GuessNaiveRadius(cloud);
                 }
             }
             else if (entity->isKindOf(CC_TYPES::MESH))
