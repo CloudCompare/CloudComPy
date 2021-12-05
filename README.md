@@ -53,6 +53,10 @@ The [reference documentation](https://www.simulation.openfields.fr/documentation
 
 From the Python interpreter, Docstrings provide some documentation on the  methods and their arguments.
 
+# Release notes
+Release notes starts with the October 18, 2021 CloudComPy release as reference.
+Have a look [here](doc/ReleaseNotes.md).
+
 # CloudComPy: availables binaries
 
 CloudComPy is built on Windows and Linux in a Conda environment, which facilitates building and binary portability.
