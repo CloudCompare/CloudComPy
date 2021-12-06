@@ -1,4 +1,49 @@
-﻿{
+
+## Build on Windows 10, with Anaconda3 or miniconda
+
+There are several methods to install the prerequisites on Windows 10. 
+I chose to install Anaconda, which is a very complete and large Python-based tools environment. 
+There is a package system under Anaconda, to select the products you need. It has all our prerequisites.
+
+From Anaconda prompt:
+```
+conda activate
+conda create --name CloudComPy37 python=3.7
+# --- erase previous env if existing
+conda activate CloudComPy37
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay matplotlib
+```
+For information, the list of packages actually installed for building and testing can be found in `building/conda-list`.
+
+CMake from Anaconda is used to get ctest at install, not for build.
+
+I do not use Qt from conda packages, I still have a problem at runtime when reading xyz files with the HEAD of CloudCompare
+(after commit "New features (#1420)" from 2021-03-07).
+With a separate install of Qt 5.15.2 binaries, it works fine...
+
+To use FBX format plugin, install the FBX SDK, not provided by an Anaconda package.
+
+It is necessary to configure Visual Studio 2019 with CMake.
+
+I don't master well the configuration and use of Visual Studio, so I tested two ways to use the Visual Studio GUI, 
+without knowing if there is a better way to take into account the prerequisites in the Visual Studio environment.
+
+- 1: Launch the Visual Studio GUI as is, without any additions, and give all the necessary paths for the prerequisites.
+
+- 2: Launch the Visual Studio GUI from the `Anaconda Prompt (Anaconda3)` console with the command: 
+`"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"`. 
+
+With the Anaconda environment, many paths and variables are found automatically. 
+In both cases, it is necessary to provide some configuration variables to CMake. 
+With Visual Studio, these variables can be filled in a json file, which is read during the configuration step. 
+I suppose it is also possible to install cmake-gui to do the same.
+
+Here are my json file, for the first method, with the plugins availables with Anaconda packages:
+
+```
+{
   "configurations": [
     {
       "name": "x64-Release",
@@ -6,16 +51,54 @@
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "C:/Users/paulr/CloudComPy/build/${name}",
-      "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy39",
-      "anacondaRoot": "C:/Users/paulr/anaconda3/envs/CloudComPy39",
-      "Qt5Root": "C:/Qt/5.15.2/msvc2019_64",
+      "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy37",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
         {
+          "name": "Qt5_DIR",
+          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5",
+          "type": "STRING"
+        },
+        {
+          "name": "Qt5LinguistTools_DIR",
+          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5LinguistTools",
+          "type": "STRING"
+        },
+        {
+          "name": "Qt5Test_DIR",
+          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5Test",
+          "type": "STRING"
+        },
+        {
+          "name": "BOOST_INCLUDEDIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "type": "STRING"
+        },
+        {
+          "name": "BOOST_LIBRARYDIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib",
+          "type": "STRING"
+        },
+        {
+          "name": "Boost_DEBUG:BOOL",
+          "value": "OFF",
+          "type": "STRING"
+        },
+        {
+          "name": "Python3_ROOT_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37",
+          "type": "STRING"
+        },
+        {
           "name": "PYTHON_PREFERED_VERSION:STRING",
-          "value": "3.9",
+          "value": "3.7",
+          "type": "STRING"
+        },
+        {
+          "name": "NUMPY_INCLUDE_DIR",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Lib/site-packages/numpy/core/include",
           "type": "STRING"
         },
         {
@@ -29,6 +112,11 @@
           "type": "STRING"
         },
         {
+          "name": "INSTALL_PREREQUISITE_LIBRARIES",
+          "value": "OFF",
+          "type": "STRING"
+        },
+        {
           "name": "BUILD_PY_TESTING:BOOL",
           "value": "ON",
           "type": "STRING"
@@ -39,17 +127,7 @@
           "type": "STRING"
         },
         {
-          "name": "BUILD_REFERENCE_DOC:BOOL",
-          "value": "OFF",
-          "type": "STRING"
-        },
-        {
-          "name": "USE_CONDA_PACKAGES",
-          "value": "True",
-          "type": "BOOL"
-        },
-        {
-          "name": "INSTALL_PREREQUISITE_LIBRARIES",
+          "name": "OPTION_SCALAR_DOUBLE:BOOL",
           "value": "OFF",
           "type": "STRING"
         },
@@ -62,21 +140,6 @@
           "name": "CCCORELIB_USE_QT_CONCURRENT",
           "value": "True",
           "type": "BOOL"
-        },
-        {
-          "name": "CCCORELIB_USE_TBB",
-          "value": "False",
-          "type": "BOOL"
-        },
-        {
-          "name": "Boost_DEBUG:BOOL",
-          "value": "OFF",
-          "type": "STRING"
-        },
-        {
-          "name": "OPTION_SCALAR_DOUBLE:BOOL",
-          "value": "OFF",
-          "type": "STRING"
         },
         {
           "name": "OPTION_USE_GDAL",
@@ -264,73 +327,38 @@
           "type": "BOOL"
         },
         {
-          "name": "Qt5_DIR",
-          "value": "${Qt5Root}/lib/cmake/Qt5",
-          "type": "STRING"
-        },
-        {
-          "name": "Qt5LinguistTools_DIR",
-          "value": "${Qt5Root}/lib/cmake/Qt5LinguistTools",
-          "type": "STRING"
-        },
-        {
-          "name": "Qt5Test_DIR",
-          "value": "${Qt5Root}/lib/cmake/Qt5Test",
-          "type": "STRING"
-        },
-        {
-          "name": "BOOST_INCLUDEDIR",
-          "value": "${anacondaRoot}/Library/include",
-          "type": "STRING"
-        },
-        {
-          "name": "BOOST_LIBRARYDIR",
-          "value": "${anacondaRoot}/Library/lib",
-          "type": "STRING"
-        },
-        {
-          "name": "Python3_ROOT_DIR",
-          "value": "${anacondaRoot}",
-          "type": "STRING"
-        },
-        {
-          "name": "NUMPY_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Lib/site-packages/numpy/core/include",
-          "type": "STRING"
-        },
-        {
           "name": "CGAL_DIR",
-          "value": "${anacondaRoot}/Library/lib/cmake/CGAL",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/cmake/CGAL",
           "type": "PATH"
         },
         {
           "name": "EIGEN_ROOT_DIR",
-          "value": "${anacondaRoot}/Library/include/eigen3",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include/eigen3",
           "type": "PATH"
         },
         {
           "name": "OPENCV_DIR",
-          "value": "${anacondaRoot}/Library/cmake",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/cmake",
           "type": "PATH"
         },
         {
           "name": "PCL_DIR",
-          "value": "${anacondaRoot}/Library/cmake",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/cmake",
           "type": "PATH"
         },
         {
           "name": "PDAL_DIR",
-          "value": "${anacondaRoot}/Library/lib/cmake/PDAL",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/cmake/PDAL",
           "type": "PATH"
         },
         {
           "name": "FFMPEG_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
           "type": "PATH"
         },
         {
           "name": "FFMPEG_LIBRARY_DIR",
-          "value": "${anacondaRoot}/Library/lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib",
           "type": "PATH"
         },
         {
@@ -355,47 +383,47 @@
         },
         {
           "name": "GDAL_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
           "type": "PATH"
         },
         {
           "name": "GDAL_LIBRARY",
-          "value": "${anacondaRoot}/Library/lib/gdal_i.lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/gdal_i.lib",
           "type": "FILEPATH"
         },
         {
           "name": "GMP_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
           "type": "PATH"
         },
         {
           "name": "GMP_LIBRARIES",
-          "value": "${anacondaRoot}/Library/lib/mpir.lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/mpir.lib",
           "type": "FILEPATH"
         },
         {
           "name": "LASLIB_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include/laszip",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include/laszip",
           "type": "PATH"
         },
         {
           "name": "LASLIB_RELEASE_LIBRARY",
-          "value": "${anacondaRoot}/Library/lib/laszip3.lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/laszip3.lib",
           "type": "FILEPATH"
         },
         {
           "name": "LASZIP_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include/laszip",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include/laszip",
           "type": "PATH"
         },
         {
           "name": "MPFR_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library",
           "type": "PATH"
         },
         {
           "name": "MPFR_LIBRARIES",
-          "value": "${anacondaRoot}/Library/lib/mpfr.lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/mpfr.lib",
           "type": "FILEPATH"
         },
         {
@@ -414,23 +442,23 @@
           "type": "PATH"
         },
         {
-          "name": "TBB_DIR",
-          "value": "${anacondaRoot}/Library/lib/cmake/TBB",
+          "name": "TBB_INCLUDE_DIRS",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
           "type": "PATH"
         },
         {
           "name": "XercesC_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
           "type": "PATH"
         },
         {
           "name": "XercesC_LIBRARY",
-          "value": "${anacondaRoot}/Library/lib/xerces-c_3.lib",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/xerces-c_3.lib",
           "type": "FILEPATH"
         },
         {
           "name": "ZLIB_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
           "type": "PATH"
         },
         {
@@ -443,3 +471,12 @@
     }
   ]
 }
+```
+
+After the installation step, it is in any case necessary to load the Anaconda environment (Anaconda Prompt console) 
+for Python and Numpy to be correctly configured.
+
+The tests are installed in `<install-dir>/doc/PythonAPI_test`, with shell scripts to set the `PYTHONPATH` and launch one test.
+When in `<install-dir>/doc/PythonAPI_test`, `ctest` launches all the tests. 
+
+The CloudCompare GUI is installed in  `<install-dir>/bin/CloudCompare`, and works as usual. 

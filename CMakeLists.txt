@@ -59,8 +59,17 @@ if( UNIX AND NOT APPLE )
 	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_FULL_LIBDIR}/cloudcompare")
 endif()
 
+# scripts to set environment
+if(WIN32)
+	set(ENV_CLOUDCOMPY envCloudComPy.bat)
+    install(PROGRAMS ${ENV_CLOUDCOMPY}
+            DESTINATION .
+           )
+endif()
+
 add_subdirectory( CloudCompare )
 add_subdirectory( pyAPI )
 add_subdirectory( boostPython )
-#add_subdirectory( sip )
 add_subdirectory( tests )
+add_subdirectory( doc )
+

@@ -4,6 +4,7 @@ Cloud Sampling Tools
 =============================
 
 .. py:module:: cloudComPy
+    :noindex:
 
 -----------------------------
 cloud sampling
@@ -22,3 +23,11 @@ cloud sampling parameters
    :members:
    :inherited-members:
    :show-inheritance:
+
+.. autoclass:: RESAMPLING_CELL_METHOD
+   :members:
+   :undoc-members:
+
+.. autoclass:: SUBSAMPLING_CELL_METHOD
+   :members:
+   :undoc-members:

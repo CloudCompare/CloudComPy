@@ -22,6 +22,9 @@
 #include <boost/python.hpp>
 
 #include <ccPolyline.h>
+#include <Polyline.h>
+#include <ccShiftedObject.h>
+#include <GenericIndexedCloudPersist.h>
 #include "ccPolylinePy_DocStrings.hpp"
 
 //#include "PyScalarType.h"
@@ -34,14 +37,20 @@ using namespace boost::python;
 
 void export_ccPolyline()
 {
-    class_<ccPolyline>("ccPolyline", ccPolylinePy_ccPolyline_doc, no_init)
+
+	class_<CCCoreLib::Polyline, bases<CCCoreLib::ReferenceCloud> >("Polyline",
+			ccPolylinePy_Polyline_doc, init<CCCoreLib::GenericIndexedCloudPersist*>())
+         .def("isClosed", &ccPolyline::isClosed, ccPolylinePy_isClosed_doc)
+	     .def("setClosed", &ccPolyline::setClosed, ccPolylinePy_setClosed_doc)
+		 ;
+
+    class_<ccPolyline, bases<CCCoreLib::Polyline, ccShiftedObject> >("ccPolyline",
+    		ccPolylinePy_ccPolyline_doc, init<CCCoreLib::GenericIndexedCloudPersist*>())
         .def("computeLength", &ccPolyline::computeLength, ccPolylinePy_computeLength_doc)
         .def("getName", &ccPolyline::getName, ccPolylinePy_getName_doc)
         .def("is2DMode", &ccPolyline::is2DMode, ccPolylinePy_is2DMode_doc)
-        .def("isClosed", &ccPolyline::isClosed, ccPolylinePy_isClosed_doc)
         .def("segmentCount", &ccPolyline::segmentCount, ccPolylinePy_segmentCount_doc)
         .def("set2DMode", &ccPolyline::set2DMode, ccPolylinePy_set2DMode_doc)
-        .def("setClosed", &ccPolyline::setClosed, ccPolylinePy_setClosed_doc)
         .def("setName", &ccPolyline::setName, ccPolylinePy_setName_doc)
         .def("size", &ccPolyline::size, ccPolylinePy_size_doc)
         .def("smoothChaikin", &ccPolyline::smoothChaikin,

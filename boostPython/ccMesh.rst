@@ -4,6 +4,7 @@ Meshes
 =============================
 
 .. py:module:: cloudComPy
+    :noindex:
 
 ----------------------------
 ccMesh

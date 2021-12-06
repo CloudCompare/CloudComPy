@@ -47,6 +47,19 @@ Get the name of the entity
 :return: entity name
 :rtype: str)";
 
+const char* ccHObject_addChild_doc= R"(
+Adds a child.
+
+**warning** the C++ default for DEPENDENCY_FLAGS (DP_PARENT_OF_OTHER) is replaced by DP_NONE in Python:
+The other values may induce a delete of the original child object in C++, not handled correctly on the Python side.
+
+:param ccHObject child: child instance to append to the child list
+:param DEPENDENCY_FLAGS,optional dependencyFlags: dependency flags, default DP_NONE
+:param int,optional insertIndex: insertion index, default -1: if <0, child is simply appended to the children list.
+
+:return: success
+:rtype: bool)";
+
 const char* ccGenericPointCloud_computeOctree_doc= R"(
 Computes the cloud octree.
 
@@ -83,6 +96,40 @@ get the ith point in the cloud array.
 :return: point coordinates
 :rtype: tuple)";
 
+const char* PointCloudTpl_addPoint_doc= R"(
+Adds a 3D point to the database
+
+To ensure the best efficiency, the database memory must have already
+been reserved (with PointCloud::reserve). Otherwise nothing happens.
+
+:param tuple P: a 3D point)";
+
+const char* PointCloudTpl_reserve_doc= R"(
+Reserves memory for the point database.
+
+This method tries to reserve some memory to store points
+that will be inserted later (with PointCloud::addPoint).
+If the new number of points is smaller than the actual one,
+nothing happens.
+
+:param int newNumberOfPoints: the new number of points
+
+:return: true if the method succeeds, false otherwise
+:rtype: bool)";
+
+const char* PointCloudTpl_resize_doc= R"(
+Resizes the point database.
+
+The cloud database is resized with the specified size. If the new size
+is smaller, the overflooding points will be deleted. If its greater,
+the database is filled with blank points 
+**warning** the PointCloud::addPoint method will insert points after those ones.
+
+:param int newNumberOfPoints: the new number of points
+
+:return: true if the method succeeds, false otherwise
+:rtype: bool)";
+
 const char* ReferenceCloud_Doc= R"(
 A very simple point cloud (no point duplication).
 
@@ -96,6 +143,23 @@ on an original ccPointCloud (the associatedCloud).
 The ReferenceCloud can be transformed in a ccPointCloud, using the partialClone method
 of the associated ccPointCloud.
 )";
+
+const char* ReferenceCloud_addPointIndex_doc= R"(
+Point global index insertion mechanism (range), thread safe.
+
+:param int firstIndex: first point global index of range
+:param int lastIndex: last point global index of range (excluded)
+
+:return: false if not enough memory
+:rtype: bool)";
+
+const char* ReferenceCloud_addPointIndexGlobal_doc= R"(
+Point global index insertion mechanism, Thread safe.
+
+:param int globalIndex: a point global index
+
+:return: false if not enough memory
+:rtype: bool)";
 
 const char* ReferenceCloud_enableScalarField_doc= R"(
 Enables the scalar field associated to the cloud.

@@ -50,8 +50,6 @@ message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
 
 project( cloudComPy VERSION 0.1 )
 
-#Python3_add_library(${PROJECT_NAME} MODULE cloudComPy.cpp)
-
 add_library( ${PROJECT_NAME} SHARED )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
@@ -89,8 +87,6 @@ target_link_libraries( ${PROJECT_NAME}
     ${Boost_LIBRARIES}
     ${Python3_LIBRARIES}
     )
-#    ${Python3_LIBRARIES}
-#set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 
 # Qt libraries
 
@@ -106,14 +102,30 @@ if (WIN32)
    target_link_libraries( ${PROJECT_NAME} Qt5::WinMain)
 endif()
 
+# --- environment scripts, with conda
 
+set (ENV_SCRIPTS condaCloud.sh)
+option(USE_CONDA_PACKAGES "Use Conda packages and environment for build: add commands for set/unset run environment" OFF)
+
+# --- Python scripts with added functions
+
+set(PYTHONAPI_SCRIPTS
+	minimalBoundingBox.py
+	)
+
+# --- install
 
 if( WIN32 OR APPLE)
 	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare)
+	install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare)
 else()
     set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare)
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
+    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
+    if (USE_CONDA_PACKAGES)
+        install(PROGRAMS ${ENV_SCRIPTS} DESTINATION ${CMAKE_INSTALL_BINDIR})
+    endif()
 endif()
 
 if(WIN32)
@@ -142,43 +154,41 @@ if(WIN32)
   endif()
 endif()
 
-# Sphinx Documentation
-if( WIN32 OR APPLE)
-else()
-    set(RSTFILES
-        ccFacet.rst
-        ccMesh.rst
-        ccOctree.rst
-        ccPointCloud.rst
-        ccPolyline.rst
-        ccPrimitives.rst
-        cloudComPy.rst
-        DistanceComputationTools.rst
-        index.rst
-        introduction.rst
-        ScalarField.rst
+# --- Sphinx Documentation
+
+set(RSTFILES
+    ccFacet.rst
+    ccMesh.rst
+    ccOctree.rst
+    ccPointCloud.rst
+    ccPolyline.rst
+    ccPrimitives.rst
+    cloudComPy.rst
+    DistanceComputationTools.rst
+    index.rst
+    introduction.rst
+    ScalarField.rst
+    )
+
+configure_file(conf.py.in conf.py)
+
+set(SPHINXOPTS )
+set(SOURCEDIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(ALLSPHINXOPTS -d doctrees ${SPHINXOPTS} ${SOURCEDIR})
+set(SPHINXBUILD sphinx-build)
+
+option( BUILD_REFERENCE_DOC "Build reference documentation for CloudComPy" OFF )
+if ( BUILD_REFERENCE_DOC )
+    add_custom_target(BUILD_HTML ALL
+        COMMAND ${CMAKE_COMMAND} -E make_directory html
+        COMMAND ${CMAKE_COMMAND} -E make_directory doctrees
+        COMMAND ${SPHINXBUILD} -c ${CMAKE_BINARY_DIR}/boostPython -b html ${ALLSPHINXOPTS} html
+        DEPENDS ${RSTFILES}  ${PROJECT_NAME}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
+
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html/
+        DESTINATION doc/CloudComPy
+        PATTERN ".buildinfo" EXCLUDE
         )
-
-    configure_file(conf.py.in conf.py)
-
-    set(SPHINXOPTS )
-    set(SOURCEDIR ${CMAKE_CURRENT_SOURCE_DIR})
-    set(ALLSPHINXOPTS -d doctrees ${SPHINXOPTS} ${SOURCEDIR})
-    set(SPHINXBUILD sphinx-build)
-
-    option( BUILD_REFERENCE_DOC "Build reference documentation for CloudComPy" OFF )
-    if ( BUILD_REFERENCE_DOC )
-        add_custom_target(BUILD_HTML ALL
-          COMMAND ${CMAKE_COMMAND} -E make_directory html
-          COMMAND ${CMAKE_COMMAND} -E make_directory doctrees
-          COMMAND ${SPHINXBUILD} -c ${CMAKE_BINARY_DIR}/boostPython -b html ${ALLSPHINXOPTS} html
-          DEPENDS ${RSTFILES}  ${PROJECT_NAME}
-          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        )
-
-        install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html/
-          DESTINATION doc/CloudComPy
-          PATTERN ".buildinfo" EXCLUDE
-          )
-    endif()
 endif()

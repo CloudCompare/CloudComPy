@@ -483,7 +483,6 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode, dou
 
     delete db;
     db = nullptr;
-
     return entities;
 
 }
@@ -1269,7 +1268,7 @@ bool computeNormals(std::vector<ccHObject*> selectedEntities,
                 if (defaultRadius == 0.0)
                 {
                     //default radius
-                    defaultRadius = ccNormalVectors::GuessNaiveRadius(cloud);
+                    defaultRadius = ccOctree::GuessNaiveRadius(cloud);
                 }
             }
             else if (entity->isKindOf(CC_TYPES::MESH))
@@ -1552,6 +1551,7 @@ bool ComputeVolume_(    ccRasterGrid& grid,
                                     vertDim,
                                     projectionType,
                                     groundEmptyCellFillStrategy == ccRasterGrid::INTERPOLATE,
+									0.0,
                                     ccRasterGrid::INVALID_PROJECTION_TYPE,
                                     pDlg.data()))
         {
@@ -1581,6 +1581,7 @@ bool ComputeVolume_(    ccRasterGrid& grid,
                                 vertDim,
                                 projectionType,
                                 ceilEmptyCellFillStrategy == ccRasterGrid::INTERPOLATE,
+								0.0,
                                 ccRasterGrid::INVALID_PROJECTION_TYPE,
                                 pDlg.data()))
         {
@@ -2296,6 +2297,7 @@ ccHObject* Rasterize_(
 		                  vertDir,
 		                  projectionType,
 		                  emptyCellFillStrategy == ccRasterGrid::INTERPOLATE,
+						  0.0,
 		                  sfProjectionType,
 		                  nullptr))
 		{

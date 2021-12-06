@@ -55,6 +55,34 @@
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
 
+#ifdef _PYTHONAPI_DEBUG_
+bool ccTrace::_isTrace = true;
+void ccTrace::settrace()
+{
+    const char * cstr = std::getenv("_CCTRACE_");
+    std::string var="unset";
+    if (cstr != nullptr)
+    {
+        var = cstr;
+        CCTRACE("CloudComPy C++ debug trace environment variable (_CCTRACE_) is set to: " << var << ". Activations values are: ON \"ON\" ")
+    }
+    else
+    {
+        CCTRACE("CloudComPy C++ debug trace environment variable (_CCTRACE_) is unset, activations values are: ON \"ON\" ")
+    }
+    if ((var == "ON") || (var == "\"ON\""))
+    {
+        std::cerr << std::flush << __FILE__ << " [" << __LINE__ << "] : " << "trace ON" << std::endl << std::flush;
+        ccTrace::_isTrace = true;
+    }
+    else
+    {
+        std::cerr << std::flush << __FILE__ << " [" << __LINE__ << "] : " << "trace OFF" << std::endl << std::flush;
+        ccTrace::_isTrace = false;
+    }
+}
+#endif
+
 char const* greet()
 {
    return "hello, world, this is CloudCompare Python Interface: 'CloudComPy'";
@@ -216,6 +244,11 @@ ccMesh* loadMeshPy(
         return nullptr;
 }
 
+void deleteEntity(ccHObject* entity)
+{
+    delete entity;
+}
+
 BOOST_PYTHON_FUNCTION_OVERLOADS(importFilePy_overloads, importFilePy, 1, 5);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloudPy_overloads, loadPointCloudPy, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadMeshPy_overloads, loadMeshPy, 1, 6);
@@ -354,6 +387,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
         loadPolyline_overloads(args("mode", "skip", "x", "y", "z", "filename"),
                                cloudComPy_loadPolyline_doc)
         [return_value_policy<reference_existing_object>()]);
+
+    def("deleteEntity", deleteEntity, cloudComPy_deleteEntity_doc);
 
     def("SaveMesh", SaveMesh, cloudComPy_SaveMesh_doc);
 

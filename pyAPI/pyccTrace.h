@@ -22,7 +22,14 @@
 #ifdef _PYTHONAPI_DEBUG_
 #include <iostream>
 #include <sstream>
-#define CCTRACE(msg) {std::cerr<<std::flush<<__FILE__<<" ["<<__LINE__<<"] : "<<msg<<std::endl<<std::flush;}
+
+struct ccTrace
+{
+static bool _isTrace;
+static void settrace();
+};
+
+#define CCTRACE(msg) {if (ccTrace::_isTrace) std::cerr<<std::flush<<__FILE__<<" ["<<__LINE__<<"] : "<<msg<<std::endl<<std::flush;}
 #else
 #define CCTRACE(msg)
 #endif

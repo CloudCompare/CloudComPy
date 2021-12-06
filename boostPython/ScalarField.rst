@@ -4,6 +4,7 @@ Scalar Fields
 =============================
 
 .. py:module:: cloudComPy
+    :noindex:
 
 .. autoclass:: ScalarField
    :members:

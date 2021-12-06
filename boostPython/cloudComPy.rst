@@ -13,6 +13,7 @@ cloudComPy module, functions
 .. autofunction:: computeNormals
 .. autofunction:: computeRoughness
 .. autofunction:: ComputeVolume25D
+.. autofunction:: deleteEntity
 .. autofunction:: filterBySFValue
 .. autofunction:: GetPointCloudRadius
 .. autofunction:: getScalarType
@@ -72,5 +73,13 @@ cloudComPy module, functions
 .. autoclass:: ReportInfoVol
    :members:
    :undoc-members:
-   
+ 
+.. autoclass:: TRANSFORMATION_FILTERS
+   :members:
+   :undoc-members:
+ 
+.. autoclass:: CONVERGENCE_TYPE
+   :members:
+   :undoc-members:
+  
    

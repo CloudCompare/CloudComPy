@@ -41,6 +41,16 @@ CCVector3 PointCloudTpl_ccGenericPointCloud_QString_getPoint_py(CCCoreLib::Point
     return *vec;
 }
 
+bool addPointIndex1_py(CCCoreLib::ReferenceCloud& self, unsigned globalIndex)
+{
+	return self.addPointIndex(globalIndex);
+}
+
+bool addPointIndex2_py(CCCoreLib::ReferenceCloud& self, unsigned firstIndex, unsigned lastIndex)
+{
+	return self.addPointIndex(firstIndex, lastIndex);
+}
+
 std::vector<Vector3Tpl<float> > ReferenceCloud_getBoundingBox_py(CCCoreLib::ReferenceCloud& self)
 {
     std::vector<Vector3Tpl<float> > bb;
@@ -86,15 +96,30 @@ ccBBox ccGenericPointCloud_getOwnBB(ccGenericPointCloud& self)
 	return self.getOwnBB(false);
 }
 
+bool addChild_py(ccHObject& self, ccHObject* child, int dependencyFlags = ccHObject::DEPENDENCY_FLAGS::DP_NONE, int insertIndex = -1)
+{
+	return self.addChild(child, dependencyFlags, insertIndex);
+}
+
 CCCoreLib::GenericIndexedCloudPersist* (CCCoreLib::ReferenceCloud::*getAssCloud1)() = &CCCoreLib::ReferenceCloud::getAssociatedCloud;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccGenericPointCloud_computeOctree_overloads, computeOctree, 0, 2)
+BOOST_PYTHON_FUNCTION_OVERLOADS(addChild_py_overloads, addChild_py, 2, 4)
 
 void export_ccGenericCloud()
 {
+	enum_<ccHObject::DEPENDENCY_FLAGS>("DEPENDENCY_FLAGS")
+		.value("DP_NONE", ccHObject::DEPENDENCY_FLAGS::DP_NONE)
+		.value("DP_NOTIFY_OTHER_ON_DELETE", ccHObject::DEPENDENCY_FLAGS::DP_NOTIFY_OTHER_ON_DELETE)
+		.value("DP_NOTIFY_OTHER_ON_UPDATE", ccHObject::DEPENDENCY_FLAGS::DP_NOTIFY_OTHER_ON_UPDATE)
+		.value("DP_DELETE_OTHER", ccHObject::DEPENDENCY_FLAGS::DP_DELETE_OTHER)
+		.value("DP_PARENT_OF_OTHER", ccHObject::DEPENDENCY_FLAGS::DP_PARENT_OF_OTHER)
+		;
+
     class_<ccHObject>("ccHObject", no_init)
         .def("setName", &ccHObject::setName, ccHObject_setName_doc)
         .def("getName", &ccHObject::getName, ccHObject_getName_doc)
+		.def("addChild", &addChild_py, addChild_py_overloads(ccHObject_addChild_doc))
         ;
 
     class_<ccShiftedObject, bases<ccHObject>, boost::noncopyable>("ccShiftedObject", no_init)
@@ -118,10 +143,15 @@ void export_ccGenericCloud()
 
     class_<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>, bases<ccGenericPointCloud>, boost::noncopyable>("PointCloudTpl_ccGenericPointCloud_QString", no_init)
         .def("getPoint", &PointCloudTpl_ccGenericPointCloud_QString_getPoint_py, PointCloudTpl_ccGenericPointCloud_QString_getPoint_doc)
-        ;
+        .def("reserve", &CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>::reserve, PointCloudTpl_reserve_doc)
+        .def("resize", &CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>::resize, PointCloudTpl_resize_doc)
+        .def("addPoint", &CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>::addPoint, PointCloudTpl_addPoint_doc)
+		;
 
     class_<CCCoreLib::ReferenceCloud, bases<CCCoreLib::GenericIndexedCloudPersist> >("ReferenceCloud", ReferenceCloud_Doc,
                                                                                      init<CCCoreLib::GenericIndexedCloudPersist*>())
+        .def("addPointIndexGlobal", addPointIndex1_py, ReferenceCloud_addPointIndexGlobal_doc)
+        .def("addPointIndex", addPointIndex2_py, ReferenceCloud_addPointIndex_doc)
         .def("enableScalarField", &CCCoreLib::ReferenceCloud::enableScalarField, ReferenceCloud_enableScalarField_doc)
         .def("forwardIterator", &CCCoreLib::ReferenceCloud::forwardIterator, ReferenceCloud_forwardIterator_doc)
         .def("getAssociatedCloud", getAssCloud1, return_value_policy<reference_existing_object>(), ReferenceCloud_getAssociatedCloud_doc)

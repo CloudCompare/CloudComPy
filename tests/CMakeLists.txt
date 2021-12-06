@@ -40,15 +40,11 @@ configure_file(DartConfiguration.tcl.in DartConfiguration.tcl)
 # shell scripts to execute a test, a build or install step
 if(WIN32)
     configure_file(execTest.bat.in execTest.bat)
-    configure_file(execInstallTest.bat.in execInstallTest.bat)
-    configure_file(envPyCC.bat.in envPyCC.bat)
     set(EXEC_TEST execTest.bat)
 	set(EXEC_INSTALL_TEST execInstallTest.bat)
 	set(ENV_INSTALL_TEST envPyCC.bat)
 else()
     configure_file(execTest.sh.in execTest.sh)
-    configure_file(execInstallTest.sh.in execInstallTest.sh)
-    configure_file(envPyCC.sh.in envPyCC.sh)
     set(EXEC_TEST execTest.sh)
     set(EXEC_INSTALL_TEST execInstallTest.sh)
     set(ENV_INSTALL_TEST envPyCC.sh)
@@ -81,6 +77,8 @@ set(PYTHONAPI_TEST_SCRIPTS
     test023.py
     test024.py
     test025.py
+    test026.py
+    test027.py
     )
 
 # list of utilities
@@ -106,12 +104,12 @@ set(PYTHONAPI_TEST_FILES
     ${PYTHONAPI_TEST_SCRIPTS}
     )
 
-install(PROGRAMS ${PYTHONAPI_TEST_FILES} ${CMAKE_CURRENT_BINARY_DIR}/${ENV_INSTALL_TEST}
+install(PROGRAMS ${PYTHONAPI_TEST_FILES} ${ENV_INSTALL_TEST}
         DESTINATION ${PYTHONAPI_TEST_SCRIPTS_DIRECTORY}
        )
 
 # the shell script executing a test is renamed a install step      
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${EXEC_INSTALL_TEST}
+install(PROGRAMS ${EXEC_INSTALL_TEST}
         DESTINATION ${PYTHONAPI_TEST_SCRIPTS_DIRECTORY}
         RENAME ${EXEC_TEST}
        )
@@ -149,4 +147,6 @@ do_test(test022)
 do_test(test023)
 do_test(test024)
 do_test(test025)
+do_test(test026)
+do_test(test027)
 

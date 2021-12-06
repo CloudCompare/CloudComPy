@@ -229,8 +229,8 @@ See CClib documentation for more information about ReferenceClouds.
 
 :param ReferenceCloud selection: a ReferenceCloud structure (pointing to source)
 
-:return: a tuple(ccPointCloud, warning) warning status, if not 0, 
-         indicate out of memory errors (see CLONE_WARNINGS)
+:return: a tuple(:class:`ccPointCloud`, :class:`CLONE_WARNINGS`) warning status, if not 0, 
+         indicate out of memory errors (see :class:`CLONE_WARNINGS`)
 :rtype: tuple
 )";
 
@@ -302,6 +302,9 @@ const char* ccPointCloudPy_setCurrentOutScalarField_doc= R"(
 Set the current 'out' ScalarField index. No validity check. Use -1 to set None.
 
 :param int index: index of the 'out' ScalarField)";
+
+const char* ccPointCloudPy_shrinkToFit_doc= R"(
+Removes unused capacity)";
 
 const char* ccPointCloudPy_size_doc= R"(
 Return the number of points in the cloud.

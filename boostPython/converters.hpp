@@ -33,9 +33,11 @@
 #include <ccPointCloud.h>
 #include <ReferenceCloud.h>
 #include <ccMesh.h>
+#include <ccPolyline.h>
 #include <ccBox.h>
 #include <ccPlane.h>
 #include <ScalarField.h>
+#include <ccGLMatrix.h>
 
 #include "ccOctreePy.hpp"
 #include "pyccTrace.h"
@@ -164,6 +166,17 @@ template<typename T> struct vector_to_python_list
     }
 };
 
+template<typename T> struct vector_to_python_listref
+{
+    static PyObject* convert(std::vector<T> v)
+    {
+        bp::list vec;
+        for (int i=0; i<v.size(); i++)
+            vec.append(boost::ref(v[i]));
+        return bp::incref(vec.ptr());
+    }
+};
+
 template<typename T> struct Vector2Tpl_to_python_tuple
 {
     static PyObject* convert(Vector2Tpl<T> v)
@@ -242,6 +255,60 @@ template<typename T> struct Vector2Tpl_from_python_tuple // T double or float
     }
 };
 
+template<typename T> struct Vector2Tpl_from_python_list // T double or float
+{
+    Vector2Tpl_from_python_list()
+    {
+        CCTRACE("register Vector2Tpl_from_python_list");
+        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<Vector2Tpl<T> >());
+    }
+
+    // Determine if obj_ptr can be converted in a Vector2Tpl<T>
+    static void* convertible(PyObject* obj_ptr)
+    {
+        CCTRACE("convertible to Vector2Tpl<T>?");
+        if (!PyList_Check(obj_ptr))
+            return 0;
+        if (PyList_GET_SIZE(obj_ptr) != 2)
+            return 0;
+        for (int i=0; i<2; i++)
+        {
+            PyObject* iptr = PyList_GetItem(obj_ptr, i);
+            if (!PyFloat_Check(iptr) && !PyLong_Check(iptr))
+                return 0;
+        }
+        return obj_ptr;
+    }
+
+    // Convert obj_ptr into a Vector2Tpl<T>
+    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
+    {
+        CCTRACE("construct");
+        // Extract the 2 components (check already done by convertible)
+        T val[2];
+        for (int i=0; i<2; i++)
+        {
+            PyObject* iptr = PyList_GetItem(obj_ptr, i);
+            if (PyFloat_Check(iptr))
+                val[i] = PyFloat_AS_DOUBLE(iptr);
+            else if (PyLong_Check(iptr))
+                val[i] = PyLong_AsDouble(iptr);
+            else
+                bp::throw_error_already_set();
+        }
+
+        // Grab pointer to memory into which to construct the new Vector2Tpl<T>
+        void* storage = ((bp::converter::rvalue_from_python_storage<Vector2Tpl<T> >*) data)->storage.bytes;
+
+        // in-place construct the new Vector2Tpl<T> using the character data
+        // extracted from the Python object
+        new (storage) Vector2Tpl<T>(val[0], val[1]);
+
+        // Stash the memory chunk pointer for later use by boost.python
+        data->convertible = storage;
+    }
+};
+
 template<typename T> struct Vector3Tpl_from_python_tuple // T double or float
 {
     Vector3Tpl_from_python_tuple()
@@ -276,6 +343,60 @@ template<typename T> struct Vector3Tpl_from_python_tuple // T double or float
         for (int i=0; i<3; i++)
         {
             PyObject* iptr = PyTuple_GetItem(obj_ptr, i);
+            if (PyFloat_Check(iptr))
+                val[i] = PyFloat_AS_DOUBLE(iptr);
+            else if (PyLong_Check(iptr))
+                val[i] = PyLong_AsDouble(iptr);
+            else
+                bp::throw_error_already_set();
+        }
+
+        // Grab pointer to memory into which to construct the new Vector3Tpl<T>
+        void* storage = ((bp::converter::rvalue_from_python_storage<Vector3Tpl<T> >*) data)->storage.bytes;
+
+        // in-place construct the new Vector3Tpl<T> using the character data
+        // extracted from the Python object
+        new (storage) Vector3Tpl<T>(val);
+
+        // Stash the memory chunk pointer for later use by boost.python
+        data->convertible = storage;
+    }
+};
+
+template<typename T> struct Vector3Tpl_from_python_list // T double or float
+{
+    Vector3Tpl_from_python_list()
+    {
+        CCTRACE("register Vector3Tpl_from_python_list");
+        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<Vector3Tpl<T> >());
+    }
+
+    // Determine if obj_ptr can be converted in a Vector3Tpl<T>
+    static void* convertible(PyObject* obj_ptr)
+    {
+        CCTRACE("convertible to Vector3Tpl<T>?");
+        if (!PyList_Check(obj_ptr))
+            return 0;
+        if (PyList_GET_SIZE(obj_ptr) != 3)
+            return 0;
+        for (int i=0; i<3; i++)
+        {
+            PyObject* iptr = PyList_GetItem(obj_ptr, i);
+            if (!PyFloat_Check(iptr) && !PyLong_Check(iptr))
+                return 0;
+        }
+        return obj_ptr;
+    }
+
+    // Convert obj_ptr into a Vector3Tpl<T>
+    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
+    {
+        CCTRACE("construct");
+        // Extract the 3 components (check already done by convertible)
+        T val[3];
+        for (int i=0; i<3; i++)
+        {
+            PyObject* iptr = PyList_GetItem(obj_ptr, i);
             if (PyFloat_Check(iptr))
                 val[i] = PyFloat_AS_DOUBLE(iptr);
             else if (PyLong_Check(iptr))
@@ -513,6 +634,12 @@ struct ccHObjectVector_from_python_list
                 CCTRACE("  OK ccMesh" << i);
                 continue;
             }
+            bp::extract<ccPolyline*> po(iptr);
+            if (po.check())
+            {
+                CCTRACE("  OK ccPolyline" << i);
+                continue;
+            }
             CCTRACE("  NOK " << i);
             return 0;
         }
@@ -549,7 +676,98 @@ struct ccHObjectVector_from_python_list
                 (*res)[i] = mh();
                 continue;
             }
+            bp::extract<ccPolyline*> po(iptr);
+            if (po.check())
+            {
+                CCTRACE("  OK ccPolyline" << i);
+                (*res)[i] = po();
+                continue;
+            }
         }
+
+        // Stash the memory chunk pointer for later use by boost.python
+        data->convertible = storage;
+    }
+};
+
+struct ccGLMatrix_from_python_ccGLMatrixTpl
+{
+    ccGLMatrix_from_python_ccGLMatrixTpl()
+    {
+        CCTRACE("register ccGLMatrix_from_python_ccGLMatrixTpl");
+        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<ccGLMatrix>());
+    }
+
+    // Determine if obj_ptr can be converted in a ccGLMatrix
+    static void* convertible(PyObject* obj_ptr)
+    {
+        CCTRACE("convertible to ccGLMatrix?");
+        bp::extract<ccGLMatrixTpl<float>> glm(obj_ptr);
+        if (glm.check())
+        {
+            CCTRACE("OK ccGLMatrixTpl<float>");
+        }
+        else
+        {
+            CCTRACE("NOK");
+            return 0;
+        }
+        return obj_ptr;
+    }
+
+    // Convert obj_ptr into a ccGLMatrix
+    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
+    {
+        CCTRACE("construct");
+
+        // Grab pointer to memory into which to construct the new ccGLMatrix
+        void* storage = ((bp::converter::rvalue_from_python_storage<ccGLMatrix>*) data)->storage.bytes;
+
+        // in-place construct the new ccGLMatrix using the character data
+        // extracted from the Python object
+        ccGLMatrix* res = new (storage) ccGLMatrix(bp::extract<ccGLMatrixTpl<float>>(obj_ptr));
+
+        // Stash the memory chunk pointer for later use by boost.python
+        data->convertible = storage;
+    }
+};
+
+struct ccGLMatrixd_from_python_ccGLMatrixTpl
+{
+    ccGLMatrixd_from_python_ccGLMatrixTpl()
+    {
+        CCTRACE("register ccGLMatrixd_from_python_ccGLMatrixTpl");
+        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<ccGLMatrixd>());
+    }
+
+    // Determine if obj_ptr can be converted in a ccGLMatrixd
+    static void* convertible(PyObject* obj_ptr)
+    {
+        CCTRACE("convertible to ccGLMatrixd?");
+        bp::extract<ccGLMatrixTpl<double>> glm(obj_ptr);
+        if (glm.check())
+        {
+            CCTRACE("OK ccGLMatrixTpl<double>");
+        }
+        else
+        {
+            CCTRACE("NOK");
+            return 0;
+        }
+        return obj_ptr;
+    }
+
+    // Convert obj_ptr into a ccGLMatrixd
+    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
+    {
+        CCTRACE("construct");
+
+        // Grab pointer to memory into which to construct the new ccGLMatrixd
+        void* storage = ((bp::converter::rvalue_from_python_storage<ccGLMatrixd>*) data)->storage.bytes;
+
+        // in-place construct the new ccGLMatrixd using the character data
+        // extracted from the Python object
+        ccGLMatrixd* res = new (storage) ccGLMatrixd(bp::extract<ccGLMatrixTpl<double>>(obj_ptr));
 
         // Stash the memory chunk pointer for later use by boost.python
         data->convertible = storage;
@@ -559,7 +777,9 @@ struct ccHObjectVector_from_python_list
 void initializeConverters()
 {
     using namespace boost::python;
-
+#ifdef _PYTHONAPI_DEBUG_
+    ccTrace::settrace();
+#endif
     // register the to-python converter
     CCTRACE("initializeConverters");
     to_python_converter<ccOctree*, ccOctree_to_python, false>();
@@ -588,15 +808,19 @@ void initializeConverters()
     to_python_converter<std::vector<CCCoreLib::DgmOctree::IndexAndCode>, vector_to_python_list<CCCoreLib::DgmOctree::IndexAndCode>, false>();
     to_python_converter<std::vector<CCCoreLib::DgmOctree::PointDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::PointDescriptor>, false>();
     to_python_converter<std::vector<ccHObject*>, vector_to_python_list<ccHObject*>, false>();
-    to_python_converter<std::vector<ccMesh*>, vector_to_python_list<ccMesh*>, false>();
+    to_python_converter<std::vector<ccMesh*>, vector_to_python_listref<ccMesh*>, false>();
     to_python_converter<std::vector<ccPointCloud*>, vector_to_python_list<ccPointCloud*>, false>();
     to_python_converter<std::map<QString, int>, map_to_python_dict<QString, int>, false>();
     // register the from-python converter
     QString_from_python_str();
     Vector2Tpl_from_python_tuple<float>();
     Vector2Tpl_from_python_tuple<double>();
+    Vector2Tpl_from_python_list<float>();
+    Vector2Tpl_from_python_list<double>();
     Vector3Tpl_from_python_tuple<float>();
     Vector3Tpl_from_python_tuple<double>();
+    Vector3Tpl_from_python_list<float>();
+    Vector3Tpl_from_python_list<double>();
     Tuple3Tpl_from_python_tuple<int>();
     Tuple3Tpl_from_python_tuple<unsigned int>();
     Tuple3Tpl_from_python_tuple<unsigned char>();
@@ -608,6 +832,8 @@ void initializeConverters()
     Vector_from_python_tuple_tuple<float>();
     Vector_from_python_tuple_tuple<double>();
     ccHObjectVector_from_python_list();
+    ccGLMatrix_from_python_ccGLMatrixTpl();
+    ccGLMatrixd_from_python_ccGLMatrixTpl();
 }
 
 } //namespace anonymous

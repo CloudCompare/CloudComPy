@@ -5,6 +5,7 @@ ccPrimitives
 =============================
 
 .. py:module:: cloudComPy
+    :noindex:
 
 Primitives regroups all the geometric generators provided by CloudCompare:
 :py:class:`ccBox`, :py:class:`ccCone`, :py:class:`ccCylinder`, :py:class:`ccPlane`,
@@ -87,6 +88,10 @@ Generic primitive
    :inherited-members:
    :show-inheritance:
 
+=============================
+transformations
+=============================
+
 ----------------------------
 Rotation Translation Matrix
 ----------------------------
@@ -100,3 +105,24 @@ Rotation Translation Matrix
    :members:
    :inherited-members:
    :show-inheritance:
+   
+.. autoclass:: ccGLMatrixParams1_float
+   :members:
+   :inherited-members:
+   :show-inheritance:
+   
+.. autoclass:: ccGLMatrixParams2_float
+   :members:
+   :inherited-members:
+   :show-inheritance:
+
+.. autoclass:: ccGLMatrixParams1_double
+   :members:
+   :inherited-members:
+   :show-inheritance:
+
+.. autoclass:: ccGLMatrixParams2_double
+   :members:
+   :inherited-members:
+   :show-inheritance:
+   

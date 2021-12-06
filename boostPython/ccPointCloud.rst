@@ -5,6 +5,7 @@ Points Clouds
 =============================
 
 .. py:module:: cloudComPy
+    :noindex:
 
 ----------------------------
 ccPointCloud
@@ -48,3 +49,12 @@ for instance to save the list of objects on a file.
 .. autoclass:: ccHObject
    :members:
    :show-inheritance:
+
+.. autoclass:: DEPENDENCY_FLAGS
+   :members:
+   :undoc-members:
+
+.. autoclass:: CLONE_WARNINGS
+   :members:
+   :undoc-members:
+
