@@ -1,7 +1,7 @@
 ## Installing, testing and using a CloudComPy binary on Linux, with conda
 
 The binary *CloudComPy_Conda39_Linux64_-date-.tgz* available [here](https://www.simulation.openfields.fr/index.php/download-binaries) is built with a Conda environment
-(see [here](BuildWindowsConda.md) for the corresponding building instructions).
+(see [here](BuildLinuxConda.md) for the corresponding building instructions).
 
 As CloudComPy is under development, these instructions and the link are subject to change from time to time...
 
@@ -82,7 +82,7 @@ An example of notebook is provided in ```doc/samples/histogramOnDistanceComputat
 
 ```
 . <path install>/bin/condaCloud.sh activate CloudComPy39
-cd  <path install>\CloudComPy39\doc\PythonAPI_test
+cd  <path install>/doc/PythonAPI_test
 ```
 
 To execute all the tests (about two minutes):
@@ -91,7 +91,7 @@ To execute all the tests (about two minutes):
 ctest
 ```
 
-The files created with the tests are in your user space: %USERPROFILE%\CloudComPy\data
+The files created with the tests are in your user space: ${HOME}/CloudComPy/Data
 
 From the prompt, you can :
 

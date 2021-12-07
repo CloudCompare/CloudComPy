@@ -10,16 +10,16 @@ The script below executes the following:
  - execute ctest
 
 ```
-export CLOUDCOMPY_SRC=/home/paul/projets/CloudComPy/CloudComPy                    # CloudComPy source directory
-export CLOUDCOMPY_BUILD=/home/paul/projets/CloudComPy/buildConda39                # CloudComPy build directory
-export CLOUDCOMPY_INSTDIR=/home/paul/projets/CloudComPy/installConda              # directory for CloudComPy installs
+export CLOUDCOMPY_SRC=${HOME}/projets/CloudComPy/CloudComPy                       # CloudComPy source directory
+export CLOUDCOMPY_BUILD=${HOME}/projets/CloudComPy/buildConda39                   # CloudComPy build directory
+export CLOUDCOMPY_INSTDIR=${HOME}/projets/CloudComPy/installConda                 # directory for CloudComPy installs
 export CLOUDCOMPY_INSTNAME=CloudComPy39                                           # CloudComPy install directory name
 export CLOUDCOMPY_INSTALL=${CLOUDCOMPY_INSTDIR}/${CLOUDCOMPY_INSTNAME}            # CloudComPy install directory
 export CLOUDCOMPY_TARFILE=CloudComPy_Conda39_Linux64_"$(date +"%Y%m%d-%H%M")".tgz # CloudComPy Binary tarfile (will be in ${CLOUDCOMPY_INSTDIR}
-export CONDA_ROOT=/home/paul/anaconda3                                            # root directory of conda installation
+export CONDA_ROOT=${HOME}/anaconda3                                               # root directory of conda installation
 export CONDA_ENV=CloudComPy39                                                     # conda environment name
 export CONDA_PATH=${CONDA_ROOT}/envs/${CONDA_ENV}                                 # conda environment directory
-export FBXSDK_REP=/home/paul/projets/CloudComPy/fbxSdk                            # directory of fbx sdk (remove the plugin in cmake options if not needed)
+export FBXSDK_REP=${HOME}/projets/CloudComPy/fbxSdk                               # directory of fbx sdk (remove the plugin in cmake options if not needed)
 export NBTHREADS="$(grep -c processor /proc/cpuinfo)"                             # number of threads for parallel make
 
 source ${CONDA_ROOT}/etc/profile.d/conda.sh                                       # required to have access to conda commands in a shell script
