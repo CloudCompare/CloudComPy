@@ -89,3 +89,12 @@ docker run -it --rm --entrypoint="" -v ~/CloudComPy/test:/root/CloudComPy cloudc
 ```
 
 Running ctest as above will create a visible Data directory in the host system in `~/CloudComPy/test`.
+
+```
+cd /opt/cloudcompy/CloudComPy39/
+. bin/condaCloud.sh activate CloudComPy39
+export QT_QPA_PLATFORM=offscreen
+cd doc/PythonAPI_test/
+ctest
+```
+
