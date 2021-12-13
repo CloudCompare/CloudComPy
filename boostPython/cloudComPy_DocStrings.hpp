@@ -1,18 +1,21 @@
 //##########################################################################
 //#                                                                        #
-//#                                boost.Python                            #
+//#                              CloudComPy                                #
 //#                                                                        #
 //#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU Library General Public License as       #
-//#  published by the Free Software Foundation; version 2 or later of the  #
-//#  License.                                                              #
+//#  it under the terms of the GNU General Public License as published by  #
+//#  the Free Software Foundation; either version 3 of the License, or     #
+//#  any later version.                                                    #
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
 //#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 //#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 //#  GNU General Public License for more details.                          #
 //#                                                                        #
-//#          Copyright 2021 Paul RASCLE www.openfields.fr                  #
+//#  You should have received a copy of the GNU General Public License     #
+//#  along with this program. If not, see <https://www.gnu.org/licenses/>. #
+//#                                                                        #
+//#          Copyright 2020-2021 Paul RASCLE www.openfields.fr             #
 //#                                                                        #
 //##########################################################################
 
@@ -115,6 +118,12 @@ Applies ICP registration on two entities.
 
 const char* cloudComPy_initCC_doc= R"(
 Should be done once before using plugins!)";
+
+const char* cloudComPy_isPluginFbx_doc= R"(
+returns True if CloudComPy is built with the Fbx plugin.
+
+:return: True if CloudComPy is built with the Fbx plugin, False otherwise.
+:rtype: bool)";
 
 const char* cloudComPy_loadPointCloud_doc= R"(
 Load a 3D cloud from a file.
