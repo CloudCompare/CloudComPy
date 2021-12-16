@@ -3,9 +3,9 @@
 Thanks to this [proposal](https://github.com/CloudCompare/CloudComPy/issues/10) from [arkanoid87](https://github.com/arkanoid87) you can try to use CloudComPy on Linux with miniconda docker images.
 
 The original proposal is dedicated to automatic testing, but can be adapted to the common use of CloudComPy scripts. 
-The docker technique is to be deepened for automatic tests, by adding the phase of construction from sources.
 The use of docker images for the use of CloudComPy can also facilitate its portability.
 I have not yet explored the possibility of configuring the docker image for graphical use.
+The docker technique is now also used for automatic tests on Linux, by adding the phase of construction from sources (see [building with Docker](BuildLinuxCondaDocker.md)).
 
 Install
 

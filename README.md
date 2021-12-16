@@ -90,6 +90,10 @@ To build CloudComPy on Windows 10 with conda packages, consult the [Windows buil
 
 To build CloudComPy on Linux64 with conda packages, consult the [Linux Conda build documentation](doc/BuildLinuxConda.md) in the doc directory.
 
+## Docker, Linux64 and Conda
+
+To build CloudComPy using Docker, for Linux64 and conda3, see [building with Docker](doc/BuildLinuxCondaDocker.md) in the doc directory).
+
 ## Ubuntu 20.04, native packages
 
 To build CloudComPy on Ubuntu 20.04, consult the [Ubuntu build documentation](doc/BuildUbuntuNative.md) in the doc directory.

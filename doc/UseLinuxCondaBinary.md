@@ -30,11 +30,12 @@ conda config --set channel_priority strict
 conda install boost cgal cmake eigen ffmpeg gdal jupyterlab matplotlib mysql numpy opencv openmp pcl pdal psutil "qhull=2019.1" qt scipy sphinx_rtd_theme spyder tbb tbb-devel xerces-c
 ```
 
-**Remark:** Within a script bash, add the following instruction before conda commands:
+**Remark:** if conda is unknown, or in a bash script, add the following instruction before conda commands:
 
 ```
-. ~/anaconda3/etc/profile.d/conda.sh
+. <conda_dir>/etc/profile.d/conda.sh
 ```
+where `<conda_dir>` is the installation directory of conda (often `~/anaconda3` or `~/miniconda3`)
 
 Install the binary in the directory of your choice.
 
@@ -48,6 +49,13 @@ From a new prompt (replace `<path install>` by its value):
 ```
 . <path install>/bin/condaCloud.sh activate CloudComPy39
 ```
+
+if conda is unknown, execute the following instruction before:
+
+```
+. <conda_dir>/etc/profile.d/conda.sh
+```
+where `<conda_dir>` is the installation directory of conda (often `~/anaconda3` or `~/miniconda3`)
 
 Have a look on the script usage:
 ```
@@ -65,7 +73,11 @@ To execute a Python script using CloudComPy:
 ```
 Python myscript.py
 ```
+**Remark**: You may need to install libomp.so.5:
+```
+sudo apt-get install libomp5
 
+```
 The IDE [Spyder](https://www.spyder-ide.org/) and [Jupyter](https://jupyter.org/) can be launched in this environment:
 
 ```
@@ -91,7 +103,7 @@ To execute all the tests (about two minutes):
 ctest
 ```
 
-The files created with the tests are in your user space: ${HOME}/CloudComPy/Data
+The files created with the tests are in your user space: `${HOME}/CloudComPy/Data`
 
 From the prompt, you can :
 
