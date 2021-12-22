@@ -5,7 +5,7 @@ On Ubuntu 20.04, you can install the development versions of the prerequisites w
 **TODO: complete the list, many packages are required...**
 
 ```
-sudo apt-get intall qtbase5-dev python3 libpython3-dev python3-numpy cmake
+sudo apt-get install qtbase5-dev python3 libpython3-dev python3-numpy cmake
 ```
 To run tests on memory usage, you need the python3 package python3-psutil.
 
