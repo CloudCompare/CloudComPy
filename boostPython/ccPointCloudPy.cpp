@@ -28,12 +28,15 @@
 #include <ccPolyline.h>
 #include <ccScalarField.h>
 #include <GenericProgressCallback.h>
+#include "ccColorScale.h"
+#include "ccColorScalesManager.h"
 
 #include "PyScalarType.h"
 #include "pyccTrace.h"
 #include "ccPointCloudPy_DocStrings.hpp"
 
 #include <map>
+#include <QColor>
 
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
@@ -157,10 +160,35 @@ bp::tuple partialClone_py(ccPointCloud &self,
     return res;
 }
 
+bool setColorGradientDefault_py(ccPointCloud &self, unsigned char heightDim)
+{
+    ccColorScale::Shared colorScale(nullptr);
+    colorScale = ccColorScalesManager::GetDefaultScale();
+    bool success = self.setRGBColorByHeight(heightDim, colorScale);
+    return success;
+}
+
+bool setColorGradient_py(ccPointCloud &self, unsigned char heightDim, QColor first, QColor second)
+{
+    ccColorScale::Shared colorScale(nullptr);
+    colorScale = ccColorScale::Create("Temp scale");
+    colorScale->insert(ccColorScaleElement(0.0, first), false);
+    colorScale->insert(ccColorScaleElement(1.0, second), true);
+    bool success = self.setRGBColorByHeight(heightDim, colorScale);
+    return success;
+}
+
+bool setColorGradientBanded_py(ccPointCloud &self, unsigned char heightDim, double frequency)
+{
+    bool success = self.setRGBColorByBanding(heightDim, frequency);
+    return success;
+}
+
 int (ccPointCloud::*addScalarFieldt)(const char*) = &ccPointCloud::addScalarField;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_scale_overloads, scale, 3, 4)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_cloneThis_overloads, cloneThis, 0, 2)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_colorize_overloads, colorize, 3, 4)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(filterPointsByScalarValue_overloads, ccPointCloud::filterPointsByScalarValue, 2,3)
 
 void export_ccPointCloud()
@@ -179,8 +207,10 @@ void export_ccPointCloud()
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)
         .def("cloneThis", &ccPointCloud::cloneThis,
              ccPointCloud_cloneThis_overloads(ccPointCloudPy_cloneThis_doc)[return_value_policy<reference_existing_object>()])
+        .def("colorize", &ccPointCloud::colorize, ccPointCloud_colorize_overloads(ccPointCloudPy_colorize_doc))
         .def("computeGravityCenter", &ccPointCloud::computeGravityCenter, ccPointCloudPy_computeGravityCenter_doc)
         .def("coordsFromNPArray_copy", &coordsFromNPArray_copy, ccPointCloudPy_coordsFromNPArray_copy_doc)
+        .def("convertRGBToGreyScale", &ccPointCloud::convertRGBToGreyScale, ccPointCloudPy_convertRGBToGreyScale_doc)
         .def("crop2D", &crop2D_py, return_value_policy<reference_existing_object>(), ccPointCloudPy_crop2D_doc)
         .def("deleteAllScalarFields", &ccPointCloud::deleteAllScalarFields, ccPointCloudPy_deleteAllScalarFields_doc)
         .def("deleteScalarField", &ccPointCloud::deleteScalarField, ccPointCloudPy_deleteScalarField_doc)
@@ -205,12 +235,17 @@ void export_ccPointCloud()
              return_value_policy<reference_existing_object>(), ccPointCloudPy_getScalarFieldByName_doc)
         .def("getScalarFieldDic", &getScalarFieldDic_py, ccPointCloudPy_getScalarFieldDic_doc)
         .def("getScalarFieldName", &ccPointCloud::getScalarFieldName, ccPointCloudPy_getScalarFieldName_doc)
+        .def("hasColors", &ccPointCloud::hasColors, ccPointCloudPy_hasColors_doc)
+        .def("hasNormals", &ccPointCloud::hasNormals, ccPointCloudPy_hasNormals_doc)
         .def("hasScalarFields", &ccPointCloud::hasScalarFields, ccPointCloudPy_hasScalarFields_doc)
         .def("partialClone", &partialClone_py, ccPointCloudPy_partialClone_doc)
         .def("renameScalarField", &ccPointCloud::renameScalarField, ccPointCloudPy_renameScalarField_doc)
         .def("reserve", &ccPointCloud::reserve, ccPointCloudPy_reserve_doc)
         .def("resize", &ccPointCloud::resize, ccPointCloudPy_resize_doc)
         .def("scale", &ccPointCloud::scale, ccPointCloud_scale_overloads(ccPointCloudPy_scale_doc))
+        .def("setColorGradient", &setColorGradient_py, ccPointCloudPy_setColorGradient_doc)
+        .def("setColorGradientBanded", &setColorGradientBanded_py, ccPointCloudPy_setColorGradientBanded_doc)
+        .def("setColorGradientDefault", &setColorGradientDefault_py, ccPointCloudPy_setColorGradientDefault_doc)
         .def("setCurrentDisplayedScalarField", &ccPointCloud::setCurrentDisplayedScalarField,
              ccPointCloudPy_setCurrentDisplayedScalarField_doc)
         .def("setCurrentScalarField", &ccPointCloud::setCurrentScalarField, ccPointCloudPy_setCurrentScalarField_doc)

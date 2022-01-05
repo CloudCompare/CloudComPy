@@ -65,11 +65,31 @@ the points visibility information.
 :return: a copy of this entity
 :rtype: ccPointCloud)";
 
+const char* ccPointCloudPy_colorize_doc= R"(
+Multiplies all color components of all points by coefficients.
+
+If the cloud has no color, all points are considered white and
+the color array is automatically allocated.
+
+:param float r: red component (normalized value in [0., 1.])
+:param float g: green component (normalized value in [0., 1.])
+:param float b: blue component (normalized value in [0., 1.])
+:param float,optional a: alpha component default 1.0, (normalized value in [0., 1.])
+
+:return: success
+:rtype: bool)";
+
 const char* ccPointCloudPy_computeGravityCenter_doc= R"(
 Return a tuple of the 3 coordinates of the gravity center of the cloud.
 
 :return: gravity center coordiinates
 :rtype: tuple of float )";
+
+const char* ccPointCloudPy_convertRGBToGreyScale_doc= R"(
+Converts RGB to grey scale colors.
+
+:return: success
+:rtype: bool)";
 
 const char* ccPointCloudPy_coordsFromNPArray_copy_doc= R"(
 Set cloud coordinates from a Numpy array (nbPoints,3).
@@ -215,6 +235,20 @@ Return the ScalarField name if index is valid, otherwise None.
 :rtype: str or None
 )";
 
+const char* ccPointCloudPy_hasColors_doc= R"(
+Return whether the cloud has Colors.
+
+:return: `True` or `False`
+:rtype: bool
+)";
+
+const char* ccPointCloudPy_hasNormals_doc= R"(
+Return whether the cloud has Normals.
+
+:return: `True` or `False`
+:rtype: bool
+)";
+
 const char* ccPointCloudPy_hasScalarFields_doc= R"(
 Return whether the cloud has ScalarFields.
 
@@ -280,6 +314,41 @@ Scale the cloud with separate factors along the 3 directions x,y,z and an option
 :param float y: scale y
 :param float z: scale z
 :param tuple,optional center: (xc, yc, zc), default (0,0,0))";
+
+const char* ccPointCloudPy_setColorGradient_doc= R"(
+Assigns color to points proportionally to their 'height'.
+
+Height is defined with regard to to the specified dimension (heightDim).
+Color array is defined by a two colors (QColor).
+
+:param int heightDim: ramp dimension (0:X, 1:Y, 2:Z)
+:param Qcolor first: first color of the array
+:param Qcolor second: second color of the array
+
+:return: success
+:rtype: bool)";
+
+const char* ccPointCloudPy_setColorGradientBanded_doc= R"(
+Assigns color to points by 'banding'.
+Banding is performed along the specified dimension
+Color array is automatically defined.
+
+:param int heightDim: banding dimension (0:X, 1:Y, 2:Z)
+:param double freq: banding frequency (size of the bands along the axis)
+
+:return: success
+:rtype: bool)";
+
+const char* ccPointCloudPy_setColorGradientDefault_doc= R"(
+Assigns color to points proportionally to their 'height'.
+
+Height is defined with regard to to the specified dimension (heightDim).
+Color array is defined by default.
+
+:param int heightDim: ramp dimension (0:X, 1:Y, 2:Z)
+
+:return: success
+:rtype: bool)";
 
 const char* ccPointCloudPy_setCurrentDisplayedScalarField_doc= R"(
 Sets the currently displayed scalar field.

@@ -813,6 +813,7 @@ void initializeConverters()
     to_python_converter<std::vector<ccHObject*>, vector_to_python_list<ccHObject*>, false>();
     to_python_converter<std::vector<ccMesh*>, vector_to_python_listref<ccMesh*>, false>();
     to_python_converter<std::vector<ccPointCloud*>, vector_to_python_list<ccPointCloud*>, false>();
+    to_python_converter<std::vector<QString>, vector_to_python_list<QString>, false>();
     to_python_converter<std::map<QString, int>, map_to_python_dict<QString, int>, false>();
     // register the from-python converter
     QString_from_python_str();

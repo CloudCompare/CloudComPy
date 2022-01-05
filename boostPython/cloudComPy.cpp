@@ -24,6 +24,7 @@
 
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include "converters.hpp"
+#include "colorsPy.hpp"
 #include "ScalarFieldPy.hpp"
 #include "ccGenericCloudPy.hpp"
 #include "ccOctreePy.hpp"
@@ -271,6 +272,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
     bnp::initialize();
     initializeConverters();
 
+    export_colors();
     export_ScalarField();
     export_ccGenericCloud();
     export_ccPolyline();
