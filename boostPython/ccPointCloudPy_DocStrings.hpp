@@ -322,8 +322,8 @@ Height is defined with regard to to the specified dimension (heightDim).
 Color array is defined by a two colors (QColor).
 
 :param int heightDim: ramp dimension (0:X, 1:Y, 2:Z)
-:param Qcolor first: first color of the array
-:param Qcolor second: second color of the array
+:param QColor first: first color of the array
+:param QColor second: second color of the array
 
 :return: success
 :rtype: bool)";

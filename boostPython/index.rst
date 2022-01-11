@@ -62,4 +62,6 @@ Reference documentation
    cloudSamplingTools.rst
    ccFacet.rst
    Neighbourhood.rst
+   colors.rst
+   
    

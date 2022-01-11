@@ -167,6 +167,7 @@ set(RSTFILES
     ccPolyline.rst
     ccPrimitives.rst
     cloudComPy.rst
+    colors.rst
     DistanceComputationTools.rst
     index.rst
     introduction.rst
