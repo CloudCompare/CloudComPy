@@ -24,6 +24,10 @@
 #include <boost/python/numpy.hpp>
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/map_indexing_suite.hpp>
+#include <boost/python/exception_translator.hpp>
+#include <exception>
+#include <Python.h>
+
 #include <ccPointCloud.h>
 #include <ccPolyline.h>
 #include <ccScalarField.h>
@@ -42,6 +46,23 @@ namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
 
 using namespace boost::python;
+
+
+struct color_exception : std::exception
+{
+  const char* what() const noexcept { return "this point cloud has no color table!"; }
+};
+
+struct colorSize_exception : std::exception
+{
+  const char* what() const noexcept { return "the color array has not the same size as this cloud"; }
+};
+
+void translate(color_exception const& e)
+{
+    // Use the Python 'C' API to set up an exception object
+    PyErr_SetString(PyExc_RuntimeError, e.what());
+}
 
 bool exportCoordToSF_py(ccPointCloud &self, bool x, bool y, bool z)
 {
@@ -81,6 +102,47 @@ void coordsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
     PointCoordinateType *d = (PointCoordinateType*)self.getPoint(0);
     memcpy(d, s, 3*nRows*sizeof(PointCoordinateType));
     CCTRACE("copied " << 3*nRows*sizeof(PointCoordinateType));
+}
+
+void colorsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
+{
+    if (array.get_dtype() != bnp::dtype::get_builtin<ColorCompType>())
+    {
+        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
+        bp::throw_error_already_set();
+    }
+    if (array.get_nd() != 2)
+    {
+        PyErr_SetString(PyExc_TypeError, "Incorrect array dimension");
+        bp::throw_error_already_set();
+    }
+    if (array.shape(1) != 4)
+    {
+        PyErr_SetString(PyExc_TypeError, "Incorrect array, 4 components required");
+        bp::throw_error_already_set();
+    }
+    size_t nRows = array.shape(0);
+    if (nRows != self.size())
+    {
+    	CCTRACE("the color array has not the same size as this cloud!")
+		throw colorSize_exception();
+    }
+    self.resizeTheRGBTable(false);
+    if (self.rgbaColors() == nullptr)
+    {
+    	CCTRACE("no color table in this point cloud!")
+		throw color_exception();
+    }
+    ColorCompType* s = reinterpret_cast<ColorCompType*>(array.get_data());
+    ColorCompType* d = (ColorCompType*)(self.rgbaColors()->data());
+//	unsigned count = self.size();
+//	for (unsigned i = 0; i < count; ++i)
+//    {
+//		self.rgbaColors()->setValue(i, ccColor::Rgba(s[4*i], s[4*i+1], s[4*i+2], s[4*i+3]));
+//    }
+    memcpy(d, s, 4*nRows*sizeof(ColorCompType));
+    CCTRACE("copied " << 4*nRows*sizeof(ColorCompType));
+    self.colorsHaveChanged();
 }
 
 std::map<QString, int> getScalarFieldDic_py(ccPointCloud &self)
@@ -128,6 +190,42 @@ bnp::ndarray CoordsToNpArray_py(ccPointCloud &self)
     bp::tuple shape = bp::make_tuple(nRows, 3);
     bp::tuple stride = bp::make_tuple(3*sizeof(PointCoordinateType), sizeof(PointCoordinateType));
     PointCoordinateType *s = (PointCoordinateType*)self.getPoint(0);
+    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
+    return result;
+}
+
+bnp::ndarray ColorsToNpArray_copy(ccPointCloud &self)
+{
+    CCTRACE("ColorsToNpArray with copy, ownership transfered to Python");
+    if (self.rgbaColors() == nullptr)
+    {
+    	CCTRACE("no color in this point cloud!")
+		throw color_exception();
+    }
+    bnp::dtype dt = bnp::dtype::get_builtin<ColorCompType>(); // colors components (unsigned char)
+    size_t nRows = self.size();
+    CCTRACE("nrows: " << nRows);
+    bp::tuple shape = bp::make_tuple(nRows, 4); // r, g, b a
+    bp::tuple stride = bp::make_tuple(4*sizeof(ColorCompType), sizeof(ColorCompType));
+    ColorCompType *s = (ColorCompType*)(self.rgbaColors()->data());
+    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
+    return result.copy();
+}
+
+bnp::ndarray ColorsToNpArray_py(ccPointCloud &self)
+{
+    CCTRACE("ColorsToNpArray without copy, ownership stays in C++");
+    if (self.rgbaColors() == nullptr)
+    {
+    	CCTRACE("no color in this point cloud!")
+		throw color_exception();
+    }
+    bnp::dtype dt = bnp::dtype::get_builtin<ColorCompType>(); // colors components (unsigned char)
+    size_t nRows = self.size();
+    CCTRACE("nrows: " << nRows);
+    bp::tuple shape = bp::make_tuple(nRows, 4); // r, g, b a
+    bp::tuple stride = bp::make_tuple(4*sizeof(ColorCompType), sizeof(ColorCompType));
+    ColorCompType *s = (ColorCompType*)(self.rgbaColors()->data());
     bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
     return result;
 }
@@ -209,6 +307,7 @@ void export_ccPointCloud()
              ccPointCloud_cloneThis_overloads(ccPointCloudPy_cloneThis_doc)[return_value_policy<reference_existing_object>()])
         .def("colorize", &ccPointCloud::colorize, ccPointCloud_colorize_overloads(ccPointCloudPy_colorize_doc))
         .def("computeGravityCenter", &ccPointCloud::computeGravityCenter, ccPointCloudPy_computeGravityCenter_doc)
+        .def("colorsFromNPArray_copy", &colorsFromNPArray_copy, ccPointCloudPy_colorsFromNPArray_copy_doc)
         .def("coordsFromNPArray_copy", &coordsFromNPArray_copy, ccPointCloudPy_coordsFromNPArray_copy_doc)
         .def("convertRGBToGreyScale", &ccPointCloud::convertRGBToGreyScale, ccPointCloudPy_convertRGBToGreyScale_doc)
         .def("crop2D", &crop2D_py, return_value_policy<reference_existing_object>(), ccPointCloudPy_crop2D_doc)
@@ -255,6 +354,8 @@ void export_ccPointCloud()
 		.def("shrinkToFit", &ccPointCloud::shrinkToFit, ccPointCloudPy_shrinkToFit_doc)
         .def("toNpArray", &CoordsToNpArray_py, ccPointCloudPy_toNpArray_doc)
         .def("toNpArrayCopy", &CoordsToNpArray_copy, ccPointCloudPy_toNpArrayCopy_doc)
+        .def("colorsToNpArray", &ColorsToNpArray_py, ccPointCloudPy_colorsToNpArray_doc)
+        .def("colorsToNpArrayCopy", &ColorsToNpArray_copy, ccPointCloudPy_colorsToNpArrayCopy_doc)
         .def("translate", &ccPointCloud::translate, ccPointCloudPy_translate_doc)
        ;
 }

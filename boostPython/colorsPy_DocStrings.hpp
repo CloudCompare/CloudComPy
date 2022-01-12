@@ -615,6 +615,8 @@ See Qt documentation.
 const char* colorsPy_rgba_doc= R"(
 Returns the RGB value of the color, including its alpha.
 
+unsigned int equivalent to an ARGB quadruplet on the format #AARRGGBB
+rgb = blue + green*256 + red*256**2 + alpha*256**3 (blue, green, red, alpha: unsigned char)
 For an invalid color, the alpha value of the returned color is unspecified.
 See Qt documentation.
 

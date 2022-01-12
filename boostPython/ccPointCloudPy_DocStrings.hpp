@@ -82,7 +82,7 @@ the color array is automatically allocated.
 const char* ccPointCloudPy_computeGravityCenter_doc= R"(
 Return a tuple of the 3 coordinates of the gravity center of the cloud.
 
-:return: gravity center coordiinates
+:return: gravity center coordinates
 :rtype: tuple of float )";
 
 const char* ccPointCloudPy_convertRGBToGreyScale_doc= R"(
@@ -91,10 +91,22 @@ Converts RGB to grey scale colors.
 :return: success
 :rtype: bool)";
 
+const char* ccPointCloudPy_colorsFromNPArray_copy_doc= R"(
+Set cloud color from a Numpy array (nbPoints,4).
+
+Each row is (r,g,b,alpha) of type uint8 (unsigned char).
+Color memory is reserved automatically in the cloud.
+
+:param ndarray array: a Numpy array (nbPoints,4).
+)";
+
 const char* ccPointCloudPy_coordsFromNPArray_copy_doc= R"(
 Set cloud coordinates from a Numpy array (nbPoints,3).
 
-Cloud memory is reserved /resized automatically)";
+Cloud memory is reserved /resized automatically
+
+:param ndarray array: a Numpy array (nbPoints,3).
+)";
 
 const char* ccPointCloudPy_crop2D_doc= R"(
 Crop the point cloud using a 2D polyline.
@@ -383,6 +395,30 @@ Return the number of points in the cloud.
 
 :return: number of points in the cloud
 :rtype: int)";
+
+const char* ccPointCloudPy_colorsToNpArray_doc= R"(
+Wrap the PointCloud colors into a numpy Array, without copy.
+
+Returns a numpy Array of shape (number of Points, 4) (r, g ,b, a).
+Data type np.uint8
+Data is not copied, the numpy Array object does not own the data.
+
+:return: numpy Array of shape (number of Points, 4) dtype uint8
+:rtype: ndarray
+)";
+
+const char* ccPointCloudPy_colorsToNpArrayCopy_doc= R"(
+Wrap the PointCloud colors into a numpy Array, with copy.
+
+Returns a numpy Array of shape (number of Points, 4) (r, g ,b, a).
+Data type np.uint8
+Data is copied, the numpy Array object  owns its data.
+Ownership is transfered to Python:
+the numpy Array object and its data will be handled by the Python Garbage Collector
+
+:return: numpy Array of shape (number of Points, 4) dtype uint8
+:rtype: ndarray
+)";
 
 const char* ccPointCloudPy_toNpArray_doc= R"(
 Wrap the PointCloud coordinates into a numpy Array, without copy.
