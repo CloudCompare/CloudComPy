@@ -65,6 +65,23 @@ the points visibility information.
 :return: a copy of this entity
 :rtype: ccPointCloud)";
 
+const char* ccPointCloudPy_changeColorLevels_doc= R"(
+Linear transformation of color components levels between boundaries:
+the input levels are defined by a lower and an upper bound, and similarly at the output.
+The transformation can be applied on one or more color component (red, green, blue)
+
+:param int in0: input lower bound in range [0..255]
+:param int in1: input upper bound in range [0..255]
+:param int out0: output lower bound in range [0..255]
+:param int out1: output upper bound in range [0..255]
+:param bool onRed: whether to apply the transformation on the red component
+:param bool onGreen: whether to apply the transformation on the green component
+:param bool onBlue: whether to apply the transformation on the blue component
+
+:return: success
+:rtype: bool)";
+
+
 const char* ccPointCloudPy_colorize_doc= R"(
 Multiplies all color components of all points by coefficients.
 
@@ -84,6 +101,16 @@ Return a tuple of the 3 coordinates of the gravity center of the cloud.
 
 :return: gravity center coordinates
 :rtype: tuple of float )";
+
+const char* ccPointCloudPy_convertCurrentScalarFieldToColors_doc= R"(
+Converts current scalar field to RGB colors.
+
+Requires a current "displayed" scalar field: see :py:meth:`setCurrentDisplayedScalarField`.
+
+:param bool,optional mixWithExistingColor: whether to mix with an existing color, default False
+
+:return: success
+:rtype: bool)";
 
 const char* ccPointCloudPy_convertRGBToGreyScale_doc= R"(
 Converts RGB to grey scale colors.
@@ -131,6 +158,18 @@ However current IN & OUT scalar fields will stay up-to-date
 (while their index may change).
 
 :param int index: index of scalar field to be deleted)";
+
+const char* ccPointCloudPy_enhanceRGBWithIntensitySF_doc= R"(
+Enhances the RGB colors with a scalar field (assuming it's intensities)
+
+:param int sfIdx: scalarField index
+:param bool,optional useCustomIntensityRange: whether to set a custom range for intensity, default False
+:param float,optional minI: min value for the custom range, default 0.
+:param float,optional maxI: max value for the custom range, default 1.
+
+:return: status
+:rtype: bool
+)";
 
 const char* ccPointCloudPy_exportCoordToSF_doc= R"(
 Export coordinates to ScalarFields.
@@ -268,6 +307,16 @@ Return whether the cloud has ScalarFields.
 :rtype: bool
 )";
 
+const char* ccPointCloudPy_interpolateColorsFrom_doc= R"(
+Interpolate colors from another cloud (nearest neighbor only).
+
+:param ccGenericPointCloud other: source cloud with color
+:param int,optional octreeLevel: octreeLevel, default 0
+
+:return: success
+:rtype: bool
+)";
+
 const char* ccPointCloudPy_partialClone_doc= R"(
 Creates a new point cloud object from a ReferenceCloud (selection)
 
@@ -327,6 +376,16 @@ Scale the cloud with separate factors along the 3 directions x,y,z and an option
 :param float z: scale z
 :param tuple,optional center: (xc, yc, zc), default (0,0,0))";
 
+const char* ccPointCloudPy_setColor_doc= R"(
+Set a unique color for the whole cloud (RGBA).
+Color array is automatically allocated if necessary.
+
+:param QColor color: a unique color, alpha is taken into account.
+
+:return: success
+:rtype: bool
+)";
+
 const char* ccPointCloudPy_setColorGradient_doc= R"(
 Assigns color to points proportionally to their 'height'.
 
@@ -342,7 +401,7 @@ Color array is defined by a two colors (QColor).
 
 const char* ccPointCloudPy_setColorGradientBanded_doc= R"(
 Assigns color to points by 'banding'.
-Banding is performed along the specified dimension
+Banding is performed along the specified dimension.
 Color array is automatically defined.
 
 :param int heightDim: banding dimension (0:X, 1:Y, 2:Z)
@@ -390,6 +449,19 @@ Set the current 'out' ScalarField index. No validity check. Use -1 to set None.
 const char* ccPointCloudPy_shrinkToFit_doc= R"(
 Removes unused capacity)";
 
+const char* ccPointCloudPy_sfFromColor_doc= R"(
+Creates ScalarFields from color components.
+
+:param bool exportR: whether to create a scalarField from red component
+:param bool exportG: whether to create a scalarField from green component
+:param bool exportB: whether to create a scalarField from blue component
+:param bool exportAlpha: whether to create a scalarField from Alpha
+:param bool exportComposite: whether to create a scalarField from (r+g+b)/3.
+
+:return: success
+:rtype: bool
+)";
+
 const char* ccPointCloudPy_size_doc= R"(
 Return the number of points in the cloud.
 
@@ -400,8 +472,10 @@ const char* ccPointCloudPy_colorsToNpArray_doc= R"(
 Wrap the PointCloud colors into a numpy Array, without copy.
 
 Returns a numpy Array of shape (number of Points, 4) (r, g ,b, a).
-Data type np.uint8
+Data type np.uint8.
 Data is not copied, the numpy Array object does not own the data.
+
+**WARNING** No automatic action on the Python side on the variables referencing the C++ object in case of destruction!
 
 :return: numpy Array of shape (number of Points, 4) dtype uint8
 :rtype: ndarray
@@ -411,7 +485,7 @@ const char* ccPointCloudPy_colorsToNpArrayCopy_doc= R"(
 Wrap the PointCloud colors into a numpy Array, with copy.
 
 Returns a numpy Array of shape (number of Points, 4) (r, g ,b, a).
-Data type np.uint8
+Data type np.uint8.
 Data is copied, the numpy Array object  owns its data.
 Ownership is transfered to Python:
 the numpy Array object and its data will be handled by the Python Garbage Collector
@@ -425,6 +499,8 @@ Wrap the PointCloud coordinates into a numpy Array, without copy.
 
 Returns a numpy Array of shape (number of Points, 3).
 Data is not copied, the numpy Array object does not own the data.
+
+**WARNING** No automatic action on the Python side on the variables referencing the C++ object in case of destruction!
 
 :return: numpy Array of shape (number of Points, 3)
 :rtype: ndarray
@@ -446,5 +522,9 @@ const char* ccPointCloudPy_translate_doc= R"(
 translate the cloud of (x,y,z).
 
 :param tuple translation: tuple: (x,y,z))";
+
+const char* ccPointCloudPy_unallocateColors_doc= R"(
+Erases the cloud colors.
+)";
 
 #endif /* CCPOINTCLOUDPY_DOCSTRINGS_HPP_ */
