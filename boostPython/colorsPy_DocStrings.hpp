@@ -294,6 +294,17 @@ See Qt documentation.
 :rtype: float
 )";
 
+const char* colorsPy_convertTo_doc= R"(
+Creates a copy of this color in the format specified by colorSpec.
+
+See :py:class:`QColorSpec`
+
+:param int spec: color spec
+
+:return: converted color
+:rtype: QColor
+)";
+
 const char* colorsPy_cyan_doc= R"(
 Returns the cyan color component of this color.
 See Qt documentation.
