@@ -145,8 +145,10 @@ Swap values between two indices.
 const char* ScalarFieldPy_toNpArray_doc= R"(
 Wrap the ScalarField data into a numpy Array.
 
-Returns a numpy array: a one dimension array of (number of Points)
+Returns a numpy array: a one dimension array of (number of Points).
 Data is not copied, the numpy array object does not own the data.
+
+**WARNING** No automatic action on the Python side on the variables referencing the C++ object in case of destruction!
 
 :return: numpy Array pointing to the ScalarField data
 :rtype: ndarray
@@ -155,7 +157,7 @@ Data is not copied, the numpy array object does not own the data.
 const char* ScalarFieldPy_toNpArrayCopy_doc= R"(
 Wrap the ScalarField data into a numpy Array.
 
-Returns a numpy array: a one dimension array of (number of Points)
+Returns a numpy array: a one dimension array of (number of Points).
 Data is copied, the numpy array object owns its data.
 Ownership is transfered to Python:
 the numpy array object and its data will be handled by the Python Garbage Collector.
@@ -163,5 +165,9 @@ the numpy array object and its data will be handled by the Python Garbage Collec
 :return: numpy Array with data copied from the ScalarField data
 :rtype: ndarray
 )";
+
+const char* ccScalarFieldPy_ccScalarField_doc= R"(
+)";
+
 
 #endif /* SCALARFIELDPY_DOCSTRINGS_HPP_ */

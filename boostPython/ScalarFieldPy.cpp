@@ -24,6 +24,7 @@
 #include <boost/python/numpy.hpp>
 #include <boost/python.hpp>
 
+#include <ccScalarField.h>
 #include <ScalarField.h>
 
 #include "PyScalarType.h"
@@ -120,4 +121,10 @@ void export_ScalarField()
         .def("toNpArrayCopy", &ToNpArray_copy, ScalarFieldPy_toNpArrayCopy_doc)
         ;
     //TODO optional parameters on resizeSafe
+
+    class_<ccScalarField, bases<CCCoreLib::ScalarField>, boost::noncopyable >("ccScalarField", ccScalarFieldPy_ccScalarField_doc, no_init)
+        .def("isSerializable", &ccScalarField::isSerializable)
+        ;
+    //TODO add serialization functions
 }
+
