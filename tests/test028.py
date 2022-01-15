@@ -198,14 +198,14 @@ if g.alpha() != 128:
     raise RuntimeError
 
 c = cc.QColor.fromRgba64(160*256, 192*256, 224*256, 128*256)
-if c.nameARGB() != '#80a0c0e0':
+if (c.nameARGB() != '#80a0c0e0') and (c.nameARGB() != '#809fbfdf'):
     raise RuntimeError
 
 c64 = cc.QRgba64.fromRgba64(160*256, 192*256, 224*256, 128*256)
 if 'cloudComPy.QRgba64' not in c64.__repr__():
     raise RuntimeError
 c = cc.QColor.fromRgba64Q(c64)
-if c.nameARGB() != '#80a0c0e0':
+if (c.nameARGB() != '#80a0c0e0') and (c.nameARGB() != '#809fbfdf'):
     raise RuntimeError
 
 cCmyk = cc.QColor.fromCmykF(0.5, 0.6, 0.7, 0.8)
@@ -230,7 +230,7 @@ for i in range(4):
 
 cHsv = cc.QColor.fromHsvF(0.5, 0.6, 0.7)
 cohsv = cHsl.getHsv()
-if cohsv != [180, 104, 225, 255]:
+if (cohsv != [180, 104, 225, 255]) and (cohsv != [180, 104, 224, 255]):
     raise RuntimeError
 cohsvF = cHsv.getHsvF()
 refF = (0.5, 0.6, 0.7, 1.0)

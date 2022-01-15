@@ -7,13 +7,14 @@ There is a package system under Anaconda, to select the products you need. It ha
 
 From Anaconda prompt:
 ```
+conda update -y -n base -c defaults conda
 conda activate
-conda create --name CloudComPy37 python=3.7
-# --- erase previous env if existing
-conda activate CloudComPy37
+conda create -y --name CloudComPy39 python=3.9
+   # --- erase previous env if existing
+conda activate CloudComPy39
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install numpy psutil "boost<1.70" xerces-c pcl gdal cgal cmake "pdal<2.3.0" opencv ffmpeg mysql m2-perl-net-ssleay matplotlib
+conda install -y boost cgal cmake ffmpeg gdal jupyterlab matplotlib mysql numpy opencv openmp pcl pdal psutil qt scipy sphinx_rtd_theme spyder tbb tbb-devel xerces-c
 ```
 For information, the list of packages actually installed for building and testing can be found in `building/conda-list`.
 

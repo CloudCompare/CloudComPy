@@ -236,7 +236,7 @@ bool changeColorLevels_py(ccPointCloud &self, unsigned char sin0,
         CCTRACE("no color in this point cloud!")
         throw color_exception();
     }
-    if ((sin0 >= sin1) or (sout0 >= sout1))
+    if ((sin0 >= sin1) || (sout0 >= sout1))
         return false;
 
     // --- copied and adapted from ccColorLevelsDlg::onApply()
