@@ -8,7 +8,7 @@ RUN . /opt/conda/etc/profile.d/conda.sh && \
     conda config --set channel_priority strict && \
     conda install boost cgal cmake eigen ffmpeg gdal jupyterlab matplotlib mysql numpy opencv openmp pcl pdal psutil "qhull=2019.1" qt scipy sphinx_rtd_theme spyder tbb tbb-devel xerces-c
 
-RUN apt-get update && apt-get install -y clang make libgl1
+RUN apt-get update && apt-get install -y clang make libgl1 libgl-dev
 
 RUN . /opt/conda/etc/profile.d/conda.sh && \
     conda activate CloudComPy39 && \
