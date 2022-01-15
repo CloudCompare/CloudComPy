@@ -818,7 +818,7 @@ bool pyCC_ComputeGeomCharacteristic(
             }
 
             CCCoreLib::GeometricalAnalysisTools::ErrorCode result = CCCoreLib::GeometricalAnalysisTools::ComputeCharactersitic(
-                    c, subOption, cloud, radius, nullptr, octree.data());
+                    c, subOption, cloud, radius, nullptr, nullptr, octree.data());
 
             if (result == CCCoreLib::GeometricalAnalysisTools::NoError)
             {
