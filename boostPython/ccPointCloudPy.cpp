@@ -459,7 +459,8 @@ void export_ccPointCloud()
         .def("crop2D", &crop2D_py, return_value_policy<reference_existing_object>(), ccPointCloudPy_crop2D_doc)
         .def("deleteAllScalarFields", &ccPointCloud::deleteAllScalarFields, ccPointCloudPy_deleteAllScalarFields_doc)
         .def("deleteScalarField", &ccPointCloud::deleteScalarField, ccPointCloudPy_deleteScalarField_doc)
-        .def("enhanceRGBWithIntensitySF", &ccPointCloud::enhanceRGBWithIntensitySF, ccPointCloudPy_enhanceRGBWithIntensitySF_doc)
+        .def("enhanceRGBWithIntensitySF", &ccPointCloud::enhanceRGBWithIntensitySF,
+             enhanceRGBWithIntensitySF_overloads(ccPointCloudPy_enhanceRGBWithIntensitySF_doc))
         .def("exportCoordToSF", &exportCoordToSF_py, ccPointCloudPy_exportCoordToSF_doc)
         .def("exportNormalToSF", &exportNormalToSF_py, ccPointCloudPy_exportNormalToSF_doc)
         .def("filterPointsByScalarValue", &ccPointCloud::filterPointsByScalarValue,
