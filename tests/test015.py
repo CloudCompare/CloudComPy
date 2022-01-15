@@ -38,22 +38,22 @@ mesh1.setName("mesh1")
 
 cloud2=mesh1.samplePoints(True, 50)
 cloud2.setName("cloud2")
-if not math.isclose(cloud2.size(), 6489, rel_tol=0.05):
+if not math.isclose(cloud2.size(), 6489, rel_tol=0.20):
     raise RuntimeError
 
 cloud3=mesh1.samplePoints(True, 500)
 cloud3.setName("cloud3")
-if not math.isclose(cloud3.size(), 64641, rel_tol=0.05):
+if not math.isclose(cloud3.size(), 64641, rel_tol=0.20):
     raise RuntimeError
 
 cloud4=mesh1.samplePoints(False, 1000)
 cloud4.setName("cloud4")
-if not math.isclose(cloud4.size(), 1000, rel_tol=0.05):
+if not math.isclose(cloud4.size(), 1000, rel_tol=0.20):
     raise RuntimeError
 
 cloud5=mesh1.samplePoints(False, 100000)
 cloud5.setName("cloud5")
-if not math.isclose(cloud5.size(), 100000, rel_tol=0.05):
+if not math.isclose(cloud5.size(), 100000, rel_tol=0.20):
     raise RuntimeError
 
 cc.SaveEntities([cloud1, mesh1, cloud2, cloud3, cloud4, cloud5], os.path.join(dataDir, "samplemesh.bin"))
