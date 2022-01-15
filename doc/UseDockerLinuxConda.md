@@ -16,12 +16,7 @@ In all cases, the process of building the binary from the sources is described i
 For the last case (3D graphics), with an Nvidia GPU, the NVIDIA Container Toolkit allows users to build and run [GPU accelerated containers](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/overview.html).
 
 ------------------------------------
-
-The original proposal is dedicated to automatic testing, but can be adapted to the common use of CloudComPy scripts. 
-The use of docker images for the use of CloudComPy can also facilitate its portability.
-I have not yet explored the possibility of configuring the docker image for graphical use.
-The docker technique is now also used for automatic tests on Linux, by adding the phase of construction from sources (see [building with Docker](BuildLinuxCondaDocker.md)).
-
+### chapter to be redesigned...
 Install
 
 ```
@@ -33,7 +28,7 @@ Launch
 docker run -i -t continuumio/miniconda3 /bin/bash
 ```
 
-### Create a docker image from a  dockerfile :
+#### Create a docker image from a dockerfile :
 
 The dockerfile is put in a file `Dockerfile_CloudComPy39_20211208` :
 
