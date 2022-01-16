@@ -336,6 +336,17 @@ Computes the first order moment on a list of points clouds (create a scalarField
 :return: True if OK, else False
 :rtype: bool)";
 
+const char* cloudComPy_computeM3C2_doc=R"(
+Compute Multiscale Model to Model Cloud Comparison (plugin M3C2)
+The computation parameters are regrouped in a text file: see the GUI to get a first version.
+
+:param list clouds: two or three clouds to compare. If a 3rd cloud is present, it will be used as core points.
+:param string paramFilename: full path of the parameter file
+
+:return: output cloud with computed scalar fields
+:rtype: ccPointCloud
+)";
+
 const char* cloudComPy_filterBySFValue_doc= R"(
 Create a new point cloud by filtering points using the current out ScalarField (see cloud.setCurrentOutScalarField).
 Keep the points whose ScalarField value is between the min and max parameters.

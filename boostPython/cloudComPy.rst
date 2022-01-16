@@ -9,6 +9,7 @@ cloudComPy module, functions
 .. autofunction:: computeCurvature
 .. autofunction:: computeFeature
 .. autofunction:: computeLocalDensity
+.. autofunction:: computeM3C2
 .. autofunction:: computeMomentOrder1
 .. autofunction:: computeNormals
 .. autofunction:: computeRoughness

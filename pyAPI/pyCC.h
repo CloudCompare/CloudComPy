@@ -41,6 +41,8 @@
 #include <Neighbourhood.h>
 #include <ccRasterGrid.h>
 
+#include "optdefines.h"
+
 // --- for Python3 interface
 
 struct pyccPlugins
@@ -145,6 +147,10 @@ bool computeApproxLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density opti
 bool computeRoughness(double radius, std::vector<ccHObject*> clouds);
 
 bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds);
+
+#ifdef PLUGIN_STANDARD_QM3C2
+ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFilename);
+#endif
 
 //! Filters out points whose scalar values falls into an interval(see ccPointCloud::filterBySFValue)
 /** Threshold values should be expressed relatively to the current displayed scalar field.

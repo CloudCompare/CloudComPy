@@ -53,6 +53,8 @@
 #include <QString>
 #include <vector>
 
+#include "optdefines.h"
+
 #include "pyccTrace.h"
 #include "cloudComPy_DocStrings.hpp"
 
@@ -416,6 +418,10 @@ BOOST_PYTHON_MODULE(cloudComPy)
     def("computeRoughness", computeRoughness, cloudComPy_computeRoughness_doc);
 
     def("computeMomentOrder1", computeMomentOrder1, cloudComPy_computeMomentOrder1_doc);
+
+#ifdef PLUGIN_STANDARD_QM3C2
+    def("computeM3C2", computeM3C2, return_value_policy<reference_existing_object>(), cloudComPy_computeM3C2_doc);
+#endif
 
     def("filterBySFValue", filterBySFValue, return_value_policy<reference_existing_object>(), cloudComPy_filterBySFValue_doc);
 
