@@ -64,7 +64,7 @@ Equivalent parameters of a ccGLMatrix transformation: a rotation axis, an angle 
 const char* ccPrimitivesPy_ccGLMatrixParams2_doc= R"(
 Equivalent parameters of a ccGLMatrix transformation: 3 rotation angles and a translation.
 
-See `<http://en.wikipedia.org/wiki/Euler_angles>`_ (Tait-Bryan Z1Y2X3)
+See `Euler angles <http://en.wikipedia.org/wiki/Euler_angles>`_ (Tait-Bryan Z1Y2X3)
 
 :ivar float phi_rad: Phi angle (in radians)
 :ivar float theta_rad: Theta angle (in radians)
@@ -190,7 +190,7 @@ Inits transformation from a rotation axis, an angle and a translation.
 const char* ccPrimitivesPy_initFromParameters2_doc= R"(
 Inits transformation from 3 rotation angles and a translation.
 
-See `<http://en.wikipedia.org/wiki/Euler_angles>`_ (Tait-Bryan Z1Y2X3)
+See `Euler angles <http://en.wikipedia.org/wiki/Euler_angles>`_ (Tait-Bryan Z1Y2X3)
 
 :param float phi_rad: Phi angle (in radians)
 :param float theta_rad: Theta angle (in radians)

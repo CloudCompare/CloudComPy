@@ -63,7 +63,7 @@ by the points gravity center.
 const char* CloudSamplingToolsPy_resampleCloudWithOctree_doc= R"(
 Resamples a point cloud (process based on the octree)
 
-Same as 'resampleCloudWithOctreeAtLevel' method, apart the fact that instead
+Same as :py:meth:`resampleCloudWithOctreeAtLevel` method, apart the fact that instead
 of giving a specific octree subdivision level as input parameter, one can specify
 an approximative number of points for the resulting cloud (algorithm will
 automatically determine the corresponding octree level).
@@ -107,7 +107,7 @@ such as choosing a random point, or the one closest to the cell center.
 const char* CloudSamplingToolsPy_subsampleCloudWithOctree_doc= R"(
 Subsamples a point cloud (process based on the octree)
 
-Same as 'subsampleCloudWithOctreeAtLevel' method, apart the fact that instead
+Same as :py:meth:`subsampleCloudWithOctreeAtLevel` method, apart the fact that instead
 of giving a specific octree subdivision level as input parameter, one can specify
 an approximative number of points for the resulting cloud (algorithm will
 automatically determine the corresponding octree level).
@@ -167,7 +167,7 @@ Statistical Outliers Removal (SOR) filter
 This filter removes points based on their mean distance to their distance
 (by comparing it to the average distance of all points to their neighbors).
 It is equivalent to PCL StatisticalOutlierRemoval filter
-(see http://pointclouds.org/documentation/tutorials/statistical_outlier.php)
+(see `Removing outliers using a StatisticalOutlierRemoval filter <http://pointclouds.org/documentation/tutorials/statistical_outlier.html>`_)
 
 :param GenericIndexedCloudPersist cloud: the point cloud to resample
 :param int,optional knn: default 6,number of neighbors
