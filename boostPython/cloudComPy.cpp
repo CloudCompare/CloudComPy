@@ -458,6 +458,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
 
     def("ComputeVolume25D", ComputeVolume25D, cloudComPy_ComputeVolume25D_doc);
 
+    def("invertNormals", invertNormals, cloudComPy_invertNormals_doc);
+
     def("RasterizeToCloud", RasterizeToCloud,
     		RasterizeToCloud_overloads(cloudComPy_RasterizeToCloud_doc)[return_value_policy<reference_existing_object>()]);
 

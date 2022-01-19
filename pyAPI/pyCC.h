@@ -202,6 +202,8 @@ bool computeNormals(std::vector<ccHObject*> selectedEntities,
     int mstNeighbors = 6,
     bool computePerVertexNormals = true);
 
+//! adapted from ccEntityAction:: invertNormals
+bool invertNormals(std::vector<ccHObject*> selectedEntities);
 
 //! Report info volume TODO: copied from Report info qCC/ccVolumeCalcTool.h
 struct ReportInfoVol

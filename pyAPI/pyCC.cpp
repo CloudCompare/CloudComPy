@@ -1508,6 +1508,27 @@ bool computeNormals(std::vector<ccHObject*> selectedEntities,
     return true;
 }
 
+bool invertNormals(std::vector<ccHObject*> selectedEntities)
+{
+    for (ccHObject* ent : selectedEntities)
+    {
+        // is it a mesh?
+        ccMesh* mesh = ccHObjectCaster::ToMesh(ent);
+        if (mesh && mesh->hasNormals())
+        {
+            mesh->invertNormals();
+            continue;
+        }
+
+        // is it a cloud?
+        ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(ent);
+        if (cloud && cloud->hasNormals())
+        {
+            cloud->invertNormals();
+        }
+    }
+    return true;
+}
 
 //! TODO: Copied/adpated from qCC/ccVolumeCalcTool::ComputeVolume
 bool ComputeVolume_(    ccRasterGrid& grid,

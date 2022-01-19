@@ -112,6 +112,20 @@ Requires a current "displayed" scalar field: see :py:meth:`setCurrentDisplayedSc
 :return: success
 :rtype: bool)";
 
+const char* ccPointCloudPy_convertNormalToDipDirSFs_doc= R"(
+Converts normals to two scalar fields: 'dip' and 'dip direction'.
+
+See `Strike and dip <https://en.wikipedia.org/wiki/Strike_and_dip>`_. Angles are in degrees.
+   
+:return: success
+:rtype: bool)";
+
+const char* ccPointCloudPy_convertNormalToRGB_doc= R"(
+Converts normals to color.
+
+:return: success
+:rtype: bool)";
+
 const char* ccPointCloudPy_convertRGBToGreyScale_doc= R"(
 Converts RGB to grey scale colors.
 
@@ -312,6 +326,28 @@ Interpolate colors from another cloud (nearest neighbor only).
 
 :param ccGenericPointCloud other: source cloud with color
 :param int,optional octreeLevel: octreeLevel, default 0
+
+:return: success
+:rtype: bool
+)";
+
+const char* ccPointCloudPy_orientNormalsWithFM_doc= R"(
+Orient normals with Fast Marching method.
+
+See `Fast marching method <https://en.wikipedia.org/wiki/Fast_marching_method>`_.
+
+:param int,optional octreeLevel: octree level, default 6
+
+:return: success
+:rtype: bool
+)";
+
+const char* ccPointCloudPy_orientNormalsWithMST_doc= R"(
+Orient normals with Minimum Spanning Tree method.
+
+See `Minimum spanning tree <https://en.wikipedia.org/wiki/Minimum_spanning_tree>`_.
+
+:param int,optional octreeLevel: octree level, default 6
 
 :return: success
 :rtype: bool
@@ -525,6 +561,10 @@ translate the cloud of (x,y,z).
 
 const char* ccPointCloudPy_unallocateColors_doc= R"(
 Erases the cloud colors.
+)";
+
+const char* ccPointCloudPy_unallocateNorms_doc= R"(
+Erases the cloud normals.
 )";
 
 #endif /* CCPOINTCLOUDPY_DOCSTRINGS_HPP_ */

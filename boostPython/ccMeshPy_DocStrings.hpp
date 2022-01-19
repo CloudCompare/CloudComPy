@@ -35,6 +35,10 @@ Samples points on a mesh.
 const char* ccMeshPy_ccMesh_doc= R"(
 A triangular mesh based on a cloud of vertices.)";
 
+const char* ccMeshPy_clearTriNormals_doc= R"(
+Removes per-triangle normals.
+)";
+
 const char* ccMeshPy_cloneMesh_doc= R"(
 Clones this entity.
 

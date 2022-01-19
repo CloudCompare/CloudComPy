@@ -21,6 +21,7 @@ cloudComPy module, functions
 .. autofunction:: ICP
 .. autofunction:: importFile
 .. autofunction:: initCC
+.. autofunction:: invertNormals
 .. autofunction:: isPluginFbx
 .. autofunction:: loadMesh
 .. autofunction:: loadPointCloud

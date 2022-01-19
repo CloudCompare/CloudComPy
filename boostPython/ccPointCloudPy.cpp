@@ -35,6 +35,7 @@
 #include <ccColorScale.h>
 #include <ccColorScalesManager.h>
 #include <ccColorTypes.h>
+#include <ccCommon.h>
 
 #include "PyScalarType.h"
 #include "pyccTrace.h"
@@ -276,6 +277,53 @@ bool changeColorLevels_py(ccPointCloud &self, unsigned char sin0,
     return true;
 }
 
+bool convertNormalToDipDirSFs_py(ccPointCloud &self)
+{
+    // --- from ccEntityAction::convertNormalsTo
+    //get/create 'dip' scalar field
+     int dipSFIndex = self.getScalarFieldIndexByName(CC_DEFAULT_DIP_SF_NAME);
+     if (dipSFIndex < 0)
+         dipSFIndex = self.addScalarField(CC_DEFAULT_DIP_SF_NAME);
+     if (dipSFIndex < 0)
+     {
+         CCTRACE("[ccEntityAction::convertNormalsTo] Not enough memory!");
+         return false;
+     }
+
+     //get/create 'dip direction' scalar field
+     int dipDirSFIndex = self.getScalarFieldIndexByName(CC_DEFAULT_DIP_DIR_SF_NAME);
+     if (dipDirSFIndex < 0)
+         dipDirSFIndex = self.addScalarField(CC_DEFAULT_DIP_DIR_SF_NAME);
+     if (dipDirSFIndex < 0)
+     {
+         self.deleteScalarField(dipSFIndex);
+         CCTRACE("[ccEntityAction::convertNormalsTo] Not enough memory!");
+         return false;
+     }
+
+     ccScalarField* dipSF = static_cast<ccScalarField*>(self.getScalarField(dipSFIndex));
+     ccScalarField* dipDirSF = static_cast<ccScalarField*>(self.getScalarField(dipDirSFIndex));
+
+     bool success = self.convertNormalToDipDirSFs(dipSF, dipDirSF);
+
+     if (success)
+     {
+         //apply default 360 degrees color scale!
+         ccColorScale::Shared dipScale = ccColorScalesManager::GetDefaultScale(ccColorScalesManager::DIP_BRYW);
+         ccColorScale::Shared dipDirScale = ccColorScalesManager::GetDefaultScale(ccColorScalesManager::DIP_DIR_REPEAT);
+         dipSF->setColorScale(dipScale);
+         dipDirSF->setColorScale(dipDirScale);
+         self.setCurrentDisplayedScalarField(dipDirSFIndex); //dip dir. seems more interesting by default
+     }
+     else
+     {
+         self.deleteScalarField(dipSFIndex);
+         self.deleteScalarField(dipDirSFIndex);
+         success = false;
+     }
+     return success;
+}
+
 ccPointCloud* crop2D_py(ccPointCloud &self, const ccPolyline* poly, unsigned char orthoDim, bool inside = true)
 {
     ccPointCloud* croppedCloud = nullptr;
@@ -308,6 +356,16 @@ bool interpolateColorsFrom_py(ccPointCloud &self, ccGenericPointCloud* otherClou
         return false;
     }
     return self.interpolateColorsFrom(otherCloud, nullptr, octreeLevel);
+}
+
+bool orientNormalsWithFM_py(ccPointCloud &self, unsigned char octreeLevel = 6)
+{
+    return self.orientNormalsWithFM(octreeLevel);
+}
+
+bool orientNormalsWithMST_py(ccPointCloud &self, unsigned char octreeLevel = 6)
+{
+    return self.orientNormalsWithMST(octreeLevel);
 }
 
 bp::tuple partialClone_py(ccPointCloud &self,
@@ -431,6 +489,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(filterPointsByScalarValue_overloads, ccPo
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(enhanceRGBWithIntensitySF_overloads, ccPointCloud::enhanceRGBWithIntensitySF, 1, 4)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(convertCurrentScalarFieldToColors_overloads, ccPointCloud::convertCurrentScalarFieldToColors, 0, 1)
 BOOST_PYTHON_FUNCTION_OVERLOADS(interpolateColorsFrom_py_overloads, interpolateColorsFrom_py, 2, 3)
+BOOST_PYTHON_FUNCTION_OVERLOADS(orientNormalsWithFM_py_overloads, orientNormalsWithFM_py, 1, 2)
+BOOST_PYTHON_FUNCTION_OVERLOADS(orientNormalsWithMST_py_overloads, orientNormalsWithMST_py, 1, 2)
 
 void export_ccPointCloud()
 {
@@ -455,6 +515,8 @@ void export_ccPointCloud()
         .def("coordsFromNPArray_copy", &coordsFromNPArray_copy, ccPointCloudPy_coordsFromNPArray_copy_doc)
         .def("convertCurrentScalarFieldToColors", &ccPointCloud::convertCurrentScalarFieldToColors,
              convertCurrentScalarFieldToColors_overloads(ccPointCloudPy_convertCurrentScalarFieldToColors_doc))
+        .def("convertNormalToRGB", &ccPointCloud::convertNormalToRGB, ccPointCloudPy_convertNormalToRGB_doc)
+        .def("convertNormalToDipDirSFs", convertNormalToDipDirSFs_py, ccPointCloudPy_convertNormalToDipDirSFs_doc)
         .def("convertRGBToGreyScale", &ccPointCloud::convertRGBToGreyScale, ccPointCloudPy_convertRGBToGreyScale_doc)
         .def("crop2D", &crop2D_py, return_value_policy<reference_existing_object>(), ccPointCloudPy_crop2D_doc)
         .def("deleteAllScalarFields", &ccPointCloud::deleteAllScalarFields, ccPointCloudPy_deleteAllScalarFields_doc)
@@ -487,6 +549,8 @@ void export_ccPointCloud()
         .def("hasScalarFields", &ccPointCloud::hasScalarFields, ccPointCloudPy_hasScalarFields_doc)
         .def("interpolateColorsFrom", &interpolateColorsFrom_py,
              interpolateColorsFrom_py_overloads(ccPointCloudPy_interpolateColorsFrom_doc))
+        .def("orientNormalsWithFM", orientNormalsWithFM_py, orientNormalsWithFM_py_overloads(ccPointCloudPy_orientNormalsWithFM_doc))
+        .def("orientNormalsWithMST", orientNormalsWithMST_py, orientNormalsWithMST_py_overloads(ccPointCloudPy_orientNormalsWithMST_doc))
         .def("partialClone", &partialClone_py, ccPointCloudPy_partialClone_doc)
         .def("renameScalarField", &ccPointCloud::renameScalarField, ccPointCloudPy_renameScalarField_doc)
         .def("reserve", &ccPointCloud::reserve, ccPointCloudPy_reserve_doc)
@@ -510,6 +574,7 @@ void export_ccPointCloud()
         .def("colorsToNpArrayCopy", &ColorsToNpArray_copy, ccPointCloudPy_colorsToNpArrayCopy_doc)
         .def("translate", &ccPointCloud::translate, ccPointCloudPy_translate_doc)
         .def("unallocateColors", &ccPointCloud::unallocateColors, ccPointCloudPy_unallocateColors_doc)
+        .def("unallocateNorms", &ccPointCloud::unallocateNorms, ccPointCloudPy_unallocateNorms_doc)
        ;
 }
 

@@ -75,6 +75,7 @@ void export_ccMesh()
         ;
 
     class_<ccMesh, bases<ccGenericMesh>, boost::noncopyable>("ccMesh", ccMeshPy_ccMesh_doc, no_init)
+        .def("clearTriNormals", &ccMesh::clearTriNormals, ccMeshPy_clearTriNormals_doc)
         .def("cloneMesh", &cloneMesh_py, return_value_policy<reference_existing_object>(), ccMeshPy_cloneMesh_doc)
         .def("size", &ccMesh::size)
         .def("getAssociatedCloud", &ccMesh::getAssociatedCloud,

@@ -389,7 +389,16 @@ Compute normals on a list of clouds and meshes.
 :param Orientation,optional preferredOrientation: default Orientation.UNDEFINED
 :param bool,optional orientNormalsMST: default `True`, use Minimum Spanning Tree
 :param int,optional mstNeighbors: default 6, for Minimum Spanning Tree
-:param bool,optional computePerVertexNormals: default `True`, apply on mesh, if `True`, compute on vertices, if `False`, compute on triangles)";
+:param bool,optional computePerVertexNormals: default `True`, apply on mesh, if `True`, compute on vertices, if `False`, compute on triangles
+
+:return: success
+:rtype: bool)";
+
+const char* cloudComPy_invertNormals_doc=R"(
+Invert normals on a list of clouds and meshes.
+
+:return: success
+:rtype: bool)";
 
 const char* cloudComPy_RasterizeToCloud_doc= R"(
 Compute a Raster cloud from a point cloud, given a grid step and a direction, plus an optional GeoTiff file.
