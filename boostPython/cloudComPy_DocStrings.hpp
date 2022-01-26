@@ -119,10 +119,22 @@ Applies ICP registration on two entities.
 const char* cloudComPy_initCC_doc= R"(
 Should be done once before using plugins!)";
 
+const char* cloudComPy_isPluginDraco_doc= R"(
+returns True if CloudComPy is built with the Draco plugin.
+
+:return: True if CloudComPy is built with the Draco plugin, False otherwise.
+:rtype: bool)";
+
 const char* cloudComPy_isPluginFbx_doc= R"(
 returns True if CloudComPy is built with the Fbx plugin.
 
 :return: True if CloudComPy is built with the Fbx plugin, False otherwise.
+:rtype: bool)";
+
+const char* cloudComPy_isPluginM3C2_doc= R"(
+returns True if CloudComPy is built with the M3C2 plugin.
+
+:return: True if CloudComPy is built with the M3C2 plugin, False otherwise.
 :rtype: bool)";
 
 const char* cloudComPy_loadPointCloud_doc= R"(

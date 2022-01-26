@@ -55,6 +55,8 @@ cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.shp")) # OK
 cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.pn"))  # NOK cloudComPy.CC_FILE_ERROR.CC_FERR_BAD_ENTITY_TYPE
 cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.pv"))  # OK
 cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.bin")) # OK
+if cc.isPluginFbx():
+    cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.drc")) # OK
 
 cloudasc = cc.loadPointCloud(os.path.join(dataDir, "cloud.asc"))
 if cloudasc.size() != 10000:
@@ -103,6 +105,10 @@ if cloudpv.size() != 10000:
 cloudbin = cc.loadPointCloud(os.path.join(dataDir, "cloud.bin"))
 if cloudbin.size() != 10000:
     raise RuntimeError
+if cc.isPluginFbx():
+    clouddrc = cc.loadPointCloud(os.path.join(dataDir, "cloud.drc"))
+    if clouddrc.size() != 10000:
+        raise RuntimeError
 
 cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.ma"))  # NOK cloudComPy.CC_FILE_ERROR.CC_FERR_BAD_ENTITY_TYPE
 cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.dxf")) # OK  FileIO::setWriterInfo has not been called

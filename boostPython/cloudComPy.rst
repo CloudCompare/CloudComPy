@@ -22,7 +22,9 @@ cloudComPy module, functions
 .. autofunction:: importFile
 .. autofunction:: initCC
 .. autofunction:: invertNormals
+.. autofunction:: isPluginDraco
 .. autofunction:: isPluginFbx
+.. autofunction:: isPluginM3C2
 .. autofunction:: loadMesh
 .. autofunction:: loadPointCloud
 .. autofunction:: loadPolyline

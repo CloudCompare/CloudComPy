@@ -44,21 +44,22 @@ with open(paramFilename, 'w') as f:
     for k,v in m3c2_params_dic.items():
         f.write("%s=%s\n"%(k,v))
 
-cloud = cc.loadPointCloud(getSampleCloud(5.0))
-cloud1 = cc.loadPointCloud(getSampleCloud(1.0))
-cloud2 = cc.computeM3C2([cloud,cloud1], paramFilename)
-
-if cloud2 is None:
-    raise RuntimeError
-if cloud2.getNumberOfScalarFields() < 3:
-    raise RuntimeError
-dic= cloud2.getScalarFieldDic()
-sf = cloud2.getScalarField(dic['M3C2 distance'])
-if sf is None:
-    raise RuntimeError
-if not math.isclose(sf.getMax(), 0.71, rel_tol=0.01):
-    raise RuntimeError
-if not math.isclose(sf.getMin(), -0.70, rel_tol=0.01):
-    raise RuntimeError
-
-cc.SaveEntities([cloud, cloud1, cloud2], os.path.join(dataDir, "M3C2.bin"))
+if cc.isPluginM3C2():
+    cloud = cc.loadPointCloud(getSampleCloud(5.0))
+    cloud1 = cc.loadPointCloud(getSampleCloud(1.0))
+    cloud2 = cc.computeM3C2([cloud,cloud1], paramFilename)
+    
+    if cloud2 is None:
+        raise RuntimeError
+    if cloud2.getNumberOfScalarFields() < 3:
+        raise RuntimeError
+    dic= cloud2.getScalarFieldDic()
+    sf = cloud2.getScalarField(dic['M3C2 distance'])
+    if sf is None:
+        raise RuntimeError
+    if not math.isclose(sf.getMax(), 0.71, rel_tol=0.01):
+        raise RuntimeError
+    if not math.isclose(sf.getMin(), -0.70, rel_tol=0.01):
+        raise RuntimeError
+    
+    cc.SaveEntities([cloud, cloud1, cloud2], os.path.join(dataDir, "M3C2.bin"))

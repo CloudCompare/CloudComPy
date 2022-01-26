@@ -83,12 +83,23 @@
 #include <ogr_api.h>
 #endif
 
+#ifdef PLUGIN_IO_QDRACO
+bool pyccPlugins::_isPluginDraco = true;
+#else
+bool pyccPlugins::_isPluginDraco = false;
+#endif
+
 #ifdef PLUGIN_IO_QFBX
 bool pyccPlugins::_isPluginFbx = true;
 #else
 bool pyccPlugins::_isPluginFbx = false;
 #endif
 
+#ifdef PLUGIN_STANDARD_QM3C2
+bool pyccPlugins::_isPluginM3C2 = true;
+#else
+bool pyccPlugins::_isPluginM3C2 = false;
+#endif
 
 // --- internal struct
 

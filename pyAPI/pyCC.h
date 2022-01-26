@@ -47,8 +47,12 @@
 
 struct pyccPlugins
 {
-static bool _isPluginFbx;
-static bool isPluginFbx() { return _isPluginFbx; };
+    static bool _isPluginDraco;
+    static bool isPluginDraco() { return _isPluginDraco; };
+    static bool _isPluginFbx;
+    static bool isPluginFbx() { return _isPluginFbx; };
+    static bool _isPluginM3C2;
+    static bool isPluginM3C2() { return _isPluginM3C2; };
 };
 
 enum CC_DIRECTION
