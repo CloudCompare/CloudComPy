@@ -9,6 +9,8 @@ export CONDA_ROOT=/opt/conda                                                    
 export CONDA_ENV=CloudComPy39                                                     # conda environment name
 export CONDA_PATH=${CONDA_ROOT}/envs/${CONDA_ENV}                                 # conda environment directory
 export FBXSDK_REP=/root/fbxsdk                                                    # directory of fbx sdk (remove the plugin in cmake options if not needed)
+export CORK_REP=/root/cork                                                        # directory of cork (remove the plugin in cmake options if not needed)
+export DRACO_REP=/root/draco                                                      # directory of draco (remove the plugin in cmake options if not needed)
 export NBTHREADS="$(grep -c processor /proc/cpuinfo)"                             # number of threads for parallel make
 
 . ${CONDA_ROOT}/etc/profile.d/conda.sh                                       # required to have access to conda commands in a shell script
@@ -70,6 +72,11 @@ cloudcompy_configure()
     -DFBX_SDK_INCLUDE_DIR:PATH="${FBXSDK_REP}/include" \
     -DFBX_SDK_LIBRARY_FILE:FILEPATH="${FBXSDK_REP}/lib/gcc/x64/release/libfbxsdk.a" \
     -DFBX_XML2_LIBRARY_FILE:FILEPATH="" \
+    -DMPIR_INCLUDE_DIR:PATH="${CONDA_PATH}/include" \
+    -DMPIR_RELEASE_LIBRARY_FILE:FILEPATH="${CONDA_PATH}/lib/libgmp.so" \
+    -DCORK_INCLUDE_DIR:PATH="${CORK_REP}/src" \
+    -DCORK_RELEASE_LIBRARY_FILE:FILEPATH="=${CORK_REP}/lib/libcork.a" \
+    -DDraco_DIR:PATH="${DRACO_REP}/share/cmake" \
     -DGDAL_INCLUDE_DIR:PATH="${CONDA_PATH}/include" \
     -DGDAL_LIBRARY:FILEPATH="${CONDA_PATH}/lib/libgdal.so" \
     -DGMP_INCLUDE_DIR:PATH="${CONDA_PATH}/include" \
@@ -92,8 +99,12 @@ cloudcompy_configure()
     -DPLUGIN_IO_QFBX:BOOL="0" \
     -DPLUGIN_IO_QPDAL:BOOL="1" \
     -DPLUGIN_IO_QPHOTOSCAN:BOOL="1" \
+    -DPLUGIN_IO_QRDB:BOOL="0" \
+    -DPLUGIN_IO_QRDB_INSTALL_DEPENDENCY:BOOL="1" \
+    -DPLUGIN_IO_QRDB_FETCH_DEPENDENCY:BOOL="1" \
     -DPLUGIN_STANDARD_QBROOM:BOOL="1" \
     -DPLUGIN_STANDARD_QCOMPASS:BOOL="1" \
+    -DPLUGIN_STANDARD_QCORK:BOOL="0" \
     -DPLUGIN_STANDARD_QHPR:BOOL="1" \
     -DPLUGIN_STANDARD_QM3C2:BOOL="1" \
     -DPLUGIN_STANDARD_QPCL:BOOL="1" \
