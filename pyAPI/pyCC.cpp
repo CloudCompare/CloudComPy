@@ -101,8 +101,8 @@ struct CLLoadParameters: public FileIOFilter::LoadParameters
         shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG;
         alwaysDisplayLoadDialog = false;
         autoComputeNormals = false;
-        coordinatesShiftEnabled = &m_coordinatesShiftEnabled;
-        coordinatesShift = &m_coordinatesShift;
+        _coordinatesShiftEnabled = &m_coordinatesShiftEnabled;
+        _coordinatesShift = &m_coordinatesShift;
     }
 
     bool m_coordinatesShiftEnabled;
