@@ -2,11 +2,19 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## January 27, 2022 CloudComPy release:
+
+ - Build CloudCompare with all Plugins (some are not yet available in CloudComPy)
+ - More methods related to normals (see test014)
+ - Access to M3C2 plugin in CloudComPy (see test030)
+ - Draco driver available for I/O in CloudComPy (see test020)
+ - Various improvements and bug fixes.
+
 ## January 15, 2022 CloudComPy release:
 
  - Docker build for Linux, update doc on Docker usage for build, test and use.
- - Add methods for color on ccPointCloud, access and modify color from Numpy.
- - Add QColor interface for color conversions and transformations.
+ - Add methods for color on ccPointCloud, access and modify color from Numpy (see test029).
+ - Add QColor interface for color conversions and transformations (see test028).
  - Various improvements and bug fixes.
 
 ## December 5, 2021 CloudComPy release:
