@@ -75,7 +75,7 @@ cloudcompy_configure()
     -DMPIR_INCLUDE_DIR:PATH="${CONDA_PATH}/include" \
     -DMPIR_RELEASE_LIBRARY_FILE:FILEPATH="${CONDA_PATH}/lib/libgmp.so" \
     -DCORK_INCLUDE_DIR:PATH="${CORK_REP}/src" \
-    -DCORK_RELEASE_LIBRARY_FILE:FILEPATH="=${CORK_REP}/lib/libcork.a" \
+    -DCORK_RELEASE_LIBRARY_FILE:FILEPATH="${CORK_REP}/lib/libcork.a" \
     -DDraco_DIR:PATH="${DRACO_REP}/share/cmake" \
     -DGDAL_INCLUDE_DIR:PATH="${CONDA_PATH}/include" \
     -DGDAL_LIBRARY:FILEPATH="${CONDA_PATH}/lib/libgdal.so" \

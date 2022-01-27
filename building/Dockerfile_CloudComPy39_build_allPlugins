@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y clang make libgl1 libgl-dev
 
 RUN . /opt/conda/etc/profile.d/conda.sh && \
     conda activate CloudComPy39 && \
-    cd && git clone --recurse-submodules https://github.com/prascle/CloudComPy.git
+    cd && rm -rf CloudComPy && git clone --recurse-submodules https://github.com/prascle/CloudComPy.git
 
 ARG FBXINC=noplugin
 ARG FBXLIB=noplugin
