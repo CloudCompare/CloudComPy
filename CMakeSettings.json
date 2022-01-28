@@ -129,6 +129,11 @@
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_IO_QDRACO",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_IO_QE57",
           "value": "true",
           "type": "BOOL"
@@ -136,11 +141,6 @@
         {
           "name": "PLUGIN_IO_QFBX",
           "value": "true",
-          "type": "BOOL"
-        },
-        {
-          "name": "PLUGIN_IO_QLAS_FWF",
-          "value": "False",
           "type": "BOOL"
         },
         {
@@ -154,8 +154,18 @@
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_IO_QRDB",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QRDB_FETCH_DEPENDENCY",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_IO_QSTEP",
-          "value": "False",
+          "value": "True",
           "type": "BOOL"
         },
         {
@@ -194,6 +204,11 @@
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_STANDARD_QCORK",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_STANDARD_QCSF",
           "value": "True",
           "type": "BOOL"
@@ -220,7 +235,7 @@
         },
         {
           "name": "PLUGIN_STANDARD_QM3C2",
-          "value": "True",
+          "value": "False",
           "type": "BOOL"
         },
         {
@@ -301,6 +316,21 @@
         {
           "name": "CGAL_DIR",
           "value": "${anacondaRoot}/Library/lib/cmake/CGAL",
+          "type": "PATH"
+        },
+        {
+          "name": "CORK_INCLUDE_DIR",
+          "value": "C:/Users/paulr/CloudComPy/cork/src",
+          "type": "PATH"
+        },
+        {
+          "name": "CORK_RELEASE_LIBRARY_FILE",
+          "value": "C:/Users/paulr/CloudComPy/cork/win/VS2013/x64/Release/wincork2013.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "Draco_DIR",
+          "value": "C:/Users/paulr/CloudComPy/draco/out/install/x64-Release/share/cmake",
           "type": "PATH"
         },
         {
@@ -389,6 +419,16 @@
           "type": "PATH"
         },
         {
+          "name": "MPIR_INCLUDE_DIR",
+          "value": "${anacondaRoot}/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "MPIR_RELEASE_LIBRARY_FILE",
+          "value": "${anacondaRoot}/Library/lib/mpir.lib",
+          "type": "FILEPATH"
+        },
+        {
           "name": "MPFR_INCLUDE_DIR",
           "value": "${anacondaRoot}/Library",
           "type": "PATH"
@@ -411,6 +451,11 @@
         {
           "name": "OPENCASCADE_DLL_DIR",
           "value": "C:/OpenCASCADE-7.5.0-vc14-64/opencascade-7.5.0/win64/vc14/bin",
+          "type": "PATH"
+        },
+        {
+          "name": "OPENCASCADE_TBB_DLL_DIR",
+          "value": "${anacondaRoot}/Library/lib/tbb.lib",
           "type": "PATH"
         },
         {

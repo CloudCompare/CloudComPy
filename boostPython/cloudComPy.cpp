@@ -409,7 +409,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
 
     def("isPluginFbx", &pyccPlugins::isPluginFbx, cloudComPy_isPluginFbx_doc);
 
-    def("isPluginM3C2", &pyccPlugins::isPluginFbx, cloudComPy_isPluginM3C2_doc);
+    def("isPluginM3C2", &pyccPlugins::isPluginM3C2, cloudComPy_isPluginM3C2_doc);
 
     def("computeCurvature", computeCurvature, cloudComPy_computeCurvature_doc);
 

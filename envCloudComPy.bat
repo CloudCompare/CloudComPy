@@ -7,4 +7,4 @@ rem this script sets the environment for CloudComPy. The Conda environment must 
 @set PYTHONPATH=%CLOUDCOMPY_ROOT%\CloudCompare;%PYTHONPATH%
 @set PYTHONPATH=%CLOUDCOMPY_ROOT%\doc\PythonAPI_test;%PYTHONPATH%
 @set PATH=%CLOUDCOMPY_ROOT%\CloudCompare;%CLOUDCOMPY_ROOT%\ccViewer;%SCRIPT_DIR%;%PATH%
-
+@set PATH=%CLOUDCOMPY_ROOT%\CloudCompare\plugins;%PATH%
