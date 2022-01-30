@@ -70,6 +70,16 @@ if(WIN32)
            )
 endif()
 
+# --- wrap plugin options
+if( PLUGIN_STANDARD_QM3C2 )
+    message(STATUS "Plugin PLUGIN_STANDARD_QM3C2")
+    option( WRAP_PLUGIN_QM3C2 "Get access to Plugin M3C2 from CloudComPy" ON )
+    if ( WRAP_PLUGIN_QM3C2 )
+        add_definitions(-DWRAP_PLUGIN_QM3C2)
+        message(STATUS "WRAP_PLUGIN_QM3C2 activated")
+    endif()
+endif()
+
 add_subdirectory( CloudCompare )
 add_subdirectory( pyAPI )
 add_subdirectory( boostPython )
