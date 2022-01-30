@@ -2,11 +2,11 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
-## January 27, 2022 CloudComPy release:
+## January 30, 2022 CloudComPy release:
 
- - Build CloudCompare with all Plugins (some are not yet available in CloudComPy)
+ - Build CloudCompare with all Plugins (a lot are not yet available in CloudComPy)
  - More methods related to normals (see test014)
- - Access to M3C2 plugin in CloudComPy (see test030)
+ - On Linux only, access to M3C2 plugin in CloudComPy (see test030)
  - Draco driver available for I/O in CloudComPy (see test020)
  - Various improvements and bug fixes.
 
