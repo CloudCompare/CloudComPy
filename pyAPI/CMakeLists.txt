@@ -85,9 +85,11 @@ if( PLUGIN_IO_QFBX )
         ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/plugins/core/IO/qFBXIO/include
         )
     
-    target_link_libraries( PYCC_LIB
-        QFBX_IO_PLUGIN
-        )
+    if ( UNIX )
+        target_link_libraries( PYCC_LIB
+           QFBX_IO_PLUGIN
+           )
+    endif()
 endif()
 
 if( PLUGIN_STANDARD_QM3C2 )
@@ -99,10 +101,11 @@ if( PLUGIN_STANDARD_QM3C2 )
     target_include_directories( PYCC_LIB PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/plugins/core/Standard/qM3C2/include
         )
-    
-    target_link_libraries( PYCC_LIB
-        QM3C2_PLUGIN
-        )
+    if ( UNIX )
+        target_link_libraries( PYCC_LIB
+            QM3C2_PLUGIN
+            )
+    endif()
 endif()
 
 # Qt libraries

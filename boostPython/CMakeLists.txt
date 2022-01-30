@@ -103,19 +103,6 @@ target_link_libraries( ${PROJECT_NAME}
 
 if (WIN32)
    target_link_libraries( ${PROJECT_NAME} Qt5::WinMain)
-   if( PLUGIN_IO_QFBX )
-        message(STATUS "cloudComPy linked with QFBX_IO_PLUGIN")
-        target_link_libraries( ${PROJECT_NAME}
-            QFBX_IO_PLUGIN
-        )
-    endif()
-
-if( PLUGIN_STANDARD_QM3C2 )
-    message(STATUS "cloudComPy linked with QM3C2_PLUGIN")
-    target_link_libraries( ${PROJECT_NAME}
-        QM3C2_PLUGIN
-        )
-    endif()
 endif()
 
 # --- environment scripts, with conda
