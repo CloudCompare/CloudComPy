@@ -152,7 +152,7 @@ bool computeRoughness(double radius, std::vector<ccHObject*> clouds);
 
 bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds);
 
-#ifdef PLUGIN_STANDARD_QM3C2
+#ifdef WRAP_PLUGIN_QM3C2
 ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFilename);
 #endif
 

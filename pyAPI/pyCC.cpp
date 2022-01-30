@@ -71,7 +71,7 @@
 #include <FBXFilter.h>
 #endif
 
-#ifdef PLUGIN_STANDARD_QM3C2
+#ifdef WRAP_PLUGIN_QM3C2
 #include "qM3C2Process.h"
 #include "qM3C2Dialog.h"
 #endif
@@ -96,7 +96,7 @@ bool pyccPlugins::_isPluginFbx = true;
 bool pyccPlugins::_isPluginFbx = false;
 #endif
 
-#ifdef PLUGIN_STANDARD_QM3C2
+#ifdef WRAP_PLUGIN_QM3C2
 bool pyccPlugins::_isPluginM3C2 = true;
 #else
 bool pyccPlugins::_isPluginM3C2 = false;
@@ -651,7 +651,7 @@ bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds)
 	return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::MomentOrder1, 0, radius, clouds);
 }
 
-#ifdef PLUGIN_STANDARD_QM3C2
+#ifdef WRAP_PLUGIN_QM3C2
 ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFilename)
 {
     if (clouds.size() <2)

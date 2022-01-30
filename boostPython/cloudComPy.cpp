@@ -423,7 +423,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
 
     def("computeMomentOrder1", computeMomentOrder1, cloudComPy_computeMomentOrder1_doc);
 
-#ifdef PLUGIN_STANDARD_QM3C2
+#ifdef WRAP_PLUGIN_QM3C2
     def("computeM3C2", computeM3C2, return_value_policy<reference_existing_object>(), cloudComPy_computeM3C2_doc);
 #endif
 

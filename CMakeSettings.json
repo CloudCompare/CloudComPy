@@ -235,7 +235,7 @@
         },
         {
           "name": "PLUGIN_STANDARD_QM3C2",
-          "value": "False",
+          "value": "True",
           "type": "BOOL"
         },
         {
@@ -266,6 +266,11 @@
         {
           "name": "PLUGIN_STANDARD_QSRA",
           "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "WRAP_PLUGIN_QM3C2",
+          "value": "False",
           "type": "BOOL"
         },
         {

@@ -94,17 +94,21 @@ endif()
 
 if( PLUGIN_STANDARD_QM3C2 )
     message(STATUS "Plugin PLUGIN_STANDARD_QM3C2")
-    qt5_wrap_ui( generated_ui_list ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/plugins/core/Standard/qM3C2/ui/qM3C2Dialog.ui )
-    message(STATUS "generated_ui_list: ${generated_ui_list}")
-    target_sources( PYCC_LIB PRIVATE ${generated_ui_list} )
+    option( WRAP_PLUGIN_QM3C2 "Get access to Plugin M3C2 from CloudComPy" ON )
+    if ( WRAP_PLUGIN_QM3C2 )
+        message(STATUS "WRAP_PLUGIN_QM3C2 activated")
+        qt5_wrap_ui( generated_ui_list ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/plugins/core/Standard/qM3C2/ui/qM3C2Dialog.ui )
+        message(STATUS "generated_ui_list: ${generated_ui_list}")
+        target_sources( PYCC_LIB PRIVATE ${generated_ui_list} )
 
-    target_include_directories( PYCC_LIB PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/plugins/core/Standard/qM3C2/include
-        )
-    if ( UNIX )
-        target_link_libraries( PYCC_LIB
-            QM3C2_PLUGIN
+        target_include_directories( PYCC_LIB PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/plugins/core/Standard/qM3C2/include
             )
+        if ( UNIX )
+            target_link_libraries( PYCC_LIB
+                QM3C2_PLUGIN
+                )
+        endif()
     endif()
 endif()
 
