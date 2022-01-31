@@ -1,18 +1,21 @@
 //##########################################################################
 //#                                                                        #
-//#                                boost.Python                            #
+//#                              CloudComPy                                #
 //#                                                                        #
 //#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU Library General Public License as       #
-//#  published by the Free Software Foundation; version 2 or later of the  #
-//#  License.                                                              #
+//#  it under the terms of the GNU General Public License as published by  #
+//#  the Free Software Foundation; either version 3 of the License, or     #
+//#  any later version.                                                    #
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
 //#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 //#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 //#  GNU General Public License for more details.                          #
 //#                                                                        #
-//#          Copyright 2021 Paul RASCLE www.openfields.fr                  #
+//#  You should have received a copy of the GNU General Public License     #
+//#  along with this program. If not, see <https://www.gnu.org/licenses/>. #
+//#                                                                        #
+//#          Copyright 2020-2021 Paul RASCLE www.openfields.fr             #
 //#                                                                        #
 //##########################################################################
 
@@ -61,7 +64,7 @@ Equivalent parameters of a ccGLMatrix transformation: a rotation axis, an angle 
 const char* ccPrimitivesPy_ccGLMatrixParams2_doc= R"(
 Equivalent parameters of a ccGLMatrix transformation: 3 rotation angles and a translation.
 
-See `<http://en.wikipedia.org/wiki/Euler_angles>`_ (Tait-Bryan Z1Y2X3)
+See `Euler angles <http://en.wikipedia.org/wiki/Euler_angles>`_ (Tait-Bryan Z1Y2X3)
 
 :ivar float phi_rad: Phi angle (in radians)
 :ivar float theta_rad: Theta angle (in radians)
@@ -187,7 +190,7 @@ Inits transformation from a rotation axis, an angle and a translation.
 const char* ccPrimitivesPy_initFromParameters2_doc= R"(
 Inits transformation from 3 rotation angles and a translation.
 
-See `<http://en.wikipedia.org/wiki/Euler_angles>`_ (Tait-Bryan Z1Y2X3)
+See `Euler angles <http://en.wikipedia.org/wiki/Euler_angles>`_ (Tait-Bryan Z1Y2X3)
 
 :param float phi_rad: Phi angle (in radians)
 :param float theta_rad: Theta angle (in radians)

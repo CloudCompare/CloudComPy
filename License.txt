@@ -1,0 +1,28 @@
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+Copyright 2020-2021 Paul RASCLE www.openfields.fr
+
+When the CloudCompare FBX Plugin is installed:
+This software contains Autodesk® FBX® code developed by Autodesk, Inc.
+Copyright 2019 Autodesk, Inc. All rights, reserved.
+Such code is provided “as is” and Autodesk, Inc. disclaims any and all warranties,
+whether express or implied, including without limitation the implied warranties 
+of merchantability, fitness for a particular purpose or non-infringement of 
+third party rights. In no event shall Autodesk, Inc. be liable for any direct, 
+indirect, incidental, special, exemplary, or consequential damages (including, 
+but not limited to, procurement of substitute goods or services; loss of use, 
+data, or profits; or business interruption) however caused and on any theory of 
+liability, whether in contract, strict liability, or tort (including negligence
+or otherwise) arising in any way out of such code.

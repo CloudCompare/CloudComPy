@@ -3,11 +3,12 @@
 cloudComPy: a first example
 =============================
 
-This project is a draft of what could be a Python module to interface to CloudCompare,
+This project proposes a Python module to interface to CloudCompare,
 of equivalent level to the command mode of CloudCompare.
 
-There are still few features available in this prototype,
-the idea is to collect feedback from interested users to guide future developments.
+CloudComPy does not yet cover all the features of CloudCompare. 
+Features are added according to the needs reported by users, 
+feel free to post issues in `GitHub <https://github.com/CloudCompare/CloudComPy/issues>`_.
 
 Here is an example of a Python script:
 ::
@@ -46,7 +47,5 @@ Here is an example of a Python script:
 
 As you can see, it is possible to read and write point clouds,
 access scalar fields from Numpy (with or without copy of data), call some CloudCompare functions to transform point clouds.
-
-The list of available functions should quickly grow.
 
 From the Python interpreter, Docstrings provide some documentation on the available methods, the arguments.

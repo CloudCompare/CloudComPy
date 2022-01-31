@@ -1,18 +1,21 @@
 //##########################################################################
 //#                                                                        #
-//#                                boost.Python                            #
+//#                              CloudComPy                                #
 //#                                                                        #
 //#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU Library General Public License as       #
-//#  published by the Free Software Foundation; version 2 or later of the  #
-//#  License.                                                              #
+//#  it under the terms of the GNU General Public License as published by  #
+//#  the Free Software Foundation; either version 3 of the License, or     #
+//#  any later version.                                                    #
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
 //#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 //#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 //#  GNU General Public License for more details.                          #
 //#                                                                        #
-//#          Copyright 2021 Paul RASCLE www.openfields.fr                  #
+//#  You should have received a copy of the GNU General Public License     #
+//#  along with this program. If not, see <https://www.gnu.org/licenses/>. #
+//#                                                                        #
+//#          Copyright 2020-2021 Paul RASCLE www.openfields.fr             #
 //#                                                                        #
 //##########################################################################
 
@@ -115,6 +118,24 @@ Applies ICP registration on two entities.
 
 const char* cloudComPy_initCC_doc= R"(
 Should be done once before using plugins!)";
+
+const char* cloudComPy_isPluginDraco_doc= R"(
+returns True if CloudComPy is built with the Draco plugin.
+
+:return: True if CloudComPy is built with the Draco plugin, False otherwise.
+:rtype: bool)";
+
+const char* cloudComPy_isPluginFbx_doc= R"(
+returns True if CloudComPy is built with the Fbx plugin.
+
+:return: True if CloudComPy is built with the Fbx plugin, False otherwise.
+:rtype: bool)";
+
+const char* cloudComPy_isPluginM3C2_doc= R"(
+returns True if CloudComPy is built with the M3C2 plugin.
+
+:return: True if CloudComPy is built with the M3C2 plugin, False otherwise.
+:rtype: bool)";
 
 const char* cloudComPy_loadPointCloud_doc= R"(
 Load a 3D cloud from a file.
@@ -327,6 +348,17 @@ Computes the first order moment on a list of points clouds (create a scalarField
 :return: True if OK, else False
 :rtype: bool)";
 
+const char* cloudComPy_computeM3C2_doc=R"(
+Compute Multiscale Model to Model Cloud Comparison (plugin M3C2)
+The computation parameters are regrouped in a text file: see the GUI to get a first version.
+
+:param list clouds: two or three clouds to compare. If a 3rd cloud is present, it will be used as core points.
+:param string paramFilename: full path of the parameter file
+
+:return: output cloud with computed scalar fields
+:rtype: ccPointCloud
+)";
+
 const char* cloudComPy_filterBySFValue_doc= R"(
 Create a new point cloud by filtering points using the current out ScalarField (see cloud.setCurrentOutScalarField).
 Keep the points whose ScalarField value is between the min and max parameters.
@@ -369,7 +401,16 @@ Compute normals on a list of clouds and meshes.
 :param Orientation,optional preferredOrientation: default Orientation.UNDEFINED
 :param bool,optional orientNormalsMST: default `True`, use Minimum Spanning Tree
 :param int,optional mstNeighbors: default 6, for Minimum Spanning Tree
-:param bool,optional computePerVertexNormals: default `True`, apply on mesh, if `True`, compute on vertices, if `False`, compute on triangles)";
+:param bool,optional computePerVertexNormals: default `True`, apply on mesh, if `True`, compute on vertices, if `False`, compute on triangles
+
+:return: success
+:rtype: bool)";
+
+const char* cloudComPy_invertNormals_doc=R"(
+Invert normals on a list of clouds and meshes.
+
+:return: success
+:rtype: bool)";
 
 const char* cloudComPy_RasterizeToCloud_doc= R"(
 Compute a Raster cloud from a point cloud, given a grid step and a direction, plus an optional GeoTiff file.

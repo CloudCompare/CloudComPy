@@ -1,0 +1,49 @@
+FROM continuumio/miniconda3:master
+
+RUN . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate && \
+    conda create --name CloudComPy39 python=3.9 && \
+    conda activate CloudComPy39 && \
+    conda config --add channels conda-forge && \
+    conda config --set channel_priority strict && \
+    conda install boost cgal cmake eigen ffmpeg gdal jupyterlab matplotlib mysql numpy opencv openmp pcl pdal psutil "qhull=2019.1" qt scipy sphinx_rtd_theme spyder tbb tbb-devel xerces-c
+
+RUN apt-get update && apt-get install -y clang make libgl1 libgl-dev
+
+RUN . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate CloudComPy39 && \
+    cd && rm -rf CloudComPy && git clone --recurse-submodules https://github.com/prascle/CloudComPy.git
+
+ARG FBXINC=noplugin
+ARG FBXLIB=noplugin
+ARG CORKINC=noplugin
+ARG CORKLIB=noplugin
+ARG DRACOREP=noplugin
+
+COPY $FBXINC /root/fbxsdk/include/
+COPY $FBXLIB /root/fbxsdk/lib/
+COPY $CORKINC /root/cork/src/
+COPY $CORKLIB /root/cork/lib/
+copy $DRACOREP /root/draco/
+COPY genCloudComPy_Conda39_docker.sh /root/
+
+RUN cd /root && \
+    sed -i 's/QRDB:BOOL="0"/QRDB:BOOL="1"/g' genCloudComPy_Conda39_docker.sh; \
+    if [ -f fbxsdk/include/fbxsdk.h ]; then \
+        sed -i 's/QFBX:BOOL="0"/QFBX:BOOL="1"/g' genCloudComPy_Conda39_docker.sh; \
+    fi; \
+    if [ -f cork/src/cork.h ]; then \
+        sed -i 's/QCORK:BOOL="0"/QCORK:BOOL="1"/g' genCloudComPy_Conda39_docker.sh; \
+    fi; \
+    if [ -f draco/share/cmake/draco-config.cmake ]; then \
+        sed -i 's/QDRACO:BOOL="0"/QDRACO:BOOL="1"/g' genCloudComPy_Conda39_docker.sh; \
+    fi; \
+    cd /root && chmod +x genCloudComPy_Conda39_docker.sh && ./genCloudComPy_Conda39_docker.sh
+
+RUN echo "#!/bin/bash\n\
+. /opt/conda/etc/profile.d/conda.sh\n\
+cd /opt/installConda/CloudComPy39\n\
+. bin/condaCloud.sh activate CloudComPy39\n\
+export QT_QPA_PLATFORM=offscreen\n\
+cd /opt/installConda/CloudComPy39/doc/PythonAPI_test\n\
+ctest" > /execTests.sh && chmod +x /execTests.sh

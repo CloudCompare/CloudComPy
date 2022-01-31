@@ -1,18 +1,21 @@
 //##########################################################################
 //#                                                                        #
-//#                                PYCC                                    #
+//#                              CloudComPy                                #
 //#                                                                        #
 //#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU Library General Public License as       #
-//#  published by the Free Software Foundation; version 2 or later of the  #
-//#  License.                                                              #
+//#  it under the terms of the GNU General Public License as published by  #
+//#  the Free Software Foundation; either version 3 of the License, or     #
+//#  any later version.                                                    #
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
 //#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 //#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 //#  GNU General Public License for more details.                          #
 //#                                                                        #
-//#          Copyright 2021 Paul RASCLE www.openfields.fr                  #
+//#  You should have received a copy of the GNU General Public License     #
+//#  along with this program. If not, see <https://www.gnu.org/licenses/>. #
+//#                                                                        #
+//#          Copyright 2020-2021 Paul RASCLE www.openfields.fr             #
 //#                                                                        #
 //##########################################################################
 
@@ -72,6 +75,7 @@ void export_ccMesh()
         ;
 
     class_<ccMesh, bases<ccGenericMesh>, boost::noncopyable>("ccMesh", ccMeshPy_ccMesh_doc, no_init)
+        .def("clearTriNormals", &ccMesh::clearTriNormals, ccMeshPy_clearTriNormals_doc)
         .def("cloneMesh", &cloneMesh_py, return_value_policy<reference_existing_object>(), ccMeshPy_cloneMesh_doc)
         .def("size", &ccMesh::size)
         .def("getAssociatedCloud", &ccMesh::getAssociatedCloud,

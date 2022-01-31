@@ -1,18 +1,21 @@
 ##########################################################################
 #                                                                        #
-#                               PYAPI                                    #
+#                              CloudComPy                                #
 #                                                                        #
 #  This program is free software; you can redistribute it and/or modify  #
-#  it under the terms of the GNU Library General Public License as       #
-#  published by the Free Software Foundation; version 2 or later of the  #
-#  License.                                                              #
+#  it under the terms of the GNU General Public License as published by  #
+#  the Free Software Foundation; either version 3 of the License, or     #
+#  any later version.                                                    #
 #                                                                        #
 #  This program is distributed in the hope that it will be useful,       #
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 #  GNU General Public License for more details.                          #
 #                                                                        #
-#          Copyright 2020 Paul RASCLE www.openfields.fr                  #
+#  You should have received a copy of the GNU General Public License     #
+#  along with this program. If not, see <https://www.gnu.org/licenses/>. #
+#                                                                        #
+#          Copyright 2020-2021 Paul RASCLE www.openfields.fr             #
 #                                                                        #
 ##########################################################################
 
@@ -82,9 +85,29 @@ if( PLUGIN_IO_QFBX )
         ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/plugins/core/IO/qFBXIO/include
         )
     
-    target_link_libraries( PYCC_LIB
-        QFBX_IO_PLUGIN
-        )
+    if ( UNIX )
+        target_link_libraries( PYCC_LIB
+           QFBX_IO_PLUGIN
+           )
+    endif()
+endif()
+
+if( PLUGIN_STANDARD_QM3C2 )
+    if ( WRAP_PLUGIN_QM3C2 )
+        message(STATUS "WRAP_PLUGIN_QM3C2 activated for pyCC")
+        qt5_wrap_ui( generated_ui_list ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/plugins/core/Standard/qM3C2/ui/qM3C2Dialog.ui )
+        message(STATUS "generated_ui_list: ${generated_ui_list}")
+        target_sources( PYCC_LIB PRIVATE ${generated_ui_list} )
+
+        target_include_directories( PYCC_LIB PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/plugins/core/Standard/qM3C2/include
+            )
+        if ( UNIX )
+            target_link_libraries( PYCC_LIB
+                QM3C2_PLUGIN
+                )
+        endif()
+    endif()
 endif()
 
 # Qt libraries

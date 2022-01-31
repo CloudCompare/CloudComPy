@@ -1,18 +1,21 @@
 //##########################################################################
 //#                                                                        #
-//#                                boost.Python                            #
+//#                              CloudComPy                                #
 //#                                                                        #
 //#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU Library General Public License as       #
-//#  published by the Free Software Foundation; version 2 or later of the  #
-//#  License.                                                              #
+//#  it under the terms of the GNU General Public License as published by  #
+//#  the Free Software Foundation; either version 3 of the License, or     #
+//#  any later version.                                                    #
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
 //#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 //#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 //#  GNU General Public License for more details.                          #
 //#                                                                        #
-//#          Copyright 2021 Paul RASCLE www.openfields.fr                  #
+//#  You should have received a copy of the GNU General Public License     #
+//#  along with this program. If not, see <https://www.gnu.org/licenses/>. #
+//#                                                                        #
+//#          Copyright 2020-2021 Paul RASCLE www.openfields.fr             #
 //#                                                                        #
 //##########################################################################
 
@@ -62,16 +65,89 @@ the points visibility information.
 :return: a copy of this entity
 :rtype: ccPointCloud)";
 
+const char* ccPointCloudPy_changeColorLevels_doc= R"(
+Linear transformation of color components levels between boundaries:
+the input levels are defined by a lower and an upper bound, and similarly at the output.
+The transformation can be applied on one or more color component (red, green, blue)
+
+:param int in0: input lower bound in range [0..255]
+:param int in1: input upper bound in range [0..255]
+:param int out0: output lower bound in range [0..255]
+:param int out1: output upper bound in range [0..255]
+:param bool onRed: whether to apply the transformation on the red component
+:param bool onGreen: whether to apply the transformation on the green component
+:param bool onBlue: whether to apply the transformation on the blue component
+
+:return: success
+:rtype: bool)";
+
+
+const char* ccPointCloudPy_colorize_doc= R"(
+Multiplies all color components of all points by coefficients.
+
+If the cloud has no color, all points are considered white and
+the color array is automatically allocated.
+
+:param float r: red component (normalized value in [0., 1.])
+:param float g: green component (normalized value in [0., 1.])
+:param float b: blue component (normalized value in [0., 1.])
+:param float,optional a: alpha component default 1.0, (normalized value in [0., 1.])
+
+:return: success
+:rtype: bool)";
+
 const char* ccPointCloudPy_computeGravityCenter_doc= R"(
 Return a tuple of the 3 coordinates of the gravity center of the cloud.
 
-:return: gravity center coordiinates
+:return: gravity center coordinates
 :rtype: tuple of float )";
+
+const char* ccPointCloudPy_convertCurrentScalarFieldToColors_doc= R"(
+Converts current scalar field to RGB colors.
+
+Requires a current "displayed" scalar field: see :py:meth:`setCurrentDisplayedScalarField`.
+
+:param bool,optional mixWithExistingColor: whether to mix with an existing color, default False
+
+:return: success
+:rtype: bool)";
+
+const char* ccPointCloudPy_convertNormalToDipDirSFs_doc= R"(
+Converts normals to two scalar fields: 'dip' and 'dip direction'.
+
+See `Strike and dip <https://en.wikipedia.org/wiki/Strike_and_dip>`_. Angles are in degrees.
+   
+:return: success
+:rtype: bool)";
+
+const char* ccPointCloudPy_convertNormalToRGB_doc= R"(
+Converts normals to color.
+
+:return: success
+:rtype: bool)";
+
+const char* ccPointCloudPy_convertRGBToGreyScale_doc= R"(
+Converts RGB to grey scale colors.
+
+:return: success
+:rtype: bool)";
+
+const char* ccPointCloudPy_colorsFromNPArray_copy_doc= R"(
+Set cloud color from a Numpy array (nbPoints,4).
+
+Each row is (r,g,b,alpha) of type uint8 (unsigned char).
+Color memory is reserved automatically in the cloud.
+
+:param ndarray array: a Numpy array (nbPoints,4).
+)";
 
 const char* ccPointCloudPy_coordsFromNPArray_copy_doc= R"(
 Set cloud coordinates from a Numpy array (nbPoints,3).
 
-Cloud memory is reserved /resized automatically)";
+Cloud memory is reserved /resized automatically
+
+:param ndarray array: a Numpy array (nbPoints,3).
+)";
 
 const char* ccPointCloudPy_crop2D_doc= R"(
 Crop the point cloud using a 2D polyline.
@@ -96,6 +172,18 @@ However current IN & OUT scalar fields will stay up-to-date
 (while their index may change).
 
 :param int index: index of scalar field to be deleted)";
+
+const char* ccPointCloudPy_enhanceRGBWithIntensitySF_doc= R"(
+Enhances the RGB colors with a scalar field (assuming it's intensities)
+
+:param int sfIdx: scalarField index
+:param bool,optional useCustomIntensityRange: whether to set a custom range for intensity, default False
+:param float,optional minI: min value for the custom range, default 0.
+:param float,optional maxI: max value for the custom range, default 1.
+
+:return: status
+:rtype: bool
+)";
 
 const char* ccPointCloudPy_exportCoordToSF_doc= R"(
 Export coordinates to ScalarFields.
@@ -212,10 +300,56 @@ Return the ScalarField name if index is valid, otherwise None.
 :rtype: str or None
 )";
 
+const char* ccPointCloudPy_hasColors_doc= R"(
+Return whether the cloud has Colors.
+
+:return: `True` or `False`
+:rtype: bool
+)";
+
+const char* ccPointCloudPy_hasNormals_doc= R"(
+Return whether the cloud has Normals.
+
+:return: `True` or `False`
+:rtype: bool
+)";
+
 const char* ccPointCloudPy_hasScalarFields_doc= R"(
 Return whether the cloud has ScalarFields.
 
 :return: `True` or `False`
+:rtype: bool
+)";
+
+const char* ccPointCloudPy_interpolateColorsFrom_doc= R"(
+Interpolate colors from another cloud (nearest neighbor only).
+
+:param ccGenericPointCloud other: source cloud with color
+:param int,optional octreeLevel: octreeLevel, default 0
+
+:return: success
+:rtype: bool
+)";
+
+const char* ccPointCloudPy_orientNormalsWithFM_doc= R"(
+Orient normals with Fast Marching method.
+
+See `Fast marching method <https://en.wikipedia.org/wiki/Fast_marching_method>`_.
+
+:param int,optional octreeLevel: octree level, default 6
+
+:return: success
+:rtype: bool
+)";
+
+const char* ccPointCloudPy_orientNormalsWithMST_doc= R"(
+Orient normals with Minimum Spanning Tree method.
+
+See `Minimum spanning tree <https://en.wikipedia.org/wiki/Minimum_spanning_tree>`_.
+
+:param int,optional octreeLevel: octree level, default 6
+
+:return: success
 :rtype: bool
 )";
 
@@ -278,6 +412,51 @@ Scale the cloud with separate factors along the 3 directions x,y,z and an option
 :param float z: scale z
 :param tuple,optional center: (xc, yc, zc), default (0,0,0))";
 
+const char* ccPointCloudPy_setColor_doc= R"(
+Set a unique color for the whole cloud (RGBA).
+Color array is automatically allocated if necessary.
+
+:param QColor color: a unique color, alpha is taken into account.
+
+:return: success
+:rtype: bool
+)";
+
+const char* ccPointCloudPy_setColorGradient_doc= R"(
+Assigns color to points proportionally to their 'height'.
+
+Height is defined with regard to to the specified dimension (heightDim).
+Color array is defined by a two colors (QColor).
+
+:param int heightDim: ramp dimension (0:X, 1:Y, 2:Z)
+:param QColor first: first color of the array
+:param QColor second: second color of the array
+
+:return: success
+:rtype: bool)";
+
+const char* ccPointCloudPy_setColorGradientBanded_doc= R"(
+Assigns color to points by 'banding'.
+Banding is performed along the specified dimension.
+Color array is automatically defined.
+
+:param int heightDim: banding dimension (0:X, 1:Y, 2:Z)
+:param double freq: banding frequency (size of the bands along the axis)
+
+:return: success
+:rtype: bool)";
+
+const char* ccPointCloudPy_setColorGradientDefault_doc= R"(
+Assigns color to points proportionally to their 'height'.
+
+Height is defined with regard to to the specified dimension (heightDim).
+Color array is defined by default.
+
+:param int heightDim: ramp dimension (0:X, 1:Y, 2:Z)
+
+:return: success
+:rtype: bool)";
+
 const char* ccPointCloudPy_setCurrentDisplayedScalarField_doc= R"(
 Sets the currently displayed scalar field.
 
@@ -306,17 +485,58 @@ Set the current 'out' ScalarField index. No validity check. Use -1 to set None.
 const char* ccPointCloudPy_shrinkToFit_doc= R"(
 Removes unused capacity)";
 
+const char* ccPointCloudPy_sfFromColor_doc= R"(
+Creates ScalarFields from color components.
+
+:param bool exportR: whether to create a scalarField from red component
+:param bool exportG: whether to create a scalarField from green component
+:param bool exportB: whether to create a scalarField from blue component
+:param bool exportAlpha: whether to create a scalarField from Alpha
+:param bool exportComposite: whether to create a scalarField from (r+g+b)/3.
+
+:return: success
+:rtype: bool
+)";
+
 const char* ccPointCloudPy_size_doc= R"(
 Return the number of points in the cloud.
 
 :return: number of points in the cloud
 :rtype: int)";
 
+const char* ccPointCloudPy_colorsToNpArray_doc= R"(
+Wrap the PointCloud colors into a numpy Array, without copy.
+
+Returns a numpy Array of shape (number of Points, 4) (r, g ,b, a).
+Data type np.uint8.
+Data is not copied, the numpy Array object does not own the data.
+
+**WARNING** No automatic action on the Python side on the variables referencing the C++ object in case of destruction!
+
+:return: numpy Array of shape (number of Points, 4) dtype uint8
+:rtype: ndarray
+)";
+
+const char* ccPointCloudPy_colorsToNpArrayCopy_doc= R"(
+Wrap the PointCloud colors into a numpy Array, with copy.
+
+Returns a numpy Array of shape (number of Points, 4) (r, g ,b, a).
+Data type np.uint8.
+Data is copied, the numpy Array object  owns its data.
+Ownership is transfered to Python:
+the numpy Array object and its data will be handled by the Python Garbage Collector
+
+:return: numpy Array of shape (number of Points, 4) dtype uint8
+:rtype: ndarray
+)";
+
 const char* ccPointCloudPy_toNpArray_doc= R"(
 Wrap the PointCloud coordinates into a numpy Array, without copy.
 
 Returns a numpy Array of shape (number of Points, 3).
 Data is not copied, the numpy Array object does not own the data.
+
+**WARNING** No automatic action on the Python side on the variables referencing the C++ object in case of destruction!
 
 :return: numpy Array of shape (number of Points, 3)
 :rtype: ndarray
@@ -338,5 +558,13 @@ const char* ccPointCloudPy_translate_doc= R"(
 translate the cloud of (x,y,z).
 
 :param tuple translation: tuple: (x,y,z))";
+
+const char* ccPointCloudPy_unallocateColors_doc= R"(
+Erases the cloud colors.
+)";
+
+const char* ccPointCloudPy_unallocateNorms_doc= R"(
+Erases the cloud normals.
+)";
 
 #endif /* CCPOINTCLOUDPY_DOCSTRINGS_HPP_ */

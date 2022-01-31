@@ -1,18 +1,21 @@
 //##########################################################################
 //#                                                                        #
-//#                                PYCC                                    #
+//#                              CloudComPy                                #
 //#                                                                        #
 //#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU Library General Public License as       #
-//#  published by the Free Software Foundation; version 2 or later of the  #
-//#  License.                                                              #
+//#  it under the terms of the GNU General Public License as published by  #
+//#  the Free Software Foundation; either version 3 of the License, or     #
+//#  any later version.                                                    #
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
 //#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 //#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 //#  GNU General Public License for more details.                          #
 //#                                                                        #
-//#          Copyright 2020 Paul RASCLE www.openfields.fr                  #
+//#  You should have received a copy of the GNU General Public License     #
+//#  along with this program. If not, see <https://www.gnu.org/licenses/>. #
+//#                                                                        #
+//#          Copyright 2020-2021 Paul RASCLE www.openfields.fr             #
 //#                                                                        #
 //##########################################################################
 
@@ -38,7 +41,19 @@
 #include <Neighbourhood.h>
 #include <ccRasterGrid.h>
 
+#include "optdefines.h"
+
 // --- for Python3 interface
+
+struct pyccPlugins
+{
+    static bool _isPluginDraco;
+    static bool isPluginDraco() { return _isPluginDraco; };
+    static bool _isPluginFbx;
+    static bool isPluginFbx() { return _isPluginFbx; };
+    static bool _isPluginM3C2;
+    static bool isPluginM3C2() { return _isPluginM3C2; };
+};
 
 enum CC_DIRECTION
 {
@@ -137,6 +152,10 @@ bool computeRoughness(double radius, std::vector<ccHObject*> clouds);
 
 bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds);
 
+#ifdef WRAP_PLUGIN_QM3C2
+ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFilename);
+#endif
+
 //! Filters out points whose scalar values falls into an interval(see ccPointCloud::filterBySFValue)
 /** Threshold values should be expressed relatively to the current displayed scalar field.
  \param minVal minimum value
@@ -187,6 +206,8 @@ bool computeNormals(std::vector<ccHObject*> selectedEntities,
     int mstNeighbors = 6,
     bool computePerVertexNormals = true);
 
+//! adapted from ccEntityAction:: invertNormals
+bool invertNormals(std::vector<ccHObject*> selectedEntities);
 
 //! Report info volume TODO: copied from Report info qCC/ccVolumeCalcTool.h
 struct ReportInfoVol

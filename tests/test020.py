@@ -2,19 +2,22 @@
 
 ##########################################################################
 #                                                                        #
-#                                PYCC                                    #
+#                              CloudComPy                                #
 #                                                                        #
 #  This program is free software; you can redistribute it and/or modify  #
-#  it under the terms of the GNU Library General Public License as       #
-#  published by the Free Software Foundation; version 2 or later of the  #
-#  License.                                                              #
+#  it under the terms of the GNU General Public License as published by  #
+#  the Free Software Foundation; either version 3 of the License, or     #
+#  any later version.                                                    #
 #                                                                        #
 #  This program is distributed in the hope that it will be useful,       #
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 #  GNU General Public License for more details.                          #
 #                                                                        #
-#          Copyright 2020 Paul RASCLE www.openfields.fr                  #
+#  You should have received a copy of the GNU General Public License     #
+#  along with this program. If not, see <https://www.gnu.org/licenses/>. #
+#                                                                        #
+#          Copyright 2020-2021 Paul RASCLE www.openfields.fr             #
 #                                                                        #
 ##########################################################################
 
@@ -52,6 +55,8 @@ cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.shp")) # OK
 cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.pn"))  # NOK cloudComPy.CC_FILE_ERROR.CC_FERR_BAD_ENTITY_TYPE
 cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.pv"))  # OK
 cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.bin")) # OK
+if cc.isPluginDraco():
+    cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.drc")) # OK
 
 cloudasc = cc.loadPointCloud(os.path.join(dataDir, "cloud.asc"))
 if cloudasc.size() != 10000:
@@ -100,6 +105,10 @@ if cloudpv.size() != 10000:
 cloudbin = cc.loadPointCloud(os.path.join(dataDir, "cloud.bin"))
 if cloudbin.size() != 10000:
     raise RuntimeError
+if cc.isPluginDraco():
+    clouddrc = cc.loadPointCloud(os.path.join(dataDir, "cloud.drc"))
+    if clouddrc.size() != 10000:
+        raise RuntimeError
 
 cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.ma"))  # NOK cloudComPy.CC_FILE_ERROR.CC_FERR_BAD_ENTITY_TYPE
 cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.dxf")) # OK  FileIO::setWriterInfo has not been called
@@ -108,8 +117,10 @@ cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.stl")) # OK
 cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.vtk")) # OK
 cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.obj")) # OK  FileIO::setWriterInfo has not been called
 cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.ply")) # OK  FileIO::setWriterInfo has not been called
-cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.bin")) # NOK cloudComPy.CC_FILE_ERROR.CC_FERR_BROKEN_DEPENDENCY_ERROR
-cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.fbx")) # OK
+mesh.addChild(cloud)
+cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.bin")) # OK with cloud as child
+if cc.isPluginFbx():
+    cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.fbx")) # OK
 
 meshdxf = cc.loadMesh(os.path.join(dataDir, "mesh.dxf"))
 if meshdxf.size() != meshSize:
@@ -135,9 +146,14 @@ meshply = cc.loadMesh(os.path.join(dataDir, "mesh.ply"))
 if meshply.size() != meshSize:
     raise RuntimeError
 
-meshfbx = cc.loadMesh(os.path.join(dataDir, "mesh.fbx"))
-if meshfbx.size() != meshSize:
+meshbin = cc.loadMesh(os.path.join(dataDir, "mesh.bin"))
+if meshbin.size() != meshSize:
     raise RuntimeError
+
+if cc.isPluginFbx():
+    meshfbx = cc.loadMesh(os.path.join(dataDir, "mesh.fbx"))
+    if meshfbx.size() != meshSize:
+        raise RuntimeError
 
 cc.SaveEntities([cloud,mesh], os.path.join(dataDir, "meshCloud.bin"))
 res = cc.importFile(os.path.join(dataDir, "meshCloud.bin"))

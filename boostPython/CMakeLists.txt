@@ -1,19 +1,21 @@
-
 ##########################################################################
 #                                                                        #
-#                               BoostPython                              #
+#                              CloudComPy                                #
 #                                                                        #
 #  This program is free software; you can redistribute it and/or modify  #
-#  it under the terms of the GNU Library General Public License as       #
-#  published by the Free Software Foundation; version 2 or later of the  #
-#  License.                                                              #
+#  it under the terms of the GNU General Public License as published by  #
+#  the Free Software Foundation; either version 3 of the License, or     #
+#  any later version.                                                    #
 #                                                                        #
 #  This program is distributed in the hope that it will be useful,       #
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 #  GNU General Public License for more details.                          #
 #                                                                        #
-#          Copyright 2021 Paul RASCLE www.openfields.fr                  #
+#  You should have received a copy of the GNU General Public License     #
+#  along with this program. If not, see <https://www.gnu.org/licenses/>. #
+#                                                                        #
+#          Copyright 2020-2021 Paul RASCLE www.openfields.fr             #
 #                                                                        #
 ##########################################################################
 
@@ -57,6 +59,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     target_sources( ${PROJECT_NAME}
     PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/cloudComPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/colorsPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ScalarFieldPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ccGenericCloudPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ccOctreePy.cpp
@@ -142,9 +145,39 @@ if(WIN32)
                       ${Qt5_DIR}/../../../bin/Qt5OpenGL.dll
                       ${Qt5_DIR}/../../../bin/Qt5PrintSupport.dll
                       ${Qt5_DIR}/../../../bin/Qt5Svg.dll
-                      ${Qt5_DIR}/../../../bin/Qt5Widgets.dll)
+                      ${Qt5_DIR}/../../../bin/Qt5Widgets.dll
+                      ${Qt5_DIR}/../../../bin/Qt5WebSockets.dll
+                      ${Qt5_DIR}/../../../bin/Qt5Network.dll)
     message( STATUS "QT_DLL_FILES ${QT_DLL_FILES}" )
-	install( FILES ${QT_DLL_FILES} DESTINATION CloudCompare ) 
+	install( FILES ${QT_DLL_FILES} DESTINATION CloudCompare )
+
+    if ( PLUGIN_IO_QRDB )
+        message( STATUS "rdblib.dll ${CMAKE_CURRENT_BINARY_DIR}/../_deps/rdb_sdk-src/library/rdblib.dll")
+        install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../_deps/rdb_sdk-src/library/rdblib.dll DESTINATION CloudCompare )
+    endif()
+
+    if ( PLUGIN_IO_QSTEP )
+        set( OCCT_DLL_FILES
+             ${OPENCASCADE_DLL_DIR}/TKSTEP.dll
+             ${OPENCASCADE_DLL_DIR}/TKSTEPAttr.dll
+             ${OPENCASCADE_DLL_DIR}/TKSTEP209.dll
+             ${OPENCASCADE_DLL_DIR}/TKSTEPBase.dll
+             ${OPENCASCADE_DLL_DIR}/TKShHealing.dll
+             ${OPENCASCADE_DLL_DIR}/TKTopAlgo.dll
+             ${OPENCASCADE_DLL_DIR}/TKGeomAlgo.dll
+             ${OPENCASCADE_DLL_DIR}/TKBRep.dll
+             ${OPENCASCADE_DLL_DIR}/TKGeomBase.dll
+             ${OPENCASCADE_DLL_DIR}/TKG3D.dll
+             ${OPENCASCADE_DLL_DIR}/TKG2D.dll
+             ${OPENCASCADE_DLL_DIR}/TKMath.dll
+             ${OPENCASCADE_DLL_DIR}/TKernel.dll
+             ${OPENCASCADE_DLL_DIR}/TKXSBase.dll
+             ${OPENCASCADE_DLL_DIR}/TKMesh.dll
+             ${OPENCASCADE_DLL_DIR}/../../../../tbb_2017.0.100/bin/intel64/vc14/tbb.dll
+           )
+        message( STATUS "OCCT_DLL_FILES ${OCCT_DLL_FILES}")
+	    install( FILES ${OCCT_DLL_FILES} DESTINATION CloudCompare )
+    endif()
 		
 	if (${OPTION_BUILD_CCVIEWER})
 	  install( FILES ${QT_DLL_FILES} DESTINATION ccViewer ) 
@@ -164,6 +197,7 @@ set(RSTFILES
     ccPolyline.rst
     ccPrimitives.rst
     cloudComPy.rst
+    colors.rst
     DistanceComputationTools.rst
     index.rst
     introduction.rst

@@ -1,18 +1,21 @@
 //##########################################################################
 //#                                                                        #
-//#                                boost.Python                            #
+//#                              CloudComPy                                #
 //#                                                                        #
 //#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU Library General Public License as       #
-//#  published by the Free Software Foundation; version 2 or later of the  #
-//#  License.                                                              #
+//#  it under the terms of the GNU General Public License as published by  #
+//#  the Free Software Foundation; either version 3 of the License, or     #
+//#  any later version.                                                    #
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
 //#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 //#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 //#  GNU General Public License for more details.                          #
 //#                                                                        #
-//#          Copyright 2021 Paul RASCLE www.openfields.fr                  #
+//#  You should have received a copy of the GNU General Public License     #
+//#  along with this program. If not, see <https://www.gnu.org/licenses/>. #
+//#                                                                        #
+//#          Copyright 2020-2021 Paul RASCLE www.openfields.fr             #
 //#                                                                        #
 //##########################################################################
 
@@ -21,6 +24,7 @@
 
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include "converters.hpp"
+#include "colorsPy.hpp"
 #include "ScalarFieldPy.hpp"
 #include "ccGenericCloudPy.hpp"
 #include "ccOctreePy.hpp"
@@ -48,6 +52,8 @@
 
 #include <QString>
 #include <vector>
+
+#include "optdefines.h"
 
 #include "pyccTrace.h"
 #include "cloudComPy_DocStrings.hpp"
@@ -268,6 +274,7 @@ BOOST_PYTHON_MODULE(cloudComPy)
     bnp::initialize();
     initializeConverters();
 
+    export_colors();
     export_ScalarField();
     export_ccGenericCloud();
     export_ccPolyline();
@@ -398,6 +405,12 @@ BOOST_PYTHON_MODULE(cloudComPy)
 
     def("initCC", &initCC_py, cloudComPy_initCC_doc);
 
+    def("isPluginDraco", &pyccPlugins::isPluginDraco, cloudComPy_isPluginDraco_doc);
+
+    def("isPluginFbx", &pyccPlugins::isPluginFbx, cloudComPy_isPluginFbx_doc);
+
+    def("isPluginM3C2", &pyccPlugins::isPluginM3C2, cloudComPy_isPluginM3C2_doc);
+
     def("computeCurvature", computeCurvature, cloudComPy_computeCurvature_doc);
 
     def("computeFeature", computeFeature, cloudComPy_computeFeature_doc);
@@ -409,6 +422,10 @@ BOOST_PYTHON_MODULE(cloudComPy)
     def("computeRoughness", computeRoughness, cloudComPy_computeRoughness_doc);
 
     def("computeMomentOrder1", computeMomentOrder1, cloudComPy_computeMomentOrder1_doc);
+
+#ifdef WRAP_PLUGIN_QM3C2
+    def("computeM3C2", computeM3C2, return_value_policy<reference_existing_object>(), cloudComPy_computeM3C2_doc);
+#endif
 
     def("filterBySFValue", filterBySFValue, return_value_policy<reference_existing_object>(), cloudComPy_filterBySFValue_doc);
 
@@ -444,6 +461,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
 		;
 
     def("ComputeVolume25D", ComputeVolume25D, cloudComPy_ComputeVolume25D_doc);
+
+    def("invertNormals", invertNormals, cloudComPy_invertNormals_doc);
 
     def("RasterizeToCloud", RasterizeToCloud,
     		RasterizeToCloud_overloads(cloudComPy_RasterizeToCloud_doc)[return_value_policy<reference_existing_object>()]);

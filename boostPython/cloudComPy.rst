@@ -9,6 +9,7 @@ cloudComPy module, functions
 .. autofunction:: computeCurvature
 .. autofunction:: computeFeature
 .. autofunction:: computeLocalDensity
+.. autofunction:: computeM3C2
 .. autofunction:: computeMomentOrder1
 .. autofunction:: computeNormals
 .. autofunction:: computeRoughness
@@ -20,6 +21,10 @@ cloudComPy module, functions
 .. autofunction:: ICP
 .. autofunction:: importFile
 .. autofunction:: initCC
+.. autofunction:: invertNormals
+.. autofunction:: isPluginDraco
+.. autofunction:: isPluginFbx
+.. autofunction:: isPluginM3C2
 .. autofunction:: loadMesh
 .. autofunction:: loadPointCloud
 .. autofunction:: loadPolyline

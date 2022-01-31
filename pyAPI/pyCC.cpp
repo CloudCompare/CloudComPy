@@ -1,18 +1,21 @@
 //##########################################################################
 //#                                                                        #
-//#                                PYCC                                    #
+//#                              CloudComPy                                #
 //#                                                                        #
 //#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU Library General Public License as       #
-//#  published by the Free Software Foundation; version 2 or later of the  #
-//#  License.                                                              #
+//#  it under the terms of the GNU General Public License as published by  #
+//#  the Free Software Foundation; either version 3 of the License, or     #
+//#  any later version.                                                    #
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
 //#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 //#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 //#  GNU General Public License for more details.                          #
 //#                                                                        #
-//#          Copyright 2020 Paul RASCLE www.openfields.fr                  #
+//#  You should have received a copy of the GNU General Public License     #
+//#  along with this program. If not, see <https://www.gnu.org/licenses/>. #
+//#                                                                        #
+//#          Copyright 2020-2021 Paul RASCLE www.openfields.fr             #
 //#                                                                        #
 //##########################################################################
 
@@ -54,6 +57,7 @@
 //system
 #include <unordered_set>
 #include <cmath>
+#include <string.h>
 
 //Qt
 #include <QApplication>
@@ -67,12 +71,35 @@
 #include <FBXFilter.h>
 #endif
 
+#ifdef WRAP_PLUGIN_QM3C2
+#include "qM3C2Process.h"
+#include "qM3C2Dialog.h"
+#endif
+
 #ifdef CC_GDAL_SUPPORT
 //GDAL
 #include <cpl_string.h>
 #include <gdal.h>
 #include <gdal_priv.h>
 #include <ogr_api.h>
+#endif
+
+#ifdef PLUGIN_IO_QDRACO
+bool pyccPlugins::_isPluginDraco = true;
+#else
+bool pyccPlugins::_isPluginDraco = false;
+#endif
+
+#ifdef PLUGIN_IO_QFBX
+bool pyccPlugins::_isPluginFbx = true;
+#else
+bool pyccPlugins::_isPluginFbx = false;
+#endif
+
+#ifdef WRAP_PLUGIN_QM3C2
+bool pyccPlugins::_isPluginM3C2 = true;
+#else
+bool pyccPlugins::_isPluginM3C2 = false;
 #endif
 
 // --- internal struct
@@ -86,8 +113,8 @@ struct CLLoadParameters: public FileIOFilter::LoadParameters
         shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG;
         alwaysDisplayLoadDialog = false;
         autoComputeNormals = false;
-        coordinatesShiftEnabled = &m_coordinatesShiftEnabled;
-        coordinatesShift = &m_coordinatesShift;
+        _coordinatesShiftEnabled = &m_coordinatesShiftEnabled;
+        _coordinatesShift = &m_coordinatesShift;
     }
 
     bool m_coordinatesShiftEnabled;
@@ -624,6 +651,36 @@ bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds)
 	return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::MomentOrder1, 0, radius, clouds);
 }
 
+#ifdef WRAP_PLUGIN_QM3C2
+ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFilename)
+{
+    if (clouds.size() <2)
+    {
+        CCTRACE("minimum two clouds required for M3C2 computation");
+        return nullptr;
+    }
+    ccPointCloud* cloud1 = ccHObjectCaster::ToPointCloud(clouds[0]);
+    ccPointCloud* cloud2 = ccHObjectCaster::ToPointCloud(clouds[1]);
+    ccPointCloud* corePointsCloud = (clouds.size() > 2 ? ccHObjectCaster::ToPointCloud(clouds[2]) : nullptr);
+
+    qM3C2Dialog dlg(cloud1, cloud2, nullptr);
+    if (!dlg.loadParamsFromFile(paramFilename))
+    {
+        return nullptr;
+    }
+    dlg.setCorePointsCloud(corePointsCloud);
+
+    QString errorMessage;
+    ccPointCloud* outputCloud = nullptr; //only necessary for the command line version in fact
+    if (!qM3C2Process::Compute(dlg, errorMessage, outputCloud, false))
+    {
+        CCTRACE(errorMessage.toStdString());
+        return nullptr;
+    }
+    return outputCloud;
+}
+#endif
+
 ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
 {
     CCTRACE("filterBySFValue min: " << minVal << " max: " << maxVal << " cloudName: " << cloud->getName().toStdString());
@@ -809,7 +866,7 @@ bool pyCC_ComputeGeomCharacteristic(
             }
 
             CCCoreLib::GeometricalAnalysisTools::ErrorCode result = CCCoreLib::GeometricalAnalysisTools::ComputeCharactersitic(
-                    c, subOption, cloud, radius, nullptr, octree.data());
+                    c, subOption, cloud, radius, nullptr, nullptr, octree.data());
 
             if (result == CCCoreLib::GeometricalAnalysisTools::NoError)
             {
@@ -1463,6 +1520,27 @@ bool computeNormals(std::vector<ccHObject*> selectedEntities,
     return true;
 }
 
+bool invertNormals(std::vector<ccHObject*> selectedEntities)
+{
+    for (ccHObject* ent : selectedEntities)
+    {
+        // is it a mesh?
+        ccMesh* mesh = ccHObjectCaster::ToMesh(ent);
+        if (mesh && mesh->hasNormals())
+        {
+            mesh->invertNormals();
+            continue;
+        }
+
+        // is it a cloud?
+        ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(ent);
+        if (cloud && cloud->hasNormals())
+        {
+            cloud->invertNormals();
+        }
+    }
+    return true;
+}
 
 //! TODO: Copied/adpated from qCC/ccVolumeCalcTool::ComputeVolume
 bool ComputeVolume_(    ccRasterGrid& grid,
