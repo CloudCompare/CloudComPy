@@ -47,6 +47,11 @@ radius = cc.GetPointCloudRadius([cloud])
 print("radius: %s" % radius)
 if not math.isclose(radius, 0.0293, rel_tol=1e-02):
     raise RuntimeError
+
+radius = cc.GetPointCloudRadius(clouds=[cloud], nodes=6)
+if not math.isclose(radius, 0.0207, rel_tol=1e-02):
+    raise RuntimeError
+
 radius = 0.03
 
 res = cc.computeCurvature(cc.CurvatureType.GAUSSIAN_CURV, radius, [cloud])

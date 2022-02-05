@@ -382,16 +382,19 @@ BOOST_PYTHON_MODULE(cloudComPy)
 		;
 
     def("importFile", importFilePy,
-        importFilePy_overloads(cloudComPy_importFile_doc));
+        importFilePy_overloads((arg("filename"), arg("mode")=AUTO, arg("x")=0, arg("y")=0, arg("z")=0),
+                               cloudComPy_importFile_doc));
 
     def("loadPointCloud", loadPointCloudPy,
-        loadPointCloudPy_overloads(cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
+        loadPointCloudPy_overloads((arg("filename"), arg("mode")=AUTO, arg("skip")=0, arg("x")=0, arg("y")=0, arg("z")=0),
+                cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
 
     def("loadMesh", loadMeshPy,
-        loadMeshPy_overloads(cloudComPy_loadMesh_doc)[return_value_policy<reference_existing_object>()]);
+        loadMeshPy_overloads((arg("filename"), arg("mode")=AUTO, arg("skip")=0, arg("x")=0, arg("y")=0, arg("z")=0),
+                cloudComPy_loadMesh_doc)[return_value_policy<reference_existing_object>()]);
 
     def("loadPolyline", loadPolyline,
-        loadPolyline_overloads(args("mode", "skip", "x", "y", "z", "filename"),
+        loadPolyline_overloads((arg("filename"), arg("mode")=AUTO, arg("skip")=0, arg("x")=0, arg("y")=0, arg("z")=0),
                                cloudComPy_loadPolyline_doc)
         [return_value_policy<reference_existing_object>()]);
 
@@ -429,7 +432,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
 
     def("filterBySFValue", filterBySFValue, return_value_policy<reference_existing_object>(), cloudComPy_filterBySFValue_doc);
 
-    def("GetPointCloudRadius", GetPointCloudRadius, GetPointCloudRadius_overloads(args("knn", "clouds"), cloudComPy_GetPointCloudRadius_doc));
+    def("GetPointCloudRadius", GetPointCloudRadius,
+        GetPointCloudRadius_overloads((arg("clouds"), arg("nodes")=12), cloudComPy_GetPointCloudRadius_doc));
 
     def("getScalarType", getScalarType, cloudComPy_getScalarType_doc);
 
@@ -445,9 +449,21 @@ BOOST_PYTHON_MODULE(cloudComPy)
                       cloudComPy_ICPres_doc)
     ;
 
-    def("ICP", ICP_py, ICP_py_overloads(cloudComPy_ICP_doc));
+    def("ICP", ICP_py, ICP_py_overloads(
+            (arg("data"), arg("model"), arg("minRMSDecrease"), arg("maxIterationCount"), arg("randomSamplingLimit"),
+             arg("removeFarthestPoints"), arg("method"), arg("adjustScale"), arg("finalOverlapRatio")=1.0,
+             arg("useDataSFAsWeights")=false, arg("useModelSFAsWeights")=false,
+             arg("transformationFilters")=CCCoreLib::RegistrationTools::SKIP_NONE,
+             arg("maxThreadCount")=0),
+            cloudComPy_ICP_doc));
 
-    def("computeNormals", computeNormals, computeNormals_overloads(cloudComPy_computeNormals_doc));
+    def("computeNormals", computeNormals, computeNormals_overloads(
+        (arg("selectedEntities"), arg("model")=CCCoreLib::LS,
+         arg("useScanGridsForComputation")=true, arg("defaultRadius")=0.0, arg("minGridAngle_deg")=1.0,
+         arg("orientNormals")=true, arg("useScanGridsForOrientation")=true,
+         arg("useSensorsForOrientation")=true, arg("preferredOrientation")=ccNormalVectors::UNDEFINED,
+         arg("orientNormalsMST")=true, arg("mstNeighbors")=6, arg("computePerVertexNormals")=true),
+         cloudComPy_computeNormals_doc));
 
     class_<ReportInfoVol>("ReportInfoVol", cloudComPy_ReportInfoVol_doc)
 		.def_readonly("volume", &ReportInfoVol::volume)

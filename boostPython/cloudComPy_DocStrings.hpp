@@ -64,7 +64,13 @@ Delete an entity and its children (mesh, cloud...)
 const char* cloudComPy_importFile_doc= R"(
 Load any kind of entities (cloud or mesh) from a file.
 
-:param filename: file Name
+**WARNING** 
+Shift parameters are not always taken into account, depending on the type of file,
+shift values, following the internal rules of CloudCompare: when using the CloudCompare GUI,
+shift dialog at import is not always available. When the shift dialog is not proposed
+in the GUI, shift parameters are likely not taken into account in CloudCompare.
+
+:param str filename: file Name
 :param CC_SHIFT_MODE,optional mode: default AUTO, value from AUTO, XYZ, FIRST_GLOBAL_SHIFT, NO_GLOBAL_SHIFT
 :param float,optional x: default 0
 :param float,optional y: default 0
@@ -114,7 +120,10 @@ Applies ICP registration on two entities.
    - SKIP_TZ             = 32
    - SKIP_TRANSLATION    = 56
 
-:param int,optional maxThreadCount: Maximum number of threads to use (default 0 = max))";
+:param int,optional maxThreadCount: Maximum number of threads to use (default 0 = max)
+
+:return: ICPres structure :py:class:`ICPres`
+)";
 
 const char* cloudComPy_initCC_doc= R"(
 Should be done once before using plugins!)";
@@ -140,24 +149,24 @@ returns True if CloudComPy is built with the M3C2 plugin.
 const char* cloudComPy_loadPointCloud_doc= R"(
 Load a 3D cloud from a file.
 
-:param filename:
-:type filename: str
-:param shiftMode: shift mode from `CC_SHIFT_MODE` enum,  optional, default `AUTO`.
+:param str filename: file name
+:param CC_SHIFT_MODE,optional shiftMode: shift mode from `CC_SHIFT_MODE` enum, default `AUTO`.
+
+**WARNING** 
+Shift parameters are not always taken into account, depending on the type of file,
+shift values, following the internal rules of CloudCompare: when using the CloudCompare GUI,
+shift dialog at import is not always available. When the shift dialog is not proposed
+in the GUI, shift parameters are likely not taken into account in CloudCompare.
 
   - `CC_SHIFT_MODE.AUTO`: automatic shift of coordinates
   - `CC_SHIFT_MODE.XYZ`:  coordinates shift given by x, y, z parameters
   - `CC_SHIFT_MODE.FIRST_GLOBAL_SHIFT`: use the first encountered global shift value (if any)
   - `CC_SHIFT_MODE.NO_GLOBAL_SHIFT`: no shift at all 
-  
-:type shiftMode: CC_SHIFT_MODE
-:param skip: parameter not used yet! default 0
-:type skip: int, optional
-:param x: shift value for coordinates (mode XYZ),  default 0
-:type x: float, optional
-:param y: shift value for coordinates (mode XYZ),  default 0
-:type y: float, optional
-:param z: shift value for coordinates (mode XYZ),  default 0
-:type z: float, optional
+
+:param int,optional skip: parameter not used yet! default 0
+:param float,optional x: shift value for coordinates (mode XYZ),  default 0
+:param float,optional y: shift value for coordinates (mode XYZ),  default 0
+:param float,optional z: shift value for coordinates (mode XYZ),  default 0
 
 :return: a `ccPointCloud` object. Usage: see ccPointCloud doc.
 :rtype: ccPointCloud)";
@@ -165,24 +174,24 @@ Load a 3D cloud from a file.
 const char* cloudComPy_loadMesh_doc= R"(
 Load a Mesh from a file.
 
-:param filename:
-:type filename: str
-:param shiftMode: shift mode from `CC_SHIFT_MODE` enum,  optional, default `AUTO`.
+**WARNING** 
+Shift parameters are not always taken into account, depending on the type of file,
+shift values, following the internal rules of CloudCompare: when using the CloudCompare GUI,
+shift dialog at import is not always available. When the shift dialog is not proposed
+in the GUI, shift parameters are likely not taken into account in CloudCompare.
+  
+:param str filename: file name
+:param CC_SHIFT_MODE,optional shiftMode: shift mode from `CC_SHIFT_MODE` enum, default `AUTO`.
 
   - `CC_SHIFT_MODE.AUTO`: automatic shift of coordinates
   - `CC_SHIFT_MODE.XYZ`:  coordinates shift given by x, y, z parameters
   - `CC_SHIFT_MODE.FIRST_GLOBAL_SHIFT`: use the first encountered global shift value (if any)
   - `CC_SHIFT_MODE.NO_GLOBAL_SHIFT`: no shift at all 
   
-:type shiftMode: CC_SHIFT_MODE
-:param skip: parameter not used yet! default 0
-:type skip: int, optional
-:param x: shift value for coordinates (mode XYZ),  default 0
-:type x: float, optional
-:param y: shift value for coordinates (mode XYZ),  default 0
-:type y: float, optional
-:param z: shift value for coordinates (mode XYZ),  default 0
-:type z: float, optional
+:param int,optional skip: parameter not used yet! default 0
+:param float,optional x: shift value for coordinates (mode XYZ),  default 0
+:param float,optional y: shift value for coordinates (mode XYZ),  default 0
+:param float,optional z: shift value for coordinates (mode XYZ),  default 0
 
 :return: a `ccMesh` object. Usage: see ccMesh doc.
 :rtype: ccMesh)";
@@ -191,7 +200,7 @@ const char* cloudComPy_loadPolyline_doc= R"(
 Load a polyline from a file.
 
 :param str filename: The polyline file.
-:param CC_SHIFT_MODE,optional shift mode: from (AUTO, XYZ),  optional, default AUTO.
+:param CC_SHIFT_MODE,optional mode: from (AUTO, XYZ),  optional, default AUTO.
 
   - AUTO: automatic shift of coordinates
   - XYZ:  coordinates shift given by x, y, z parameters
@@ -373,9 +382,8 @@ Keep the points whose ScalarField value is between the min and max parameters.
 const char* cloudComPy_GetPointCloudRadius_doc= R"(
 Compute an estimate radius to use in computeCurvature.
 
-:param clouds: list of clouds
-:type clouds: list of :py:class:`ccHObject`
-:param int nodes: number of nodes wanted within the radius
+:param list clouds: list of clouds(list of :py:class:`ccHObject`)
+:param int,optional nodes: number of nodes wanted within the radius, default 12
 
 :return: estimated radius
 :rtype: float )";
