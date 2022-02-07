@@ -781,7 +781,7 @@ void initializeConverters()
 {
     using namespace boost::python;
 #ifdef _PYTHONAPI_DEBUG_
-    ccTrace::settrace();
+    ccLogTrace::settrace();
 #endif
     // register the to-python converter
     CCTRACE("initializeConverters");

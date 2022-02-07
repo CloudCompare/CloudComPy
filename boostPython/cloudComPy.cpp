@@ -61,34 +61,6 @@
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
 
-#ifdef _PYTHONAPI_DEBUG_
-bool ccTrace::_isTrace = true;
-void ccTrace::settrace()
-{
-    const char * cstr = std::getenv("_CCTRACE_");
-    std::string var="unset";
-    if (cstr != nullptr)
-    {
-        var = cstr;
-        CCTRACE("CloudComPy C++ debug trace environment variable (_CCTRACE_) is set to: " << var << ". Activations values are: ON \"ON\" ")
-    }
-    else
-    {
-        CCTRACE("CloudComPy C++ debug trace environment variable (_CCTRACE_) is unset, activations values are: ON \"ON\" ")
-    }
-    if ((var == "ON") || (var == "\"ON\""))
-    {
-        std::cerr << std::flush << __FILE__ << " [" << __LINE__ << "] : " << "trace ON" << std::endl << std::flush;
-        ccTrace::_isTrace = true;
-    }
-    else
-    {
-        std::cerr << std::flush << __FILE__ << " [" << __LINE__ << "] : " << "trace OFF" << std::endl << std::flush;
-        ccTrace::_isTrace = false;
-    }
-}
-#endif
-
 char const* greet()
 {
    return "hello, world, this is CloudCompare Python Interface: 'CloudComPy'";

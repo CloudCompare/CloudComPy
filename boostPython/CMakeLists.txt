@@ -81,7 +81,7 @@ target_include_directories( ${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../pyAPI
     ${CCCoreLib_SOURCE_DIR}/include
-    ${QCC_DB_LIB_SOURCE_DIR}/include
+    ${QCC_DB_LIB_SOURCE_DIR}
     )
 
 target_link_libraries( ${PROJECT_NAME}
