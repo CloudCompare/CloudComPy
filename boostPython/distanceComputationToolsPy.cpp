@@ -174,15 +174,23 @@ void export_distanceComputationTools()
                                                                     distanceComputationToolsPy_DistanceComputationTools_doc, no_init)
         .def("computeCloud2CloudDistances",
              &CCCoreLib::DistanceComputationTools::computeCloud2CloudDistances,
-             computeCloud2CloudDistances_overloads(distanceComputationToolsPy_computeCloud2CloudDistances_doc))
+             computeCloud2CloudDistances_overloads(
+             (arg("comparedCloud"), arg("referenceCloud"), arg("params"),
+              arg("progressCb")=0, arg("compOctree")=0, arg("refOctree")=0),
+             distanceComputationToolsPy_computeCloud2CloudDistances_doc))
             .staticmethod("computeCloud2CloudDistances")
         .def("computeCloud2MeshDistances",
              &CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances,
-             computeCloud2MeshDistances_overloads(distanceComputationToolsPy_computeCloud2MeshDistances_doc))
+             computeCloud2MeshDistances_overloads(
+             (arg("pointCloud"), arg("mesh"), arg("params"), arg("progressCb")=0, arg("cloudOctree")=0),
+             distanceComputationToolsPy_computeCloud2MeshDistances_doc))
             .staticmethod("computeCloud2MeshDistances")
         .def("computeApproxCloud2CloudDistance",
              &CCCoreLib::DistanceComputationTools::computeApproxCloud2CloudDistance,
-             computeApproxCloud2CloudDistance_overloads(distanceComputationToolsPy_computeApproxCloud2CloudDistance_doc))
+             computeApproxCloud2CloudDistance_overloads(
+             (arg("comparedCloud"), arg("referenceCloud"), arg("octreeLevel"),
+              arg("maxSearchDist")=0, arg("progressCb")=0, arg("compOctree")=0, arg("refOctree")=0),
+             distanceComputationToolsPy_computeApproxCloud2CloudDistance_doc))
             .staticmethod("computeApproxCloud2CloudDistance")
         ;
     // TODO: methods to add

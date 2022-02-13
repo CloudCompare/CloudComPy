@@ -64,14 +64,14 @@ if res != 0:
 randomCloud.setName("randomCloud")
 
 
-resOctrCloud = cc.CloudSamplingTools.resampleCloudWithOctree(randomCloud, 5000,
-                                         cc.RESAMPLING_CELL_METHOD.CELL_CENTER)
+resOctrCloud = cc.CloudSamplingTools.resampleCloudWithOctree(randomCloud, newNumberOfPoints=5000,
+                                         resamplingMethod=cc.RESAMPLING_CELL_METHOD.CELL_CENTER)
 if resOctrCloud.size() < 1900 or resOctrCloud.size() > 8000:
     raise RuntimeError
 resOctrCloud.setName("resOctrCloud")
 
-resOctrAlCloud  = cc.CloudSamplingTools.resampleCloudWithOctreeAtLevel(randomCloud, 5,
-                                         cc.RESAMPLING_CELL_METHOD.CELL_CENTER)
+resOctrAlCloud  = cc.CloudSamplingTools.resampleCloudWithOctreeAtLevel(randomCloud, octreeLevel=5,
+                                         resamplingMethod=cc.RESAMPLING_CELL_METHOD.CELL_CENTER)
 if resOctrAlCloud.size() < 2050 or resOctrAlCloud.size() > 2100:
     raise RuntimeError
 resOctrAlCloud.setName("resOctrAlCloud")
@@ -114,7 +114,7 @@ cloud.setCurrentScalarField(dupSFindex)
 ret = cc.GeometricalAnalysisTools.FlagDuplicatePoints(cloud) # identify duplicated points
 if ret != cc.ErrorCode.NoError:
     raise RuntimeError
-noDuplicateCloud = cloud.filterPointsByScalarValue(0., 0., False) # remove duplicated points
+noDuplicateCloud = cloud.filterPointsByScalarValue(0., 0., outside=False) # remove duplicated points
 if noDuplicateCloud.size() != 1000000:
     raise RuntimeError
 

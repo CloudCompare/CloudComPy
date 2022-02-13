@@ -423,7 +423,9 @@ void export_ccOctree()
 
     class_<CCCoreLib::DgmOctree>("DgmOctree", no_init)
         .def("computeCellCenter", &DgmOctree_computeCellCenter_py,
-             DgmOctree_computeCellCenter_py_overloads(DgmOctree_computeCellCenter_py_doc))
+             DgmOctree_computeCellCenter_py_overloads(
+             (arg("self"), arg("code"), arg("level"), arg("isCodeTruncated")=false),
+             DgmOctree_computeCellCenter_py_doc))
         .def("computeCellCenter", &DgmOctree_computeCellCenter2_py,DgmOctree_computeCellCenter2_py_doc)
         .def("findBestLevelForAGivenCellNumber",
              &CCCoreLib::DgmOctree::findBestLevelForAGivenCellNumber,
@@ -439,15 +441,22 @@ void export_ccOctree()
         .def("findNeighborsInASphereStartingFromCell",
              &CCCoreLib::DgmOctree::findNeighborsInASphereStartingFromCell, DgmOctree_findNeighborsInASphereStartingFromCell_doc)
         .def("findPointNeighbourhood", &DgmOctree_findPointNeighbourhood_py,
-             DgmOctree_findPointNeighbourhood_py_overloads(DgmOctree_findPointNeighbourhood_doc))
+             DgmOctree_findPointNeighbourhood_py_overloads(
+             (arg("self"), arg("_queryPoint"), arg("Yk"), arg("maxNumberOfNeighbors"), arg("level"), arg("maxSearchDist")=0),
+             DgmOctree_findPointNeighbourhood_doc))
         .def("findTheNearestNeighborStartingFromCell",
              &CCCoreLib::DgmOctree::findTheNearestNeighborStartingFromCell, DgmOctree_findTheNearestNeighborStartingFromCell_doc)
         .def("GenerateTruncatedCellCode", &DgmOctree_GenerateTruncatedCellCode_py, DgmOctree_GenerateTruncatedCellCode_doc)
         .def("getBoundingBox", &DgmOctree_getBoundingBox_py, DgmOctree_getBoundingBox_doc)
         .def("getCellCode", &DgmOctree_getCellCode_py, DgmOctree_getCellCode_doc)
-        .def("getCellCodes", &DgmOctree_getCellCodes_py, DgmOctree_getCellCodes_py_overloads(DgmOctree_getCellCodes_doc))
+        .def("getCellCodes", &DgmOctree_getCellCodes_py,
+              DgmOctree_getCellCodes_py_overloads(
+              (arg("self"), arg("level"), arg("truncatedCodes")=false),
+              DgmOctree_getCellCodes_doc))
         .def("getCellCodesAndIndexes", &DgmOctree_getCellCodesAndIndexes_py,
-             DgmOctree_getCellCodesAndIndexes_py_overloads(DgmOctree_getCellCodesAndIndexes_doc))
+             DgmOctree_getCellCodesAndIndexes_py_overloads(
+             (arg("self"), arg("level"), arg("truncatedCodes")=false),
+             DgmOctree_getCellCodesAndIndexes_doc))
         .def("getCellDistanceFromBorders", &DgmOctree_getCellDistanceFromBorders_py, DgmOctree_getCellDistanceFromBorders_doc)
         .def("getCellDistanceFromBorders", &DgmOctree_getCellDistanceFromBordersN_py, DgmOctree_getCellDistanceFromBordersN_doc)
         .def("getCellIndexes", &DgmOctree_getCellIndexes_py, DgmOctree_getCellIndexes_doc)
@@ -465,11 +474,17 @@ void export_ccOctree()
              &DgmOctree_getPointsInBoxNeighbourhood_py,
              DgmOctree_getPointsInBoxNeighbourhood_doc)
         .def("getPointsInCell", &CCCoreLib::DgmOctree::getPointsInCell,
-             getPointsInCell_overloads(DgmOctree_getPointsInCell_doc))
+             getPointsInCell_overloads(
+             (arg("cellCode"), arg("level"), arg("subset"), arg("isCodeTruncated")=false, arg("clearOutputCloud")=true),
+             DgmOctree_getPointsInCell_doc))
         .def("getPointsInCellByCellIndex", &CCCoreLib::DgmOctree::getPointsInCellByCellIndex,
-             getPointsInCellByCellIndex_overloads(DgmOctree_getPointsInCellByCellIndex_doc))
+             getPointsInCellByCellIndex_overloads(
+             (arg("cloud"), arg("cellIndex"), arg("level"), arg("clearOutputCloud")=true),
+             DgmOctree_getPointsInCellByCellIndex_doc))
         .def("getPointsInCellsWithSortedCellCodes", &CCCoreLib::DgmOctree::getPointsInCellsWithSortedCellCodes,
-             getPointsInCellsWithSortedCellCodes_overloads(DgmOctree_getPointsInCellsWithSortedCellCodes_doc)
+             getPointsInCellsWithSortedCellCodes_overloads(
+             (arg("cellCodes"), arg("level"), arg("subset"), arg("areCodesTruncated")=false),
+             DgmOctree_getPointsInCellsWithSortedCellCodes_doc)
              [return_value_policy<reference_existing_object>()])
         .def("getPointsInCylindricalNeighbourhood",
              &DgmOctree_getPointsInCylindricalNeighbourhood_py,

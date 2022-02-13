@@ -71,7 +71,10 @@ void export_ccMesh()
     class_<ccGenericMesh, bases<CCCoreLib::GenericIndexedMesh, ccShiftedObject>, boost::noncopyable>("ccGenericMesh", no_init)
         .def("samplePoints",
              &mesh_samplePoints_py,
-             mesh_samplePoints_py_overloads(ccGenericMeshPy_samplePoints_doc)[return_value_policy<reference_existing_object>()])
+             mesh_samplePoints_py_overloads(
+             (arg("self"), arg("densityBased"), arg("samplingParameter"),
+              arg("withNormals")=true, arg("withRGB")=true, arg("withTexture")=true, arg("pDLg")=0),
+             ccGenericMeshPy_samplePoints_doc)[return_value_policy<reference_existing_object>()])
         ;
 
     class_<ccMesh, bases<ccGenericMesh>, boost::noncopyable>("ccMesh", ccMeshPy_ccMesh_doc, no_init)
@@ -80,11 +83,15 @@ void export_ccMesh()
         .def("size", &ccMesh::size)
         .def("getAssociatedCloud", &ccMesh::getAssociatedCloud,
              return_value_policy<reference_existing_object>(), ccMeshPy_getAssociatedCloud_doc)
-        .def("laplacianSmooth", &laplacianSmooth_py, laplacianSmooth_py_overloads(ccMeshPy_laplacianSmooth_doc))
+        .def("laplacianSmooth", &laplacianSmooth_py, laplacianSmooth_py_overloads(
+             (arg("self"), arg("nbIteration")=20, arg("factor")=0.2 ),
+              ccMeshPy_laplacianSmooth_doc))
         .def("subdivide", &ccMesh::subdivide, return_value_policy<reference_existing_object>(), ccMeshPy_subdivide_doc)
         .def("triangulate",
              &ccMesh::Triangulate,
-             ccMesh_triangulate_overloads(ccMeshPy_triangulate_doc)[return_value_policy<reference_existing_object>()])
+             ccMesh_triangulate_overloads(
+                     (arg("cloud"), arg("type"), arg("updateNormals")=false, arg("maxEdgeLength")=0, arg("dim")=2),
+                     ccMeshPy_triangulate_doc)[return_value_policy<reference_existing_object>()])
             .staticmethod("triangulate")
         ;
 }

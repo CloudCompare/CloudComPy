@@ -99,42 +99,59 @@ void export_cloudSamplingTools()
                                                               CloudSamplingToolsPy_CloudSamplingTools_doc, no_init)
         .def("resampleCloudWithOctreeAtLevel",
              &resampleCloudWithOctreeAtLevel_py,
-             resampleCloudWithOctreeAtLevel_py_overloads(CloudSamplingToolsPy_resampleCloudWithOctreeAtLevel_doc)[return_value_policy<reference_existing_object>()])
+             resampleCloudWithOctreeAtLevel_py_overloads(
+             (arg("cloud"), arg("octreeLevel"), arg("resamplingMethod"), arg("progressCb")=0, arg("inputOctree")=0),
+             CloudSamplingToolsPy_resampleCloudWithOctreeAtLevel_doc)[return_value_policy<reference_existing_object>()])
             .staticmethod("resampleCloudWithOctreeAtLevel")
 
         .def("resampleCloudWithOctree",
              &resampleCloudWithOctree_py,
-             resampleCloudWithOctree_py_overloads(CloudSamplingToolsPy_resampleCloudWithOctree_doc)[return_value_policy<reference_existing_object>()])
+             resampleCloudWithOctree_py_overloads(
+             (arg("cloud"), arg("newNumberOfPoints"), arg("resamplingMethod"), arg("progressCb")=0, arg("inputOctree")=0),
+             CloudSamplingToolsPy_resampleCloudWithOctree_doc)[return_value_policy<reference_existing_object>()])
             .staticmethod("resampleCloudWithOctree")
 
         .def("subsampleCloudWithOctreeAtLevel",
              &CCCoreLib::CloudSamplingTools::subsampleCloudWithOctreeAtLevel,
-             subsampleCloudWithOctreeAtLevel_overloads(CloudSamplingToolsPy_subsampleCloudWithOctreeAtLevel_doc)[return_value_policy<reference_existing_object>()])
+             subsampleCloudWithOctreeAtLevel_overloads(
+             (arg("cloud"), arg("octreeLevel"), arg("subsamplingMethod"), arg("progressCb")=0, arg("inputOctree")=0),
+             CloudSamplingToolsPy_subsampleCloudWithOctreeAtLevel_doc)[return_value_policy<reference_existing_object>()])
             .staticmethod("subsampleCloudWithOctreeAtLevel")
 
         .def("subsampleCloudWithOctree",
              &CCCoreLib::CloudSamplingTools::subsampleCloudWithOctree,
-             subsampleCloudWithOctree_overloads(CloudSamplingToolsPy_subsampleCloudWithOctree_doc)[return_value_policy<reference_existing_object>()])
+             subsampleCloudWithOctree_overloads(
+             (arg("cloud"), arg("newNumberOfPoints"), arg("subsamplingMethod"), arg("progressCb")=0, arg("inputOctree")=0),
+             CloudSamplingToolsPy_subsampleCloudWithOctree_doc)[return_value_policy<reference_existing_object>()])
             .staticmethod("subsampleCloudWithOctree")
 
         .def("subsampleCloudRandomly",
              &CCCoreLib::CloudSamplingTools::subsampleCloudRandomly,
-             subsampleCloudRandomly_overloads(CloudSamplingToolsPy_subsampleCloudRandomly_doc)[return_value_policy<reference_existing_object>()])
+             subsampleCloudRandomly_overloads(
+             (arg("cloud"), arg("newNumberOfPoints"), arg("progressCb")=0),
+             CloudSamplingToolsPy_subsampleCloudRandomly_doc)[return_value_policy<reference_existing_object>()])
             .staticmethod("subsampleCloudRandomly")
 
         .def("resampleCloudSpatially",
              &CCCoreLib::CloudSamplingTools::resampleCloudSpatially,
-             resampleCloudSpatially_overloads(CloudSamplingToolsPy_resampleCloudSpatially_doc)[return_value_policy<reference_existing_object>()])
+             resampleCloudSpatially_overloads(
+             (arg("cloud"), arg("minDistance"), arg("modParams"), arg("octree")=0, arg("progressCb")=0),
+             CloudSamplingToolsPy_resampleCloudSpatially_doc)[return_value_policy<reference_existing_object>()])
             .staticmethod("resampleCloudSpatially")
 
         .def("sorFilter",
              &CCCoreLib::CloudSamplingTools::sorFilter,
-             sorFilter_overloads(CloudSamplingToolsPy_sorFilter_doc)[return_value_policy<reference_existing_object>()])
+             sorFilter_overloads(
+             (arg("cloud"), arg("knn")=6, arg("nSigma")=1.0, arg("octree")=0, arg("progressCb")=0),
+             CloudSamplingToolsPy_sorFilter_doc)[return_value_policy<reference_existing_object>()])
             .staticmethod("sorFilter")
 
         .def("noiseFilter",
              &CCCoreLib::CloudSamplingTools::noiseFilter,
-             noiseFilter_overloads(CloudSamplingToolsPy_noiseFilter_doc)[return_value_policy<reference_existing_object>()])
+             noiseFilter_overloads(
+             (arg("cloud"), arg("kernelRadius"), arg("nSigma"), arg("removeIsolatedPoints")=false, arg("useKnn")=false,
+             arg("knn")=6, arg("useAbsoluteError")=true, arg("absoluteError")=0, arg("octree")=0, arg("progressCb")=0),
+             CloudSamplingToolsPy_noiseFilter_doc)[return_value_policy<reference_existing_object>()])
             .staticmethod("noiseFilter")
         ;
 }

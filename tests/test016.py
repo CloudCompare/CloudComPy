@@ -33,7 +33,7 @@ createSymbolicLinks() # required for tests on build, before cc.initCC
 cc.initCC()  # to do once before using plugins or dealing with numpy
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
-octree = cloud.computeOctree()
+octree = cloud.computeOctree(progressCb=None, autoAddChild=True)
 if (octree.getNumberOfProjectedPoints() != 1000000):
     raise RuntimeError
 
@@ -171,7 +171,7 @@ if octree.getCellPos(cellCodeT, level, True) != cellPos:
 
 # --- cell center, from CellCode or CellPos
 
-center1 = octree.computeCellCenter(cellCodeT, level, True)
+center1 = octree.computeCellCenter(cellCodeT, level, isCodeTruncated=True)
 center2 = octree.computeCellCenter(cellPos, level)
 if center1 != center2:
     raise RuntimeError
@@ -180,7 +180,7 @@ if center1 != center2:
 #     the ReferenceCloud receive the points found
 
 rc = cc.ReferenceCloud(cloud)
-octree.getPointsInCell(cellCodeT, level, rc, True, True)
+octree.getPointsInCell(cellCodeT, level, subset=rc, isCodeTruncated=True, clearOutputCloud=True)
 if rc.size() < 1:
     raise RuntimeError
 found = False
@@ -211,13 +211,13 @@ if not found:
 level2 = octree.findBestLevelForAGivenCellNumber(5000)
 if level2 != 5:
     raise RuntimeError
-codes = octree.getCellCodes(5, True)
+codes = octree.getCellCodes(level=5, truncatedCodes=True)
 indexes = octree.getCellIndexes(5)
 if len(indexes) != 2262: 
     raise RuntimeError
 if len(indexes) != len(codes):
     raise RuntimeError
-codesAndIndexes=octree.getCellCodesAndIndexes(5, True)
+codesAndIndexes=octree.getCellCodesAndIndexes(level=5, truncatedCodes=True)
 if len(codesAndIndexes) != len(codes):
     raise RuntimeError
 cai1=codesAndIndexes[1000]
@@ -236,7 +236,7 @@ currentIndex = 0
 for i in range(len(indexes)):
     if indexes[i] != currentIndex:
         raise RuntimeError
-    octree.getPointsInCellByCellIndex(rc, indexes[i], 5)
+    octree.getPointsInCellByCellIndex(rc, indexes[i], level=5)
     # do something with the points (see ReferenceCloud methods, below)
     currentIndex += rc.size()
 
@@ -244,7 +244,7 @@ for i in range(len(indexes)):
 
 point = (2.81, -0.24, 0.354)
 rc = cc.ReferenceCloud(cloud) # start with an empty ReferenceCloud
-res = octree.findPointNeighbourhood(point, rc, 1000, 7)
+res = octree.findPointNeighbourhood(point, rc, maxNumberOfNeighbors=1000, level=7)
 if rc.size() != 1000:
     raise RuntimeError
 if rc.size() != res[0]:
@@ -272,7 +272,7 @@ res = cc.SavePointCloud(cloud, os.path.join(dataDir, "resoctree.bin"))
 #--- the same with a maximum distance
  
 rc = cc.ReferenceCloud(cloud) # start with an empty ReferenceCloud
-res = octree.findPointNeighbourhood(point, rc, 1000, 7, dmax1/2.)
+res = octree.findPointNeighbourhood(point, rc, maxNumberOfNeighbors=1000, level=7, maxSearchDist=dmax1/2.)
 if rc.size() >= 1000:
     raise RuntimeError
 if rc.size() != res[0]:

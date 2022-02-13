@@ -48,7 +48,7 @@ mesh3 = mesh2.subdivide(0.001)
 if not math.isclose(mesh3.size(), 335696, rel_tol=5e-02):
     raise RuntimeError
 
-mesh3.laplacianSmooth()
+mesh3.laplacianSmooth(nbIteration=20, factor=0.2)
 
 cc.SaveEntities([cloud1, mesh1, mesh2, mesh3], os.path.join(dataDir, "clouds1.bin"))
 

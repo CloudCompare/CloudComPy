@@ -1078,7 +1078,7 @@ See Qt documentation.
 :param float r: red
 :param float g: green
 :param float b: blue
-:param float,optional a: alpha, default 255
+:param float,optional a: alpha, default 1.0
 
 :return: an RGB QColor
 :rtype: QColor

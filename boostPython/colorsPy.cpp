@@ -257,7 +257,7 @@ void export_colors()
         .def("convertTo", &QColor::convertTo, colorsPy_convertTo_doc)
         .def("cyan", &QColor::cyan, colorsPy_cyan_doc)
         .def("cyanF", &QColor::cyanF, colorsPy_cyanF_doc)
-        .def("darker", &QColor::darker, QColor_darker_overloads(colorsPy_darker_doc))
+        .def("darker", &QColor::darker, QColor_darker_overloads((arg("factor")=200), colorsPy_darker_doc))
         .def("getCmyk", &getCmyk_py, colorsPy_getCmyk_doc)
         .def("getCmykF", &getCmykF_py, colorsPy_getCmykF_doc)
         .def("getHsl", &getHsl_py, colorsPy_getHsl_doc)
@@ -279,7 +279,7 @@ void export_colors()
         .def("hue", &QColor::hue, colorsPy_hue_doc)
         .def("hueF", &QColor::hueF, colorsPy_hueF_doc)
         .def("isValid", &QColor::isValid, colorsPy_isValid_doc)
-        .def("lighter", &QColor::lighter, QColor_lighter_overloads(colorsPy_lighter_doc))
+        .def("lighter", &QColor::lighter, QColor_lighter_overloads((arg("factor")=150), colorsPy_lighter_doc))
         .def("lightness", &QColor::lightness, colorsPy_lightness_doc)
         .def("lightnessF", &QColor::lightnessF,colorsPy_lightnessF_doc )
         .def("magenta", &QColor::magenta, colorsPy_magenta_doc)
@@ -297,21 +297,37 @@ void export_colors()
         .def("setAlphaF", &QColor::setAlphaF, colorsPy_setAlphaF_doc)
         .def("setBlue", &QColor::setBlue, colorsPy_setBlue_doc)
         .def("setBlueF", &QColor::setBlueF, colorsPy_setBlueF_doc)
-        .def("setCmyk", &QColor::setCmyk, QColor_setCmyk_overloads(colorsPy_setCmyk_py_doc))
-        .def("setCmykF", &QColor::setCmykF, QColor_setCmykF_overloads(colorsPy_setCmykF_py_doc))
+        .def("setCmyk", &QColor::setCmyk, QColor_setCmyk_overloads(
+             (arg("c"), arg("m"), arg("y"), arg("k"), arg("a")=255),
+             colorsPy_setCmyk_py_doc))
+        .def("setCmykF", &QColor::setCmykF, QColor_setCmykF_overloads(
+             (arg("c"), arg("m"), arg("y"), arg("k"), arg("a")=1.0),
+             colorsPy_setCmykF_py_doc))
         .def("setGreen", &QColor::setGreen, colorsPy_setGreen_doc)
         .def("setGreenF", &QColor::setGreenF, colorsPy_setGreenF_doc)
-        .def("setHsl", &QColor::setHsl, QColor_setHsl_overloads(colorsPy_setHsl_doc))
-        .def("setHslF", &QColor::setHslF, QColor_setHslF_overloads(colorsPy_setHslF_doc))
-        .def("setHsv", &QColor::setHsv, QColor_setHsv_overloads(colorsPy_setHsv_doc))
-        .def("setHsvF", &QColor::setHsvF, QColor_setHsvF_overloads(colorsPy_setHsvF_doc))
+        .def("setHsl", &QColor::setHsl, QColor_setHsl_overloads(
+             (arg("h"), arg("s"), arg("l"), arg("a")=255),
+             colorsPy_setHsl_doc))
+        .def("setHslF", &QColor::setHslF, QColor_setHslF_overloads(
+             (arg("h"), arg("s"), arg("l"), arg("a")=1.0),
+             colorsPy_setHslF_doc))
+        .def("setHsv", &QColor::setHsv, QColor_setHsv_overloads(
+             (arg("h"), arg("s"), arg("v"), arg("a")=255),
+             colorsPy_setHsv_doc))
+        .def("setHsvF", &QColor::setHsvF, QColor_setHsvF_overloads(
+             (arg("h"), arg("s"), arg("v"), arg("a")=1.0),
+             colorsPy_setHsvF_doc))
         .def("setNamedColor", &setNamedColor_py, colorsPy_setNamedColor_doc)
         .def("setRed", &QColor::setRed, colorsPy_setRed_doc)
         .def("setRedF", &QColor::setRedF, colorsPy_setRedF_doc)
-        .def("setRgb", &setRgb_py, setRgb_py_overloads(colorsPy_setRgb_doc))
+        .def("setRgb", &setRgb_py, setRgb_py_overloads(
+             (arg("self"), arg("r"), arg("g"), arg("b"), arg("a")=255),
+             colorsPy_setRgb_doc))
         .def("setRgbUInt", &setRgbUInt_py, colorsPy_setRgbUInt_doc)
         .def("setRgba64", &QColor::setRgba64, colorsPy_setRgba64_doc)
-        .def("setRgbF", &QColor::setRgbF, QColor_setRgbF_overloads(colorsPy_setRgbF_doc))
+        .def("setRgbF", &QColor::setRgbF, QColor_setRgbF_overloads(
+             (arg("r"), arg("g"), arg("g"), arg("a")=1.0),
+             colorsPy_setRgbF_doc))
         .def("spec", &QColor::spec, colorsPy_spec_doc)
         .def("toCmyk", &QColor::toCmyk, colorsPy_toCmyk_doc)
         .def("toHsl", &QColor::toHsl, colorsPy_toHsl_doc)
@@ -323,27 +339,45 @@ void export_colors()
         .def("yellowF", &QColor::yellowF, colorsPy_yellowF_doc)
         .def("colorNames", &colorNames_py, colorsPy_colorNames_doc)
             .staticmethod("colorNames")
-        .def("fromCmyk", &QColor::fromCmyk, QColor_fromCmyk_overloads(colorsPy_fromCmyk_doc))
+        .def("fromCmyk", &QColor::fromCmyk, QColor_fromCmyk_overloads(
+             (arg("c"), arg("m"), arg("y"), arg("k"), arg("a")=255),
+             colorsPy_fromCmyk_doc))
             .staticmethod("fromCmyk")
-        .def("fromCmykF", &QColor::fromCmykF, QColor_fromCmykF_overloads(colorsPy_fromCmykF_doc))
+        .def("fromCmykF", &QColor::fromCmykF, QColor_fromCmykF_overloads(
+             (arg("c"), arg("m"), arg("y"), arg("k"), arg("a")=1.0),
+             colorsPy_fromCmykF_doc))
             .staticmethod("fromCmykF")
-        .def("fromHsl", &QColor::fromHsl, QColor_fromHsl_overloads(colorsPy_fromHsl_doc))
+        .def("fromHsl", &QColor::fromHsl, QColor_fromHsl_overloads(
+             (arg("h"), arg("s"), arg("l"), arg("a")=255),
+             colorsPy_fromHsl_doc))
             .staticmethod("fromHsl")
-        .def("fromHslF", &QColor::fromHslF, QColor_fromHslF_overloads(colorsPy_fromHslF_doc))
+        .def("fromHslF", &QColor::fromHslF, QColor_fromHslF_overloads(
+             (arg("h"), arg("s"), arg("l"), arg("a")=1.0),
+             colorsPy_fromHslF_doc))
             .staticmethod("fromHslF")
-        .def("fromHsv", &QColor::fromHsv, QColor_fromHsv_overloads(colorsPy_fromHsv_doc))
+        .def("fromHsv", &QColor::fromHsv, QColor_fromHsv_overloads(
+             (arg("h"), arg("s"), arg("v"), arg("a")=255),
+             colorsPy_fromHsv_doc))
             .staticmethod("fromHsv")
-        .def("fromHsvF", &QColor::fromHsvF, QColor_fromHsvF_overloads(colorsPy_fromHsvF_doc))
+        .def("fromHsvF", &QColor::fromHsvF, QColor_fromHsvF_overloads(
+             (arg("h"), arg("s"), arg("v"), arg("a")=1.0),
+             colorsPy_fromHsvF_doc))
             .staticmethod("fromHsvF")
-        .def("fromRgb", &fromRgb_py, fromRgb_py_overloads(colorsPy_fromRgb_doc))
+        .def("fromRgb", &fromRgb_py, fromRgb_py_overloads(
+             (arg("r"), arg("g"), arg("g"), arg("a")=255),
+             colorsPy_fromRgb_doc))
             .staticmethod("fromRgb")
         .def("fromRgbUInt", &fromRgbUInt_py, colorsPy_fromRgbUInt_doc)
             .staticmethod("fromRgbUInt")
-        .def("fromRgba64", &fromRgba64_py, fromRgba64_py_overloads(colorsPy_fromRgba64_py_doc))
+        .def("fromRgba64", &fromRgba64_py, fromRgba64_py_overloads(
+             (arg("r"), arg("g"), arg("g"), arg("a")=USHRT_MAX),
+             colorsPy_fromRgba64_py_doc))
             .staticmethod("fromRgba64")
         .def("fromRgba64Q", &fromRgba64Q_py, colorsPy_fromRgba64Q_doc)
             .staticmethod("fromRgba64Q")
-        .def("fromRgbF", &QColor::fromRgbF, QColor_fromRgbF_overloads(colorsPy_fromRgbF_doc))
+        .def("fromRgbF", &QColor::fromRgbF, QColor_fromRgbF_overloads(
+             (arg("r"), arg("g"), arg("b"), arg("a")=1.0),
+             colorsPy_fromRgbF_doc))
             .staticmethod("fromRgbF")
         .def("fromRgba", &QColor::fromRgba, colorsPy_fromRgba_doc)
             .staticmethod("fromRgba")
