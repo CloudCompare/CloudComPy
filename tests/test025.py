@@ -51,14 +51,30 @@ rcloud = cc.RasterizeToCloud(cloud, 0.01)
 
 rmesh = cc.RasterizeToMesh(cloud, 0.03)
 
-rcloud2 = cc.RasterizeToCloud(cloud, 0.01, cc.CC_DIRECTION.Z, True, True, False, dataDir,
-                              False, cc.ProjectionType.PROJ_AVERAGE_VALUE, cc.ProjectionType.PROJ_AVERAGE_VALUE, 
-                              cc.EmptyCellFillOption.FILL_MAXIMUM_HEIGHT)
+rcloud1 = cc.RasterizeToCloud(cloud,
+                              gridStep=0.01, 
+                              outputRasterZ = True,
+                              pathToImages = dataDir,
+                              emptyCellFillStrategy = cc.EmptyCellFillOption.FILL_CUSTOM_HEIGHT,
+                              customHeight = 1.,
+                              export_perCellCount = True)
 
-cc.RasterizeGeoTiffOnly( cloud, 0.01, cc.CC_DIRECTION.Z, True, True, False, dataDir,
-                         False, cc.ProjectionType.PROJ_AVERAGE_VALUE, cc.ProjectionType.PROJ_AVERAGE_VALUE, 
-                         cc.EmptyCellFillOption.FILL_MAXIMUM_HEIGHT)
+rcloud2 = cc.RasterizeToCloud(cloud,
+                              gridStep=0.01, 
+                              outputRasterZ = True,
+                              outputRasterSFs = True,
+                              pathToImages = dataDir,
+                              emptyCellFillStrategy = cc.EmptyCellFillOption.FILL_MINIMUM_HEIGHT,
+                              export_perCellCount = True,
+                              export_perCellAvgHeight = True)
+
+cc.RasterizeGeoTiffOnly(cloud,
+                        gridStep=0.01, 
+                        outputRasterZ = True,
+                        pathToImages = dataDir,
+                        emptyCellFillStrategy = cc.EmptyCellFillOption.FILL_MAXIMUM_HEIGHT,
+                        export_perCellCount = True)
 # cc.EmptyCellFillOption.FILL_MAXIMUM_HEIGHT behave like EmptyCellFillOption.INTERPOLATE
 
-cc.SaveEntities([cloud, rcloud, rcloud2, rmesh], os.path.join(dataDir, "wave%d.bin"%h))
+cc.SaveEntities([cloud, rcloud, rcloud1, rcloud2, rmesh], os.path.join(dataDir, "wave%d.bin"%h))
 

@@ -19,9 +19,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "ccOctreePy.hpp"
-
-#include <boost/python.hpp>
 
 #include <DgmOctree.h>
 

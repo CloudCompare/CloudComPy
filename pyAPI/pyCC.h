@@ -247,7 +247,13 @@ ccPointCloud* RasterizeToCloud(
 	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
 	double customHeight = std::numeric_limits<double>::quiet_NaN(),
-	ccBBox gridBBox = ccBBox());
+	ccBBox gridBBox = ccBBox(),
+	bool export_perCellCount = false,
+	bool export_perCellMinHeight = false,
+	bool export_perCellMaxHeight = false,
+	bool export_perCellAvgHeight = false,
+	bool export_perCellHeightStdDev = false,
+	bool export_perCellHeightRange = false);
 
 ccMesh* RasterizeToMesh(
 	ccGenericPointCloud* cloud,
@@ -262,7 +268,13 @@ ccMesh* RasterizeToMesh(
 	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
 	double customHeight = std::numeric_limits<double>::quiet_NaN(),
-	ccBBox gridBBox = ccBBox());
+	ccBBox gridBBox = ccBBox(),
+    bool export_perCellCount = false,
+    bool export_perCellMinHeight = false,
+    bool export_perCellMaxHeight = false,
+    bool export_perCellAvgHeight = false,
+    bool export_perCellHeightStdDev = false,
+    bool export_perCellHeightRange = false);
 
 ccHObject* RasterizeGeoTiffOnly(
 	ccGenericPointCloud* cloud,
@@ -277,7 +289,13 @@ ccHObject* RasterizeGeoTiffOnly(
 	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
 	double customHeight = std::numeric_limits<double>::quiet_NaN(),
-	ccBBox gridBBox = ccBBox());
+	ccBBox gridBBox = ccBBox(),
+    bool export_perCellCount = false,
+    bool export_perCellMinHeight = false,
+    bool export_perCellMaxHeight = false,
+    bool export_perCellAvgHeight = false,
+    bool export_perCellHeightStdDev = false,
+    bool export_perCellHeightRange = false);
 
 // --- internal functions (not wrapped in the Python API) ---------------------
 
@@ -319,7 +337,8 @@ ccHObject* Rasterize_(
 	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
 	double customHeight = std::numeric_limits<double>::quiet_NaN(),
-	ccBBox gridBBox = ccBBox());
+	ccBBox gridBBox = ccBBox(),
+	const std::vector<ccRasterGrid::ExportableFields>& extraScalarFields= {});
 
 //! Loaded polyline description (not in ccCommandLineInterface.h)
 struct CLPolyDesc : CLEntityDesc

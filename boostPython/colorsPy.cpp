@@ -19,9 +19,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "colorsPy.hpp"
-
-#include <boost/python.hpp>
 
 #include <QColor>
 

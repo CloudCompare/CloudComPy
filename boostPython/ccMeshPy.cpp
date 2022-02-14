@@ -19,9 +19,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "ccMeshPy.hpp"
-
-#include <boost/python.hpp>
 
 #include <CCGeom.h>
 #include <ccMesh.h>

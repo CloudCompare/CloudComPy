@@ -59,6 +59,10 @@ cloudComPy module, functions
    :members:
    :undoc-members:
 
+.. autoclass:: ExportableFields
+   :members:
+   :undoc-members:
+
 .. autoclass:: ICPres
    :members:
    :undoc-members:

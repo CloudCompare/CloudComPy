@@ -19,10 +19,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "ccGenericCloudPy.hpp"
-
-#include <boost/python/numpy.hpp>
-#include <boost/python.hpp>
 
 #include <ccBBox.h>
 #include <ReferenceCloud.h>

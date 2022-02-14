@@ -19,9 +19,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "ccFacetPy.hpp"
-
-#include <boost/python.hpp>
 
 #include <ccFacet.h>
 #include <ccHObject.h>

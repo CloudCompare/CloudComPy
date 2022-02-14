@@ -19,10 +19,9 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "ccPointCloudPy.hpp"
 
-#include <boost/python/numpy.hpp>
-#include <boost/python.hpp>
 #include <boost/python/suite/indexing/map_indexing_suite.hpp>
 #include <boost/python/exception_translator.hpp>
 #include <exception>

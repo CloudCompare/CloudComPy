@@ -22,8 +22,7 @@
 #ifndef CONVERTERS_HPP_
 #define CONVERTERS_HPP_
 
-#include <boost/python.hpp>
-#include <Python.h>
+#include "cloudComPy.hpp"
 
 #include <QString>
 #include <vector>

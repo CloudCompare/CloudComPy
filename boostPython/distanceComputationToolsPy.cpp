@@ -19,10 +19,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "distanceComputationToolsPy.hpp"
-
-#include <boost/python/numpy.hpp>
-#include <boost/python.hpp>
 
 #include <ccPointCloud.h>
 #include <GenericIndexedCloudPersist.h>

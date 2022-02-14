@@ -19,10 +19,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "ccPolylinePy.hpp"
-
-//#include <boost/python/numpy.hpp>
-#include <boost/python.hpp>
 
 #include <ccPolyline.h>
 #include <Polyline.h>

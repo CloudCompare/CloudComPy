@@ -19,8 +19,7 @@
 //#                                                                        #
 //##########################################################################
 
-#include <boost/python/numpy.hpp>
-#include <boost/python.hpp>
+#include "cloudComPy.hpp"
 
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include "converters.hpp"
@@ -234,9 +233,9 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(GetPointCloudRadius_overloads, GetPointCloudRadius, 1, 2);
 BOOST_PYTHON_FUNCTION_OVERLOADS(ICP_py_overloads, ICP_py, 8, 13);
 BOOST_PYTHON_FUNCTION_OVERLOADS(computeNormals_overloads, computeNormals, 1, 12);
-BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToCloud_overloads, RasterizeToCloud, 2, 13);
-BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToMesh_overloads, RasterizeToMesh, 2, 13);
-BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeGeoTiffOnly_overloads, RasterizeGeoTiffOnly, 2, 13);
+BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToCloud_overloads, RasterizeToCloud, 2, 19);
+BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToMesh_overloads, RasterizeToMesh, 2, 19);
+BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeGeoTiffOnly_overloads, RasterizeGeoTiffOnly, 2, 19);
 
 
 BOOST_PYTHON_MODULE(cloudComPy)
@@ -353,6 +352,17 @@ BOOST_PYTHON_MODULE(cloudComPy)
 		.value("INTERPOLATE", ccRasterGrid::INTERPOLATE)
 		;
 
+    enum_<ccRasterGrid::ExportableFields>("ExportableFields")
+        .value("PER_CELL_HEIGHT", ccRasterGrid::PER_CELL_HEIGHT)
+        .value("PER_CELL_COUNT", ccRasterGrid::PER_CELL_COUNT)
+        .value("PER_CELL_MIN_HEIGHT", ccRasterGrid::PER_CELL_MIN_HEIGHT)
+        .value("PER_CELL_MAX_HEIGHT", ccRasterGrid::PER_CELL_MAX_HEIGHT)
+        .value("PER_CELL_AVG_HEIGHT", ccRasterGrid::PER_CELL_AVG_HEIGHT)
+        .value("PER_CELL_HEIGHT_STD_DEV", ccRasterGrid::PER_CELL_HEIGHT_STD_DEV)
+        .value("PER_CELL_HEIGHT_RANGE", ccRasterGrid::PER_CELL_HEIGHT_RANGE)
+        .value("PER_CELL_INVALID", ccRasterGrid::PER_CELL_INVALID)
+        ;
+
     def("importFile", importFilePy,
         importFilePy_overloads((arg("filename"), arg("mode")=AUTO, arg("x")=0, arg("y")=0, arg("z")=0),
                                cloudComPy_importFile_doc));
@@ -453,12 +463,72 @@ BOOST_PYTHON_MODULE(cloudComPy)
     def("invertNormals", invertNormals, cloudComPy_invertNormals_doc);
 
     def("RasterizeToCloud", RasterizeToCloud,
-    		RasterizeToCloud_overloads(cloudComPy_RasterizeToCloud_doc)[return_value_policy<reference_existing_object>()]);
+		RasterizeToCloud_overloads(
+    		(arg("cloud"),
+    		 arg("gridStep"),
+    		 arg("vertDir") = CC_DIRECTION::Z,
+    		 arg("outputRasterZ")=false,
+    		 arg("outputRasterSFs")=false,
+    		 arg("outputRasterRGB")=false,
+    		 arg("pathToImages")=".",
+    		 arg("resample")=false,
+    		 arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+    		 arg("sfProjectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+    		 arg("emptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+    		 arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
+    		 arg("gridBBox")=ccBBox(),
+    		 arg("export_perCellCount")=false,
+    		 arg("export_perCellMinHeight")=false,
+    		 arg("export_perCellMaxHeight")=false,
+    		 arg("export_perCellAvgHeight")=false,
+    		 arg("export_perCellHeightStdDev")=false,
+    		 arg("export_perCellHeightRange")=false),
+    		cloudComPy_RasterizeToCloud_doc)[return_value_policy<reference_existing_object>()]);
 
     def("RasterizeToMesh", RasterizeToMesh,
-    		RasterizeToMesh_overloads(cloudComPy_RasterizeToMesh_doc)[return_value_policy<reference_existing_object>()]);
+    		RasterizeToMesh_overloads(
+            (arg("cloud"),
+             arg("gridStep"),
+             arg("vertDir") = CC_DIRECTION::Z,
+             arg("outputRasterZ")=false,
+             arg("outputRasterSFs")=false,
+             arg("outputRasterRGB")=false,
+             arg("pathToImages")=".",
+             arg("resample")=false,
+             arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+             arg("sfProjectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+             arg("emptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+             arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
+             arg("gridBBox")=ccBBox(),
+             arg("export_perCellCount")=false,
+             arg("export_perCellMinHeight")=false,
+             arg("export_perCellMaxHeight")=false,
+             arg("export_perCellAvgHeight")=false,
+             arg("export_perCellHeightStdDev")=false,
+             arg("export_perCellHeightRange")=false),
+            cloudComPy_RasterizeToMesh_doc)[return_value_policy<reference_existing_object>()]);
 
     def("RasterizeGeoTiffOnly", RasterizeGeoTiffOnly,
-    		RasterizeGeoTiffOnly_overloads(cloudComPy_RasterizeGeoTiffOnly_doc)[return_value_policy<reference_existing_object>()]);
+    		RasterizeGeoTiffOnly_overloads(
+            (arg("cloud"),
+             arg("gridStep"),
+             arg("vertDir") = CC_DIRECTION::Z,
+             arg("outputRasterZ")=false,
+             arg("outputRasterSFs")=false,
+             arg("outputRasterRGB")=false,
+             arg("pathToImages")=".",
+             arg("resample")=false,
+             arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+             arg("sfProjectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+             arg("emptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+             arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
+             arg("gridBBox")=ccBBox(),
+             arg("export_perCellCount")=false,
+             arg("export_perCellMinHeight")=false,
+             arg("export_perCellMaxHeight")=false,
+             arg("export_perCellAvgHeight")=false,
+             arg("export_perCellHeightStdDev")=false,
+             arg("export_perCellHeightRange")=false),
+            cloudComPy_RasterizeGeoTiffOnly_doc)[return_value_policy<reference_existing_object>()]);
 
 }

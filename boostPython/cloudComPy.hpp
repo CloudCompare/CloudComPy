@@ -19,43 +19,13 @@
 //#                                                                        #
 //##########################################################################
 
-#include "cloudComPy.hpp"
-#include "registrationToolsPy.hpp"
+#ifndef CLOUDCOMPY_HPP_
+#define CLOUDCOMPY_HPP_
 
-#include <RegistrationTools.h>
+// adjust to cover max overload values
+#define BOOST_PYTHON_MAX_ARITY 20
 
-#include "PyScalarType.h"
-#include "pyccTrace.h"
+#include <boost/python/numpy.hpp>
+#include <boost/python.hpp>
 
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
-using namespace boost::python;
-
-void export_registrationTools()
-{
-
-    class_<CCCoreLib::RegistrationTools, boost::noncopyable>("RegistrationTools", no_init)
-        ;
-
-    enum_<CCCoreLib::RegistrationTools::TRANSFORMATION_FILTERS>("TRANSFORMATION_FILTERS")
-        .value("SKIP_NONE", CCCoreLib::RegistrationTools::SKIP_NONE)
-        .value("SKIP_RXY", CCCoreLib::RegistrationTools::SKIP_RXY)
-        .value("SKIP_RYZ", CCCoreLib::RegistrationTools::SKIP_RYZ)
-        .value("SKIP_RXZ", CCCoreLib::RegistrationTools::SKIP_RXZ)
-        .value("SKIP_ROTATION", CCCoreLib::RegistrationTools::SKIP_ROTATION)
-        .value("SKIP_TX", CCCoreLib::RegistrationTools::SKIP_TX)
-        .value("SKIP_TY", CCCoreLib::RegistrationTools::SKIP_TY)
-        .value("SKIP_TZ", CCCoreLib::RegistrationTools::SKIP_TZ)
-        .value("SKIP_TRANSLATION", CCCoreLib::RegistrationTools::SKIP_TRANSLATION)
-        ;
-
-    class_<CCCoreLib::ICPRegistrationTools, bases<CCCoreLib::RegistrationTools>, boost::noncopyable>("ICPRegistrationTools", no_init)
-        ;
-
-    enum_<CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE>("CONVERGENCE_TYPE")
-        .value("MAX_ERROR_CONVERGENCE", CCCoreLib::ICPRegistrationTools::MAX_ERROR_CONVERGENCE)
-        .value("MAX_ITER_CONVERGENCE", CCCoreLib::ICPRegistrationTools::MAX_ITER_CONVERGENCE)
-        ;
-
-}
+#endif
