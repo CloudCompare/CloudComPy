@@ -414,12 +414,6 @@ void export_ccOctree()
         .def_readwrite("theNearestPointIndex", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::theNearestPointIndex)
         ;
 
-    class_< CCCoreLib::DgmOctree::NearestNeighboursSphericalSearchStruct,
-            bases<CCCoreLib::DgmOctree::NearestNeighboursSearchStruct > >("NearestNeighboursSphericalSearchStruct",
-                                                                          DgmOctree_NearestNeighboursSphericalSearchStruct_doc)
-        .def_readwrite("ready", &CCCoreLib::DgmOctree::NearestNeighboursSphericalSearchStruct::ready)
-        ;
-
     class_<CCCoreLib::DgmOctree>("DgmOctree", no_init)
         .def("computeCellCenter", &DgmOctree_computeCellCenter_py,
              DgmOctree_computeCellCenter_py_overloads(

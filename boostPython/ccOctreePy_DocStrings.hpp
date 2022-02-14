@@ -166,7 +166,7 @@ than the actual count of closest points inside the sphere! (which is returned by
 Only the 'k' first points are actually inside the sphere (the others are not removed for the sake
 of performance).
 
-:param NearestNeighboursSphericalSearchStruct nNSS: a pack of parameters
+:param NearestNeighboursSearchStruct nNSS: a pack of parameters
 :param float radius: the sphere radius
 :param bool sortValues: specifies if the neighbours needs to be sorted by their distance to the query point or not
 
@@ -594,11 +594,11 @@ derived from NearestNeighboursSearchStruct:
 
 const char* DgmOctree_NearestNeighboursSearchStruct_doc= dgm_nnss_0;
 
-#ifdef TEST_CELLS_FOR_SPHERICAL_NN
-const char* DgmOctree_NearestNeighboursSphericalSearchStruct_doc = dgm_nnsss_1 dgm_nnss_0 dgm_nnsss_2 dgm_nnsss_3;
-#else
-const char* DgmOctree_NearestNeighboursSphericalSearchStruct_doc = dgm_nnsss_1 dgm_nnss_0 dgm_nnsss_2;
-#endif
+//#ifdef TEST_CELLS_FOR_SPHERICAL_NN
+//const char* DgmOctree_NearestNeighboursSearchStruct_doc = dgm_nnsss_1 dgm_nnss_0 dgm_nnsss_2 dgm_nnsss_3;
+//#else
+//const char* DgmOctree_NearestNeighboursSearchStruct_doc = dgm_nnsss_1 dgm_nnss_0 dgm_nnsss_2;
+//#endif
 
 const char* DgmOctree_PointDescriptor_doc= R"(
 Structure used during nearest neighbour search.
@@ -627,7 +627,7 @@ See CylindricalNeighbourhood for generic data members.
 :ivar tuple prevMinCornerPos: Previous search box (min corner)
 :ivar tuple prevMaxCornerPos: Previous search box (max corner))";
 
-const char* NearestNeighboursSphericalSearchStruct_prepare_doc= R"(
+const char* NearestNeighboursSearchStruct_prepare_doc= R"(
 Initialize ready status (`False`), Updates maxD2 and minD2 with search radius and cellSize.)";
 
 #endif /* CCOCTREEPY_DOCSTRINGS_HPP_ */
