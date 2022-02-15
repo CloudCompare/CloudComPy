@@ -226,3 +226,6 @@ if ( BUILD_REFERENCE_DOC )
         PATTERN ".buildinfo" EXCLUDE
         )
 endif()
+
+add_subdirectory( M3C2 )
+
