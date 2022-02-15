@@ -27,7 +27,6 @@ import math
 from gendata import getSampleCloud, dataDir, isCoordEqual
 import cloudComPy as cc
 import numpy as np
-from builtins import RuntimeError
 
 cc.initCC()  # to do once before using plugins or dealing with numpy
 
