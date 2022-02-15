@@ -24,59 +24,38 @@
 import os
 import sys
 import math
-import numpy as np
 
-from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual, createSymbolicLinks
+os.environ["_CCTRACE_"]="ON"
+from gendata import dataDir, isCoordEqual
 import cloudComPy as cc
-createSymbolicLinks() # required for tests on build, before cc.initCC
+import numpy as np
 
 cc.initCC()  # to do once before using plugins or dealing with numpy
 
 # --- generate a set of coords and a scalar field
 
-npts = 1000000
+npts = 20000
 h = 2.
 x = np.float32(-5. + 10.*np.random.random((npts)))
 y = np.float32(-5. + 10.*np.random.random((npts)))
 z = np.float32(np.sin(h * np.sqrt(x**2 + y**2)) / np.sqrt(x**2 + y**2))
 coords = np.column_stack((x,y,z))
 
-# --- create the pointCloud, add the scalar field, save
+# --- create the pointCloud, add the scalar field, save the cloud on .las format
 
-cloud = cc.ccPointCloud("wave_%d"%h)
-cloud.coordsFromNPArray_copy(coords)
-res = cloud.exportCoordToSF(False, False, True)
+cl = cc.ccPointCloud("wave_%d"%h)
+cl.coordsFromNPArray_copy(coords)
+res = cl.exportCoordToSF(False, False, True)
 
-rcloud = cc.RasterizeToCloud(cloud, 0.01)
+res = cc.SavePointCloud(cl, os.path.join(dataDir, "cloud_2.las"))
 
-rmesh = cc.RasterizeToMesh(cloud, 0.03)
+# --- load the .las file, compute density, save
 
-rcloud1 = cc.RasterizeToCloud(cloud,
-                              gridStep=0.01, 
-                              outputRasterZ = True,
-                              pathToImages = dataDir,
-                              emptyCellFillStrategy = cc.EmptyCellFillOption.FILL_CUSTOM_HEIGHT,
-                              customHeight = 1.,
-                              export_perCellCount = True)
+cloud = cc.loadPointCloud(os.path.join(dataDir, "cloud_2.las"))
+isOk = cc.computeLocalDensity(cc.Density.DENSITY_3D, 0.16, [cloud])
+if not isOk:
+    raise RuntimeError
 
-rcloud2 = cc.RasterizeToCloud(cloud,
-                              gridStep=0.01, 
-                              outputRasterZ = True,
-                              outputRasterSFs = True,
-                              pathToImages = dataDir,
-                              emptyCellFillStrategy = cc.EmptyCellFillOption.FILL_MINIMUM_HEIGHT,
-                              export_perCellCount = True,
-                              export_perCellAvgHeight = True)
-
-cc.RasterizeGeoTiffOnly(cloud,
-                        gridStep=0.01, 
-                        outputRasterZ = True,
-                        outputRasterSFs = True,
-                        pathToImages = dataDir,
-                        emptyCellFillStrategy = cc.EmptyCellFillOption.INTERPOLATE,
-                        customHeight = 0.,
-                        export_perCellCount = True)
-# cc.EmptyCellFillOption.FILL_MAXIMUM_HEIGHT behave like EmptyCellFillOption.INTERPOLATE
-
-cc.SaveEntities([cloud, rcloud, rcloud1, rcloud2, rmesh], os.path.join(dataDir, "wave%d.bin"%h))
-
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud_2s.las"))
+if res:
+    raise RuntimeError
