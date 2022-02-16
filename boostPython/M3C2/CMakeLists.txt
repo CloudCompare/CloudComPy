@@ -24,7 +24,7 @@ message(STATUS "Plugin M3C2 boost Python processing")
 # --- ----------------------------------------------------------
 # --- target boost.Python library: Python module cloudComPy
 
-project( M3C2 VERSION 0.1 )
+project( _M3C2 VERSION 0.1 )
 
 add_library( ${PROJECT_NAME} SHARED )
 
@@ -77,18 +77,26 @@ if (WIN32)
    target_link_libraries( ${PROJECT_NAME} Qt5::WinMain)
 endif()
 
+# --- Python scripts with added functions
+
+set(PYTHONAPI_SCRIPTS
+    __init__.py
+    )
+
 # --- install
 
 if( WIN32 OR APPLE)
-	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare)
+	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare/cloudComPy/M3C2 )
+    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/M3C2 )
 else()
-    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare)
+    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare/cloudComPy/M3C2)
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
+    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
 endif()
 
 if(WIN32)
-  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME M3C2_d RELEASE_OUTPUT_NAME M3C2)
+  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _M3C2_d RELEASE_OUTPUT_NAME _M3C2)
 else()
   set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 endif()

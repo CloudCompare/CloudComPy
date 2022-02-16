@@ -27,11 +27,13 @@
 
 QString initCC::moduleDir = "";
 
+//! find CloudCompare appDir (see pyAPI::pyCC_setupPaths)
 void initCC::init(const char* modulePath)
 {
-    QDir myModule = QString(modulePath);
+    QDir myModule = QString(modulePath); // module path is something like <installPath>/lib/cloudcompare/cloudComPy/__init__.py
     bool ok = myModule.cdUp();
-    moduleDir = myModule.absolutePath();
+    ok = myModule.cdUp();
+    moduleDir = myModule.absolutePath(); //moduleDir should be where the CloudCompare libs and plugins directory are:  <installPath>/lib/cloudcompare
     CCTRACE("moduleDir: " << moduleDir.toStdString());
 }
 

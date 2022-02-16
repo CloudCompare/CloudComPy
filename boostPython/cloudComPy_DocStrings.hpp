@@ -126,7 +126,10 @@ Applies ICP registration on two entities.
 )";
 
 const char* cloudComPy_initCC_doc= R"(
-Should be done once before using plugins!)";
+Done at module init, should be done once before using plugins!)";
+
+const char* cloudComPy_initCloudCompare_doc= R"(
+Done at module init, should be done once after initCC before using plugins!)";
 
 const char* cloudComPy_isPluginDraco_doc= R"(
 returns True if CloudComPy is built with the Draco plugin.

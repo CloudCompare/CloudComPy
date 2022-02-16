@@ -24,12 +24,14 @@
 import os
 import sys
 import math
+os.environ["_CCTRACE_"]="ON"
+
 from gendata import getSampleCloud, dataDir, isCoordEqual
 import cloudComPy as cc
 import numpy as np
 import multiprocessing
 
-cc.initCC()  # to do once before using plugins or dealing with numpy
+#cc.initCC()  # to do once before using plugins or dealing with numpy
 
 m3c2_params_dic={}
 m3c2_params_dic["ExportDensityAtProjScale"] = "false"
@@ -67,9 +69,10 @@ with open(paramFilename, 'w') as f:
         f.write("%s=%s\n"%(k,v))
 
 if cc.isPluginM3C2():
+    import cloudComPy.M3C2
     cloud = cc.loadPointCloud(getSampleCloud(5.0))
     cloud1 = cc.loadPointCloud(getSampleCloud(1.0))
-    cloud2 = cc.computeM3C2([cloud,cloud1], paramFilename)
+    cloud2 = cc.M3C2.computeM3C2([cloud,cloud1], paramFilename)
     
     if cloud2 is None:
         raise RuntimeError

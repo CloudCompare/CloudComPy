@@ -65,7 +65,7 @@ ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFi
 
 
 
-BOOST_PYTHON_MODULE(M3C2)
+BOOST_PYTHON_MODULE(_M3C2)
 {
     using namespace boost::python;
 

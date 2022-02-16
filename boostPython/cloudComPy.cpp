@@ -74,6 +74,11 @@ void initCC_py()
     initCC::init(modulePath);
 }
 
+void initCloudCompare_py()
+{
+    pyCC* pyCCInternals = initCloudCompare();
+}
+
 const char* getScalarType()
 {
     //Get the scalar type used in cloudCompare under the form defined in Numpy: 'float32' or 'float64'
@@ -238,7 +243,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToMesh_overloads, RasterizeToMesh, 2, 1
 BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeGeoTiffOnly_overloads, RasterizeGeoTiffOnly, 2, 19);
 
 
-BOOST_PYTHON_MODULE(cloudComPy)
+BOOST_PYTHON_MODULE(_cloudComPy)
 {
     using namespace boost::python;
 
@@ -389,6 +394,8 @@ BOOST_PYTHON_MODULE(cloudComPy)
     def("SaveEntities", SaveEntities, cloudComPy_SaveEntities_doc);
 
     def("initCC", &initCC_py, cloudComPy_initCC_doc);
+
+    def("initCloudCompare", &initCloudCompare_py, cloudComPy_initCloudCompare_doc);
 
     def("isPluginDraco", &pyccPlugins::isPluginDraco, cloudComPy_isPluginDraco_doc);
 

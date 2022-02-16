@@ -96,7 +96,7 @@ bool pyccPlugins::_isPluginFbx = true;
 bool pyccPlugins::_isPluginFbx = false;
 #endif
 
-#ifdef WRAP_PLUGIN_QM3C2
+#ifdef PLUGIN_STANDARD_QM3C2
 bool pyccPlugins::_isPluginM3C2 = true;
 #else
 bool pyccPlugins::_isPluginM3C2 = false;
