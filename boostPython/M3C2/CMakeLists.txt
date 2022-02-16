@@ -42,6 +42,7 @@ target_sources( ${PROJECT_NAME} PRIVATE ${generated_ui_list} )
 target_include_directories( ${PROJECT_NAME} PUBLIC
     ${Boost_INCLUDE_DIRS}
     ${Python3_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../boostPython
     ${CMAKE_CURRENT_SOURCE_DIR}/../../pyAPI
@@ -58,6 +59,11 @@ target_link_libraries( ${PROJECT_NAME}
     )
 
 if ( UNIX )
+    target_link_libraries( ${PROJECT_NAME}
+        QM3C2_PLUGIN
+        )
+endif()
+if ( MSVC )
     target_link_libraries( ${PROJECT_NAME}
         QM3C2_PLUGIN
         )
