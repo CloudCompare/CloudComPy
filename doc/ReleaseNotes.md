@@ -2,6 +2,22 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## February 17, 2022 CloudComPy release:
+
+ - Allow keyword arguments on methods with optional arguments, to avoid to fill a long list of default values (issue #20).
+   See for instance test025.py in doc/PythonAPI/test025.py, where the methods have about 20 arguments with only two mandatory.
+   The keyword arguments are not yet implemented on methods without optional arguments.
+ - Debug traces from C++ are extended to messages from CloudCompare (the same we get on the CloudCompare GUI console).
+   Need the environment variable _CCTRACE_=ON
+ - Fix several problems related to las driver (issue #20):
+   - On Linux, set the locale to C (same as default US locale) to avoid conversion problems from string to float.
+   - The latest version of PDAL (2.3.0) is more restrictive on dimension names than 2.1.0.
+ - Python package restructuration to handle properly the standard plugins: to get access to the wrapped methods of a plugin,
+   this plugin must be explicitely imported: see for instance doc/PythonAPI/test030.py (plugin M3C2)
+   the plugin M3C2 is the only standard plugin wrapped for the moment (issue #16).
+ - Add some features to Rasterization (issue #21)
+ - Various improvements and bug fixes.
+
 ## January 30, 2022 CloudComPy release:
 
  - Build CloudCompare with all Plugins (a lot are not yet available in CloudComPy)
