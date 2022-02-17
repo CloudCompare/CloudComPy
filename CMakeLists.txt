@@ -86,3 +86,8 @@ add_subdirectory( boostPython )
 add_subdirectory( tests )
 add_subdirectory( doc )
 
+# --- Sphinx doc, post install (must be in last position)
+
+add_subdirectory( sphinxDoc )
+
+

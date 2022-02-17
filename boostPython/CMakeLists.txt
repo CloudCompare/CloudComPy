@@ -188,45 +188,8 @@ if(WIN32)
   endif()
 endif()
 
-# --- Sphinx Documentation
-
-set(RSTFILES
-    ccFacet.rst
-    ccMesh.rst
-    ccOctree.rst
-    ccPointCloud.rst
-    ccPolyline.rst
-    ccPrimitives.rst
-    cloudComPy.rst
-    colors.rst
-    DistanceComputationTools.rst
-    index.rst
-    introduction.rst
-    ScalarField.rst
-    )
-
-configure_file(conf.py.in conf.py)
-
-set(SPHINXOPTS )
-set(SOURCEDIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(ALLSPHINXOPTS -d doctrees ${SPHINXOPTS} ${SOURCEDIR})
-set(SPHINXBUILD sphinx-build)
-
-option( BUILD_REFERENCE_DOC "Build reference documentation for CloudComPy" OFF )
-if ( BUILD_REFERENCE_DOC )
-    add_custom_target(BUILD_HTML ALL
-        COMMAND ${CMAKE_COMMAND} -E make_directory html
-        COMMAND ${CMAKE_COMMAND} -E make_directory doctrees
-        COMMAND ${SPHINXBUILD} -c ${CMAKE_BINARY_DIR}/boostPython -b html ${ALLSPHINXOPTS} html
-        DEPENDS ${RSTFILES}  ${PROJECT_NAME}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
-
-    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html/
-        DESTINATION doc/CloudComPy
-        PATTERN ".buildinfo" EXCLUDE
-        )
-endif()
+# --- plugins
 
 add_subdirectory( M3C2 )
+
 

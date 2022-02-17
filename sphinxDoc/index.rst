@@ -1,6 +1,6 @@
 
 
-CloudComPy: a Python interface for CloudCompare
+cloudComPy: a Python interface for CloudCompare
 ###############################################
 
 .. toctree::
@@ -14,7 +14,7 @@ CloudComPy: a Python interface for CloudCompare
 .. toctree::
    :numbered:
    :maxdepth: 3
-   :caption: Reference documentation
+   :caption: cloudComPy Reference documentation
 
    cloudComPy.rst
    ccPointCloud.rst
@@ -29,6 +29,13 @@ CloudComPy: a Python interface for CloudCompare
    ccFacet.rst
    Neighbourhood.rst
    colors.rst
+
+.. toctree::
+   :numbered:
+   :maxdepth: 3
+   :caption: plugins Reference documentation
+   
+   M3C2.rst
    
 .. toctree::
    :numbered:

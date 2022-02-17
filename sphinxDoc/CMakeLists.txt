@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 ##########################################################################
 #                                                                        #
 #                              CloudComPy                                #
@@ -21,21 +19,46 @@
 #                                                                        #
 ##########################################################################
 
-"""
-M3C2 is a standard plugin of cloudComPy.
+message(STATUS "cloudComPy Sphinx doc generation")
 
-The availability of the plugin can be tested with the :py:meth:`cloudComPy.isPluginM3C2` function:
-::
+# --- Sphinx Documentation
 
-  isM3C2_available = cc.isPluginM3C2()
+set(RSTFILES
+    ccFacet.rst
+    ccMesh.rst
+    ccOctree.rst
+    ccPointCloud.rst
+    ccPolyline.rst
+    ccPrimitives.rst
+    cloudComPy.rst
+    colors.rst
+    DistanceComputationTools.rst
+    index.rst
+    introduction.rst
+    ScalarField.rst
+    )
 
-M3C2 is a submodule of cloudCompy:
-::
+set(SPHINXOPTS )
+set(SOURCEDIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(ALLSPHINXOPTS "-d ${CMAKE_CURRENT_BINARY_DIR}/doctrees ${SPHINXOPTS} ${SOURCEDIR}")
+set(SPHINXBUILD sphinx-build)
 
-  import cloudComPy as cc
-  # ...
-  if cc.isPluginM3C2():
-      import cloudComPy.M3C2
-      cc.M3C2.computeM3C2(...)
-"""
-from ._M3C2 import *
+configure_file(conf.py.in conf.py)
+
+configure_file(genSphinxDoc.sh.in genSphinxDoc.sh)
+
+add_custom_target(BUILD_HTML ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory doctrees
+    DEPENDS ${RSTFILES} _cloudComPy
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+option( BUILD_REFERENCE_DOC "Build reference documentation for CloudComPy" OFF )
+
+# --- Sphinx Documentation at install time
+
+if ( BUILD_REFERENCE_DOC )
+    message( STATUS "Sphinx documentation will be generated at install" )
+    install( SCRIPT postInstall.cmake )
+endif()
+

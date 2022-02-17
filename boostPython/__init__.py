@@ -21,6 +21,16 @@
 #                                                                        #
 ##########################################################################
 
+"""
+cloudComPy is the Python module interfacing cloudCompare library.
+Python3 access to cloudCompare objects is done like this:
+::
+
+  import cloudComPy as cc 
+  cc.initCC()  # to do once before using plugins
+  cloud = cc.loadPointCloud("/home/paul/CloudComPy/Data/boule.bin")
+ 
+"""
 from _cloudComPy import *
 initCC()
 initCloudCompare()

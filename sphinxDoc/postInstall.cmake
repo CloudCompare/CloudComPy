@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 ##########################################################################
 #                                                                        #
 #                              CloudComPy                                #
@@ -21,21 +19,8 @@
 #                                                                        #
 ##########################################################################
 
-"""
-M3C2 is a standard plugin of cloudComPy.
+message( STATUS "genere Sphinx doc ...")
+execute_process( COMMAND pwd )
+execute_process( COMMAND sh sphinxDoc/genSphinxDoc.sh )
+message( STATUS "... Done")
 
-The availability of the plugin can be tested with the :py:meth:`cloudComPy.isPluginM3C2` function:
-::
-
-  isM3C2_available = cc.isPluginM3C2()
-
-M3C2 is a submodule of cloudCompy:
-::
-
-  import cloudComPy as cc
-  # ...
-  if cc.isPluginM3C2():
-      import cloudComPy.M3C2
-      cc.M3C2.computeM3C2(...)
-"""
-from ._M3C2 import *

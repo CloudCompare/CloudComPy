@@ -1,0 +1,55 @@
+//##########################################################################
+//#                                                                        #
+//#                              CloudComPy                                #
+//#                                                                        #
+//#  This program is free software; you can redistribute it and/or modify  #
+//#  it under the terms of the GNU General Public License as published by  #
+//#  the Free Software Foundation; either version 3 of the License, or     #
+//#  any later version.                                                    #
+//#                                                                        #
+//#  This program is distributed in the hope that it will be useful,       #
+//#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
+//#  GNU General Public License for more details.                          #
+//#                                                                        #
+//#  You should have received a copy of the GNU General Public License     #
+//#  along with this program. If not, see <https://www.gnu.org/licenses/>. #
+//#                                                                        #
+//#          Copyright 2020-2021 Paul RASCLE www.openfields.fr             #
+//#                                                                        #
+//##########################################################################
+
+#ifndef M3C2_DOCSTRINGS_HPP_
+#define M3C2_DOCSTRINGS_HPP_
+
+
+const char* M3C2_doc= R"(
+M3C2 is a standard plugin of cloudComPy.
+
+The availability of the plugin can be tested with the isPluginM3C2 function:
+
+  isM3C2_available = cc.isPluginM3C2()
+
+M3C2 is a submodule of cloudCompy:
+::
+
+  import cloudComPy as cc
+  # ...
+  if cc.isPluginM3C2():
+      import cloudComPy.M3C2
+      cc.M3C2.computeM3C2(...)
+ )";
+
+const char* M3C2_computeM3C2_doc=R"(
+Compute Multiscale Model to Model Cloud Comparison (plugin M3C2)
+The computation parameters are regrouped in a text file: see the GUI to get a first version.
+
+:param list clouds: two or three clouds to compare. If a 3rd cloud is present, it will be used as core points.
+:param string paramFilename: full path of the parameter file
+
+:return: output cloud with computed scalar fields
+:rtype: ccPointCloud
+)";
+
+
+#endif /* M3C2_DOCSTRINGS_HPP_ */

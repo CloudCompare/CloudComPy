@@ -28,9 +28,11 @@
 #include <ccHObject.h>
 #include <ccHObjectCaster.h>
 #include "pyccTrace.h"
+#include "M3C2_DocStrings.hpp"
 
 #include "qM3C2Process.h"
 #include "qM3C2Dialog.h"
+
 
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
@@ -69,6 +71,8 @@ BOOST_PYTHON_MODULE(_M3C2)
 {
     using namespace boost::python;
 
-    def("computeM3C2", computeM3C2, return_value_policy<reference_existing_object>(), "doc");
+    scope().attr("__doc__") = M3C2_doc;
+
+    def("computeM3C2", computeM3C2, return_value_policy<reference_existing_object>(), M3C2_computeM3C2_doc);
 
 }
