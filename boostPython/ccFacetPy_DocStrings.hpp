@@ -32,9 +32,11 @@ The facet boundary can either be the convex hull (maxEdgeLength = 0)
 or the concave hull (maxEdgeLength > 0).
 
 :param GenericIndexedCloudPersist cloud: cloud from which to create the facet
-:param int,optional maxEdgeLength: max edge length (if possible - ignored if 0)
-:param bool,optional transferOwnership: if true and the input cloud is a ccPointCloud, it will be 'kept' as 'origin points'
-:param tuple(float),optional planeEquation: to input a custom plane equation: [a, b, c, d] as 'ax+by+cz=d'
+:param int,optional maxEdgeLength: max edge length (if possible - ignored if 0), default 0.
+:param bool,optional transferOwnership: if true and the input cloud is a ccPointCloud,
+    it will be 'kept' as 'origin points'. default False.
+:param tuple(float),optional planeEquation: to input a custom plane equation: 
+    [a, b, c, d] as 'ax+by+cz=d', default []
 
 :return: a facet (or 0 if an error occurred)
 :rtype: ccFacet

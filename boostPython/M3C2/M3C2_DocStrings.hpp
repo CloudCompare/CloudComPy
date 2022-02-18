@@ -19,22 +19,37 @@
 //#                                                                        #
 //##########################################################################
 
-#ifndef CLOUDCOMPY_PYAPI_CCTRACE_H_
-#define CLOUDCOMPY_PYAPI_CCTRACE_H_
+#ifndef M3C2_DOCSTRINGS_HPP_
+#define M3C2_DOCSTRINGS_HPP_
 
-#ifdef _PYTHONAPI_DEBUG_
-#include <iostream>
-#include <sstream>
 
-struct ccTrace
-{
-static bool _isTrace;
-static void settrace();
-};
+const char* M3C2_doc= R"(
+M3C2 is a standard plugin of cloudComPy.
 
-#define CCTRACE(msg) {if (ccTrace::_isTrace) std::cerr<<std::flush<<__FILE__<<" ["<<__LINE__<<"] : "<<msg<<std::endl<<std::flush;}
-#else
-#define CCTRACE(msg)
-#endif
+The availability of the plugin can be tested with the isPluginM3C2 function:
 
-#endif /* CLOUDCOMPY_PYAPI_CCTRACE_H_ */
+  isM3C2_available = cc.isPluginM3C2()
+
+M3C2 is a submodule of cloudCompy:
+::
+
+  import cloudComPy as cc
+  # ...
+  if cc.isPluginM3C2():
+      import cloudComPy.M3C2
+      cc.M3C2.computeM3C2(...)
+ )";
+
+const char* M3C2_computeM3C2_doc=R"(
+Compute Multiscale Model to Model Cloud Comparison (plugin M3C2)
+The computation parameters are regrouped in a text file: see the GUI to get a first version.
+
+:param list clouds: two or three clouds to compare. If a 3rd cloud is present, it will be used as core points.
+:param string paramFilename: full path of the parameter file
+
+:return: output cloud with computed scalar fields
+:rtype: ccPointCloud
+)";
+
+
+#endif /* M3C2_DOCSTRINGS_HPP_ */

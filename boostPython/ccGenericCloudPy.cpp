@@ -19,10 +19,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "ccGenericCloudPy.hpp"
-
-#include <boost/python/numpy.hpp>
-#include <boost/python.hpp>
 
 #include <ccBBox.h>
 #include <ReferenceCloud.h>
@@ -122,7 +120,9 @@ void export_ccGenericCloud()
     class_<ccHObject>("ccHObject", no_init)
         .def("setName", &ccHObject::setName, ccHObject_setName_doc)
         .def("getName", &ccHObject::getName, ccHObject_getName_doc)
-		.def("addChild", &addChild_py, addChild_py_overloads(ccHObject_addChild_doc))
+		.def("addChild", &addChild_py, addChild_py_overloads(
+		     (arg("self"), arg("child"), arg("dependencyFlags")= ccHObject::DEPENDENCY_FLAGS::DP_NONE, arg("insertIndex") = -1),
+		     ccHObject_addChild_doc))
         ;
 
     class_<ccShiftedObject, bases<ccHObject>, boost::noncopyable>("ccShiftedObject", no_init)
@@ -138,7 +138,10 @@ void export_ccGenericCloud()
 		;
 
     class_<ccGenericPointCloud, bases<CCCoreLib::GenericIndexedCloudPersist, ccShiftedObject>, boost::noncopyable>("ccGenericPointCloud", no_init)
-        .def("computeOctree", &ccGenericPointCloud::computeOctree, ccGenericPointCloud_computeOctree_overloads(ccGenericPointCloud_computeOctree_doc))
+        .def("computeOctree", &ccGenericPointCloud::computeOctree,
+             ccGenericPointCloud_computeOctree_overloads(
+             (arg("progressCb")=0, arg("autoAddChild")=true),
+             ccGenericPointCloud_computeOctree_doc ))
         .def("getOctree", &ccGenericPointCloud::getOctree, ccGenericPointCloud_getOctree_doc)
         .def("deleteOctree", &ccGenericPointCloud::deleteOctree, ccGenericPointCloud_deleteOctree_doc)
 		.def("getOwnBB", &ccGenericPointCloud_getOwnBB, ccGenericPointCloud_getOwnBB_doc)

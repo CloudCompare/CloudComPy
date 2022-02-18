@@ -9,7 +9,6 @@ cloudComPy module, functions
 .. autofunction:: computeCurvature
 .. autofunction:: computeFeature
 .. autofunction:: computeLocalDensity
-.. autofunction:: computeM3C2
 .. autofunction:: computeMomentOrder1
 .. autofunction:: computeNormals
 .. autofunction:: computeRoughness
@@ -56,6 +55,10 @@ cloudComPy module, functions
    :undoc-members:
 
 .. autoclass:: EmptyCellFillOption
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExportableFields
    :members:
    :undoc-members:
 

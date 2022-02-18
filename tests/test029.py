@@ -27,7 +27,6 @@ import math
 from gendata import getSampleCloud, dataDir, isCoordEqual
 import cloudComPy as cc
 import numpy as np
-from builtins import RuntimeError
 
 cc.initCC()  # to do once before using plugins or dealing with numpy
 
@@ -62,10 +61,10 @@ if not cloud.convertRGBToGreyScale():
 
 cloud.exportCoordToSF(True, True, True)
 cloud.setCurrentDisplayedScalarField(0)
-if not cloud.convertCurrentScalarFieldToColors():
+if not cloud.convertCurrentScalarFieldToColors(mixWithExistingColor=False):
     raise RuntimeError
 
-if not cloud.enhanceRGBWithIntensitySF(1):
+if not cloud.enhanceRGBWithIntensitySF(sfIdx=1):
     raise RuntimeError
 
 n1 = cloud.getNumberOfScalarFields()

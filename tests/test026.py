@@ -212,7 +212,7 @@ poly1.setClosed(True)
 
 cloud2 = cc.ccPointCloud("boundingBox2")
 poly2 = cc.ccPolyline(cloud2)
-poly2.addChild(cloud2)
+poly2.addChild(child=cloud2, dependencyFlags = cc.DEPENDENCY_FLAGS.DP_NONE, insertIndex=-1)
 cloud2.reserve(8)
 for i in range(8):
     cloud2.addPoint(cloud1.getPoint(i))

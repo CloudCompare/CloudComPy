@@ -1,0 +1,9 @@
+
+=============================
+M3C2 plugin
+=============================
+
+.. automodule:: cloudComPy.M3C2
+
+.. autofunction:: computeM3C2
+ 

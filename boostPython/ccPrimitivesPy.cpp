@@ -19,9 +19,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "ccPrimitivesPy.hpp"
-
-#include <boost/python.hpp>
 
 #include <CCGeom.h>
 #include <ccGLMatrixTpl.h>

@@ -19,29 +19,13 @@
 //#                                                                        #
 //##########################################################################
 
-#include <pyccTrace.h>
-#include "initCC.h"
-#include <QDir>
-#include <QStandardPaths>
-#include <QString>
+#ifndef CLOUDCOMPY_HPP_
+#define CLOUDCOMPY_HPP_
 
-QString initCC::moduleDir = "";
+// adjust to cover max overload values
+#define BOOST_PYTHON_MAX_ARITY 20
 
-//! find CloudCompare appDir (see pyAPI::pyCC_setupPaths)
-void initCC::init(const char* modulePath)
-{
-    QDir myModule = QString(modulePath); // module path is something like <installPath>/lib/cloudcompare/cloudComPy/__init__.py
-    bool ok = myModule.cdUp();
-    ok = myModule.cdUp();
-    moduleDir = myModule.absolutePath(); //moduleDir should be where the CloudCompare libs and plugins directory are:  <installPath>/lib/cloudcompare
-    CCTRACE("moduleDir: " << moduleDir.toStdString());
-}
+#include <boost/python/numpy.hpp>
+#include <boost/python.hpp>
 
-initCC::initCC()
-{
-}
-
-initCC::initCC(const initCC&)
-{
-}
-
+#endif

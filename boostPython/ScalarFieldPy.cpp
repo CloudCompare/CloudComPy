@@ -19,10 +19,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "ScalarFieldPy.hpp"
-
-#include <boost/python/numpy.hpp>
-#include <boost/python.hpp>
 
 #include <ccScalarField.h>
 #include <ScalarField.h>

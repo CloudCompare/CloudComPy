@@ -32,6 +32,12 @@ cc.initCC()  # to do once before using plugins or dealing with numpy
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 poly = cc.loadPolyline(getSamplePoly("poly1"))
+if poly.getBoundingBox() != [(-2.0, -3.0, 0.0), (3.0, 4.0, 0.0)]:
+    raise RuntimeError
+
+poly2 = cc.loadPolyline(filename=getSamplePoly("poly1"), mode=cc.CC_SHIFT_MODE.XYZ, z=10)
+if poly2.getBoundingBox() != [(-2.0, -3.0, 10.0), (3.0, 4.0, 10.0)]:
+    raise RuntimeError
 
 lg = poly.computeLength()
 if not math.isclose(lg, 16.885, rel_tol=1e-04):

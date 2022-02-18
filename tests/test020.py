@@ -163,5 +163,25 @@ if aMesh.size() != meshSize:
 aCloud=aMesh.getAssociatedCloud()
 if aCloud.size() != 10000:
     raise RuntimeError
+g= aCloud.computeGravityCenter()
+if not isCoordEqual(g, (-0.050, -0.050, 0.057), tol= 1.e-1):
+    raise RuntimeError
 
+# --- warning, non default values for keyword paramaters are not taken into account for all types of files!
+
+res = cc.importFile(filename=getSampleCloud2(3.0, 0, 0.1), mode=cc.CC_SHIFT_MODE.XYZ, z=10)
+aCloud=res[1][0]
+if aCloud.size() != 10000:
+    raise RuntimeError
+g= aCloud.computeGravityCenter()
+if not isCoordEqual(g, (-0.050, -0.050, 10.057), tol= 1.e-1):
+    raise RuntimeError
+
+res = cc.importFile(filename=os.path.join(dataDir, "meshCloud.bin"), mode=cc.CC_SHIFT_MODE.XYZ, z=10)
+aCloud=res[1][0]
+if aCloud.size() != 10000:
+    raise RuntimeError
+g= aCloud.computeGravityCenter()
+if not isCoordEqual(g, (-0.050, -0.050, 0.057), tol= 1.e-1):
+    raise RuntimeError
 

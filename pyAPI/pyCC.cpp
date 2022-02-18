@@ -96,7 +96,7 @@ bool pyccPlugins::_isPluginFbx = true;
 bool pyccPlugins::_isPluginFbx = false;
 #endif
 
-#ifdef WRAP_PLUGIN_QM3C2
+#ifdef PLUGIN_STANDARD_QM3C2
 bool pyccPlugins::_isPluginM3C2 = true;
 #else
 bool pyccPlugins::_isPluginM3C2 = false;
@@ -1870,13 +1870,26 @@ ccPointCloud* RasterizeToCloud(
 	ccRasterGrid::ProjectionType sfProjectionType,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy,
 	double customHeight,
-	ccBBox gridBBox)
+	ccBBox gridBBox,
+    bool export_perCellCount,
+    bool export_perCellMinHeight,
+    bool export_perCellMaxHeight,
+    bool export_perCellAvgHeight,
+    bool export_perCellHeightStdDev,
+    bool export_perCellHeightRange)
 {
 	CCTRACE("RasterizeToCloud");
+    std::vector<ccRasterGrid::ExportableFields> extraScalarFields = {};
+    if (export_perCellCount) extraScalarFields.push_back(ccRasterGrid::PER_CELL_COUNT);
+    if (export_perCellMinHeight) extraScalarFields.push_back(ccRasterGrid::PER_CELL_MIN_HEIGHT);
+    if (export_perCellMaxHeight) extraScalarFields.push_back(ccRasterGrid::PER_CELL_MAX_HEIGHT);
+    if (export_perCellAvgHeight) extraScalarFields.push_back(ccRasterGrid::PER_CELL_AVG_HEIGHT);
+    if (export_perCellHeightStdDev) extraScalarFields.push_back(ccRasterGrid::PER_CELL_HEIGHT_STD_DEV);
+    if (export_perCellHeightRange) extraScalarFields.push_back(ccRasterGrid::PER_CELL_HEIGHT_RANGE);
 	ccHObject* entity = Rasterize_(cloud, gridStep, vertDir, 1,
 			outputRasterZ, outputRasterSFs, outputRasterRGB, pathToImages, resample,
 			projectionType, sfProjectionType, emptyCellFillStrategy,
-			customHeight, gridBBox);
+			customHeight, gridBBox, extraScalarFields);
 	CCTRACE("entity:" << entity);
 	ccPointCloud* rcloud = ccHObjectCaster::ToPointCloud(entity);
 	return rcloud;
@@ -1895,12 +1908,26 @@ ccMesh* RasterizeToMesh(
 	ccRasterGrid::ProjectionType sfProjectionType,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy,
 	double customHeight,
-	ccBBox gridBBox)
+	ccBBox gridBBox,
+    bool export_perCellCount,
+    bool export_perCellMinHeight,
+    bool export_perCellMaxHeight,
+    bool export_perCellAvgHeight,
+    bool export_perCellHeightStdDev,
+    bool export_perCellHeightRange)
 {
+    CCTRACE("RasterizeToMesh");
+    std::vector<ccRasterGrid::ExportableFields> extraScalarFields = {};
+    if (export_perCellCount) extraScalarFields.push_back(ccRasterGrid::PER_CELL_COUNT);
+    if (export_perCellMinHeight) extraScalarFields.push_back(ccRasterGrid::PER_CELL_MIN_HEIGHT);
+    if (export_perCellMaxHeight) extraScalarFields.push_back(ccRasterGrid::PER_CELL_MAX_HEIGHT);
+    if (export_perCellAvgHeight) extraScalarFields.push_back(ccRasterGrid::PER_CELL_AVG_HEIGHT);
+    if (export_perCellHeightStdDev) extraScalarFields.push_back(ccRasterGrid::PER_CELL_HEIGHT_STD_DEV);
+    if (export_perCellHeightRange) extraScalarFields.push_back(ccRasterGrid::PER_CELL_HEIGHT_RANGE);
 	ccHObject* entity = Rasterize_(cloud, gridStep, vertDir, 2,
 			outputRasterZ, outputRasterSFs, outputRasterRGB, pathToImages, resample,
 			projectionType, sfProjectionType, emptyCellFillStrategy,
-			customHeight, gridBBox);
+			customHeight, gridBBox, extraScalarFields);
 	CCTRACE("entity:" << entity);
 	ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
 	return mesh;
@@ -1919,12 +1946,26 @@ ccHObject* RasterizeGeoTiffOnly(
 	ccRasterGrid::ProjectionType sfProjectionType,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy,
 	double customHeight,
-	ccBBox gridBBox)
+	ccBBox gridBBox,
+    bool export_perCellCount,
+    bool export_perCellMinHeight,
+    bool export_perCellMaxHeight,
+    bool export_perCellAvgHeight,
+    bool export_perCellHeightStdDev,
+    bool export_perCellHeightRange)
 {
+    CCTRACE("RasterizeGeoTiffOnly");
+    std::vector<ccRasterGrid::ExportableFields> extraScalarFields = {};
+    if (export_perCellCount) extraScalarFields.push_back(ccRasterGrid::PER_CELL_COUNT);
+    if (export_perCellMinHeight) extraScalarFields.push_back(ccRasterGrid::PER_CELL_MIN_HEIGHT);
+    if (export_perCellMaxHeight) extraScalarFields.push_back(ccRasterGrid::PER_CELL_MAX_HEIGHT);
+    if (export_perCellAvgHeight) extraScalarFields.push_back(ccRasterGrid::PER_CELL_AVG_HEIGHT);
+    if (export_perCellHeightStdDev) extraScalarFields.push_back(ccRasterGrid::PER_CELL_HEIGHT_STD_DEV);
+    if (export_perCellHeightRange) extraScalarFields.push_back(ccRasterGrid::PER_CELL_HEIGHT_RANGE);
 	ccHObject* entity = Rasterize_(cloud, gridStep, vertDir, 2,
 			outputRasterZ, outputRasterSFs, outputRasterRGB, pathToImages, resample,
 			projectionType, sfProjectionType, emptyCellFillStrategy,
-			customHeight, gridBBox);
+			customHeight, gridBBox, extraScalarFields);
 	return nullptr; // only image files created, no object returned
 }
 
@@ -2303,6 +2344,7 @@ bool ExportGeoTiff_(const QString& outputFilename,
 #endif
 }
 
+//! see CommandRasterize::process
 ccHObject* Rasterize_(
 	ccGenericPointCloud* cloud,
 	double gridStep,
@@ -2317,11 +2359,13 @@ ccHObject* Rasterize_(
 	ccRasterGrid::ProjectionType sfProjectionType,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy,
 	double customHeight,
-	ccBBox gridBBox)
+	ccBBox gridBBox,
+    const std::vector<ccRasterGrid::ExportableFields>& extraScalarFields)
 {
 	CCTRACE("Rasterize_");
 	CCTRACE("Cloud:" << cloud);
 	ccHObject* entity = nullptr;
+	bool isCellCount = false;
 	if (gridStep <= 0)
 	{
 		CCTRACE("Invalid grid step value!");
@@ -2398,6 +2442,12 @@ ccHObject* Rasterize_(
 			{
 				//we always compute the default 'height' layer
 				exportedFields.push_back(ccRasterGrid::PER_CELL_HEIGHT);
+				for(auto & item : extraScalarFields)
+				{
+				    exportedFields.push_back(item);
+				    if (item == ccRasterGrid::PER_CELL_COUNT)
+				        isCellCount = true;
+				}
 			}
 			catch (const std::bad_alloc&)
 			{
@@ -2490,6 +2540,7 @@ ccHObject* Rasterize_(
 				bands.height = true;
 				bands.rgb = false; //not a good idea to mix RGB and height values!
 				bands.allSFs = outputRasterSFs;
+				bands.density = isCellCount;
 			}
 			QString exportFilename = QString(pathToImages.c_str()) + "/" + cloud->getName() + "_RASTER_Z";
 			if (outputRasterSFs)
@@ -2511,6 +2562,7 @@ ccHObject* Rasterize_(
 				bands.rgb = true;
 				bands.height = false; //not a good idea to mix RGB and height values!
 				bands.allSFs = outputRasterSFs;
+                bands.density = isCellCount;
 			}
 			QString exportFilename = QString(pathToImages.c_str()) + "/" + cloud->getName() + "_RASTER_RGB.tif";
 

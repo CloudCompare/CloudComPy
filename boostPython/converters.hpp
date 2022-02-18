@@ -22,8 +22,7 @@
 #ifndef CONVERTERS_HPP_
 #define CONVERTERS_HPP_
 
-#include <boost/python.hpp>
-#include <Python.h>
+#include "cloudComPy.hpp"
 
 #include <QString>
 #include <vector>
@@ -781,7 +780,7 @@ void initializeConverters()
 {
     using namespace boost::python;
 #ifdef _PYTHONAPI_DEBUG_
-    ccTrace::settrace();
+    ccLogTrace::settrace();
 #endif
     // register the to-python converter
     CCTRACE("initializeConverters");

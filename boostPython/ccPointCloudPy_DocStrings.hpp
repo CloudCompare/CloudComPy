@@ -407,9 +407,9 @@ Otherwise, it fills all new elements with blank values.
 const char* ccPointCloudPy_scale_doc= R"(
 Scale the cloud with separate factors along the 3 directions x,y,z and an optional center (default: (0,0,0)).
 
-:param float x: scale x
-:param float y: scale y
-:param float z: scale z
+:param float fx: scale x
+:param float fy: scale y
+:param float fz: scale z
 :param tuple,optional center: (xc, yc, zc), default (0,0,0))";
 
 const char* ccPointCloudPy_setColor_doc= R"(

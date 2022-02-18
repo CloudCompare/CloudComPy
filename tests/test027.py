@@ -26,7 +26,7 @@ import sys
 import math
 from gendata import dataDir, createSymbolicLinks
 import cloudComPy as cc
-from minimalBoundingBox import findRotation
+from cloudComPy.minimalBoundingBox import findRotation
 
 createSymbolicLinks() # required for tests on build, before cc.initCC.init
 cc.initCC()  # to do once before using plugins or dealing with numpy

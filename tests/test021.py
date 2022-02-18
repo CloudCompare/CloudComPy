@@ -58,7 +58,7 @@ surface2 = polygon2.getSurface()
 if not math.isclose(surface2, 56, rel_tol=1e-02):
     raise RuntimeError
 
-polygon3 = cc.ccFacet.Create(cloudCropZ, 0.5)
+polygon3 = cc.ccFacet.Create(cloudCropZ, maxEdgeLength=0.5)
 center3 = polygon3.getCenter()
 normal3 = polygon3.getNormal()
 eq3 = polygon3.getPlaneEquation()
@@ -68,7 +68,7 @@ surface3 = polygon3.getSurface()
 if not math.isclose(surface3, 56, rel_tol=2e-02):
     raise RuntimeError
 
-polygon4 = cc.ccFacet.Create(cloudCropZ, 0.05, False, (0., 0., 1., 0.))
+polygon4 = cc.ccFacet.Create(cloud=cloudCropZ, maxEdgeLength=0.05, planeEquation=(0., 0., 1., 0.))
 center4 = polygon4.getCenter()
 normal4 = polygon4.getNormal()
 eq4 = polygon4.getPlaneEquation()

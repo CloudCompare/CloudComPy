@@ -19,10 +19,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "registrationToolsPy.hpp"
-
-#include <boost/python/numpy.hpp>
-#include <boost/python.hpp>
 
 #include <RegistrationTools.h>
 

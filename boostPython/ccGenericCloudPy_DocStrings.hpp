@@ -72,7 +72,7 @@ The octree bounding-box is automatically defined as the smallest
 WARNING: any previously attached octree will be deleted,
 even if the new octree computation failed.
 
-:param progressCb: (default None), use None
+:param progressCb,optional: (default None), use None
 :param bool,optional autoAddChild: (default `True`) whether to automatically add the computed octree as child of this cloud or not
 
 :return: the computed octree

@@ -50,7 +50,7 @@ message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
 # --- ----------------------------------------------------------
 # --- target boost.Python library: Python module cloudComPy
 
-project( cloudComPy VERSION 0.1 )
+project( _cloudComPy VERSION 0.1 )
 
 add_library( ${PROJECT_NAME} SHARED )
 
@@ -81,7 +81,7 @@ target_include_directories( ${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../pyAPI
     ${CCCoreLib_SOURCE_DIR}/include
-    ${QCC_DB_LIB_SOURCE_DIR}/include
+    ${QCC_DB_LIB_SOURCE_DIR}
     )
 
 target_link_libraries( ${PROJECT_NAME}
@@ -113,26 +113,27 @@ option(USE_CONDA_PACKAGES "Use Conda packages and environment for build: add com
 # --- Python scripts with added functions
 
 set(PYTHONAPI_SCRIPTS
+    __init__.py
 	minimalBoundingBox.py
 	)
 
 # --- install
 
 if( WIN32 OR APPLE)
-	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare)
-	install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare)
+	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare )
+	install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy )
 else()
-    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare)
+    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare )
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})
-    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
-    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
+    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON} )
+    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON}/cloudComPy)
     if (USE_CONDA_PACKAGES)
         install(PROGRAMS ${ENV_SCRIPTS} DESTINATION ${CMAKE_INSTALL_BINDIR})
     endif()
 endif()
 
 if(WIN32)
-  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME cloudComPy_d RELEASE_OUTPUT_NAME cloudComPy)
+  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _cloudComPy_d RELEASE_OUTPUT_NAME _cloudComPy)
 else()
   set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 endif()
@@ -187,42 +188,8 @@ if(WIN32)
   endif()
 endif()
 
-# --- Sphinx Documentation
+# --- plugins
 
-set(RSTFILES
-    ccFacet.rst
-    ccMesh.rst
-    ccOctree.rst
-    ccPointCloud.rst
-    ccPolyline.rst
-    ccPrimitives.rst
-    cloudComPy.rst
-    colors.rst
-    DistanceComputationTools.rst
-    index.rst
-    introduction.rst
-    ScalarField.rst
-    )
+add_subdirectory( M3C2 )
 
-configure_file(conf.py.in conf.py)
 
-set(SPHINXOPTS )
-set(SOURCEDIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(ALLSPHINXOPTS -d doctrees ${SPHINXOPTS} ${SOURCEDIR})
-set(SPHINXBUILD sphinx-build)
-
-option( BUILD_REFERENCE_DOC "Build reference documentation for CloudComPy" OFF )
-if ( BUILD_REFERENCE_DOC )
-    add_custom_target(BUILD_HTML ALL
-        COMMAND ${CMAKE_COMMAND} -E make_directory html
-        COMMAND ${CMAKE_COMMAND} -E make_directory doctrees
-        COMMAND ${SPHINXBUILD} -c ${CMAKE_BINARY_DIR}/boostPython -b html ${ALLSPHINXOPTS} html
-        DEPENDS ${RSTFILES}  ${PROJECT_NAME}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
-
-    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html/
-        DESTINATION doc/CloudComPy
-        PATTERN ".buildinfo" EXCLUDE
-        )
-endif()

@@ -39,6 +39,7 @@ activate()
         export PYTHONPATH=${CLOUDCOMPY_ROOT}/doc/PythonAPI_test:${PYTHONPATH}
         export LD_LIBRARY_PATH=${CLOUDCOMPY_ROOT}/lib/cloudcompare:${CLOUDCOMPY_ROOT}/lib/cloudcompare/plugins:${LD_LIBRARY_PATH}
         export CONDACLOUD_ACTIVATED=1
+        export LC_NUMERIC=C
     fi
 }
 

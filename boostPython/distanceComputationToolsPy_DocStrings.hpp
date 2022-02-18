@@ -179,8 +179,7 @@ the result will be (but more memory and time will be needed).
 
 :param GenericIndexedCloudPersist comparedCloud: the compared cloud
 :param GenericIndexedCloudPersist referenceCloud: the reference cloud
-:param intoctreeLevel: the octree level at which to compute the Distance Transform
-:param float,optional maxSearchDist: max search distance
+:param int octreeLevel: the octree level at which to compute the Distance Transform
        (or any negative value if no max distance is defined)
 :param GenericProgressCallback,optional progressCb: the client application can get some notification
        of the process progress through this callback mechanism (see GenericProgressCallback)

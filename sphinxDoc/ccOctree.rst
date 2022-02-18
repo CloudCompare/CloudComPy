@@ -49,6 +49,3 @@ Neighbourhood structures
 .. autoclass:: NearestNeighboursSearchStruct
    :members:
 
-.. autoclass:: NearestNeighboursSphericalSearchStruct
-   :show-inheritance:
-   :members:

@@ -19,10 +19,9 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "ccPointCloudPy.hpp"
 
-#include <boost/python/numpy.hpp>
-#include <boost/python.hpp>
 #include <boost/python/suite/indexing/map_indexing_suite.hpp>
 #include <boost/python/exception_translator.hpp>
 #include <exception>
@@ -507,14 +506,20 @@ void export_ccPointCloud()
         .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)
         .def("cloneThis", &ccPointCloud::cloneThis,
-             ccPointCloud_cloneThis_overloads(ccPointCloudPy_cloneThis_doc)[return_value_policy<reference_existing_object>()])
+             ccPointCloud_cloneThis_overloads(
+             (arg("destCloud")=0, arg("ignoreChildren")=false),
+             ccPointCloudPy_cloneThis_doc)[return_value_policy<reference_existing_object>()])
         .def("changeColorLevels", &changeColorLevels_py, ccPointCloudPy_changeColorLevels_doc)
-        .def("colorize", &ccPointCloud::colorize, ccPointCloud_colorize_overloads(ccPointCloudPy_colorize_doc))
+        .def("colorize", &ccPointCloud::colorize, ccPointCloud_colorize_overloads(
+         (arg("r"), arg("g"), arg("b"), arg("a")=1.0f),
+         ccPointCloudPy_colorize_doc))
         .def("computeGravityCenter", &ccPointCloud::computeGravityCenter, ccPointCloudPy_computeGravityCenter_doc)
         .def("colorsFromNPArray_copy", &colorsFromNPArray_copy, ccPointCloudPy_colorsFromNPArray_copy_doc)
         .def("coordsFromNPArray_copy", &coordsFromNPArray_copy, ccPointCloudPy_coordsFromNPArray_copy_doc)
         .def("convertCurrentScalarFieldToColors", &ccPointCloud::convertCurrentScalarFieldToColors,
-             convertCurrentScalarFieldToColors_overloads(ccPointCloudPy_convertCurrentScalarFieldToColors_doc))
+             convertCurrentScalarFieldToColors_overloads(
+             (arg("mixWithExistingColor")=false),
+             ccPointCloudPy_convertCurrentScalarFieldToColors_doc))
         .def("convertNormalToRGB", &ccPointCloud::convertNormalToRGB, ccPointCloudPy_convertNormalToRGB_doc)
         .def("convertNormalToDipDirSFs", convertNormalToDipDirSFs_py, ccPointCloudPy_convertNormalToDipDirSFs_doc)
         .def("convertRGBToGreyScale", &ccPointCloud::convertRGBToGreyScale, ccPointCloudPy_convertRGBToGreyScale_doc)
@@ -522,11 +527,15 @@ void export_ccPointCloud()
         .def("deleteAllScalarFields", &ccPointCloud::deleteAllScalarFields, ccPointCloudPy_deleteAllScalarFields_doc)
         .def("deleteScalarField", &ccPointCloud::deleteScalarField, ccPointCloudPy_deleteScalarField_doc)
         .def("enhanceRGBWithIntensitySF", &ccPointCloud::enhanceRGBWithIntensitySF,
-             enhanceRGBWithIntensitySF_overloads(ccPointCloudPy_enhanceRGBWithIntensitySF_doc))
+             enhanceRGBWithIntensitySF_overloads(
+             (arg("sfIdx"), arg("useCustomIntensityRange")=false, arg("minI")=0.0, arg("maxI")=1.0),
+             ccPointCloudPy_enhanceRGBWithIntensitySF_doc))
         .def("exportCoordToSF", &exportCoordToSF_py, ccPointCloudPy_exportCoordToSF_doc)
         .def("exportNormalToSF", &exportNormalToSF_py, ccPointCloudPy_exportNormalToSF_doc)
         .def("filterPointsByScalarValue", &ccPointCloud::filterPointsByScalarValue,
-             filterPointsByScalarValue_overloads(ccPointCloudPy_filterPointsByScalarValue_doc)
+             filterPointsByScalarValue_overloads(
+             (arg("minVal"), arg("maxVal"), arg("outside")=false),
+             ccPointCloudPy_filterPointsByScalarValue_doc)
              [return_value_policy<reference_existing_object>()])
         .def("fuse", &fuse_py, ccPointCloudPy_fuse_doc)
         .def("getCurrentDisplayedScalarField", &ccPointCloud::getCurrentDisplayedScalarField,
@@ -548,14 +557,24 @@ void export_ccPointCloud()
         .def("hasNormals", &ccPointCloud::hasNormals, ccPointCloudPy_hasNormals_doc)
         .def("hasScalarFields", &ccPointCloud::hasScalarFields, ccPointCloudPy_hasScalarFields_doc)
         .def("interpolateColorsFrom", &interpolateColorsFrom_py,
-             interpolateColorsFrom_py_overloads(ccPointCloudPy_interpolateColorsFrom_doc))
-        .def("orientNormalsWithFM", orientNormalsWithFM_py, orientNormalsWithFM_py_overloads(ccPointCloudPy_orientNormalsWithFM_doc))
-        .def("orientNormalsWithMST", orientNormalsWithMST_py, orientNormalsWithMST_py_overloads(ccPointCloudPy_orientNormalsWithMST_doc))
+             interpolateColorsFrom_py_overloads(
+             (arg("self"), arg("otherCloud"), arg("octreeLevel")=0),
+             ccPointCloudPy_interpolateColorsFrom_doc))
+        .def("orientNormalsWithFM", orientNormalsWithFM_py,
+             orientNormalsWithFM_py_overloads(
+             (arg("self"), arg("octreeLevel")=6),
+             ccPointCloudPy_orientNormalsWithFM_doc))
+        .def("orientNormalsWithMST", orientNormalsWithMST_py,
+             orientNormalsWithMST_py_overloads(
+             (arg("self"), arg("octreeLevel")=6),
+             ccPointCloudPy_orientNormalsWithMST_doc))
         .def("partialClone", &partialClone_py, ccPointCloudPy_partialClone_doc)
         .def("renameScalarField", &ccPointCloud::renameScalarField, ccPointCloudPy_renameScalarField_doc)
         .def("reserve", &ccPointCloud::reserve, ccPointCloudPy_reserve_doc)
         .def("resize", &ccPointCloud::resize, ccPointCloudPy_resize_doc)
-        .def("scale", &ccPointCloud::scale, ccPointCloud_scale_overloads(ccPointCloudPy_scale_doc))
+        .def("scale", &ccPointCloud::scale, ccPointCloud_scale_overloads(
+             (arg("fx"), arg("fy"), arg("fz"), arg("center")=CCVector3(0,0,0) ),
+             ccPointCloudPy_scale_doc))
         .def("setColor", &setColor_py, ccPointCloudPy_setColor_doc)
         .def("setColorGradient", &setColorGradient_py, ccPointCloudPy_setColorGradient_doc)
         .def("setColorGradientBanded", &setColorGradientBanded_py, ccPointCloudPy_setColorGradientBanded_doc)

@@ -116,7 +116,7 @@ cloud1.setName("cloud1")
 plane = cc.ccPlane.Fit(cloud1)
 mesh1 = cc.ccMesh.triangulate(cloud1, cc.TRIANGULATION_TYPES.DELAUNAY_2D_AXIS_ALIGNED)
 mesh1.setName("mesh1")
-cc.computeNormals([mesh1])
+cc.computeNormals([mesh1], computePerVertexNormals=False)
 res = cc.SaveEntities([cloud, cloud1, mesh1], os.path.join(dataDir, "cloudmesh.bin"))
 if res != cc.CC_FILE_ERROR.CC_FERR_NO_ERROR:
     raise RuntimeError

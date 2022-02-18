@@ -24,7 +24,7 @@
 import os
 import sys
 import math
-from gendata import getSampleCloud, dataDir, isCoordEqual
+from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual
 import cloudComPy as cc
 
 cc.initCC()  # to do once before using plugins or dealing with numpy
@@ -113,3 +113,15 @@ g = cloud.computeGravityCenter()
 print("gravityCenter: (%14.7e, %14.7e, %14.7e)" % (g[0], g[1], g[2]))
 if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03, 9.6193114e-03)):
     raise RuntimeError
+
+cloud = cc.loadPointCloud(getSampleCloud2(3.0, 0, 0.1))
+g= cloud.computeGravityCenter()
+if not isCoordEqual(g, (-0.050, -0.050, 0.057), tol= 1.e-1):
+    raise RuntimeError
+
+cloud2 = cc.loadPointCloud(getSampleCloud2(3.0, 0, 0.1), mode=cc.CC_SHIFT_MODE.XYZ, z=10)
+g= cloud2.computeGravityCenter()
+if not isCoordEqual(g, (-0.050, -0.050, 10.057), tol= 1.e-1):
+    raise RuntimeError
+
+

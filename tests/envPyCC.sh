@@ -27,3 +27,4 @@ CLOUDCOMPY_ROOT=$(realpath "${SCRIPT_DIR}/../..")
 export PYTHONPATH=${CLOUDCOMPY_ROOT}/lib/cloudcompare:${PYTHONPATH}
 export PYTHONPATH=${CLOUDCOMPY_ROOT}/doc/PythonAPI_test:${PYTHONPATH}
 export LD_LIBRARY_PATH=${CLOUDCOMPY_ROOT}/lib/cloudcompare/plugins:${LD_LIBRARY_PATH}
+export LC_NUMERIC=C

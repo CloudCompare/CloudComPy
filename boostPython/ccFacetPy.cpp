@@ -19,9 +19,8 @@
 //#                                                                        #
 //##########################################################################
 
+#include "cloudComPy.hpp"
 #include "ccFacetPy.hpp"
-
-#include <boost/python.hpp>
 
 #include <ccFacet.h>
 #include <ccHObject.h>
@@ -93,7 +92,9 @@ void export_ccFacet()
     class_<ccFacet, bases<ccHObject> >("ccFacet", ccFacetPy_ccFacet_doc, no_init)
         .def("Create",
              &CreatePy,
-             ccFacet_Create_overloads(ccFacetPy_Create_doc)[return_value_policy<reference_existing_object>()])
+             ccFacet_Create_overloads((arg("cloud"), arg("maxEdgeLength")=0,
+                     arg("transferOwnership")=false, arg("planeEquation")=std::vector<double>{}),
+                     ccFacetPy_Create_doc)[return_value_policy<reference_existing_object>()])
             .staticmethod("Create")
         .def("getNormal", &ccFacet::getNormal, ccFacetPy_getNormal_doc)
         .def("getRMS", &ccFacet::getRMS, ccFacetPy_getRMS_doc)

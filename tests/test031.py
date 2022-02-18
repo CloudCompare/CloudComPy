@@ -24,37 +24,38 @@
 import os
 import sys
 import math
-from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual, createSymbolicLinks
+
+os.environ["_CCTRACE_"]="ON"
+from gendata import dataDir, isCoordEqual
 import cloudComPy as cc
-createSymbolicLinks() # required for tests on build, before cc.initCC
+import numpy as np
 
 cc.initCC()  # to do once before using plugins or dealing with numpy
 
-cloud1 = cc.loadPointCloud(getSampleCloud2(3.0,0, 0.1))
-cloud1.setName("cloud1")
+# --- generate a set of coords and a scalar field
 
-mesh1 = cc.ccMesh.triangulate(cloud=cloud1, type=cc.TRIANGULATION_TYPES.DELAUNAY_2D_AXIS_ALIGNED, dim=2)
-mesh1.setName("mesh1")
+npts = 20000
+h = 2.
+x = np.float32(-5. + 10.*np.random.random((npts)))
+y = np.float32(-5. + 10.*np.random.random((npts)))
+z = np.float32(np.sin(h * np.sqrt(x**2 + y**2)) / np.sqrt(x**2 + y**2))
+coords = np.column_stack((x,y,z))
 
-cloud2=mesh1.samplePoints(densityBased=True, samplingParameter=50, withNormals=True)
-cloud2.setName("cloud2")
-if not math.isclose(cloud2.size(), 6489, rel_tol=0.20):
+# --- create the pointCloud, add the scalar field, save the cloud on .las format
+
+cl = cc.ccPointCloud("wave_%d"%h)
+cl.coordsFromNPArray_copy(coords)
+res = cl.exportCoordToSF(False, False, True)
+
+res = cc.SavePointCloud(cl, os.path.join(dataDir, "cloud_2.las"))
+
+# --- load the .las file, compute density, save
+
+cloud = cc.loadPointCloud(os.path.join(dataDir, "cloud_2.las"))
+isOk = cc.computeLocalDensity(cc.Density.DENSITY_3D, 0.16, [cloud])
+if not isOk:
     raise RuntimeError
 
-cloud3=mesh1.samplePoints(True, 500, withRGB=True)
-cloud3.setName("cloud3")
-if not math.isclose(cloud3.size(), 64641, rel_tol=0.20):
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud_2s.las"))
+if res:
     raise RuntimeError
-
-cloud4=mesh1.samplePoints(False, 1000, withTexture=True)
-cloud4.setName("cloud4")
-if not math.isclose(cloud4.size(), 1000, rel_tol=0.20):
-    raise RuntimeError
-
-cloud5=mesh1.samplePoints(False, 100000)
-cloud5.setName("cloud5")
-if not math.isclose(cloud5.size(), 100000, rel_tol=0.20):
-    raise RuntimeError
-
-cc.SaveEntities([cloud1, mesh1, cloud2, cloud3, cloud4, cloud5], os.path.join(dataDir, "samplemesh.bin"))
-
