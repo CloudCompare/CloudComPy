@@ -45,7 +45,11 @@ set(SPHINXBUILD sphinx-build)
 
 configure_file(conf.py.in conf.py)
 
-configure_file(genSphinxDoc.sh.in genSphinxDoc.sh)
+if (USE_CONDA_PACKAGES)
+    configure_file(genSphinxDoc.sh.in genSphinxDoc.sh)
+else()
+    configure_file(genSphinxDocConda.sh.in genSphinxDoc.sh)
+endif()
 
 add_custom_target(BUILD_HTML ALL
     COMMAND ${CMAKE_COMMAND} -E make_directory doctrees
