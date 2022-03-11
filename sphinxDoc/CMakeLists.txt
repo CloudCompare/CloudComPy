@@ -46,9 +46,9 @@ set(SPHINXBUILD sphinx-build)
 configure_file(conf.py.in conf.py)
 
 if (USE_CONDA_PACKAGES)
-    configure_file(genSphinxDoc.sh.in genSphinxDoc.sh)
-else()
     configure_file(genSphinxDocConda.sh.in genSphinxDoc.sh)
+else()
+    configure_file(genSphinxDoc.sh.in genSphinxDoc.sh)
 endif()
 
 add_custom_target(BUILD_HTML ALL
