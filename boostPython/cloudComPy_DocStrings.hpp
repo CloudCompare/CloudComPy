@@ -149,6 +149,12 @@ returns True if CloudComPy is built with the M3C2 plugin.
 :return: True if CloudComPy is built with the M3C2 plugin, False otherwise.
 :rtype: bool)";
 
+const char* cloudComPy_isPluginPCV_doc= R"(
+returns True if CloudComPy is built with the PCV plugin.
+
+:return: True if CloudComPy is built with the PCV plugin, False otherwise.
+:rtype: bool)";
+
 const char* cloudComPy_loadPointCloud_doc= R"(
 Load a 3D cloud from a file.
 

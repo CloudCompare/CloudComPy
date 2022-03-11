@@ -403,6 +403,8 @@ BOOST_PYTHON_MODULE(_cloudComPy)
 
     def("isPluginM3C2", &pyccPlugins::isPluginM3C2, cloudComPy_isPluginM3C2_doc);
 
+    def("isPluginPCV", &pyccPlugins::isPluginPCV, cloudComPy_isPluginPCV_doc);
+
     def("computeCurvature", computeCurvature, cloudComPy_computeCurvature_doc);
 
     def("computeFeature", computeFeature, cloudComPy_computeFeature_doc);

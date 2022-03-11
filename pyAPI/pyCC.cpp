@@ -102,6 +102,12 @@ bool pyccPlugins::_isPluginM3C2 = true;
 bool pyccPlugins::_isPluginM3C2 = false;
 #endif
 
+#ifdef PLUGIN_STANDARD_QPCV
+bool pyccPlugins::_isPluginPCV = true;
+#else
+bool pyccPlugins::_isPluginPCV = false;
+#endif
+
 // --- internal struct
 
 //* Extended file loading parameters, from plugins/ccCommandLineInterface.h

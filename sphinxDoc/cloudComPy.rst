@@ -24,6 +24,7 @@ cloudComPy module, functions
 .. autofunction:: isPluginDraco
 .. autofunction:: isPluginFbx
 .. autofunction:: isPluginM3C2
+.. autofunction:: isPluginPCV
 .. autofunction:: loadMesh
 .. autofunction:: loadPointCloud
 .. autofunction:: loadPolyline
