@@ -37,6 +37,7 @@ cloudComPy: a Python interface for CloudCompare
    
    M3C2.rst
    PCV.rst
+   HPR.rst
    
 .. toctree::
    :numbered:

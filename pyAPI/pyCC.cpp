@@ -108,6 +108,12 @@ bool pyccPlugins::_isPluginPCV = true;
 bool pyccPlugins::_isPluginPCV = false;
 #endif
 
+#ifdef PLUGIN_STANDARD_QHPR
+bool pyccPlugins::_isPluginHPR = true;
+#else
+bool pyccPlugins::_isPluginHPR = false;
+#endif
+
 // --- internal struct
 
 //* Extended file loading parameters, from plugins/ccCommandLineInterface.h

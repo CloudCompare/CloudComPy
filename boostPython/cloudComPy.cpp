@@ -405,6 +405,8 @@ BOOST_PYTHON_MODULE(_cloudComPy)
 
     def("isPluginPCV", &pyccPlugins::isPluginPCV, cloudComPy_isPluginPCV_doc);
 
+    def("isPluginHPR", &pyccPlugins::isPluginHPR, cloudComPy_isPluginHPR_doc);
+
     def("computeCurvature", computeCurvature, cloudComPy_computeCurvature_doc);
 
     def("computeFeature", computeFeature, cloudComPy_computeFeature_doc);

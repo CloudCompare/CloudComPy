@@ -155,6 +155,12 @@ returns True if CloudComPy is built with the PCV plugin.
 :return: True if CloudComPy is built with the PCV plugin, False otherwise.
 :rtype: bool)";
 
+const char* cloudComPy_isPluginHPR_doc= R"(
+returns True if CloudComPy is built with the HPR plugin.
+
+:return: True if CloudComPy is built with the HPR plugin, False otherwise.
+:rtype: bool)";
+
 const char* cloudComPy_loadPointCloud_doc= R"(
 Load a 3D cloud from a file.
 
