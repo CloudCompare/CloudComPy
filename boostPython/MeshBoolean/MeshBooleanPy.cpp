@@ -38,9 +38,11 @@
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
 
-ccPointCloud* computeMeshBoolean( ccPointCloud* cloud,
-                          CCVector3d viewPoint,
-                          int octreeLevel = 7)
+enum CSG_OPERATION { UNION, INTERSECT, DIFF, SYM_DIFF };
+
+ccPointCloud* computeMeshBoolean( ccMesh* mesh1,
+                                  ccMesh* mesh2,
+                                  CSG_OPERATION operation)
 {
     if(octreeLevel < 0 || octreeLevel > CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL)
     {
