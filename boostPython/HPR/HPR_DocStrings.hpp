@@ -41,21 +41,18 @@ HPR is a submodule of cloudCompy:
  )";
 
 const char* HPR_computeHPR_doc=R"(
-Compute Ambient Occlusion for mesh or point cloud. (plugin HPR)
+Compute Hidden Point Removal for point cloud. (plugin HPR)
 
-The ambient occlusion is either computed with normals samples on a sphere or upper Z hemisphere,
-or with normals provided with a cloud.
-Result on a ScalarField.
+The HPR algorithm creates a new cloud in which the hidden points are removed.
+The viewPoint coordinates are required.
+(With the CloudCompare GUI, the viewPoint is deduced from the 3D view).
 
-:param list clouds: list of clouds or meshes on witch to compute the ShadeVIS.
-:param ccpointCloud,optional cloudWithNormals: cloud with normals, default None
-:param int,optional rayCount: number of normals to use if sampled on a sphere or hemisphere, default 256.
-:param int,optional resolution: render context resolution, default 1024
-:param bool,optional is360: use the whole sphere or not (default false)
-:param bool,optional isClosedMesh: if the mesh is closed, accelerate the computation (default false)
+:param ccPointCloud cloud: input cloud, with hidden points.
+:param ccVector3D viewPoint: view point coordinates
+:param int,optional octreeLevel: octree level, default 7.
 
-:return: success
-:rtype: bool
+:return: point cloud without hidden points or None (if problem or no change)
+:rtype: ccPointCloud
 )";
 
 

@@ -86,17 +86,6 @@ ccPointCloud* computeHPR( ccPointCloud* cloud,
     if (visibleCells)
     {
         //DGM: we generate a new cloud now, instead of playing with the points visiblity! (too confusing for the user)
-        /*if (!cloud->isVisibilityTableInstantiated() && !cloud->resetVisibilityArray())
-        {
-            m_app->dispToConsole("Visibility array allocation failed! (Not enough memory?)",ccMainAppInterface::ERR_CONSOLE_MESSAGE);
-            return;
-        }
-
-        ccPointCloud::VisibilityTableType* pointsVisibility = cloud->getTheVisibilityArray();
-        assert(pointsVisibility);
-        pointsVisibility->fill(POINT_HIDDEN);
-        */
-
         CCCoreLib::ReferenceCloud visiblePoints(theOctree->associatedCloud());
 
         unsigned visiblePointCount = 0;
