@@ -68,8 +68,73 @@ struct GenericProgressCallbackWrap : CCCoreLib::GenericProgressCallback, wrapper
     }
 };
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2CloudDistances_overloads, CCCoreLib::DistanceComputationTools::computeCloud2CloudDistances, 3, 6)
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2MeshDistances_overloads, CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances, 3, 5)
+int computeCloud2CloudDistances_py( CCCoreLib::GenericIndexedCloudPersist* comparedCloud,
+                                    CCCoreLib::GenericIndexedCloudPersist* referenceCloud,
+                                    CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams& params,
+                                    CCCoreLib::GenericProgressCallback* progressCb=nullptr,
+                                    CCCoreLib::DgmOctree* compOctree=nullptr,
+                                    CCCoreLib::DgmOctree* refOctree=nullptr)
+{
+    ccPointCloud* compCloud = dynamic_cast<ccPointCloud*>(comparedCloud);
+    if (compCloud == nullptr)
+        return CCCoreLib::DistanceComputationTools::ERROR_NULL_COMPAREDCLOUD;
+    //does the cloud has already a temporary scalar field that we can use?
+    int sfIdx = compCloud->getScalarFieldIndexByName("Temp. approx. distances");
+    if (sfIdx < 0)
+    {
+        //we need to create a new scalar field
+        sfIdx = compCloud->addScalarField("Temp. approx. distances");
+        if (sfIdx < 0)
+        {
+            CCTRACE("Couldn't allocate a new scalar field for computing distances! Try to free some memory ...");
+            return CCCoreLib::DistanceComputationTools::ERROR_OUT_OF_MEMORY;
+        }
+    }
+    compCloud->setCurrentScalarField(sfIdx);
+    int ret = CCCoreLib::DistanceComputationTools::computeCloud2CloudDistances(compCloud, referenceCloud, params,
+                                                                               progressCb, compOctree, refOctree);
+    if (ret != 1)
+        return ret;
+    CCCoreLib::ScalarField* sf = compCloud->getScalarField(sfIdx);
+    sf->computeMinAndMax();
+    sf->setName("C2C absolute distances");
+    return 1;
+}
+
+int computeCloud2MeshDistances_py(  CCCoreLib::GenericIndexedCloudPersist* pointCloud,
+                                    CCCoreLib::GenericIndexedMesh* mesh,
+                                    CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams& params,
+                                    CCCoreLib::GenericProgressCallback* progressCb=nullptr,
+                                    CCCoreLib::DgmOctree* cloudOctree=nullptr)
+{
+    ccPointCloud* compCloud = dynamic_cast<ccPointCloud*>(pointCloud);
+    if (compCloud == nullptr)
+        return CCCoreLib::DistanceComputationTools::ERROR_NULL_COMPAREDCLOUD;
+    //does the cloud has already a temporary scalar field that we can use?
+    int sfIdx = compCloud->getScalarFieldIndexByName("Temp. approx. distances");
+    if (sfIdx < 0)
+    {
+        //we need to create a new scalar field
+        sfIdx = compCloud->addScalarField("Temp. approx. distances");
+        if (sfIdx < 0)
+        {
+            CCTRACE("Couldn't allocate a new scalar field for computing distances! Try to free some memory ...");
+            return CCCoreLib::DistanceComputationTools::ERROR_OUT_OF_MEMORY;
+        }
+    }
+    compCloud->setCurrentScalarField(sfIdx);
+    int ret = CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances(compCloud, mesh, params,
+                                                                              progressCb, cloudOctree);
+    if (ret != 1)
+        return ret;
+    CCCoreLib::ScalarField* sf = compCloud->getScalarField(sfIdx);
+    sf->computeMinAndMax();
+    sf->setName("C2M absolute distances");
+    return 1;
+}
+
+BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2CloudDistances_overloads, computeCloud2CloudDistances_py, 3, 6)
+BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2MeshDistances_overloads, computeCloud2MeshDistances_py, 3, 5)
 BOOST_PYTHON_FUNCTION_OVERLOADS(computeApproxCloud2CloudDistance_overloads, CCCoreLib::DistanceComputationTools::computeApproxCloud2CloudDistance, 3, 7)
 
 bool setSplitDistances(CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams& self, size_t count)
@@ -171,14 +236,14 @@ void export_distanceComputationTools()
     class_<CCCoreLib::DistanceComputationTools, boost::noncopyable>("DistanceComputationTools",
                                                                     distanceComputationToolsPy_DistanceComputationTools_doc, no_init)
         .def("computeCloud2CloudDistances",
-             &CCCoreLib::DistanceComputationTools::computeCloud2CloudDistances,
+             &computeCloud2CloudDistances_py,
              computeCloud2CloudDistances_overloads(
              (arg("comparedCloud"), arg("referenceCloud"), arg("params"),
               arg("progressCb")=0, arg("compOctree")=0, arg("refOctree")=0),
              distanceComputationToolsPy_computeCloud2CloudDistances_doc))
             .staticmethod("computeCloud2CloudDistances")
         .def("computeCloud2MeshDistances",
-             &CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances,
+             &computeCloud2MeshDistances_py,
              computeCloud2MeshDistances_overloads(
              (arg("pointCloud"), arg("mesh"), arg("params"), arg("progressCb")=0, arg("cloudOctree")=0),
              distanceComputationToolsPy_computeCloud2MeshDistances_doc))
