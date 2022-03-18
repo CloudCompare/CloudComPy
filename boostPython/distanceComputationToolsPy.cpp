@@ -67,6 +67,113 @@ struct GenericProgressCallbackWrap : CCCoreLib::GenericProgressCallback, wrapper
         return this->get_override("isCancelRequested")();
     }
 };
+std::vector<double> computeApproxCloud2CloudDistance_py(CCCoreLib::GenericIndexedCloudPersist* comparedCloud,
+                                                        CCCoreLib::GenericIndexedCloudPersist* referenceCloud,
+                                                        unsigned char octreeLevel = 7,
+                                                        PointCoordinateType maxSearchDist = 0,
+                                                        CCCoreLib::GenericProgressCallback* progressCb=nullptr,
+                                                        CCCoreLib::DgmOctree* compOctree=nullptr,
+                                                        CCCoreLib::DgmOctree* refOctree=nullptr)
+{
+    std::vector<double> result;
+    ccPointCloud* compCloud = dynamic_cast<ccPointCloud*>(comparedCloud);
+    if (compCloud == nullptr)
+    {
+        CCTRACE("comparedCloud is not of the right type");
+        return result;
+    }
+    //does the cloud has already a temporary scalar field that we can use?
+    int sfIdx = compCloud->getScalarFieldIndexByName("Approx. distances");
+    if (sfIdx < 0)
+    {
+        //we need to create a new scalar field
+        sfIdx = compCloud->addScalarField("Approx. distances");
+        if (sfIdx < 0)
+        {
+            CCTRACE("Couldn't allocate a new scalar field for computing approx. distances! Try to free some memory ...");
+            return result;
+        }
+    }
+    compCloud->setCurrentScalarField(sfIdx);
+    int ret = CCCoreLib::DistanceComputationTools::computeApproxCloud2CloudDistance(compCloud,
+                                                                                   referenceCloud,
+                                                                                   octreeLevel,
+                                                                                   maxSearchDist,
+                                                                                   progressCb,
+                                                                                   compOctree,
+                                                                                   refOctree);
+    if (ret < 0)
+        return result;
+    CCCoreLib::ScalarField* sf = compCloud->getScalarField(sfIdx);
+    ScalarType mean;
+    ScalarType variance;
+    sf->computeMinAndMax();
+    sf->computeMeanAndVariance(mean,&variance);
+    result.resize(5);
+    result[0] = sf->getMin();
+    result[1] = sf->getMax();
+    result[2] = mean;
+    result[3] = variance;
+    if (!compCloud->getOctree())
+        compCloud->computeOctree();
+    result[4] = compCloud->getOctree()->getCellSize(octreeLevel)/2.0;
+    return result;
+}
+
+std::vector<double> computeApproxCloud2MeshDistance_py(CCCoreLib::GenericIndexedCloudPersist* cloud,
+                                                       CCCoreLib::GenericIndexedMesh* mesh)
+{
+    std::vector<double> result;
+    ccPointCloud* compCloud = dynamic_cast<ccPointCloud*>(cloud);
+    if (compCloud == nullptr)
+    {
+        CCTRACE("comparedCloud is not of the right type");
+        return result;
+    }
+    //does the cloud has already a temporary scalar field that we can use?
+    int sfIdx = compCloud->getScalarFieldIndexByName("Approx. distances");
+    if (sfIdx < 0)
+    {
+        //we need to create a new scalar field
+        sfIdx = compCloud->addScalarField("Approx. distances");
+        if (sfIdx < 0)
+        {
+            CCTRACE("Couldn't allocate a new scalar field for computing approx. distances! Try to free some memory ...");
+            return result;
+        }
+    }
+    compCloud->setCurrentScalarField(sfIdx);
+    CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams c2mParams;
+    {
+        c2mParams.octreeLevel = 7;
+        c2mParams.maxSearchDist = 0;
+        c2mParams.useDistanceMap = true;
+        c2mParams.signedDistances = false;
+        c2mParams.flipNormals = false;
+        c2mParams.multiThread = false;
+    }
+    int ret = CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances( compCloud,
+                                                                               mesh,
+                                                                               c2mParams,
+                                                                               nullptr,
+                                                                               nullptr);
+    if (ret != 1)
+        return result;
+    CCCoreLib::ScalarField* sf = compCloud->getScalarField(sfIdx);
+    ScalarType mean;
+    ScalarType variance;
+    sf->computeMinAndMax();
+    sf->computeMeanAndVariance(mean,&variance);
+    result.resize(5);
+    result[0] = sf->getMin();
+    result[1] = sf->getMax();
+    result[2] = mean;
+    result[3] = variance;
+    if (!compCloud->getOctree())
+        compCloud->computeOctree();
+    result[4] = compCloud->getOctree()->getCellSize(7)/2.0;
+    return result;
+}
 
 int computeCloud2CloudDistances_py( CCCoreLib::GenericIndexedCloudPersist* comparedCloud,
                                     CCCoreLib::GenericIndexedCloudPersist* referenceCloud,
@@ -135,7 +242,7 @@ int computeCloud2MeshDistances_py(  CCCoreLib::GenericIndexedCloudPersist* point
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2CloudDistances_overloads, computeCloud2CloudDistances_py, 3, 6)
 BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2MeshDistances_overloads, computeCloud2MeshDistances_py, 3, 5)
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeApproxCloud2CloudDistance_overloads, CCCoreLib::DistanceComputationTools::computeApproxCloud2CloudDistance, 3, 7)
+BOOST_PYTHON_FUNCTION_OVERLOADS(computeApproxCloud2CloudDistance_overloads, computeApproxCloud2CloudDistance_py, 2, 7)
 
 bool setSplitDistances(CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams& self, size_t count)
 {
@@ -249,12 +356,16 @@ void export_distanceComputationTools()
              distanceComputationToolsPy_computeCloud2MeshDistances_doc))
             .staticmethod("computeCloud2MeshDistances")
         .def("computeApproxCloud2CloudDistance",
-             &CCCoreLib::DistanceComputationTools::computeApproxCloud2CloudDistance,
+             &computeApproxCloud2CloudDistance_py,
              computeApproxCloud2CloudDistance_overloads(
-             (arg("comparedCloud"), arg("referenceCloud"), arg("octreeLevel"),
+             (arg("comparedCloud"), arg("referenceCloud"), arg("octreeLevel")=7,
               arg("maxSearchDist")=0, arg("progressCb")=0, arg("compOctree")=0, arg("refOctree")=0),
              distanceComputationToolsPy_computeApproxCloud2CloudDistance_doc))
             .staticmethod("computeApproxCloud2CloudDistance")
+        .def("computeApproxCloud2MeshDistance",
+              &computeApproxCloud2MeshDistance_py,
+              distanceComputationToolsPy_computeApproxCloud2MeshDistance_doc)
+             .staticmethod("computeApproxCloud2MeshDistance")
         ;
     // TODO: methods to add
 //    static int computeCloud2ConeEquation(GenericIndexedCloudPersist* cloud, const CCVector3& coneP1, const CCVector3& coneP2, const PointCoordinateType coneR1, const PointCoordinateType coneR2, bool signedDistances = true, bool solutionType = false, double* rms = nullptr);

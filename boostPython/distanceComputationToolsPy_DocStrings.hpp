@@ -179,8 +179,8 @@ the result will be (but more memory and time will be needed).
 
 :param GenericIndexedCloudPersist comparedCloud: the compared cloud
 :param GenericIndexedCloudPersist referenceCloud: the reference cloud
-:param int octreeLevel: the octree level at which to compute the Distance Transform
-       (or any negative value if no max distance is defined)
+:param int,optional octreeLevel: the octree level at which to compute the Distance Transform, default 7
+:param double,optional maxSearchDist: Maximum search distance, default 0.
 :param GenericProgressCallback,optional progressCb: the client application can get some notification
        of the process progress through this callback mechanism (see GenericProgressCallback)
        default None, not available yet.
@@ -189,7 +189,20 @@ the result will be (but more memory and time will be needed).
 :param DgmOctree,optional refOctree: the pre-computed octree of the reference cloud
        (warning: both octrees must have the same cubical bounding-box - it is automatically computed if 0)
 
-:return: 0 if ok, a negative value otherwise
-:rtype: int )";
+:return: a list of statistics (min, max, mean, variance, max error) or an empty list if problem
+:rtype: list )";
+
+const char* distanceComputationToolsPy_computeApproxCloud2MeshDistance_doc= R"(
+Computes approximate distances between a point cloud and a mesh.
+
+:param GenericIndexedCloudPersist pointCloud: the compared cloud
+       (the distances will be computed on these points)
+:param GenericIndexedMesh mesh: the reference mesh
+
+:return: a list of statistics (min, max, mean, variance, max error) or an empty list if problem
+:rtype: list )";
+
+
+
 
 #endif /* DISTANCECOMPUTATIONTOOLSPY_DOCSTRINGS_HPP_ */
