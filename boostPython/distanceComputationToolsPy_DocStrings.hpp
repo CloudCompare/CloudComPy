@@ -202,7 +202,25 @@ Computes approximate distances between a point cloud and a mesh.
 :return: a list of statistics (min, max, mean, variance, max error) or an empty list if problem
 :rtype: list )";
 
+const char* distanceComputationToolsPy_determineBestOctreeLevel_doc= R"(
+compute the best octree level to use for cloud to mesh or cloud distance calculation (C2M or C2C).
 
+**WARNING** if a scalar field "Approx. distances" is present in the compared cloud, it will be used
+for the determination: in case of several distance computations with different clouds or meshes,
+remove it before the call.
+
+:param ccPointCloud compCloud: the compared cloud
+       (the distances will be computed on these points)
+:param GenericIndexedMesh,optional refMesh: the reference mesh, default None
+       (if None, referenceCloud must be provided).
+       (the distances will be computed relatively to its triangles)
+:param ccPointCloud,optional refCloud: the reference cloud, default None
+       (if None, mesh must be provided).
+       (the distances will be computed relatively to these points)
+:param double,optional maxSearchDist: Maximum search distance, default 0.
+
+:return: the best octree level to use for C2M or C2C.
+:rtype: int)";
 
 
 #endif /* DISTANCECOMPUTATIONTOOLSPY_DOCSTRINGS_HPP_ */
