@@ -201,7 +201,8 @@ int computeCloud2CloudDistances_py( CCCoreLib::GenericIndexedCloudPersist* compa
     compCloud->setCurrentScalarField(sfIdx);
     int ret = CCCoreLib::DistanceComputationTools::computeCloud2CloudDistances(compCloud, referenceCloud, params,
                                                                                progressCb, compOctree, refOctree);
-    if (ret != 1)
+    CCTRACE("return code computeCloud2CloudDistances: " << ret);
+    if (ret <= 0)
         return ret;
     CCCoreLib::ScalarField* sf = compCloud->getScalarField(sfIdx);
     sf->computeMinAndMax();
