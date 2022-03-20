@@ -21,6 +21,6 @@
 
 message( STATUS "genere Sphinx doc ...")
 execute_process( COMMAND pwd )
-execute_process( COMMAND sh sphinxDoc/genSphinxDoc.sh )
+execute_process( COMMAND bash sphinxDoc/genSphinxDoc.sh )
 message( STATUS "... Done")
 

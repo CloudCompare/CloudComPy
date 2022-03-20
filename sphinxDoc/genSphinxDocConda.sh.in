@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 . @CMAKE_INSTALL_PREFIX@/bin/condaCloud.sh activate CloudComPy39
 rm @SPHINXDOCTREES@/*.doctree
