@@ -239,6 +239,11 @@
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_STANDARD_QMESH_BOOLEAN",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_STANDARD_QMPLANE",
           "value": "True",
           "type": "BOOL"
@@ -342,6 +347,16 @@
           "name": "EIGEN_ROOT_DIR",
           "value": "${anacondaRoot}/Library/include/eigen3",
           "type": "PATH"
+        },
+        {
+          "name": "LIBIGL_INCLUDE_DIR",
+          "value": "C:/Users/paulr/CloudComPy/libigl/libigl/include",
+          "type": "PATH"
+        },
+        {
+          "name": "LIBIGL_RELEASE_LIBRARY_FILE",
+          "value": "C:/Users/paulr/CloudComPy/libigl/libigl/out/install/x64-Release/lib/igl.lib",
+          "type": "FILEPATH"
         },
         {
           "name": "OPENCV_DIR",

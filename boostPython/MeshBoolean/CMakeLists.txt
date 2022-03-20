@@ -104,7 +104,7 @@ else()
 endif()
 
 if(WIN32)
-  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _MeshBoolean_d RELEASE_OUTPUT_NAME _PCV)
+  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _MeshBoolean_d RELEASE_OUTPUT_NAME _MeshBoolean)
 else()
   set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 endif()
