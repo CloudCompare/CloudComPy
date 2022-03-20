@@ -193,5 +193,6 @@ endif()
 add_subdirectory( M3C2 )
 add_subdirectory( PCV )
 add_subdirectory( HPR )
+add_subdirectory( MeshBoolean )
 
 

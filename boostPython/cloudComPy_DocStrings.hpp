@@ -143,22 +143,28 @@ returns True if CloudComPy is built with the Fbx plugin.
 :return: True if CloudComPy is built with the Fbx plugin, False otherwise.
 :rtype: bool)";
 
+const char* cloudComPy_isPluginHPR_doc= R"(
+returns True if CloudComPy is built with the HPR plugin.
+
+:return: True if CloudComPy is built with the HPR plugin, False otherwise.
+:rtype: bool)";
+
 const char* cloudComPy_isPluginM3C2_doc= R"(
 returns True if CloudComPy is built with the M3C2 plugin.
 
 :return: True if CloudComPy is built with the M3C2 plugin, False otherwise.
 :rtype: bool)";
 
+const char* cloudComPy_isPluginMeshBoolean_doc= R"(
+returns True if CloudComPy is built with the MeshBoolean plugin.
+
+:return: True if CloudComPy is built with the MeshBoolean plugin, False otherwise.
+:rtype: bool)";
+
 const char* cloudComPy_isPluginPCV_doc= R"(
 returns True if CloudComPy is built with the PCV plugin.
 
 :return: True if CloudComPy is built with the PCV plugin, False otherwise.
-:rtype: bool)";
-
-const char* cloudComPy_isPluginHPR_doc= R"(
-returns True if CloudComPy is built with the HPR plugin.
-
-:return: True if CloudComPy is built with the HPR plugin, False otherwise.
 :rtype: bool)";
 
 const char* cloudComPy_loadPointCloud_doc= R"(

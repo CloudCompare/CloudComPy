@@ -114,6 +114,12 @@ bool pyccPlugins::_isPluginHPR = true;
 bool pyccPlugins::_isPluginHPR = false;
 #endif
 
+#ifdef PLUGIN_STANDARD_QMESH_BOOLEAN
+bool pyccPlugins::_isPluginMeshBoolean = true;
+#else
+bool pyccPlugins::_isPluginMeshBoolean = false;
+#endif
+
 // --- internal struct
 
 //* Extended file loading parameters, from plugins/ccCommandLineInterface.h

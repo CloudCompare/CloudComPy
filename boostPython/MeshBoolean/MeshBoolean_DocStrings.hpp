@@ -41,21 +41,17 @@ MeshBoolean is a submodule of cloudCompy:
  )";
 
 const char* MeshBoolean_computeMeshBoolean_doc=R"(
-Compute Ambient Occlusion for mesh or point cloud. (plugin MeshBoolean)
+Compute boolean operation on two meshes. (plugin MeshBoolean)
 
-The ambient occlusion is either computed with normals samples on a sphere or upper Z hemisphere,
-or with normals provided with a cloud.
-Result on a ScalarField.
+The boolean operation are UNION, INTERSECT, DIFF, SYM_DIFF.
+Original meshes are not modified, a new mesh is built.
 
-:param list clouds: list of clouds or meshes on witch to compute the ShadeVIS.
-:param ccpointCloud,optional cloudWithNormals: cloud with normals, default None
-:param int,optional rayCount: number of normals to use if sampled on a sphere or hemisphere, default 256.
-:param int,optional resolution: render context resolution, default 1024
-:param bool,optional is360: use the whole sphere or not (default false)
-:param bool,optional isClosedMesh: if the mesh is closed, accelerate the computation (default false)
+:param ccMesh MeshA: first mesh.
+:param ccMesh MeshB: second mesh.
+:param CSG_OPERATION operation: from cc.MeshBoolean.CSG_OPERATION (UNION, INTERSECT, DIFF, SYM_DIFF)
 
-:return: success
-:rtype: bool
+:return: new mesh or None
+:rtype: ccMesh
 )";
 
 

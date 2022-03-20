@@ -56,7 +56,9 @@ struct pyccPlugins
     static bool _isPluginPCV;
     static bool isPluginPCV() { return _isPluginPCV; };
     static bool _isPluginHPR;
-    static bool isPluginHPR() { return _isPluginPCV; };
+    static bool isPluginHPR() { return _isPluginHPR; };
+    static bool _isPluginMeshBoolean;
+    static bool isPluginMeshBoolean() { return _isPluginMeshBoolean; };
 };
 
 enum CC_DIRECTION

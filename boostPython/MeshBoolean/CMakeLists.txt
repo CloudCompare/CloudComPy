@@ -48,6 +48,8 @@ target_include_directories( ${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../../pyAPI
     ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qMeshBoolean/include
     ${CCCoreLib_SOURCE_DIR}/include
+    ${EIGEN_ROOT_DIR}
+    ${LIBIGL_INCLUDE_DIR}
     ${QCC_DB_LIB_SOURCE_DIR}
     )
 
@@ -60,12 +62,12 @@ target_link_libraries( ${PROJECT_NAME}
 
 if ( UNIX )
     target_link_libraries( ${PROJECT_NAME}
-        QMeshBoolean_PLUGIN
+        QMESH_BOOLEAN_PLUGIN
         )
 endif()
 if ( MSVC )
     target_link_libraries( ${PROJECT_NAME}
-        QMeshBoolean_PLUGIN
+        QMESH_BOOLEAN_PLUGIN
         )
 endif()
 
