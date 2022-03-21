@@ -2,6 +2,20 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## March 20, 2022 CloudComPy release:
+
+ - Add access to plugin PCV (ShadeVis) on Windows and Linux (issue #24). See test032.py.
+ - Add access to plugin HPR on Windows and Linux (issue#25). See test033.py.
+ - Add access to plugin MeshBoolean on Windows and Linux. See test034.py.
+ - The wrapping of the C2M and C2C algorithms has been rewritten.
+   In some situations, the results were wrong (issue #26).
+   Methods have been added or rewritten to facilitate parameterization 
+   that gives correct performance: ComputeApproxDistance methods with statistics, 
+   method for estimating the correct octree level.
+   Automatic tests (test009.py, test010.py, test022.py) have been adapted.
+   The performance tests (on Linux) shows no degradation between the GUI and CloudComPy.
+ - Various improvements and bug fixes.
+
 ## February 17, 2022 CloudComPy release:
 
  - Allow keyword arguments on methods with optional arguments, to avoid to fill a long list of default values (issue #20).
