@@ -144,6 +144,11 @@ Color memory is reserved automatically in the cloud.
 const char* ccPointCloudPy_coordsFromNPArray_copy_doc= R"(
 Set cloud coordinates from a Numpy array (nbPoints,3).
 
+**WARNING** Be sure to have an array data in C-style contiguous order,
+for instance, a transpose operation do not reorder the data in memory.
+Check the boolean ``array.flags['C_CONTIGUOUS']`` and, if ``False``,
+reorder with ``array.copy(order='C')``.
+
 Cloud memory is reserved /resized automatically
 
 :param ndarray array: a Numpy array (nbPoints,3).

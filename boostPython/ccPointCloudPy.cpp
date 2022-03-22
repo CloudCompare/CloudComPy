@@ -103,7 +103,7 @@ void coordsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
     PointCoordinateType *s = reinterpret_cast<PointCoordinateType*>(array.get_data());
     PointCoordinateType *d = (PointCoordinateType*)self.getPoint(0);
     memcpy(d, s, 3*nRows*sizeof(PointCoordinateType));
-    CCTRACE("copied " << 3*nRows*sizeof(PointCoordinateType));
+    CCTRACE("copied " << 3*nRows*sizeof(PointCoordinateType) << " bytes");
 }
 
 void colorsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
@@ -138,7 +138,7 @@ void colorsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
     ColorCompType* s = reinterpret_cast<ColorCompType*>(array.get_data());
     ColorCompType* d = (ColorCompType*)(self.rgbaColors()->data());
     memcpy(d, s, 4*nRows*sizeof(ColorCompType));
-    CCTRACE("copied " << 4*nRows*sizeof(ColorCompType));
+    CCTRACE("copied " << 4*nRows*sizeof(ColorCompType) << " bytes");
     self.colorsHaveChanged();
 }
 
