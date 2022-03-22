@@ -191,5 +191,10 @@ endif()
 # --- plugins
 
 add_subdirectory( M3C2 )
+add_subdirectory( PCV )
+add_subdirectory( HPR )
+if ( PLUGIN_STANDARD_QMESH_BOOLEAN )
+    add_subdirectory( MeshBoolean )
+endif()
 
 

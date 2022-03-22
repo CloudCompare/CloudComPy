@@ -401,7 +401,13 @@ BOOST_PYTHON_MODULE(_cloudComPy)
 
     def("isPluginFbx", &pyccPlugins::isPluginFbx, cloudComPy_isPluginFbx_doc);
 
+    def("isPluginHPR", &pyccPlugins::isPluginHPR, cloudComPy_isPluginHPR_doc);
+
     def("isPluginM3C2", &pyccPlugins::isPluginM3C2, cloudComPy_isPluginM3C2_doc);
+
+    def("isPluginMeshBoolean", &pyccPlugins::isPluginMeshBoolean, cloudComPy_isPluginMeshBoolean_doc);
+
+    def("isPluginPCV", &pyccPlugins::isPluginPCV, cloudComPy_isPluginPCV_doc);
 
     def("computeCurvature", computeCurvature, cloudComPy_computeCurvature_doc);
 

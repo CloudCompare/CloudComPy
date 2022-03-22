@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 ##########################################################################
 #                                                                        #
 #                              CloudComPy                                #
@@ -19,8 +21,23 @@
 #                                                                        #
 ##########################################################################
 
-message( STATUS "genere Sphinx doc ...")
-execute_process( COMMAND pwd )
-execute_process( COMMAND bash sphinxDoc/genSphinxDoc.sh )
-message( STATUS "... Done")
+import os
+import sys
+import math
+os.environ["_CCTRACE_"]="ON"
 
+from gendata import getSampleCloud, dataDir
+import cloudComPy as cc
+
+if cc.isPluginHPR():
+    import cloudComPy.HPR
+    
+    cloud = cc.loadPointCloud(getSampleCloud(5.0))
+    
+    cloudCut = cc.HPR.computeHPR(cloud, (0.,-15., 25.))
+    
+    nbPts = cloudCut.size()
+    if not math.isclose(901000, nbPts, rel_tol = 1.e-2):
+        raise RuntimeError
+    
+    cc.SaveEntities([cloudCut, cloudCut], os.path.join(dataDir, "HPR.bin"))

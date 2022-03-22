@@ -102,6 +102,24 @@ bool pyccPlugins::_isPluginM3C2 = true;
 bool pyccPlugins::_isPluginM3C2 = false;
 #endif
 
+#ifdef PLUGIN_STANDARD_QPCV
+bool pyccPlugins::_isPluginPCV = true;
+#else
+bool pyccPlugins::_isPluginPCV = false;
+#endif
+
+#ifdef PLUGIN_STANDARD_QHPR
+bool pyccPlugins::_isPluginHPR = true;
+#else
+bool pyccPlugins::_isPluginHPR = false;
+#endif
+
+#ifdef PLUGIN_STANDARD_QMESH_BOOLEAN
+bool pyccPlugins::_isPluginMeshBoolean = true;
+#else
+bool pyccPlugins::_isPluginMeshBoolean = false;
+#endif
+
 // --- internal struct
 
 //* Extended file loading parameters, from plugins/ccCommandLineInterface.h
@@ -188,10 +206,10 @@ pyCC* initCloudCompare()
         // TODO: load the plugins(duplicated Code from CloudCompare, not in library):
         // requires compilation of ccPluginManager.cpp from CloudCompare/commons, not provided in a library (only in CloudCompare executable)
         pyCC_setupPaths(s_pyCCInternals);
-        ccPluginManager::get().setPaths(s_pyCCInternals->m_PluginPaths);
+        ccPluginManager::Get().setPaths(s_pyCCInternals->m_PluginPaths);
         for (int i = 0; i < s_pyCCInternals->m_PluginPaths.size(); ++i)
             CCTRACE("pluginPath: " << s_pyCCInternals->m_PluginPaths.at(i).toStdString());
-        ccPluginManager::get().loadPlugins();
+        ccPluginManager::Get().loadPlugins();
     }
     return s_pyCCInternals;
 }

@@ -24,6 +24,10 @@
 import os
 import sys
 import math
+import psutil
+
+os.environ["_CCTRACE_"]="ON"
+
 from gendata import getSampleCloud, getSamplePoly, dataDir, isCoordEqual, createSymbolicLinks
 import cloudComPy as cc
 
@@ -52,9 +56,11 @@ cloud3 = res.aligned
 cloud3.applyRigidTransformation(tr2)
 cloud3.setName("cloud2_transformed_afterICP")
 
+nbCpu = psutil.cpu_count()
+bestOctreeLevel = cc.DistanceComputationTools.determineBestOctreeLevel(cloud2ref, None, cloud3)
 params = cc.Cloud2CloudDistancesComputationParams()
-params.maxThreadCount=12
-params.octreeLevel=6
+params.maxThreadCount = nbCpu
+params.octreeLevel = bestOctreeLevel
 cc.DistanceComputationTools.computeCloud2CloudDistances(cloud2ref, cloud3, params)
 
 sf = cloud2ref.getScalarField(cloud2ref.getNumberOfScalarFields()-1)
@@ -62,7 +68,7 @@ mindist = sf.getMin()
 maxdist = sf.getMax()
 if mindist < 0:
     raise RuntimeError
-if maxdist > 0.03:
+if maxdist > 0.04:
     raise RuntimeError
 
 cc.SaveEntities([cloud1, cloud2, cloud2ref, cloud3], os.path.join(dataDir, "clouds3.bin"))

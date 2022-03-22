@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 ##########################################################################
 #                                                                        #
 #                              CloudComPy                                #
@@ -19,8 +21,26 @@
 #                                                                        #
 ##########################################################################
 
-message( STATUS "genere Sphinx doc ...")
-execute_process( COMMAND pwd )
-execute_process( COMMAND bash sphinxDoc/genSphinxDoc.sh )
-message( STATUS "... Done")
+import os
+import sys
+import math
 
+os.environ["_CCTRACE_"]="ON"
+
+from gendata import dataDir
+
+import cloudComPy as cc
+
+tr1 = cc.ccGLMatrix()
+tr1.initFromParameters(0.0, (0., 0., 0.), (1.0, 0.0, 0.0))
+sphere = cc.ccSphere(2, tr1, "aSphere")
+
+cylinder = cc.ccCylinder(2.0, 5.0)
+
+if cc.isPluginMeshBoolean():
+    import cloudComPy.MeshBoolean
+    mesh = cc.MeshBoolean.computeMeshBoolean(sphere, cylinder, cc.MeshBoolean.CSG_OPERATION.INTERSECT)
+    if mesh.size() != 1020:
+        raise RuntimeError
+
+    cc.SaveEntities([sphere, cylinder, mesh], os.path.join(dataDir, "MeshBoolean.bin"))

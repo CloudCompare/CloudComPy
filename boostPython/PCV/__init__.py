@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 ##########################################################################
 #                                                                        #
 #                              CloudComPy                                #
@@ -19,8 +21,21 @@
 #                                                                        #
 ##########################################################################
 
-message( STATUS "genere Sphinx doc ...")
-execute_process( COMMAND pwd )
-execute_process( COMMAND bash sphinxDoc/genSphinxDoc.sh )
-message( STATUS "... Done")
+"""
+PCV is a standard plugin of cloudComPy.
 
+The availability of the plugin can be tested with the :py:meth:`cloudComPy.isPluginPCV` function:
+::
+
+  isPCV_available = cc.isPluginPCV()
+
+PCV is a submodule of cloudCompy:
+::
+
+  import cloudComPy as cc
+  # ...
+  if cc.isPluginPCV():
+      import cloudComPy.PCV
+      cc.PCV.computeShadeVIS(...)
+"""
+from ._PCV import *

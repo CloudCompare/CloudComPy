@@ -24,6 +24,10 @@
 import os
 import sys
 import math
+import psutil
+
+os.environ["_CCTRACE_"]="ON"
+
 from gendata import getSampleCloud, getSamplePoly, dataDir, isCoordEqual, createSymbolicLinks
 import cloudComPy as cc
 
@@ -95,16 +99,24 @@ if dish.getName() != 'aDish':
 if dish.size() != 2520:
     raise RuntimeError
 
+stats = cc.DistanceComputationTools.computeApproxCloud2MeshDistance(cloud, cylinder)
+print(stats) # min, max, mean, variance, error max
+
+nbCpu = psutil.cpu_count()
+bestOctreeLevel = cc.DistanceComputationTools.determineBestOctreeLevel(cloud,cylinder)
 params = cc.Cloud2MeshDistancesComputationParams()
-params.maxThreadCount=12
-params.octreeLevel=6
+params.maxThreadCount = nbCpu
+params.octreeLevel = bestOctreeLevel
 cc.DistanceComputationTools.computeCloud2MeshDistances(cloud, cylinder, params)
 
+bestOctreeLevel = cc.DistanceComputationTools.determineBestOctreeLevel(cone.getAssociatedCloud(), sphere)
+params.octreeLevel = bestOctreeLevel
 cc.DistanceComputationTools.computeCloud2MeshDistances(cone.getAssociatedCloud(), sphere, params)
 
+bestOctreeLevel = cc.DistanceComputationTools.determineBestOctreeLevel(dish.getAssociatedCloud(),None, box.getAssociatedCloud())
 params2 = cc.Cloud2CloudDistancesComputationParams()
-params2.maxThreadCount=12
-params2.octreeLevel=6
+params2.maxThreadCount = nbCpu
+params2.octreeLevel = bestOctreeLevel
 cc.DistanceComputationTools.computeCloud2CloudDistances(dish.getAssociatedCloud(), box.getAssociatedCloud(), params2)
 
 cc.SaveEntities([cloud, box, cone, cylinder, plane, sphere, torus, quadric, dish], os.path.join(dataDir, "entities2.bin"))

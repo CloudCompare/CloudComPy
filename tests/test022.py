@@ -24,6 +24,10 @@
 import os
 import sys
 import math
+import psutil
+
+os.environ["_CCTRACE_"]="ON"
+
 from gendata import getSampleCloud, getSamplePoly, dataDir, isCoordEqual, createSymbolicLinks
 import cloudComPy as cc
 
@@ -35,9 +39,11 @@ tr3 = cc.ccGLMatrix()
 tr3.initFromParameters(0., (0., 0., 0.), (3.0, 0.0, 4.0))
 cylinder = cc.ccCylinder(0.5, 3.0, tr3, 'aCylinder', 48)
 
+nbCpu = psutil.cpu_count()
+bestOctreeLevel = cc.DistanceComputationTools.determineBestOctreeLevel(cloud,cylinder)
 params = cc.Cloud2MeshDistancesComputationParams()
-params.maxThreadCount=12
-params.octreeLevel=6
+params.maxThreadCount = nbCpu
+params.octreeLevel = bestOctreeLevel
 cc.DistanceComputationTools.computeCloud2MeshDistances(cloud, cylinder, params)
 
 # --- save distances histogram, png file
@@ -48,7 +54,8 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 matplotlib.use('agg') # png images
 
-sf=cloud.getScalarField(0)
+
+sf=cloud.getScalarField(cloud.getScalarFieldDic()['C2M absolute distances'])
 asf= sf.toNpArray()
 
 (n, bins, patches) = plt.hist(asf, bins=256, density=1) # histogram for matplotlib

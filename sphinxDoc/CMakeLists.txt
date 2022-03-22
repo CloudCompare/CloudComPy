@@ -40,15 +40,16 @@ set(RSTFILES
 
 set(SPHINXOPTS )
 set(SOURCEDIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(ALLSPHINXOPTS "-d ${CMAKE_CURRENT_BINARY_DIR}/doctrees ${SPHINXOPTS} ${SOURCEDIR}")
+set(SPHINXDOCTREES "${CMAKE_CURRENT_BINARY_DIR}/doctrees")
+set(ALLSPHINXOPTS "${SPHINXOPTS} ${SOURCEDIR}")
 set(SPHINXBUILD sphinx-build)
 
 configure_file(conf.py.in conf.py)
 
 if (USE_CONDA_PACKAGES)
-    configure_file(genSphinxDoc.sh.in genSphinxDoc.sh)
-else()
     configure_file(genSphinxDocConda.sh.in genSphinxDoc.sh)
+else()
+    configure_file(genSphinxDoc.sh.in genSphinxDoc.sh)
 endif()
 
 add_custom_target(BUILD_HTML ALL

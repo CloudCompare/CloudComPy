@@ -3,5 +3,8 @@
 
 #cmakedefine PLUGIN_IO_QFBX
 #cmakedefine PLUGIN_STANDARD_QM3C2
+#cmakedefine PLUGIN_STANDARD_QPCV
+#cmakedefine PLUGIN_STANDARD_QHPR
+#cmakedefine PLUGIN_STANDARD_QMESH_BOOLEAN
 
 #endif

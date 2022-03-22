@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 ##########################################################################
 #                                                                        #
 #                              CloudComPy                                #
@@ -19,8 +21,33 @@
 #                                                                        #
 ##########################################################################
 
-message( STATUS "genere Sphinx doc ...")
-execute_process( COMMAND pwd )
-execute_process( COMMAND bash sphinxDoc/genSphinxDoc.sh )
-message( STATUS "... Done")
+import os
+import sys
+import math
+os.environ["_CCTRACE_"]="ON"
 
+from gendata import getSampleCloud, dataDir
+import cloudComPy as cc
+
+if cc.isPluginPCV():
+    import cloudComPy.PCV
+    
+    cloud = cc.loadPointCloud(getSampleCloud(5.0))
+    
+    tr1 = cc.ccGLMatrix()
+    tr1.initFromParameters(0.3*math.pi, (0., 1., 0.), (0.0, 0.0, 0.0))
+    dish = cc.ccDish(2.0, 0.5, 0.0, tr1)
+    cln =dish.getAssociatedCloud()
+    cc.computeNormals([cln])
+
+    cc.PCV.computeShadeVIS([cloud],cln)
+    dic = cloud.getScalarFieldDic()
+    if cloud.getNumberOfScalarFields() != 1:
+        raise RuntimeError
+    cloud.renameScalarField(0, "illuminanceDish")
+    
+    cc.PCV.computeShadeVIS([cloud])
+    if cloud.getNumberOfScalarFields() != 2:
+        raise RuntimeError
+
+    cc.SaveEntities([cloud, dish, cln], os.path.join(dataDir, "PCV.bin"))

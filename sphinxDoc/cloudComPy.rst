@@ -23,7 +23,10 @@ cloudComPy module, functions
 .. autofunction:: invertNormals
 .. autofunction:: isPluginDraco
 .. autofunction:: isPluginFbx
+.. autofunction:: isPluginHPR
 .. autofunction:: isPluginM3C2
+.. autofunction:: isPluginMeshBoolean
+.. autofunction:: isPluginPCV
 .. autofunction:: loadMesh
 .. autofunction:: loadPointCloud
 .. autofunction:: loadPolyline

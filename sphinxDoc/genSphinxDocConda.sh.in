@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
 
 . @CMAKE_INSTALL_PREFIX@/bin/condaCloud.sh activate CloudComPy39
-@SPHINXBUILD@ -c @CMAKE_BINARY_DIR@/sphinxDoc -b html @ALLSPHINXOPTS@ @CMAKE_INSTALL_PREFIX@/doc/html 
+rm @SPHINXDOCTREES@/*.doctree
+@SPHINXBUILD@ -c @CMAKE_BINARY_DIR@/sphinxDoc -b html -d @SPHINXDOCTREES@ @ALLSPHINXOPTS@ @CMAKE_INSTALL_PREFIX@/doc/html 

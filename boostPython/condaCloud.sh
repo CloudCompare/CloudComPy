@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ##########################################################################
 #                                                                        #
 #                              CloudComPy                                #
@@ -85,6 +86,8 @@ SCRIPT_DIR=$(dirname "${SCRIPT_PATH}")
 CLOUDCOMPY_ROOT=$(realpath "${SCRIPT_DIR}/..")
 PROG=$(basename $0)
 # $PROG is the name of the shell (i.e. bash) when sourced, or the script name when executed
+CONDA_ROOT=$(realpath "$(dirname $(which conda))/..")
+. ${CONDA_ROOT}/etc/profile.d/conda.sh                                       # required to have access to conda commands in a shell script
 
 if [ $PROG == $SCRIPT_NAME ]; then
     echo "this script must be sourced (with source or '.')"

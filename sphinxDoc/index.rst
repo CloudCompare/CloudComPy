@@ -35,7 +35,10 @@ cloudComPy: a Python interface for CloudCompare
    :maxdepth: 3
    :caption: plugins Reference documentation
    
+   HPR.rst
    M3C2.rst
+   MeshBoolean.rst
+   PCV.rst
    
 .. toctree::
    :numbered:
