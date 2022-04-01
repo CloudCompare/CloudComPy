@@ -446,6 +446,7 @@ void export_ccPrimitives()
     class_<ccSphere, bases<ccGenericPrimitive>, boost::noncopyable >("ccSphere", ccPrimitivesPy_ccSphere_doc, init<QString>())
         .def(init<PointCoordinateType,
              optional<const ccGLMatrix*, QString, unsigned, unsigned> >())
+        .def("getRadius", &ccSphere::getRadius, ccPrimitivesPy_ccSphere_getRadius_doc)
         ;
 
     class_<ccTorus, bases<ccGenericPrimitive>, boost::noncopyable >("ccTorus", ccPrimitivesPy_ccTorus_doc, init<QString>())

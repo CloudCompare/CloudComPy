@@ -28,6 +28,8 @@
 #include <PointCloudTpl.h>
 #include <GenericProgressCallback.h>
 #include <CCGeom.h>
+#include <ccHObject.h>
+#include <ccObject.h>
 
 #include "pyccTrace.h"
 #include "ccGenericCloudPy_DocStrings.hpp"
@@ -109,7 +111,51 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(addChild_py_overloads, addChild_py, 2, 4)
 
 void export_ccGenericCloud()
 {
-	enum_<ccHObject::DEPENDENCY_FLAGS>("DEPENDENCY_FLAGS")
+    enum_<CC_CLASS_ENUM>("CC_TYPES")
+       .value("OBJECT", CC_TYPES::OBJECT)
+       .value("HIERARCHY_OBJECT", CC_TYPES::HIERARCHY_OBJECT)
+       .value("POINT_CLOUD", CC_TYPES::POINT_CLOUD)
+       .value("MESH", CC_TYPES::MESH)
+       .value("SUB_MESH", CC_TYPES::SUB_MESH)
+       .value("MESH_GROUP", CC_TYPES::MESH_GROUP)
+       .value("FACET", CC_TYPES::FACET)
+       .value("POINT_OCTREE", CC_TYPES::POINT_OCTREE)
+       .value("POINT_KDTREE", CC_TYPES::POINT_KDTREE)
+       .value("POLY_LINE", CC_TYPES::POLY_LINE)
+       .value("IMAGE", CC_TYPES::IMAGE)
+       .value("CALIBRATED_IMAGE", CC_TYPES::CALIBRATED_IMAGE)
+       .value("SENSOR", CC_TYPES::SENSOR)
+       .value("GBL_SENSOR", CC_TYPES::GBL_SENSOR)
+       .value("CAMERA_SENSOR", CC_TYPES::CAMERA_SENSOR)
+       .value("PRIMITIVE", CC_TYPES::PRIMITIVE)
+       .value("PLANE", CC_TYPES::PLANE)
+       .value("SPHERE", CC_TYPES::SPHERE)
+       .value("TORUS", CC_TYPES::TORUS)
+       .value("CONE", CC_TYPES::CONE)
+       .value("OLD_CYLINDER_ID", CC_TYPES::OLD_CYLINDER_ID)
+       .value("CYLINDER", CC_TYPES::CYLINDER)
+       .value("BOX", CC_TYPES::BOX)
+       .value("DISH", CC_TYPES::DISH)
+       .value("EXTRU", CC_TYPES::EXTRU)
+       .value("QUADRIC", CC_TYPES::QUADRIC)
+       .value("MATERIAL_SET", CC_TYPES::MATERIAL_SET)
+       .value("ARRAY", CC_TYPES::ARRAY)
+       .value("NORMALS_ARRAY", CC_TYPES::NORMALS_ARRAY)
+       .value("NORMAL_INDEXES_ARRAY", CC_TYPES::NORMAL_INDEXES_ARRAY)
+       .value("RGB_COLOR_ARRAY", CC_TYPES::RGB_COLOR_ARRAY)
+       .value("RGBA_COLOR_ARRAY", CC_TYPES::RGBA_COLOR_ARRAY)
+       .value("TEX_COORDS_ARRAY", CC_TYPES::TEX_COORDS_ARRAY)
+       .value("LABEL_2D", CC_TYPES::LABEL_2D)
+       .value("VIEWPORT_2D_OBJECT", CC_TYPES::VIEWPORT_2D_OBJECT)
+       .value("VIEWPORT_2D_LABEL", CC_TYPES::VIEWPORT_2D_LABEL)
+       .value("CLIPPING_BOX", CC_TYPES::CLIPPING_BOX)
+       .value("TRANS_BUFFER", CC_TYPES::TRANS_BUFFER)
+       .value("COORDINATESYSTEM", CC_TYPES::COORDINATESYSTEM)
+       .value("CUSTOM_H_OBJECT", CC_TYPES::CUSTOM_H_OBJECT)
+       .value("CUSTOM_LEAF_OBJECT", CC_TYPES::CUSTOM_LEAF_OBJECT)
+       ;
+
+    enum_<ccHObject::DEPENDENCY_FLAGS>("DEPENDENCY_FLAGS")
 		.value("DP_NONE", ccHObject::DEPENDENCY_FLAGS::DP_NONE)
 		.value("DP_NOTIFY_OTHER_ON_DELETE", ccHObject::DEPENDENCY_FLAGS::DP_NOTIFY_OTHER_ON_DELETE)
 		.value("DP_NOTIFY_OTHER_ON_UPDATE", ccHObject::DEPENDENCY_FLAGS::DP_NOTIFY_OTHER_ON_UPDATE)
@@ -123,6 +169,11 @@ void export_ccGenericCloud()
 		.def("addChild", &addChild_py, addChild_py_overloads(
 		     (arg("self"), arg("child"), arg("dependencyFlags")= ccHObject::DEPENDENCY_FLAGS::DP_NONE, arg("insertIndex") = -1),
 		     ccHObject_addChild_doc))
+        .def("getChild", &ccHObject::getChild, return_value_policy<reference_existing_object>(), ccHObject_getChild_doc)
+		.def("getChildrenNumber", &ccHObject::getChildrenNumber, ccHObject_getChildrenNumber_doc)
+        .def("getClassID", &ccHObject::getClassID, ccHObject_getClassID_doc)
+		.def("isA", &ccHObject::isA, ccHObject_isA_doc)
+        .def("isKindOf", &ccHObject::isKindOf, ccHObject_isKindOf_doc)
         ;
 
     class_<ccShiftedObject, bases<ccHObject>, boost::noncopyable>("ccShiftedObject", no_init)

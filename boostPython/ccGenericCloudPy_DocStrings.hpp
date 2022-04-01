@@ -63,6 +63,48 @@ The other values may induce a delete of the original child object in C++, not ha
 :return: success
 :rtype: bool)";
 
+const char* ccHObject_getChild_doc=R"(
+Get child by index.
+
+:param int index: index of child, see :py:meth:`getChildrenNumber`.
+
+:return: child object
+:rtype: ccHObject
+
+)";
+
+const char* ccHObject_getChildrenNumber_doc=R"(
+Get the number of children of this object.
+
+:return: number of children
+:rtype: int
+)";
+
+const char* ccHObject_getClassID_doc=R"(
+Get the type of this object.
+
+:return: type
+:rtype: CC_TYPE
+)";
+
+const char* ccHObject_isA_doc=R"(
+Check the type of object.
+
+:param CC_TYPES type: type to check
+
+:return: OK if object is of this type
+:rtype: bool
+)";
+
+const char* ccHObject_isKindOf_doc=R"(
+Check the type of object.
+
+:param CC_TYPES type: type to check
+
+:return: OK if object is a kind of this type
+:rtype: bool
+)";
+
 const char* ccGenericPointCloud_computeOctree_doc= R"(
 Computes the cloud octree.
 

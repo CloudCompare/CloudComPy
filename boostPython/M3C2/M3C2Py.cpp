@@ -39,6 +39,7 @@ namespace bnp = boost::python::numpy;
 
 ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFilename)
 {
+    CCTRACE("computeM3C2");
     if (clouds.size() < 2)
     {
         CCTRACE("minimum two clouds required for M3C2 computation");

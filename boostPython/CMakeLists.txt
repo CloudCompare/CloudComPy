@@ -196,5 +196,8 @@ add_subdirectory( HPR )
 if ( PLUGIN_STANDARD_QMESH_BOOLEAN )
     add_subdirectory( MeshBoolean )
 endif()
+if ( PLUGIN_STANDARD_QRANSAC_SD )
+    add_subdirectory( RANSAC_SD )
+endif()
 
 

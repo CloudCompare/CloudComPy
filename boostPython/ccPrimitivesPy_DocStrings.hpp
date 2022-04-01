@@ -287,6 +287,13 @@ const char* ccPrimitivesPy_ccSphere_doc= R"(
 :param int,optional precision: optional drawing precision (angular step = 360/precision), default 24
 :param int,optional uniqueID: optional unique ID (handle with care))";
 
+const char* ccPrimitivesPy_ccSphere_getRadius_doc= R"(
+Get the sphere radius.
+
+:return: radius
+:rtype: float
+)";
+
 const char* ccPrimitivesPy_ccTorus_doc= R"(
 Torus is defined in the XY plane by default.
 
