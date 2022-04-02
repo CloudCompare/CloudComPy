@@ -91,6 +91,76 @@ Returns equivalent parameters: 3 rotation angles and a translation.
 :return: equivalent parameters structure
 :rtype: ccGLMatrixParams2_float or ccGLMatrixParams2_double)";
 
+const char* ccPrimitivesPy_getTransformation_doc= R"(
+Returns transformation matrix.
+
+:return: transformation matrix
+:rtype:ccGLMatrix
+)";
+
+const char* ccPrimitivesPy_getHeight_doc= R"(
+Returns Height.
+
+:return: Height
+:rtype: double
+)";
+
+const char* ccPrimitivesPy_getBottomRadius_doc= R"(
+Returns bottom radius.
+
+:return: bottom radius
+:rtype: double
+)";
+
+const char* ccPrimitivesPy_getTopRadius_doc= R"(
+Returns top radius.
+
+:return: top radius
+:rtype: double
+)";
+
+const char* ccPrimitivesPy_getBottomCenter_doc= R"(
+Returns axis bottom end point after applying transformation.
+
+:return: axis bottom end point after applying transformation
+:rtype: CCVector3
+)";
+
+const char* ccPrimitivesPy_getTopCenter_doc= R"(
+Returns axis top end point after applying transformation.
+
+:return: axis top end point after applying transformation
+:rtype: CCVector3
+)";
+
+const char* ccPrimitivesPy_getSmallCenter_doc= R"(
+Returns cone axis end point associated with whichever radii is smaller.
+
+:return: cone axis end point associated with whichever radii is smaller
+:rtype: CCVector3
+)";
+
+const char* ccPrimitivesPy_getLargeCenter_doc= R"(
+Returns cone axis end point associated with whichever radii is larger.
+
+:return: cone axis end point associated with whichever radii is larger
+:rtype: CCVector3
+)";
+
+const char* ccPrimitivesPy_getSmallRadius_doc= R"(
+Returns whichever cone radii is smaller.
+
+:return: whichever cone radii is smaller
+:rtype: double
+)";
+
+const char* ccPrimitivesPy_getLargeRadius_doc= R"(
+Returns whichever cone radii is larger.
+
+:return: whichever cone radii is larger
+:rtype: double
+)";
+
 const char* ccPrimitivesPy_Interpolate_doc= R"(
 Interpolates two matrices at relative position 'coef'
 
@@ -267,6 +337,18 @@ Returns the equation of the plane.
 
 :return: Plane equation : [a, b, c, d] as ``ax+by+cz=d``
 :rtype: tuple)";
+
+const char* ccPrimitivesPy_ccPlane_getCenter_doc= R"(
+Returns the center of the plane.
+
+:return: plane center
+:rtype: CCVector3)";
+
+const char* ccPrimitivesPy_ccPlane_getNormal_doc= R"(
+Returns the normal of the plane.
+
+:return: plane normal
+:rtype: CCVector3)";
 
 const char* ccPrimitivesPy_ccQuadric_doc= R"(
 Quadric orthogonal dimension is 'Z' by default.

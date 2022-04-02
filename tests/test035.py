@@ -27,7 +27,7 @@ import math
 
 os.environ["_CCTRACE_"]="ON"
 
-from gendata import dataDir
+from gendata import dataDir, isCoordEqual
 import cloudComPy as cc
 
 tr0 = cc.ccGLMatrix()
@@ -78,6 +78,22 @@ if not math.isclose(meshes[0].getRadius(), 2.0, rel_tol=1.e-2):
 if not math.isclose(meshes[1].getRadius(), 1.5, rel_tol=1.e-2):
     raise RuntimeError
 if not math.isclose(meshes[2].getRadius(), 1.0, rel_tol=1.e-2):
+    raise RuntimeError
+tr0 = meshes[0].getTransformation()
+t3D0 = tr0.getParameters1().t3D
+if not isCoordEqual(t3D0, (6.0, -3.0, -2.0), 1.e-2):
+    raise RuntimeError
+tr1 = meshes[0].getTransformation()
+t3D1 = tr1.getParameters1().t3D
+if not isCoordEqual(t3D1, (-2.0, 5.0, 1.0), 1.e-2):
+    raise RuntimeError
+tr2 = meshes[2].getTransformation()
+t3D2 = tr2.getParameters1().t3D
+if not isCoordEqual(t3D2, (-0.0, 1.0, 2.0), 1.e-2):
+    raise RuntimeError
+tr3 = meshes[3].getTransformation()
+t3D3 = tr3.getParameters1().t3D
+if not isCoordEqual(t3D3, (3.0, 0.0, 4.0), 1.e-2):
     raise RuntimeError
 
 
