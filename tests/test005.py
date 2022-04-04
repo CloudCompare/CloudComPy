@@ -27,10 +27,11 @@ import os
 import sys
 import math
 import psutil
+
+os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
+
 from gendata import getSampleCloud, dataDir
 import cloudComPy as cc
-
-cc.initCC()  # to do once before using plugins or dealing with numpy
 
 thisProcess = psutil.Process()
 startMem = thisProcess.memory_full_info().uss

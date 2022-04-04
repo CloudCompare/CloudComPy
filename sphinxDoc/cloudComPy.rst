@@ -20,6 +20,7 @@ cloudComPy module, functions
 .. autofunction:: ICP
 .. autofunction:: importFile
 .. autofunction:: initCC
+.. autofunction:: initCloudCompare
 .. autofunction:: invertNormals
 .. autofunction:: isPluginDraco
 .. autofunction:: isPluginFbx

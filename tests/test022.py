@@ -26,13 +26,13 @@ import sys
 import math
 import psutil
 
-os.environ["_CCTRACE_"]="ON"
+os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
 from gendata import getSampleCloud, getSamplePoly, dataDir, isCoordEqual, createSymbolicLinks
 import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC.init
-cc.initCC()  # to do once before using plugins or dealing with numpy
+
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 
 tr3 = cc.ccGLMatrix()
