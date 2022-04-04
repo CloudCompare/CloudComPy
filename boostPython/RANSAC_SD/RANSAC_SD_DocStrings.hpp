@@ -26,6 +26,11 @@
 const char* RANSAC_SD_doc= R"(
 RANSAC_SD is a standard plugin of cloudComPy.
 
+Wrapper to Schnabel et al. library for automatic shape detection in point cloud
+"Efficient RANSAC for Point-Cloud Shape Detection", Ruwen Schnabel, Roland Wahl, 
+and Reinhard Klein, in Computer Graphics Forum (June 2007), 26:2(214-226)
+http://cg.cs.uni-bonn.de/en/publications/paper-details/schnabel-2007-efficient/
+
 The availability of the plugin can be tested with the isPluginRANSAC_SD function:
 
   isRANSAC_SD_available = cc.isPluginRANSAC_SD()
@@ -56,5 +61,93 @@ Done in module init, following the value of environment variable _CCTRACE_ ("ON"
 const char* RANSAC_SD_RansacParams_doc=R"(
 RANSAC_SD parameters
 )";
+
+const char* RANSAC_SD_RansacParams_epsilon_doc=R"(
+Maximum distance if the samples to the ideal shape, default 0.005.)";
+
+const char* RANSAC_SD_RansacParams_bitmapEpsilon_doc=R"(
+Sampling resolution, should correspond to the average distance of neighbors points in data, default 0.001.)";
+
+const char* RANSAC_SD_RansacParams_supportPoints_doc=R"(
+Minimal number of points required to define a primitive, default 500.)";
+
+const char* RANSAC_SD_RansacParams_maxNormalDev_deg_doc=R"(
+Maximum deviation from the ideal shape normal vector (in degrees), default 25.)";
+
+const char* RANSAC_SD_RansacParams_probability_doc=R"(
+Probability that no better candidate soit overlooked during th sampling,
+the lower the better, default 0.01)";
+
+const char* RANSAC_SD_RansacParams_randomColor_doc=R"(
+Set random color for each shape found, default True.)";
+
+const char* RANSAC_SD_RansacParams_createCloudFromLeftOverPoints_doc=R"(
+Save leftover points into a new cloud, default True.)";
+
+const char* RANSAC_SD_RansacParams_allowSimplification_doc=R"(
+Attempt to simplify shapes.
+Will attempt to convert torus, cones, spheres, cylinders into simpler shapes.
+For instance, cones may be simplified into cylinder, sphere or plane. Default True.)";
+
+const char* RANSAC_SD_RansacParams_allowFitting_doc=R"(
+Use Least Squares fitting on found shapes, default True.)";
+
+const char* RANSAC_SD_RansacParams_minSphereRadius_doc=R"(
+Minimum sphere radius, default -infinity.)";
+
+const char* RANSAC_SD_RansacParams_maxSphereRadius_doc=R"(
+Maximum sphere radius, default +infinity.)";
+
+const char* RANSAC_SD_RansacParams_minCylinderRadius_doc=R"(
+Minimum cylinder radius, default -infinity.)";
+
+const char* RANSAC_SD_RansacParams_maxCylinderRadius_doc=R"(
+Maximum cylinder radius, default +infinity.)";
+
+const char* RANSAC_SD_RansacParams_maxCylinderLength_doc=R"(
+Maximum cylinder length, default +infinity.)";
+
+const char* RANSAC_SD_RansacParams_maxConeRadius_doc=R"(
+Maximum cone radius, default +infinity.)";
+
+const char* RANSAC_SD_RansacParams_maxConeAngle_deg_doc=R"(
+Maximum cone angle, default +infinity.)";
+
+const char* RANSAC_SD_RansacParams_maxConeLength_doc=R"(
+Maximum cone length, default +infinity.)";
+
+const char* RANSAC_SD_RansacParams_minTorusMinorRadius_doc=R"(
+Minimum tore minor radius, default -infinity.)";
+
+const char* RANSAC_SD_RansacParams_minTorusMajorRadius_doc=R"(
+Minimum tore major radius, default -infinity.)";
+
+const char* RANSAC_SD_RansacParams_maxTorusMinorRadius_doc=R"(
+Maximum tore minor radius, default +infinity.)";
+
+const char* RANSAC_SD_RansacParams_maxTorusMajorRadius_doc=R"(
+Maximum tore major radius, default +infinity.)";
+
+const char* RANSAC_SD_RansacParams_setPrimEnabled_doc=R"(
+Define the type of primitive (plane, sphere, cylinder, cone, torus) enabled.
+By default, plane, sphere, cylinder are enabled.
+
+:param RANSAC_PRIMITIVE_TYPES rpt: type of primitive
+:param bool isEnabled: whether the type is enabled or not)";
+
+const char* RANSAC_SD_RansacParams_getPrimEnabled_doc=R"(
+Check the type of primitive (plane, sphere, cylinder, cone, torus) enabled.
+By default, plane, sphere, cylinder are enabled.
+
+:param RANSAC_PRIMITIVE_TYPES rpt: type of primitive
+
+:return: whether the type is enabled or not
+:rtype: bool)";
+
+const char* RANSAC_SD_RansacParams_optimizeForCloud_doc=R"(
+Sets values for epsilon and bitmapEpsilon based on the cloud bounding box, maximum dimension.
+epsilon is set to 0.005 * maxDim, bitmapEpsilon is set to 0.01 * maxDim.
+
+:param ccPointCloud cloud: the cloud to be analyzed.)";
 
 #endif /* RANSAC_SD_DOCSTRINGS_HPP_ */

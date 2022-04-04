@@ -127,30 +127,51 @@ BOOST_PYTHON_MODULE(_RANSAC_SD)
         ;
 
     class_<qRansacSD::RansacParams>("RansacParams", RANSAC_SD_RansacParams_doc)
-        .def_readwrite("epsilon", &qRansacSD::RansacParams::epsilon, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("bitmapEpsilon", &qRansacSD::RansacParams::bitmapEpsilon, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("supportPoints", &qRansacSD::RansacParams::supportPoints, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("maxNormalDev_deg", &qRansacSD::RansacParams::maxNormalDev_deg, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("probability", &qRansacSD::RansacParams::probability, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("randomColor", &qRansacSD::RansacParams::randomColor, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("createCloudFromLeftOverPoints", &qRansacSD::RansacParams::createCloudFromLeftOverPoints, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("allowSimplification", &qRansacSD::RansacParams::allowSimplification, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("allowFitting", &qRansacSD::RansacParams::allowFitting, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("minSphereRadius", &qRansacSD::RansacParams::minSphereRadius, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("maxSphereRadius", &qRansacSD::RansacParams::maxSphereRadius, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("minCylinderRadius", &qRansacSD::RansacParams::minCylinderRadius, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("maxCylinderRadius", &qRansacSD::RansacParams::maxCylinderRadius, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("maxCylinderLength", &qRansacSD::RansacParams::maxCylinderLength, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("maxConeRadius", &qRansacSD::RansacParams::maxConeRadius, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("maxConeAngle_deg", &qRansacSD::RansacParams::maxConeAngle_deg, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("maxConeLength", &qRansacSD::RansacParams::maxConeLength, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("minTorusMinorRadius", &qRansacSD::RansacParams::minTorusMinorRadius, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("minTorusMajorRadius", &qRansacSD::RansacParams::minTorusMajorRadius, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("maxTorusMinorRadius", &qRansacSD::RansacParams::maxTorusMinorRadius, RANSAC_SD_RansacParams_doc)
-        .def_readwrite("maxTorusMajorRadius", &qRansacSD::RansacParams::maxTorusMajorRadius, RANSAC_SD_RansacParams_doc)
-        .def("setPrimEnabled", setPrimEnabled, RANSAC_SD_RansacParams_doc)
-        .def("getPrimEnabled", getPrimEnabled, RANSAC_SD_RansacParams_doc)
-        .def("optimizeForCloud", optimizeForCloud, RANSAC_SD_RansacParams_doc)
+        .def_readwrite("epsilon", &qRansacSD::RansacParams::epsilon,
+                       RANSAC_SD_RansacParams_epsilon_doc)
+        .def_readwrite("bitmapEpsilon", &qRansacSD::RansacParams::bitmapEpsilon,
+                       RANSAC_SD_RansacParams_bitmapEpsilon_doc)
+        .def_readwrite("supportPoints", &qRansacSD::RansacParams::supportPoints,
+                       RANSAC_SD_RansacParams_supportPoints_doc)
+        .def_readwrite("maxNormalDev_deg", &qRansacSD::RansacParams::maxNormalDev_deg,
+                       RANSAC_SD_RansacParams_maxNormalDev_deg_doc)
+        .def_readwrite("probability", &qRansacSD::RansacParams::probability,
+                       RANSAC_SD_RansacParams_probability_doc)
+        .def_readwrite("randomColor", &qRansacSD::RansacParams::randomColor,
+                       RANSAC_SD_RansacParams_randomColor_doc)
+        .def_readwrite("createCloudFromLeftOverPoints", &qRansacSD::RansacParams::createCloudFromLeftOverPoints,
+                       RANSAC_SD_RansacParams_createCloudFromLeftOverPoints_doc)
+        .def_readwrite("allowSimplification", &qRansacSD::RansacParams::allowSimplification,
+                       RANSAC_SD_RansacParams_allowSimplification_doc)
+        .def_readwrite("allowFitting", &qRansacSD::RansacParams::allowFitting,
+                       RANSAC_SD_RansacParams_allowFitting_doc)
+        .def_readwrite("minSphereRadius", &qRansacSD::RansacParams::minSphereRadius,
+                       RANSAC_SD_RansacParams_minSphereRadius_doc)
+        .def_readwrite("maxSphereRadius", &qRansacSD::RansacParams::maxSphereRadius,
+                       RANSAC_SD_RansacParams_maxSphereRadius_doc)
+        .def_readwrite("minCylinderRadius", &qRansacSD::RansacParams::minCylinderRadius,
+                       RANSAC_SD_RansacParams_minCylinderRadius_doc)
+        .def_readwrite("maxCylinderRadius", &qRansacSD::RansacParams::maxCylinderRadius,
+                       RANSAC_SD_RansacParams_maxCylinderRadius_doc)
+        .def_readwrite("maxCylinderLength", &qRansacSD::RansacParams::maxCylinderLength,
+                       RANSAC_SD_RansacParams_maxCylinderLength_doc)
+        .def_readwrite("maxConeRadius", &qRansacSD::RansacParams::maxConeRadius,
+                       RANSAC_SD_RansacParams_maxConeRadius_doc)
+        .def_readwrite("maxConeAngle_deg", &qRansacSD::RansacParams::maxConeAngle_deg,
+                       RANSAC_SD_RansacParams_maxConeAngle_deg_doc)
+        .def_readwrite("maxConeLength", &qRansacSD::RansacParams::maxConeLength,
+                       RANSAC_SD_RansacParams_maxConeLength_doc)
+        .def_readwrite("minTorusMinorRadius", &qRansacSD::RansacParams::minTorusMinorRadius,
+                       RANSAC_SD_RansacParams_minTorusMinorRadius_doc)
+        .def_readwrite("minTorusMajorRadius", &qRansacSD::RansacParams::minTorusMajorRadius,
+                       RANSAC_SD_RansacParams_minTorusMajorRadius_doc)
+        .def_readwrite("maxTorusMinorRadius", &qRansacSD::RansacParams::maxTorusMinorRadius,
+                       RANSAC_SD_RansacParams_maxTorusMinorRadius_doc)
+        .def_readwrite("maxTorusMajorRadius", &qRansacSD::RansacParams::maxTorusMajorRadius,
+                       RANSAC_SD_RansacParams_maxTorusMajorRadius_doc)
+        .def("setPrimEnabled", setPrimEnabled, RANSAC_SD_RansacParams_setPrimEnabled_doc)
+        .def("getPrimEnabled", getPrimEnabled, RANSAC_SD_RansacParams_getPrimEnabled_doc)
+        .def("optimizeForCloud", optimizeForCloud, RANSAC_SD_RansacParams_optimizeForCloud_doc)
         ;
 
     def("computeRANSAC_SD", computeRANSAC_SD, RANSAC_SD_computeRANSAC_SD_doc);
