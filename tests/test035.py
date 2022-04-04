@@ -61,45 +61,46 @@ params.optimizeForCloud(cloud)
 print(params.epsilon, params.bitmapEpsilon)
 meshes, clouds = cc.RANSAC_SD.computeRANSAC_SD(cloud, params)
 
-for i in range(len(meshes)):
-    if meshes[i] is not None:
-        print("mesh %d: %s"%(i,meshes[i].getName()))
+sortmeshes = [m for m in meshes if m is not None]
+sortmeshes.sort(key= lambda m: m.getName())
+for i in range(len(sortmeshes)):
+    print("mesh %d: %s"%(i,sortmeshes[i].getName()))
 
-if not meshes[0].isA(cc.CC_TYPES.SPHERE):
+if not sortmeshes[0].isA(cc.CC_TYPES.CYLINDER):
     raise RuntimeError
-if not meshes[1].isA(cc.CC_TYPES.SPHERE):
+if not sortmeshes[1].isA(cc.CC_TYPES.PLANE):
     raise RuntimeError
-if not meshes[2].isA(cc.CC_TYPES.SPHERE):
+if not sortmeshes[2].isA(cc.CC_TYPES.PLANE):
     raise RuntimeError
-if not meshes[3].isA(cc.CC_TYPES.CYLINDER):
+if not sortmeshes[3].isA(cc.CC_TYPES.SPHERE):
     raise RuntimeError
-if not meshes[4].isA(cc.CC_TYPES.PLANE):
+if not sortmeshes[4].isA(cc.CC_TYPES.SPHERE):
     raise RuntimeError
-if not meshes[5].isA(cc.CC_TYPES.PLANE):
-    raise RuntimeError
-
-if not math.isclose(meshes[0].getRadius(), 2.0, rel_tol=1.e-2):
-    raise RuntimeError
-if not math.isclose(meshes[1].getRadius(), 1.5, rel_tol=1.e-2):
-    raise RuntimeError
-if not math.isclose(meshes[2].getRadius(), 1.0, rel_tol=1.e-2):
+if not sortmeshes[5].isA(cc.CC_TYPES.SPHERE):
     raise RuntimeError
 
-tr_0 = meshes[0].getTransformation()
+if not math.isclose(sortmeshes[3].getRadius(), 1.0, rel_tol=1.e-2):
+    raise RuntimeError
+if not math.isclose(sortmeshes[4].getRadius(), 1.5, rel_tol=1.e-2):
+    raise RuntimeError
+if not math.isclose(sortmeshes[5].getRadius(), 2.0, rel_tol=1.e-2):
+    raise RuntimeError
+
+tr_0 = sortmeshes[0].getTransformation()
 t3D0 = tr_0.getParameters1().t3D
-if not isCoordEqual(t3D0, (6.0, -3.0, -2.0), 1.e-2):
+if not isCoordEqual(t3D0, (3.0, 0.0, 4.0), 0, 1.e-2):
     raise RuntimeError
-tr_1 = meshes[1].getTransformation()
-t3D1 = tr_1.getParameters1().t3D
-if not isCoordEqual(t3D1, (-2.0, 5.0, 1.0), 1.e-2):
-    raise RuntimeError
-tr_2 = meshes[2].getTransformation()
-t3D2 = tr_2.getParameters1().t3D
-if not isCoordEqual(t3D2, (0.0, 1.0, 2.0), 0, 1.e-2):
-    raise RuntimeError
-tr_3 = meshes[3].getTransformation()
+tr_3 = sortmeshes[3].getTransformation()
 t3D3 = tr_3.getParameters1().t3D
-if not isCoordEqual(t3D3, (3.0, 0.0, 4.0), 0, 1.e-2):
+if not isCoordEqual(t3D3, (0.0, 1.0, 2.0), 0, 1.e-2):
+    raise RuntimeError
+tr_4 = sortmeshes[4].getTransformation()
+t3D4 = tr_4.getParameters1().t3D
+if not isCoordEqual(t3D4, (-2.0, 5.0, 1.0), 1.e-2):
+    raise RuntimeError
+tr_5 = sortmeshes[5].getTransformation()
+t3D5 = tr_5.getParameters1().t3D
+if not isCoordEqual(t3D5, (6.0, -3.0, -2.0), 1.e-2):
     raise RuntimeError
 
 
