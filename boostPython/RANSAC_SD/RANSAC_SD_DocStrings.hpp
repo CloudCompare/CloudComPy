@@ -48,7 +48,9 @@ proposed by Ruwen Schnabel et al. of Bonn university
 )";
 
 const char* RANSAC_SD_initTrace_RANSAC_SD_doc=R"(
-Trace must be initialized for each Python module);
+Debug trace must be initialized for each Python module.
+
+Done in module init, following the value of environment variable _CCTRACE_ ("ON" if debug traces wanted)
 )";
 
 const char* RANSAC_SD_RansacParams_doc=R"(

@@ -95,7 +95,7 @@ const char* ccPrimitivesPy_getTransformation_doc= R"(
 Returns transformation matrix.
 
 :return: transformation matrix
-:rtype:ccGLMatrix
+:rtype: ccGLMatrix
 )";
 
 const char* ccPrimitivesPy_getHeight_doc= R"(

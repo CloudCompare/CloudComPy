@@ -7,3 +7,4 @@ PCV plugin
 
 .. autofunction:: computeShadeVIS
  
+.. autofunction:: initTrace_PCV

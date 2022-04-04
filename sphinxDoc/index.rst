@@ -39,6 +39,7 @@ cloudComPy: a Python interface for CloudCompare
    M3C2.rst
    MeshBoolean.rst
    PCV.rst
+   RANSAC_SD.rst
    
 .. toctree::
    :numbered:

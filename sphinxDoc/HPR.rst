@@ -7,3 +7,4 @@ HPR plugin
 
 .. autofunction:: computeHPR
  
+.. autofunction:: initTrace_HPR
