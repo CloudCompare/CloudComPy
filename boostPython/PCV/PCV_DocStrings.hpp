@@ -58,5 +58,9 @@ Result on a ScalarField.
 :rtype: bool
 )";
 
+const char* PCV_initTrace_PCV_doc=R"(
+Trace must be initialized for each Python module);
+)";
+
 
 #endif /* PCV_DOCSTRINGS_HPP_ */

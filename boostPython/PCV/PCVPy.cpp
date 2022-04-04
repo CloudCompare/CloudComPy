@@ -39,6 +39,13 @@
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
 
+void initTrace_PCV()
+{
+#ifdef _PYTHONAPI_DEBUG_
+    ccLogTrace::settrace();
+#endif
+}
+
 bool computeShadeVIS(std::vector<ccHObject*> clouds,
                         ccPointCloud* cloudWithNormals = nullptr,
                         int rayCount = 256,
@@ -46,6 +53,7 @@ bool computeShadeVIS(std::vector<ccHObject*> clouds,
                         bool is360 = false,
                         bool isClosedMesh = false)
 {
+    CCTRACE("computeShadeVIS");
     std::vector<CCVector3> rays;
     if (cloudWithNormals)
     {
@@ -124,5 +132,6 @@ BOOST_PYTHON_MODULE(_PCV)
         computeShadeVIS_overloads(
         (arg("clouds"), arg("cloudWithNormals")=0, arg("rayCount")=256, arg("resolution")=1024,
          arg("is360")=false, arg("isClosedMesh")=false), PCV_computeShadeVIS_doc));
+    def("initTrace_PCV", initTrace_PCV, PCV_initTrace_PCV_doc);
 
 }

@@ -39,3 +39,5 @@ M3C2 is a submodule of cloudCompy:
       cc.M3C2.computeM3C2(...)
 """
 from ._M3C2 import *
+initTrace_M3C2()
+

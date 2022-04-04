@@ -54,5 +54,9 @@ Original meshes are not modified, a new mesh is built.
 :rtype: ccMesh
 )";
 
+const char* MeshBoolean_initTrace_MeshBoolean_doc=R"(
+Trace must be initialized for each Python module);
+)";
+
 
 #endif /* MeshBoolean_DOCSTRINGS_HPP_ */

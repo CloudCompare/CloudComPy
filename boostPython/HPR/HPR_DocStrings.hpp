@@ -55,5 +55,9 @@ The viewPoint coordinates are required.
 :rtype: ccPointCloud
 )";
 
+const char* HPR_initTrace_HPR_doc=R"(
+Trace must be initialized for each Python module);
+)";
+
 
 #endif /* HPR_DOCSTRINGS_HPP_ */

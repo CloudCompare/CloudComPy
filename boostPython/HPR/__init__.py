@@ -39,3 +39,5 @@ HPR is a submodule of cloudCompy:
       cc.HPR.computeHPR(...)
 """
 from ._HPR import *
+initTrace_HPR()
+
