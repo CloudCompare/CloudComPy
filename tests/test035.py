@@ -46,7 +46,7 @@ sphere2 = cc.ccSphere(2.0, tr2)
 c2 = sphere2.samplePoints(True, 1000)
 
 tr3 = cc.ccGLMatrix()
-tr3.initFromParameters(0.0, (0., 0., 0.), (-0.0, 1.0, 2.0))
+tr3.initFromParameters(0.0, (0., 0., 0.), (0.0, 1.0, 2.0))
 sphere3 = cc.ccSphere(1.0, tr3)
 c3 = sphere3.samplePoints(True, 1000)
 
@@ -61,6 +61,10 @@ params.optimizeForCloud(cloud)
 print(params.epsilon, params.bitmapEpsilon)
 meshes, clouds = cc.RANSAC_SD.computeRANSAC_SD(cloud, params)
 
+for i in range(len(meshes)):
+    if meshes[i] is not None:
+        print("mesh %d: %s"%(i,meshes[i].getName()))
+
 if not meshes[0].isA(cc.CC_TYPES.SPHERE):
     raise RuntimeError
 if not meshes[1].isA(cc.CC_TYPES.SPHERE):
@@ -73,27 +77,29 @@ if not meshes[4].isA(cc.CC_TYPES.PLANE):
     raise RuntimeError
 if not meshes[5].isA(cc.CC_TYPES.PLANE):
     raise RuntimeError
+
 if not math.isclose(meshes[0].getRadius(), 2.0, rel_tol=1.e-2):
     raise RuntimeError
 if not math.isclose(meshes[1].getRadius(), 1.5, rel_tol=1.e-2):
     raise RuntimeError
 if not math.isclose(meshes[2].getRadius(), 1.0, rel_tol=1.e-2):
     raise RuntimeError
-tr0 = meshes[0].getTransformation()
-t3D0 = tr0.getParameters1().t3D
+
+tr_0 = meshes[0].getTransformation()
+t3D0 = tr_0.getParameters1().t3D
 if not isCoordEqual(t3D0, (6.0, -3.0, -2.0), 1.e-2):
     raise RuntimeError
-tr1 = meshes[0].getTransformation()
-t3D1 = tr1.getParameters1().t3D
+tr_1 = meshes[1].getTransformation()
+t3D1 = tr_1.getParameters1().t3D
 if not isCoordEqual(t3D1, (-2.0, 5.0, 1.0), 1.e-2):
     raise RuntimeError
-tr2 = meshes[2].getTransformation()
-t3D2 = tr2.getParameters1().t3D
-if not isCoordEqual(t3D2, (-0.0, 1.0, 2.0), 1.e-2):
+tr_2 = meshes[2].getTransformation()
+t3D2 = tr_2.getParameters1().t3D
+if not isCoordEqual(t3D2, (0.0, 1.0, 2.0), 0, 1.e-2):
     raise RuntimeError
-tr3 = meshes[3].getTransformation()
-t3D3 = tr3.getParameters1().t3D
-if not isCoordEqual(t3D3, (3.0, 0.0, 4.0), 1.e-2):
+tr_3 = meshes[3].getTransformation()
+t3D3 = tr_3.getParameters1().t3D
+if not isCoordEqual(t3D3, (3.0, 0.0, 4.0), 0, 1.e-2):
     raise RuntimeError
 
 
