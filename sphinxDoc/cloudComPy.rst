@@ -28,6 +28,7 @@ cloudComPy module, functions
 .. autofunction:: isPluginM3C2
 .. autofunction:: isPluginMeshBoolean
 .. autofunction:: isPluginPCV
+.. autofunction:: isPluginRANSAC_SD
 .. autofunction:: loadMesh
 .. autofunction:: loadPointCloud
 .. autofunction:: loadPolyline

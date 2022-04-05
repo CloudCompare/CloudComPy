@@ -6,5 +6,6 @@
 #cmakedefine PLUGIN_STANDARD_QPCV
 #cmakedefine PLUGIN_STANDARD_QHPR
 #cmakedefine PLUGIN_STANDARD_QMESH_BOOLEAN
+#cmakedefine PLUGIN_STANDARD_QRANSAC_SD
 
 #endif

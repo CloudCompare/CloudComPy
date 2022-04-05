@@ -55,65 +55,66 @@ cloud.fuse(c1)
 cloud.fuse(c2)
 cloud.fuse(c3)
 
-import cloudComPy.RANSAC_SD
-params = cc.RANSAC_SD.RansacParams()
-params.optimizeForCloud(cloud)
-print(params.epsilon, params.bitmapEpsilon)
-meshes, clouds = cc.RANSAC_SD.computeRANSAC_SD(cloud, params)
-
-sortmeshes = [m for m in meshes if m is not None]
-sortmeshes.sort(key= lambda m: m.getName())
-for i in range(len(sortmeshes)):
-    print("mesh %d: %s"%(i,sortmeshes[i].getName()))
-
-if not sortmeshes[0].isA(cc.CC_TYPES.CYLINDER):
-    raise RuntimeError
-if not sortmeshes[1].isA(cc.CC_TYPES.PLANE):
-    raise RuntimeError
-if not sortmeshes[2].isA(cc.CC_TYPES.PLANE):
-    raise RuntimeError
-if not sortmeshes[3].isA(cc.CC_TYPES.SPHERE):
-    raise RuntimeError
-if not sortmeshes[4].isA(cc.CC_TYPES.SPHERE):
-    raise RuntimeError
-if not sortmeshes[5].isA(cc.CC_TYPES.SPHERE):
-    raise RuntimeError
-
-if not math.isclose(sortmeshes[3].getRadius(), 1.0, rel_tol=1.e-2):
-    raise RuntimeError
-if not math.isclose(sortmeshes[4].getRadius(), 1.5, rel_tol=1.e-2):
-    raise RuntimeError
-if not math.isclose(sortmeshes[5].getRadius(), 2.0, rel_tol=1.e-2):
-    raise RuntimeError
-
-tr_0 = sortmeshes[0].getTransformation()
-t3D0 = tr_0.getParameters1().t3D
-if not isCoordEqual(t3D0, (3.0, 0.0, 4.0), 0, 1.e-2):
-    raise RuntimeError
-tr_3 = sortmeshes[3].getTransformation()
-t3D3 = tr_3.getParameters1().t3D
-if not isCoordEqual(t3D3, (0.0, 1.0, 2.0), 0, 1.e-2):
-    raise RuntimeError
-tr_4 = sortmeshes[4].getTransformation()
-t3D4 = tr_4.getParameters1().t3D
-if not isCoordEqual(t3D4, (-2.0, 5.0, 1.0), 1.e-2):
-    raise RuntimeError
-tr_5 = sortmeshes[5].getTransformation()
-t3D5 = tr_5.getParameters1().t3D
-if not isCoordEqual(t3D5, (6.0, -3.0, -2.0), 1.e-2):
-    raise RuntimeError
-
-
-shapes = [cylinder, sphere1, sphere2, sphere3, cloud]
-for mesh in meshes:
-    if mesh is not None:
-        print("mesh:", mesh.getName())
-        shapes.append(mesh)
-for cl in clouds:
-    if cl is not None:
-        print("cloud:", cl.getName())
-        shapes.append(cl)
-
-cc.SaveEntities(shapes, os.path.join(dataDir, "ransac.bin"))
+if cc.isPluginRANSAC_SD():
+    import cloudComPy.RANSAC_SD
+    params = cc.RANSAC_SD.RansacParams()
+    params.optimizeForCloud(cloud)
+    print(params.epsilon, params.bitmapEpsilon)
+    meshes, clouds = cc.RANSAC_SD.computeRANSAC_SD(cloud, params)
+    
+    sortmeshes = [m for m in meshes if m is not None]
+    sortmeshes.sort(key= lambda m: m.getName())
+    for i in range(len(sortmeshes)):
+        print("mesh %d: %s"%(i,sortmeshes[i].getName()))
+    
+    if not sortmeshes[0].isA(cc.CC_TYPES.CYLINDER):
+        raise RuntimeError
+    if not sortmeshes[1].isA(cc.CC_TYPES.PLANE):
+        raise RuntimeError
+    if not sortmeshes[2].isA(cc.CC_TYPES.PLANE):
+        raise RuntimeError
+    if not sortmeshes[3].isA(cc.CC_TYPES.SPHERE):
+        raise RuntimeError
+    if not sortmeshes[4].isA(cc.CC_TYPES.SPHERE):
+        raise RuntimeError
+    if not sortmeshes[5].isA(cc.CC_TYPES.SPHERE):
+        raise RuntimeError
+    
+    if not math.isclose(sortmeshes[3].getRadius(), 1.0, rel_tol=1.e-2):
+        raise RuntimeError
+    if not math.isclose(sortmeshes[4].getRadius(), 1.5, rel_tol=1.e-2):
+        raise RuntimeError
+    if not math.isclose(sortmeshes[5].getRadius(), 2.0, rel_tol=1.e-2):
+        raise RuntimeError
+    
+    tr_0 = sortmeshes[0].getTransformation()
+    t3D0 = tr_0.getParameters1().t3D
+    if not isCoordEqual(t3D0, (3.0, 0.0, 4.0), 0, 1.e-2):
+        raise RuntimeError
+    tr_3 = sortmeshes[3].getTransformation()
+    t3D3 = tr_3.getParameters1().t3D
+    if not isCoordEqual(t3D3, (0.0, 1.0, 2.0), 0, 1.e-2):
+        raise RuntimeError
+    tr_4 = sortmeshes[4].getTransformation()
+    t3D4 = tr_4.getParameters1().t3D
+    if not isCoordEqual(t3D4, (-2.0, 5.0, 1.0), 1.e-2):
+        raise RuntimeError
+    tr_5 = sortmeshes[5].getTransformation()
+    t3D5 = tr_5.getParameters1().t3D
+    if not isCoordEqual(t3D5, (6.0, -3.0, -2.0), 1.e-2):
+        raise RuntimeError
+    
+    
+    shapes = [cylinder, sphere1, sphere2, sphere3, cloud]
+    for mesh in meshes:
+        if mesh is not None:
+            print("mesh:", mesh.getName())
+            shapes.append(mesh)
+    for cl in clouds:
+        if cl is not None:
+            print("cloud:", cl.getName())
+            shapes.append(cl)
+    
+    cc.SaveEntities(shapes, os.path.join(dataDir, "ransac.bin"))
 
 

@@ -108,6 +108,12 @@ bool pyccPlugins::_isPluginPCV = true;
 bool pyccPlugins::_isPluginPCV = false;
 #endif
 
+#ifdef PLUGIN_STANDARD_QRANSAC_SD
+bool pyccPlugins::_isPluginRANSAC_SD = true;
+#else
+bool pyccPlugins::_isPluginRANSAC_SD = false;
+#endif
+
 #ifdef PLUGIN_STANDARD_QHPR
 bool pyccPlugins::_isPluginHPR = true;
 #else
