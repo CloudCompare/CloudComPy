@@ -40,6 +40,12 @@
 #include <ccGLMatrix.h>
 #include <ccRasterGrid.h>
 #include <ccRasterizeTool.h>
+#include <ccClipBox.h>
+#include <ManualSegmentationTools.h>
+#include <SimpleMesh.h>
+#include <ccMaterialSet.h>
+#include <ccHObject.h>
+#include <ccObject.h>
 
 //libs/qCC_io
 #include<AsciiFilter.h>
@@ -58,13 +64,17 @@
 #include <unordered_set>
 #include <cmath>
 #include <string.h>
+#include <vector>
+#include <exception>
+#include <set>
 
 //Qt
 #include <QApplication>
 #include <QDir>
 #include <QStandardPaths>
 #include <QString>
-#include <exception>
+#include <QObject>
+#include <QMessageBox>
 
 #include "optdefines.h"
 #ifdef PLUGIN_IO_QFBX
@@ -2597,3 +2607,2374 @@ ccHObject* Rasterize_(
     CCTRACE(entity->getName().toStdString());
 	return entity;
 }
+
+// ===========================================================================
+// ==== following used for ExtractSlicesAndContours (copy/adaptation from qCC)
+
+//list of already used point to avoid hull's inner loops
+enum HullPointFlags {   POINT_NOT_USED  = 0,
+                        POINT_USED      = 1,
+                        POINT_IGNORED   = 2,
+                        POINT_FROZEN    = 3,
+};
+
+using Vertex2D = CCCoreLib::PointProjectionTools::IndexedCCVector2;
+using VertexIterator = std::list<Vertex2D *>::iterator;
+using ConstVertexIterator = std::list<Vertex2D *>::const_iterator;
+using Hull2D = std::list<Vertex2D *>;
+
+namespace
+{
+    struct Edge
+    {
+        Edge() : nearestPointIndex(0), nearestPointSquareDist(-1.0f) {}
+
+        Edge(const VertexIterator& A, unsigned _nearestPointIndex, float _nearestPointSquareDist)
+        : itA(A)
+        , nearestPointIndex(_nearestPointIndex)
+        , nearestPointSquareDist(_nearestPointSquareDist)
+    {}
+
+        //operator
+        inline bool operator< (const Edge& e) const { return nearestPointSquareDist < e.nearestPointSquareDist; }
+
+        VertexIterator itA;
+        unsigned nearestPointIndex;
+        float nearestPointSquareDist;
+    };
+}
+
+namespace
+{
+    //Last envelope or contour unique ID
+    std::vector<unsigned> s_lastContourUniqueIDs;
+
+    //Envelope extraction parameters (global)
+    double s_maxEnvelopeEdgeLength = -1.0;
+
+    //Meta-data key: origin entity UUID
+    constexpr char s_originEntityUUID[] = "OriginEntityUUID";
+    //Meta-data key: slice (unique) ID
+    constexpr char s_sliceID[] = "SliceID";
+}
+
+#ifndef CC_GDAL_SUPPORT
+#include "ccIsolines.h" //old alternative code to generate contour lines (doesn't work very well :( )
+#include <QCoreApplication>
+#else
+//GDAL
+#include <cpl_string.h>
+#include <gdal.h>
+#include <gdal_alg.h>
+
+struct ContourGenerationParameters_
+{
+    std::vector<ccPolyline*> contourLines;
+    const ccRasterGrid* grid = nullptr;
+    bool projectContourOnAltitudes = false;
+};
+
+CPLErr ContourWriter_(  double dfLevel,
+                        int nPoints,
+                        double *padfX,
+                        double *padfY,
+                        void * userData);
+#endif //CC_GDAL_SUPPORT
+
+class ccContourLinesGenerator_
+{
+public:
+//! Contour lines generation parameters
+    struct Parameters
+    {
+        double startAltitude = 0.0;
+        double maxAltitude = 0.0;
+        double step = 0.0; //gap between levels
+        ccScalarField* altitudes = nullptr; //optional scalar field that stores the 'altitudes' (may be null, in which case the grid 'h' values are used directly)
+        int minVertexCount = 3; //minimum number of vertices per contour line
+        bool projectContourOnAltitudes = false;
+        double emptyCellsValue = std::numeric_limits<double>::quiet_NaN();
+
+        /* The parameters below are only required if GDAL is not required */
+        QWidget* parentWidget = nullptr; //for progress dialog
+        bool ignoreBorders = false;
+    };
+
+    //! Additional meta-data key for generated polylines (see ccPolyline)
+    static const char* MetaKeySubIndex() { return "SubIndex"; }
+
+    static bool GenerateContourLines(   ccRasterGrid* rasterGrid,
+                                        const CCVector2d& gridMinCornerXY,
+                                        const Parameters& params,
+                                        std::vector<ccPolyline*>& contourLines)
+    {
+        CCTRACE("GenerateContourLines");
+        if (!rasterGrid || !rasterGrid->isValid())
+        {
+            CCTRACE("Need a valid raster/cloud to compute contours!");
+            assert(false);
+            return false;
+        }
+        if (params.startAltitude > params.maxAltitude)
+        {
+            CCTRACE("Start value is above the layer maximum value!");
+            assert(false);
+            return false;
+        }
+        if (params.step < 0)
+        {
+            CCTRACE("Invalid step value");
+            assert(false);
+            return false;
+        }
+        if (params.minVertexCount < 3)
+        {
+            CCTRACE("Invalid input parameter: can't have less than 3 vertices per contour line");
+            assert(false);
+            return false;
+        }
+
+        bool sparseLayer = (params.altitudes && params.altitudes->currentSize() != rasterGrid->height * rasterGrid->width);
+        if (sparseLayer && !std::isfinite(params.emptyCellsValue))
+        {
+            CCTRACE("Invalid empty cell value (sparse layer)");
+            assert(false);
+            return false;
+        }
+
+        unsigned levelCount = 1;
+        if (CCCoreLib::GreaterThanEpsilon(params.step))
+        {
+            levelCount += static_cast<unsigned>(floor((params.maxAltitude - params.startAltitude) / params.step));
+        }
+
+        try
+        {
+    #ifdef CC_GDAL_SUPPORT //use GDAL (more robust) - otherwise we will use an old code found on the Internet (with a strange behavior)
+
+            //invoke the GDAL 'Contour Generator'
+            ContourGenerationParameters_ gdalParams;
+            gdalParams.grid = rasterGrid;
+            gdalParams.projectContourOnAltitudes = params.projectContourOnAltitudes;
+            GDALContourGeneratorH hCG = GDAL_CG_Create( rasterGrid->width,
+                                                        rasterGrid->height,
+                                                        std::isnan(params.emptyCellsValue) ? FALSE : TRUE,
+                                                        params.emptyCellsValue,
+                                                        params.step,
+                                                        params.startAltitude,
+                                                        ContourWriter_,
+                                                        &gdalParams);
+            if (!hCG)
+            {
+                CCTRACE("[GDAL] Failed to create contour generator");
+                return false;
+            }
+
+            //feed the scan lines
+            {
+                double* scanline = static_cast<double*>(CPLMalloc(sizeof(double) * rasterGrid->width));
+                if (!scanline)
+                {
+                    CCTRACE("[GDAL] Not enough memory");
+                    return false;
+                }
+
+                unsigned layerIndex = 0;
+
+                for (unsigned j = 0; j < rasterGrid->height; ++j)
+                {
+                    const ccRasterGrid::Row& cellRow = rasterGrid->rows[j];
+                    for (unsigned i = 0; i < rasterGrid->width; ++i)
+                    {
+                        if (cellRow[i].nbPoints || !sparseLayer)
+                        {
+                            if (params.altitudes)
+                            {
+                                ScalarType value = params.altitudes->getValue(layerIndex++);
+                                scanline[i] = ccScalarField::ValidValue(value) ? value : params.emptyCellsValue;
+                            }
+                            else
+                            {
+                                scanline[i] = std::isfinite(cellRow[i].h) ? cellRow[i].h : params.emptyCellsValue;
+                            }
+                        }
+                        else
+                        {
+                            scanline[i] = params.emptyCellsValue;
+                        }
+                    }
+
+                    CPLErr error = GDAL_CG_FeedLine(hCG, scanline);
+                    if (error != CE_None)
+                    {
+                        CCTRACE("[GDAL] An error occurred during contour lines generation");
+                        break;
+                    }
+                }
+
+                if (scanline)
+                {
+                    CPLFree(scanline);
+                }
+                scanline = nullptr;
+
+                //have we generated any contour line?
+                if (!gdalParams.contourLines.empty())
+                {
+                    //reproject contour lines from raster C.S. to the cloud C.S.
+                    for (ccPolyline*& poly : gdalParams.contourLines)
+                    {
+                        if (static_cast<int>(poly->size()) < params.minVertexCount)
+                        {
+                            delete poly;
+                            poly = nullptr;
+                            continue;
+                        }
+
+                        double height = std::numeric_limits<double>::quiet_NaN();
+                        for (unsigned i = 0; i < poly->size(); ++i)
+                        {
+                            CCVector3* P2D = const_cast<CCVector3*>(poly->getAssociatedCloud()->getPoint(i));
+                            if (i == 0)
+                            {
+                                height = P2D->z;
+                            }
+
+                            CCVector3 P(    static_cast<PointCoordinateType>((P2D->x - 0.5) * rasterGrid->gridStep + gridMinCornerXY.x),
+                                            static_cast<PointCoordinateType>((P2D->y - 0.5) * rasterGrid->gridStep + gridMinCornerXY.y),
+                                            P2D->z );
+                            *P2D = P;
+                        }
+
+                        //add contour
+                        poly->setName(QString("Contour line value = %1 (#%2)").arg(height).arg(poly->getMetaData(ccContourLinesGenerator_::MetaKeySubIndex()).toUInt()));
+                        contourLines.push_back(poly);
+                    }
+
+                    gdalParams.contourLines.clear(); //just in case
+                }
+            }
+
+            GDAL_CG_Destroy(hCG);
+    #else
+            unsigned xDim = rasterGrid->width;
+            unsigned yDim = rasterGrid->height;
+
+            int margin = 0;
+            if (!params.ignoreBorders)
+            {
+                margin = 1;
+                xDim += 2;
+                yDim += 2;
+            }
+            std::vector<double> grid(xDim * yDim, 0);
+
+            //fill grid
+            {
+                unsigned layerIndex = 0;
+                for (unsigned j = 0; j < rasterGrid->height; ++j)
+                {
+                    const ccRasterGrid::Row& cellRow = rasterGrid->rows[j];
+                    double* row = &(grid[(j + margin)*xDim + margin]);
+                    for (unsigned i = 0; i < rasterGrid->width; ++i)
+                    {
+                        if (cellRow[i].nbPoints || !sparseLayer)
+                        {
+                            if (params.altitudes)
+                            {
+                                ScalarType value = params.altitudes->getValue(layerIndex++);
+                                row[i] = ccScalarField::ValidValue(value) ? value : params.emptyCellsValue;
+                            }
+                            else
+                            {
+                                row[i] = std::isfinite(cellRow[i].h) ? cellRow[i].h : params.emptyCellsValue;
+                            }
+                        }
+                        else
+                        {
+                            row[i] = params.emptyCellsValue;
+                        }
+                    }
+                }
+            }
+
+            //generate contour lines
+            {
+                Isolines<double> iso(static_cast<int>(xDim), static_cast<int>(yDim));
+                if (!params.ignoreBorders)
+                {
+                    iso.createOnePixelBorder(grid.data(), params.startAltitude - 1.0);
+                }
+
+                ccProgressDialog pDlg(true, params.parentWidget);
+                pDlg.setMethodTitle(QObject::tr("Contour plot"));
+                pDlg.setInfo(QObject::tr("Levels: %1\nCells: %2 x %3").arg(levelCount).arg(rasterGrid->width).arg(rasterGrid->height));
+                pDlg.start();
+                pDlg.show();
+                QCoreApplication::processEvents();
+                CCCoreLib::NormalizedProgress nProgress(&pDlg, levelCount);
+
+                for (double v = params.startAltitude; v <= params.maxAltitude; v += params.step)
+                {
+                    //extract contour lines for the current level
+                    iso.setThreshold(v);
+                    int lineCount = iso.find(grid.data());
+
+                    ccLog::PrintDebug(QString("[Rasterize][Isolines] value=%1 : %2 lines").arg(v).arg(lineCount));
+                    CCTRACE("[Rasterize][Isolines] value=" << v << " : " << lineCount << "lines");
+
+                    //convert them to poylines
+                    int realCount = 0;
+                    for (int i = 0; i < lineCount; ++i)
+                    {
+                        int vertCount = iso.getContourLength(i);
+                        if (vertCount >= params.minVertexCount)
+                        {
+                            int startVi = 0; //we may have to split the polyline in multiple chunks
+                            while (startVi < vertCount)
+                            {
+                                ccPointCloud* vertices = new ccPointCloud("vertices");
+                                ccPolyline* poly = new ccPolyline(vertices);
+                                poly->addChild(vertices);
+                                bool isClosed = (startVi == 0 ? iso.isContourClosed(i) : false);
+                                if (poly->reserve(vertCount - startVi) && vertices->reserve(vertCount - startVi))
+                                {
+                                    unsigned localIndex = 0;
+                                    for (int vi = startVi; vi < vertCount; ++vi)
+                                    {
+                                        ++startVi;
+
+                                        double x = iso.getContourX(i, vi) - margin;
+                                        double y = iso.getContourY(i, vi) - margin;
+
+                                        CCVector3 P;
+                                        //DGM: we will only do the dimension mapping at export time
+                                        //(otherwise the contour lines appear in the wrong orientation compared to the grid/raster which
+                                        // is in the XY plane by default!)
+                                        /*P.u[X] = */P.x = static_cast<PointCoordinateType>((x + 0.5) * rasterGrid->gridStep + gridMinCornerXY.x);
+                                        /*P.u[Y] = */P.y = static_cast<PointCoordinateType>((y + 0.5) * rasterGrid->gridStep + gridMinCornerXY.y);
+                                        if (params.projectContourOnAltitudes)
+                                        {
+                                            int xi = std::min(std::max(static_cast<int>(x), 0), static_cast<int>(rasterGrid->width) - 1);
+                                            int yi = std::min(std::max(static_cast<int>(y), 0), static_cast<int>(rasterGrid->height) - 1);
+                                            double h = rasterGrid->rows[yi][xi].h;
+                                            if (std::isfinite(h))
+                                            {
+                                                /*P.u[Z] = */P.z = static_cast<PointCoordinateType>(h);
+                                            }
+                                            else
+                                            {
+                                                //DGM: we stop the current polyline
+                                                isClosed = false;
+                                                break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            /*P.u[Z] = */P.z = static_cast<PointCoordinateType>(v);
+                                        }
+
+                                        vertices->addPoint(P);
+                                        assert(localIndex < vertices->size());
+                                        poly->addPointIndex(localIndex++);
+                                    }
+
+                                    assert(poly);
+                                    if (poly->size() > 1)
+                                    {
+                                        poly->setClosed(isClosed); //if we have less vertices, it means we have 'chopped' the original contour
+                                        vertices->setEnabled(false);
+
+                                        ++realCount;
+                                        poly->setMetaData(ccContourLinesGenerator::MetaKeySubIndex(), realCount);
+
+                                        //add the 'const altitude' meta-data as well
+                                        poly->setMetaData(ccPolyline::MetaKeyConstAltitude(), QVariant(v));
+
+                                        //add contour
+                                        poly->setName(QString("Contour line value = %1 (#%2)").arg(v).arg(realCount));
+                                        try
+                                        {
+                                            contourLines.push_back(poly);
+                                        }
+                                        catch (const std::bad_alloc&)
+                                        {
+                                            CCTRACE("[ccContourLinesGenerator] Not enough memory");
+                                            return false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        delete poly;
+                                        poly = nullptr;
+                                    }
+                                }
+                                else
+                                {
+                                    delete poly;
+                                    poly = nullptr;
+                                    CCTRACE("Not enough memory!");
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!nProgress.oneStep())
+                    {
+                        //process cancelled by user
+                        break;
+                    }
+                }
+            }
+    #endif
+        }
+        catch (const std::bad_alloc&)
+        {
+            CCTRACE("[ccContourLinesGenerator] Not enough memory");
+            return false;
+        }
+
+        ccLog::Print(QString("[ccContourLinesGenerator] %1 iso-lines generated (%2 levels)").arg(contourLines.size()).arg(levelCount));
+        CCTRACE("[ccContourLinesGenerator] " <<  contourLines.size() << " iso-lines generated (" << levelCount << " levels)");
+        return true;
+    };
+};
+
+
+#ifdef CC_GDAL_SUPPORT
+CPLErr ContourWriter_(  double dfLevel,
+                        int nPoints,
+                        double *padfX,
+                        double *padfY,
+                        void * userData)
+{
+    CCTRACE("ContourWriter_");
+    if (nPoints < 2)
+    {
+        //nothing to do
+        assert(false);
+        return CE_None;
+    }
+
+    ContourGenerationParameters_* params = reinterpret_cast<ContourGenerationParameters_*>(userData);
+    if (!params || !params->grid)
+    {
+        assert(false);
+        return CE_Failure;
+    }
+
+    ccPointCloud* vertices = nullptr;
+    ccPolyline* poly = nullptr;
+
+    unsigned subIndex = 0;
+    for (int i = 0; i < nPoints; ++i)
+    {
+        CCVector3 P(padfX[i], padfY[i], dfLevel);
+
+        if (params->projectContourOnAltitudes)
+        {
+            int xi = std::min(std::max(static_cast<int>(padfX[i]), 0), static_cast<int>(params->grid->width) - 1);
+            int yi = std::min(std::max(static_cast<int>(padfY[i]), 0), static_cast<int>(params->grid->height) - 1);
+            double h = params->grid->rows[yi][xi].h;
+            if (std::isfinite(h))
+            {
+                P.z = static_cast<PointCoordinateType>(h);
+            }
+            else
+            {
+                //DGM: we stop the current polyline
+                if (poly)
+                {
+                    if (poly->size() < 2)
+                    {
+                        delete poly;
+                        params->contourLines.pop_back();
+                    }
+                    poly = nullptr;
+                    vertices = nullptr;
+                }
+                continue;
+            }
+        }
+
+        if (!poly)
+        {
+            //we need to instantiate a new polyline
+            vertices = new ccPointCloud("vertices");
+            vertices->setEnabled(false);
+            poly = new ccPolyline(vertices);
+            poly->addChild(vertices);
+            poly->setMetaData(ccContourLinesGenerator_::MetaKeySubIndex(), ++subIndex);
+            poly->setClosed(false);
+
+            //add the 'const altitude' meta-data as well
+            poly->setMetaData(ccPolyline::MetaKeyConstAltitude(), QVariant(dfLevel));
+
+            if (!vertices->reserve(nPoints - i) || !poly->reserve(nPoints - i))
+            {
+                //not enough memory
+                delete poly;
+                poly = nullptr;
+                return CE_Failure;
+            }
+
+            try
+            {
+                params->contourLines.push_back(poly);
+            }
+            catch (const std::bad_alloc&)
+            {
+                return CE_Failure;
+            }
+        }
+
+        assert(vertices);
+        poly->addPointIndex(vertices->size());
+        vertices->addPoint(P);
+    }
+
+    return CE_None;
+}
+#endif //CC_GDAL_SUPPORT
+
+//! Finds the nearest (available) point to an edge
+/** \return The nearest point distance (or -1 if no point was found!)
+**/
+PointCoordinateType FindNearestCandidate_(  unsigned& minIndex,
+                                            const VertexIterator& itA,
+                                            const VertexIterator& itB,
+                                            const std::vector<Vertex2D>& points,
+                                            const std::vector<HullPointFlags>& pointFlags,
+                                            PointCoordinateType minSquareEdgeLength,
+                                            bool allowLongerChunks = false,
+                                            double minCosAngle = -1.0)
+{
+    //CCTRACE("FindNearestCandidate_");
+    //look for the nearest point in the input set
+    PointCoordinateType minDist2 = -1;
+    const CCVector2 AB = **itB-**itA;
+    const PointCoordinateType squareLengthAB = AB.norm2();
+    const unsigned pointCount = static_cast<unsigned>(points.size());
+
+#ifdef CC_CORE_LIB_USES_TBB
+    tbb::parallel_for( static_cast<unsigned int>(0), pointCount, [&](unsigned int i) {
+        const Vertex2D& P = points[i];
+        if (pointFlags[P.index] != POINT_NOT_USED)
+            return;
+
+        //skip the edge vertices!
+        if (P.index == (*itA)->index || P.index == (*itB)->index)
+        {
+            return;
+        }
+
+        //we only consider 'inner' points
+        const CCVector2 AP = P-**itA;
+        if (AB.x * AP.y - AB.y * AP.x < 0)
+        {
+            return;
+        }
+
+        //check the angle
+        if (minCosAngle > -1.0)
+        {
+            const CCVector2 PB = **itB - P;
+            const PointCoordinateType dotProd = AP.x * PB.x + AP.y * PB.y;
+            const PointCoordinateType minDotProd = static_cast<PointCoordinateType>(minCosAngle * std::sqrt(AP.norm2() * PB.norm2()));
+            if (dotProd < minDotProd)
+            {
+                return;
+            }
+        }
+
+        const PointCoordinateType dot = AB.dot(AP); // = cos(PAB) * ||AP|| * ||AB||
+        if (dot >= 0 && dot <= squareLengthAB)
+        {
+            const CCVector2 HP = AP - AB * (dot / squareLengthAB);
+            const PointCoordinateType dist2 = HP.norm2();
+            if (minDist2 < 0 || dist2 < minDist2)
+            {
+                //the 'nearest' point must also be a valid candidate
+                //(i.e. at least one of the created edges is smaller than the original one
+                //and we don't create too small edges!)
+                const PointCoordinateType squareLengthAP = AP.norm2();
+                const PointCoordinateType squareLengthBP = (P-**itB).norm2();
+                if (    squareLengthAP >= minSquareEdgeLength
+                    &&  squareLengthBP >= minSquareEdgeLength
+                    &&  (allowLongerChunks || (squareLengthAP < squareLengthAB || squareLengthBP < squareLengthAB))
+                    )
+                {
+                    minDist2 = dist2;
+                    minIndex = i;
+                }
+            }
+        }
+    } );
+#else
+    for (unsigned i = 0; i < pointCount; ++i)
+    {
+        const Vertex2D& P = points[i];
+        if (pointFlags[P.index] != POINT_NOT_USED)
+            continue;
+
+        //skip the edge vertices!
+        if (P.index == (*itA)->index || P.index == (*itB)->index)
+        {
+            continue;
+        }
+
+        //we only consider 'inner' points
+        CCVector2 AP = P - **itA;
+        if (AB.x * AP.y - AB.y * AP.x < 0)
+        {
+            continue;
+        }
+
+        //check the angle
+        if (minCosAngle > -1.0)
+        {
+            CCVector2 PB = **itB - P;
+            PointCoordinateType dotProd = AP.x * PB.x + AP.y * PB.y;
+            PointCoordinateType minDotProd = static_cast<PointCoordinateType>(minCosAngle * std::sqrt(AP.norm2() * PB.norm2()));
+            if (dotProd < minDotProd)
+            {
+                continue;
+            }
+        }
+
+        PointCoordinateType dot = AB.dot(AP); // = cos(PAB) * ||AP|| * ||AB||
+        if (dot >= 0 && dot <= squareLengthAB)
+        {
+            CCVector2 HP = AP - AB * (dot / squareLengthAB);
+            PointCoordinateType dist2 = HP.norm2();
+            if (minDist2 < 0 || dist2 < minDist2)
+            {
+                //the 'nearest' point must also be a valid candidate
+                //(i.e. at least one of the created edges is smaller than the original one
+                //and we don't create too small edges!)
+                PointCoordinateType squareLengthAP = AP.norm2();
+                PointCoordinateType squareLengthBP = (P - **itB).norm2();
+                if (    squareLengthAP >= minSquareEdgeLength
+                    &&  squareLengthBP >= minSquareEdgeLength
+                    &&  (allowLongerChunks || (squareLengthAP < squareLengthAB || squareLengthBP < squareLengthAB))
+                    )
+                {
+                    minDist2 = dist2;
+                    minIndex = i;
+                }
+            }
+        }
+    }
+#endif
+
+    return (minDist2 < 0 ? minDist2 : minDist2/squareLengthAB);
+}
+
+bool ExtractConcaveHull2D_( std::vector<Vertex2D>& points,
+                            std::list<Vertex2D*>& hullPoints,
+                            EnvelopeType envelopeType,
+                            bool allowMultiPass,
+                            PointCoordinateType maxSquareEdgeLength=0,
+                            bool enableVisualDebugMode=false,
+                            double maxAngleDeg=0.0)
+{
+    CCTRACE("ExtractConcaveHull2D_");
+    //first compute the Convex hull
+    if (!CCCoreLib::PointProjectionTools::extractConvexHull2D(points,hullPoints))
+        return false;
+
+    //do we really need to compute the concave hull?
+    if (hullPoints.size() < 2 || maxSquareEdgeLength < 0)
+        return true;
+
+    unsigned pointCount = static_cast<unsigned>(points.size());
+
+    std::vector<HullPointFlags> pointFlags;
+    try
+    {
+        pointFlags.resize(pointCount, POINT_NOT_USED);
+    }
+    catch(...)
+    {
+        //not enough memory
+        return false;
+    }
+
+    double minCosAngle = maxAngleDeg <= 0 ? -1.0 : std::cos(maxAngleDeg * M_PI / 180.0);
+
+    //hack: compute the theoretical 'minimal' edge length
+    PointCoordinateType minSquareEdgeLength = 0;
+    {
+        CCVector2 minP;
+        CCVector2 maxP;
+        for (size_t i=0; i<pointCount; ++i)
+        {
+            const Vertex2D& P = points[i];
+            if (i)
+            {
+                minP.x = std::min(P.x,minP.x);
+                minP.y = std::min(P.y,minP.y);
+                maxP.x = std::max(P.x,maxP.x);
+                maxP.y = std::max(P.y,maxP.y);
+            }
+            else
+            {
+                minP = maxP = P;
+            }
+        }
+        minSquareEdgeLength = (maxP - minP).norm2() / static_cast<PointCoordinateType>(1.0e7); //10^-7 of the max bounding rectangle side
+        minSquareEdgeLength = std::min(minSquareEdgeLength, maxSquareEdgeLength / 10);
+
+        //we remove very small edges
+        for (VertexIterator itA = hullPoints.begin(); itA != hullPoints.end(); ++itA)
+        {
+            VertexIterator itB = itA; ++itB;
+            if (itB == hullPoints.end())
+                itB = hullPoints.begin();
+            if ((**itB-**itA).norm2() < minSquareEdgeLength)
+            {
+                pointFlags[(*itB)->index] = POINT_FROZEN;
+                hullPoints.erase(itB);
+            }
+        }
+
+        if (envelopeType != FULL)
+        {
+            //we will now try to determine which part of the envelope is the 'upper' one and which one is the 'lower' one
+
+            //search for the min and max vertices
+            VertexIterator itLeft = hullPoints.begin();
+            VertexIterator itRight = hullPoints.begin();
+            {
+                for (VertexIterator it = hullPoints.begin(); it != hullPoints.end(); ++it)
+                {
+                    if ((*it)->x < (*itLeft)->x || ((*it)->x == (*itLeft)->x && (*it)->y < (*itLeft)->y))
+                    {
+                        itLeft = it;
+                    }
+                    if ((*it)->x > (*itRight)->x || ((*it)->x == (*itRight)->x && (*it)->y < (*itRight)->y))
+                    {
+                        itRight = it;
+                    }
+                }
+            }
+            assert(itLeft != itRight);
+            //find the right way to go
+            {
+                VertexIterator itBefore = itLeft;
+                if (itBefore == hullPoints.begin())
+                    itBefore = hullPoints.end(); --itBefore;
+                VertexIterator itAfter = itLeft; ++itAfter;
+                if (itAfter == hullPoints.end())
+                    itAfter = hullPoints.begin();
+
+                bool forward = ((**itBefore - **itLeft).cross(**itAfter - **itLeft) < 0 && envelopeType == LOWER);
+                if (!forward)
+                    std::swap(itLeft,itRight);
+            }
+
+            //copy the right part
+            std::list<Vertex2D*> halfHullPoints;
+            try
+            {
+                for (VertexIterator it = itLeft; ; ++it)
+                {
+                    if (it == hullPoints.end())
+                        it = hullPoints.begin();
+                    halfHullPoints.push_back(*it);
+                    if (it == itRight)
+                        break;
+                }
+            }
+            catch (const std::bad_alloc&)
+            {
+                //not enough memory
+                return false;
+            }
+            //replace the input hull by the selected part
+            hullPoints = halfHullPoints;
+        }
+
+        if (hullPoints.size() < 2)
+        {
+            //no more edges?!
+            return false;
+        }
+    }
+
+
+    //DEBUG MECHANISM
+    ccPointCloud* debugCloud = nullptr;
+    ccPolyline* debugEnvelope = nullptr;
+    ccPointCloud* debugEnvelopeVertices = nullptr;
+
+    //Warning: high STL containers usage ahead ;)
+    unsigned step = 0;
+    bool somethingHasChanged = true;
+    while (somethingHasChanged)
+    {
+        try
+        {
+            somethingHasChanged = false;
+            ++step;
+
+            //build the initial edge list & flag the convex hull points
+            std::multiset<Edge> edges;
+            //initial number of edges
+            assert(hullPoints.size() >= 2);
+            size_t initEdgeCount = hullPoints.size();
+            if (envelopeType != FULL)
+                --initEdgeCount;
+
+            VertexIterator itB = hullPoints.begin();
+            for (size_t i = 0; i < initEdgeCount; ++i)
+            {
+                VertexIterator itA = itB; ++itB;
+                if (itB == hullPoints.end())
+                    itB = hullPoints.begin();
+
+                //we will only process the edges that are longer than the maximum specified length
+                if ((**itB - **itA).norm2() > maxSquareEdgeLength)
+                {
+                    unsigned nearestPointIndex = 0;
+                    PointCoordinateType minSquareDist = FindNearestCandidate_(
+                        nearestPointIndex,
+                        itA,
+                        itB,
+                        points,
+                        pointFlags,
+                        minSquareEdgeLength,
+                        step > 1,
+                        minCosAngle);
+
+                    if (minSquareDist >= 0)
+                    {
+                        Edge e(itA, nearestPointIndex, minSquareDist);
+                        edges.insert(e);
+                    }
+                }
+
+                pointFlags[(*itA)->index] = POINT_USED;
+            }
+
+            //flag the last vertex as well for non closed envelopes!
+            if (envelopeType != FULL)
+                pointFlags[(*hullPoints.rbegin())->index] = POINT_USED;
+
+            while (!edges.empty())
+            {
+                //current edge (AB)
+                //this should be the edge with the nearest 'candidate'
+                Edge e = *edges.begin();
+                edges.erase(edges.begin());
+
+                VertexIterator itA = e.itA;
+                VertexIterator itB = itA; ++itB;
+                if (itB == hullPoints.end())
+                {
+                    assert(envelopeType == FULL);
+                    itB = hullPoints.begin();
+                }
+
+                //nearest point
+                const Vertex2D& P = points[e.nearestPointIndex];
+                assert(pointFlags[P.index] == POINT_NOT_USED); //we don't consider already used points!
+
+                //create labels
+                cc2DLabel* edgeLabel = nullptr;
+                cc2DLabel* label = nullptr;
+
+                //last check: the new segments must not intersect with the actual hull!
+                bool intersect = false;
+                //if (false)
+                {
+                    for (VertexIterator itJ = hullPoints.begin(), itI = itJ++; itI != hullPoints.end(); ++itI, ++itJ)
+                    {
+                        if (itJ == hullPoints.end())
+                        {
+                            if (envelopeType == FULL)
+                                itJ = hullPoints.begin();
+                            else
+                                break;
+                        }
+
+                        if (    ((*itI)->index != (*itA)->index && (*itJ)->index != (*itA)->index && CCCoreLib::PointProjectionTools::segmentIntersect(**itI,**itJ,**itA,P))
+                            ||  ((*itI)->index != (*itB)->index && (*itJ)->index != (*itB)->index && CCCoreLib::PointProjectionTools::segmentIntersect(**itI,**itJ,P,**itB)) )
+                        {
+                            intersect = true;
+                            break;
+                        }
+                    }
+                }
+                if (!intersect)
+                {
+                    //add point to concave hull
+                    VertexIterator itP = hullPoints.insert(itB == hullPoints.begin() ? hullPoints.end() : itB, &points[e.nearestPointIndex]);
+
+                    //we won't use P anymore!
+                    pointFlags[P.index] = POINT_USED;
+
+                    somethingHasChanged = true;
+
+                    //update all edges that were having 'P' as their nearest candidate as well
+                    if (!edges.empty())
+                    {
+                        std::vector<VertexIterator> removed;
+                        std::multiset<Edge>::const_iterator lastValidIt = edges.end();
+                        for (std::multiset<Edge>::const_iterator it = edges.begin(); it != edges.end(); ++it)
+                        {
+                            if ((*it).nearestPointIndex == e.nearestPointIndex)
+                            {
+                                //we'll have to put them back afterwards!
+                                removed.push_back((*it).itA);
+
+                                edges.erase(it);
+                                if (edges.empty())
+                                    break;
+                                if (lastValidIt != edges.end())
+                                    it = lastValidIt;
+                                else
+                                    it = edges.begin();
+                            }
+                            else
+                            {
+                                lastValidIt = it;
+                            }
+                        }
+
+                        //update the removed edges info and put them back in the main list
+                        for (size_t i = 0; i < removed.size(); ++i)
+                        {
+                            VertexIterator itC = removed[i];
+                            VertexIterator itD = itC; ++itD;
+                            if (itD == hullPoints.end())
+                                itD = hullPoints.begin();
+
+                            unsigned nearestPointIndex = 0;
+                            PointCoordinateType minSquareDist = FindNearestCandidate_(
+                                nearestPointIndex,
+                                itC,
+                                itD,
+                                points,
+                                pointFlags,
+                                minSquareEdgeLength,
+                                false,
+                                minCosAngle);
+
+                            if (minSquareDist >= 0)
+                            {
+                                Edge e(itC, nearestPointIndex, minSquareDist);
+                                edges.insert(e);
+                            }
+                        }
+                    }
+
+                    //we'll inspect the two new segments later (if necessary)
+                    if ((P-**itA).norm2() > maxSquareEdgeLength)
+                    {
+                        unsigned nearestPointIndex = 0;
+                        PointCoordinateType minSquareDist = FindNearestCandidate_(
+                            nearestPointIndex,
+                            itA,
+                            itP,
+                            points,
+                            pointFlags,
+                            minSquareEdgeLength,
+                            false,
+                            minCosAngle);
+
+                        if (minSquareDist >= 0)
+                        {
+                            Edge e(itA,nearestPointIndex,minSquareDist);
+                            edges.insert(e);
+                        }
+                    }
+                    if ((**itB-P).norm2() > maxSquareEdgeLength)
+                    {
+                        unsigned nearestPointIndex = 0;
+                        PointCoordinateType minSquareDist = FindNearestCandidate_(
+                            nearestPointIndex,
+                            itP,
+                            itB,
+                            points,
+                            pointFlags,
+                            minSquareEdgeLength,
+                            false,
+                            minCosAngle);
+
+                        if (minSquareDist >= 0)
+                        {
+                            Edge e(itP,nearestPointIndex,minSquareDist);
+                            edges.insert(e);
+                        }
+                    }
+                }
+            }
+        }
+        catch (...)
+        {
+            //not enough memory
+            return false;
+        }
+
+        if (!allowMultiPass)
+            break;
+    }
+
+    return true;
+}
+
+ccPolyline* ExtractFlatEnvelope__(  CCCoreLib::GenericIndexedCloudPersist* points,
+                                    bool allowMultiPass,
+                                    PointCoordinateType maxEdgeLength=0,
+                                    const PointCoordinateType* preferredNormDim=nullptr,
+                                    const PointCoordinateType* preferredUpDir=nullptr,
+                                    EnvelopeType envelopeType=FULL,
+                                    std::vector<unsigned>* originalPointIndexes=nullptr,
+                                    bool enableVisualDebugMode=false,
+                                    double maxAngleDeg=0.0)
+{
+    CCTRACE("ExtractFlatEnvelope__");
+    assert(points);
+
+    if (!points)
+        return nullptr;
+
+    unsigned ptsCount = points->size();
+
+    if (ptsCount < 3)
+        return nullptr;
+
+    CCCoreLib::Neighbourhood Yk(points);
+
+    //local base
+    CCVector3 O;
+    CCVector3 X;
+    CCVector3 Y;
+
+    CCCoreLib::Neighbourhood::InputVectorsUsage vectorsUsage = CCCoreLib::Neighbourhood::None;
+
+    //we project the input points on a plane
+    std::vector<Vertex2D> points2D;
+    PointCoordinateType* planeEq = nullptr;
+
+    if (preferredUpDir != nullptr)
+    {
+        Y = CCVector3(preferredUpDir);
+        vectorsUsage = CCCoreLib::Neighbourhood::UseYAsUpDir;
+    }
+
+    //if the user has specified a default direction, we'll use it as 'projecting plane'
+    PointCoordinateType preferredPlaneEq[4] = { 0, 0, 1, 0 };
+
+    if (preferredNormDim != nullptr)
+    {
+        const CCVector3* G = points->getPoint(0); //any point through which the plane passes is ok
+        preferredPlaneEq[0] = preferredNormDim[0];
+        preferredPlaneEq[1] = preferredNormDim[1];
+        preferredPlaneEq[2] = preferredNormDim[2];
+        CCVector3::vnormalize(preferredPlaneEq);
+        preferredPlaneEq[3] = CCVector3::vdot(G->u, preferredPlaneEq);
+        planeEq = preferredPlaneEq;
+
+        if (preferredUpDir != nullptr)
+        {
+            O = *G;
+            //Y = CCVector3(preferredUpDir); //already done above
+            X = Y.cross(CCVector3(preferredNormDim));
+            vectorsUsage = CCCoreLib::Neighbourhood::UseOXYasBase;
+        }
+    }
+
+    if (!Yk.projectPointsOn2DPlane<Vertex2D>(points2D, planeEq, &O, &X, &Y, vectorsUsage))
+    {
+        CCTRACE("[ExtractFlatEnvelope] Failed to project the points on the LS plane (not enough memory?)!");
+        return nullptr;
+    }
+
+    //update the points indexes (not done by Neighbourhood::projectPointsOn2DPlane)
+    {
+        for (unsigned i = 0; i < ptsCount; ++i)
+        {
+            points2D[i].index = i;
+        }
+    }
+
+    //try to get the points on the convex/concave hull to build the envelope and the polygon
+    Hull2D hullPoints;
+    if (!ExtractConcaveHull2D_( points2D,
+                                hullPoints,
+                                envelopeType,
+                                allowMultiPass,
+                                maxEdgeLength*maxEdgeLength,
+                                enableVisualDebugMode,
+                                maxAngleDeg))
+    {
+        CCTRACE("[ExtractFlatEnvelope] Failed to compute the convex hull of the input points!");
+        return nullptr;
+    }
+
+    if (originalPointIndexes)
+    {
+        try
+        {
+            originalPointIndexes->resize(hullPoints.size(), 0);
+        }
+        catch (const std::bad_alloc&)
+        {
+            //not enough memory
+            CCTRACE("[ExtractFlatEnvelope] Not enough memory!");
+            return nullptr;
+        }
+
+        unsigned i = 0;
+        for (Hull2D::const_iterator it = hullPoints.begin(); it != hullPoints.end(); ++it, ++i)
+        {
+            (*originalPointIndexes)[i] = (*it)->index;
+        }
+    }
+
+    unsigned hullPtsCount = static_cast<unsigned>(hullPoints.size());
+
+    //create vertices
+    ccPointCloud* envelopeVertices = new ccPointCloud();
+    {
+        if (!envelopeVertices->reserve(hullPtsCount))
+        {
+            delete envelopeVertices;
+            envelopeVertices = nullptr;
+            CCTRACE("[ExtractFlatEnvelope] Not enough memory!");
+            return nullptr;
+        }
+
+        //projection on the LS plane (in 3D)
+        for (Hull2D::const_iterator it = hullPoints.begin(); it != hullPoints.end(); ++it)
+        {
+            envelopeVertices->addPoint(O + X*(*it)->x + Y*(*it)->y);
+        }
+
+        envelopeVertices->setName("vertices");
+        envelopeVertices->setEnabled(false);
+    }
+
+    //we create the corresponding (3D) polyline
+    ccPolyline* envelopePolyline = new ccPolyline(envelopeVertices);
+    if (envelopePolyline->reserve(hullPtsCount))
+    {
+        envelopePolyline->addPointIndex(0, hullPtsCount);
+        envelopePolyline->setClosed(envelopeType == FULL);
+        envelopePolyline->setVisible(true);
+        envelopePolyline->setName("envelope");
+        envelopePolyline->addChild(envelopeVertices);
+    }
+    else
+    {
+        delete envelopePolyline;
+        envelopePolyline = nullptr;
+        CCTRACE("[ExtractFlatEnvelope] Not enough memory to create the envelope polyline!");
+    }
+
+    return envelopePolyline;
+}
+
+bool ExtractFlatEnvelope_(  CCCoreLib::GenericIndexedCloudPersist* points,
+                            bool allowMultiPass,
+                            PointCoordinateType maxEdgeLength,
+                            std::vector<ccPolyline*>& parts,
+                            EnvelopeType envelopeType=FULL,
+                            bool allowSplitting=true,
+                            const PointCoordinateType* preferredNormDir=nullptr,
+                            const PointCoordinateType* preferredUpDir=nullptr,
+                            bool enableVisualDebugMode=false)
+{
+    CCTRACE("ExtractFlatEnvelope_");
+    parts.clear();
+
+    //extract whole envelope
+    ccPolyline* basePoly = ExtractFlatEnvelope__(points, allowMultiPass, maxEdgeLength, preferredNormDir,
+                                                 preferredUpDir, envelopeType, nullptr, enableVisualDebugMode);
+    if (!basePoly)
+    {
+        return false;
+    }
+    else if (!allowSplitting)
+    {
+        parts.push_back(basePoly);
+        return true;
+    }
+
+    //and split it if necessary
+    bool success = basePoly->split(maxEdgeLength, parts);
+
+    delete basePoly;
+    basePoly = nullptr;
+
+    return success;
+}
+
+//! see ccCropTool::Crop
+ccHObject* Crop_(ccHObject* entity, const ccBBox& box, bool inside/*=true*/, const ccGLMatrix* meshRotation/*=nullptr*/)
+{
+    CCTRACE("Crop_");
+    assert(entity);
+    if (!entity)
+    {
+        return nullptr;
+    }
+
+    if (entity->isA(CC_TYPES::POINT_CLOUD))
+    {
+        ccPointCloud* cloud = static_cast<ccPointCloud*>(entity);
+
+        CCCoreLib::ReferenceCloud* selection = cloud->crop(box, inside);
+        if (!selection)
+        {
+            //process failed!
+            CCTRACE(QString("[Crop] Failed to crop cloud '%1'!").arg(cloud->getName()).toStdString());
+            return nullptr;
+        }
+
+        if (selection->size() == 0)
+        {
+            //no points fall inside selection!
+            CCTRACE(QString("[Crop] No point of the cloud '%1' falls %2side the input box!").arg(cloud->getName(), (inside ? "in" : "out")).toStdString());
+            delete selection;
+            return nullptr;
+        }
+
+        //crop
+        ccPointCloud* croppedEnt = cloud->partialClone(selection);
+        delete selection;
+        selection = nullptr;
+
+        return croppedEnt;
+    }
+    else if (entity->isKindOf(CC_TYPES::MESH))
+    {
+        ccGenericMesh* mesh = static_cast<ccGenericMesh*>(entity);
+        CCCoreLib::ManualSegmentationTools::MeshCutterParams params;
+        params.bbMin = box.minCorner();
+        params.bbMax = box.maxCorner();
+        params.generateOutsideMesh = !inside;
+        params.trackOrigIndexes = mesh->hasColors() || mesh->hasScalarFields() || mesh->hasMaterials();
+
+        ccGenericPointCloud* origVertices = mesh->getAssociatedCloud();
+        assert(origVertices);
+        ccGenericPointCloud* cropVertices = origVertices;
+        if (meshRotation)
+        {
+            ccPointCloud* rotatedVertices = ccPointCloud::From(origVertices);
+            if (!rotatedVertices)
+            {
+                CCTRACE(QString("[Crop] Failed to crop mesh '%1'! (not enough memory)").arg(mesh->getName()).toStdString());
+                return nullptr;
+            }
+            rotatedVertices->setGLTransformation(*meshRotation);
+            rotatedVertices->applyGLTransformation_recursive();
+            cropVertices = rotatedVertices;
+        }
+
+        if (!CCCoreLib::ManualSegmentationTools::segmentMeshWithAABox(mesh, cropVertices, params))
+        {
+            //process failed!
+            CCTRACE(QString("[Crop] Failed to crop mesh '%1'!").arg(mesh->getName()).toStdString());
+        }
+
+        if (cropVertices != origVertices)
+        {
+            //don't need those anymore
+            delete cropVertices;
+            cropVertices = origVertices;
+        }
+
+        CCCoreLib::SimpleMesh* tempMesh = inside ? params.insideMesh : params.outsideMesh;
+
+        //output
+        ccMesh* croppedMesh = nullptr;
+
+        if (tempMesh)
+        {
+            ccPointCloud* croppedVertices = ccPointCloud::From(tempMesh->vertices());
+            if (croppedVertices)
+            {
+                if (meshRotation)
+                {
+                    //apply inverse transformation
+                    croppedVertices->setGLTransformation(meshRotation->inverse());
+                    croppedVertices->applyGLTransformation_recursive();
+                }
+                croppedMesh = new ccMesh(tempMesh, croppedVertices);
+                croppedMesh->addChild(croppedVertices);
+                croppedVertices->setEnabled(false);
+                if (croppedMesh->size() == 0)
+                {
+                    //no points fall inside selection!
+                    ccLog::Warning(QString("[Crop] No triangle of the mesh '%1' falls %2side the input box!").arg(mesh->getName(), (inside ? "in" : "out")));
+                    delete croppedMesh;
+                    croppedMesh = nullptr;
+                }
+                else
+                {
+                    assert(origVertices);
+
+                    //import parameters
+                    croppedVertices->importParametersFrom(origVertices);
+                    croppedMesh->importParametersFrom(mesh);
+
+                    //compute normals if necessary
+                    if (mesh->hasNormals())
+                    {
+                        bool success = false;
+                        if (mesh->hasTriNormals())
+                            success = croppedMesh->computePerTriangleNormals();
+                        else
+                            success = croppedMesh->computePerVertexNormals();
+
+                        if (!success)
+                        {
+                            ccLog::Warning("[Crop] Failed to compute normals on the output mesh (not enough memory)");
+                        }
+                        croppedMesh->showNormals(success && mesh->normalsShown());
+                    }
+
+                    //import other features if necessary
+                    if (params.trackOrigIndexes)
+                    {
+                        const std::vector<unsigned>& origTriIndexes = inside ? params.origTriIndexesMapInside : params.origTriIndexesMapOutside;
+
+                        try
+                        {
+                            //per vertex features (RGB color & scalar fields)
+                            if (origVertices->hasColors() || origVertices->hasScalarFields())
+                            {
+                                //we use flags to avoid processing the same vertex multiple times
+                                std::vector<bool> vertProcessed(croppedVertices->size(), false);
+
+                                //colors
+                                bool importColors = false;
+                                if (origVertices->hasColors())
+                                {
+                                    importColors = croppedVertices->resizeTheRGBTable();
+                                    if (!importColors)
+                                        ccLog::Warning("[Crop] Failed to transfer RGB colors on the output mesh (not enough memory)");
+                                }
+
+                                //scalar fields
+                                std::vector<ccScalarField*> importedSFs;
+                                ccPointCloud* origVertices_pc = nullptr;
+                                if (origVertices->hasScalarFields())
+                                {
+                                    origVertices_pc = origVertices->isA(CC_TYPES::POINT_CLOUD) ? static_cast<ccPointCloud*>(origVertices) : nullptr;
+                                    unsigned sfCount = origVertices_pc ? origVertices_pc->getNumberOfScalarFields() : 1;
+
+                                    //now try to import each SF
+                                    for (unsigned i = 0; i < sfCount; ++i)
+                                    {
+                                        int sfIdx = croppedVertices->addScalarField(origVertices_pc ? origVertices_pc->getScalarField(i)->getName() : "Scalar field");
+                                        if (sfIdx >= 0)
+                                        {
+                                            ccScalarField* sf = static_cast<ccScalarField*>(croppedVertices->getScalarField(i));
+                                            sf->fill(CCCoreLib::NAN_VALUE);
+                                            if (origVertices_pc)
+                                            {
+                                                //import display parameters if possible
+                                                ccScalarField* originSf = static_cast<ccScalarField*>(origVertices_pc->getScalarField(i));
+                                                assert(originSf);
+                                                //copy display parameters
+                                                sf->importParametersFrom(originSf);
+                                            }
+                                            importedSFs.push_back(sf);
+                                        }
+                                        else
+                                        {
+                                            ccLog::Warning("[Crop] Failed to transfer one or several scalar fields on the output mesh (not enough memory)");
+                                            //we can stop right now as all SFs have the same size!
+                                            break;
+                                        }
+                                    }
+
+                                    //default displayed SF
+                                    if (origVertices_pc)
+                                        croppedVertices->setCurrentDisplayedScalarField(std::max(static_cast<int>(croppedVertices->getNumberOfScalarFields())-1, origVertices_pc->getCurrentDisplayedScalarFieldIndex()));
+                                    else
+                                        croppedVertices->setCurrentDisplayedScalarField(0);
+                                }
+                                bool importSFs = !importedSFs.empty();
+
+                                if (importColors || importSFs)
+                                {
+                                    //for each new triangle
+                                    for (unsigned i = 0; i < croppedMesh->size(); ++i)
+                                    {
+                                        //get the origin triangle
+                                        unsigned origTriIndex = origTriIndexes[i];
+                                        const CCCoreLib::VerticesIndexes* tsio = mesh->getTriangleVertIndexes(origTriIndex);
+
+                                        //get the new triangle
+                                        const CCCoreLib::VerticesIndexes* tsic = croppedMesh->getTriangleVertIndexes(i);
+
+                                        //we now have to test the 3 vertices of the new triangle
+                                        for (unsigned j = 0; j < 3; ++j)
+                                        {
+                                            unsigned vertIndex = tsic->i[j];
+
+                                            if (vertProcessed[vertIndex])
+                                            {
+                                                //vertex has already been process
+                                                continue;
+                                            }
+
+                                            const CCVector3* Vcj = croppedVertices->getPoint(vertIndex);
+
+                                            //we'll deduce its color and SFs values by triangulation
+                                            if (importColors)
+                                            {
+                                                ccColor::Rgb col;
+                                                if (mesh->interpolateColors(origTriIndex, *Vcj, col))
+                                                {
+                                                    croppedVertices->setPointColor(vertIndex, col);
+                                                }
+                                            }
+
+                                            if (importSFs)
+                                            {
+                                                CCVector3d w;
+                                                mesh->computeInterpolationWeights(origTriIndex, *Vcj, w);
+
+                                                //import SFs
+                                                for (unsigned s = 0; s < static_cast<unsigned>(importedSFs.size()); ++s)
+                                                {
+                                                    CCVector3d scalarValues(0, 0, 0);
+                                                    if (origVertices_pc)
+                                                    {
+                                                        const CCCoreLib::ScalarField* sf = origVertices_pc->getScalarField(s);
+                                                        scalarValues.x = sf->getValue(tsio->i1);
+                                                        scalarValues.y = sf->getValue(tsio->i2);
+                                                        scalarValues.z = sf->getValue(tsio->i3);
+                                                    }
+                                                    else
+                                                    {
+                                                        assert(s == 0);
+                                                        scalarValues.x = origVertices->getPointScalarValue(tsio->i1);
+                                                        scalarValues.y = origVertices->getPointScalarValue(tsio->i2);
+                                                        scalarValues.z = origVertices->getPointScalarValue(tsio->i3);
+                                                    }
+
+                                                    ScalarType sVal = static_cast<ScalarType>(scalarValues.dot(w));
+                                                    importedSFs[s]->setValue(vertIndex,sVal);
+                                                }
+                                            }
+
+                                            //update 'processed' flag
+                                            vertProcessed[vertIndex] = true;
+                                        }
+                                    }
+
+                                    for (size_t s = 0; s < importedSFs.size(); ++s)
+                                    {
+                                        importedSFs[s]->computeMinAndMax();
+                                    }
+
+                                    croppedVertices->showColors(importColors && origVertices->colorsShown());
+                                    croppedVertices->showSF(importSFs && origVertices->sfShown());
+                                    croppedMesh->showColors(importColors && mesh->colorsShown());
+                                    croppedMesh->showSF(importSFs && mesh->sfShown());
+                                }
+                            }
+
+                            //per-triangle features (materials)
+                            if (mesh->hasMaterials())
+                            {
+                                const ccMaterialSet* origMaterialSet = mesh->getMaterialSet();
+                                assert(origMaterialSet);
+
+                                if (origMaterialSet && !origMaterialSet->empty() && croppedMesh->reservePerTriangleMtlIndexes())
+                                {
+                                    std::vector<int> materialUsed(origMaterialSet->size(),-1);
+
+                                    //per-triangle materials
+                                    for (unsigned i = 0; i < croppedMesh->size(); ++i)
+                                    {
+                                        //get the origin triangle
+                                        unsigned origTriIndex = origTriIndexes[i];
+                                        int mtlIndex = mesh->getTriangleMtlIndex(origTriIndex);
+                                        croppedMesh->addTriangleMtlIndex(mtlIndex);
+
+                                        if (mtlIndex >= 0)
+                                            materialUsed[mtlIndex] = 1;
+                                    }
+
+                                    //import materials
+                                    {
+                                        size_t materialUsedCount = 0;
+                                        {
+                                            for (size_t i = 0; i < materialUsed.size(); ++i)
+                                                if (materialUsed[i] == 1)
+                                                    ++materialUsedCount;
+                                        }
+
+                                        if (materialUsedCount == materialUsed.size())
+                                        {
+                                            //nothing to do, we use all input materials
+                                            croppedMesh->setMaterialSet(origMaterialSet->clone());
+                                        }
+                                        else
+                                        {
+                                            //create a subset of the input materials
+                                            ccMaterialSet* matSet = new ccMaterialSet(origMaterialSet->getName());
+                                            {
+                                                matSet->reserve(materialUsedCount);
+                                                for (size_t i = 0; i < materialUsed.size(); ++i)
+                                                {
+                                                    if (materialUsed[i] >= 0)
+                                                    {
+                                                        matSet->push_back(ccMaterial::Shared(new ccMaterial(*origMaterialSet->at(i))));
+                                                        //update index
+                                                        materialUsed[i] = static_cast<int>(matSet->size()) - 1;
+                                                    }
+                                                }
+                                            }
+                                            croppedMesh->setMaterialSet(matSet);
+
+                                            //and update the materials indexes!
+                                            for (unsigned i = 0; i < croppedMesh->size(); ++i)
+                                            {
+                                                int mtlIndex = croppedMesh->getTriangleMtlIndex(i);
+                                                if (mtlIndex >= 0)
+                                                {
+                                                    assert(mtlIndex < static_cast<int>(materialUsed.size()));
+                                                    croppedMesh->setTriangleMtlIndex(i,materialUsed[mtlIndex]);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    croppedMesh->showMaterials(mesh->materialsShown());
+                                }
+                                else
+                                {
+                                    ccLog::Warning("[Crop] Failed to transfer materials on the output mesh (not enough memory)");
+                                }
+
+                                //per-triangle texture coordinates
+                                if (mesh->hasPerTriangleTexCoordIndexes())
+                                {
+                                    TextureCoordsContainer* texCoords = new TextureCoordsContainer;
+                                    if (    croppedMesh->reservePerTriangleTexCoordIndexes()
+                                        &&  texCoords->reserveSafe(croppedMesh->size()*3))
+                                    {
+                                        //for each new triangle
+                                        for (unsigned i = 0; i < croppedMesh->size(); ++i)
+                                        {
+                                            //get the origin triangle
+                                            unsigned origTriIndex = origTriIndexes[i];
+                                            TexCoords2D* tx1 = nullptr;
+                                            TexCoords2D* tx2 = nullptr;
+                                            TexCoords2D* tx3 = nullptr;
+                                            mesh->getTriangleTexCoordinates(origTriIndex, tx1, tx2, tx3);
+
+                                            //get the new triangle
+                                            const CCCoreLib::VerticesIndexes* tsic = croppedMesh->getTriangleVertIndexes(i);
+
+                                            //for each vertex of the new triangle
+                                            int texIndexes[3] = { -1, -1, -1 };
+                                            for (unsigned j = 0; j < 3; ++j)
+                                            {
+                                                unsigned vertIndex = tsic->i[j];
+                                                const CCVector3* Vcj = croppedVertices->getPoint(vertIndex);
+
+                                                //intepolation weights
+                                                CCVector3d w;
+                                                mesh->computeInterpolationWeights(origTriIndex, *Vcj, w);
+
+                                                if (    (tx1 || CCCoreLib::LessThanEpsilon( w.u[0] ) )
+                                                    &&  (tx2 || CCCoreLib::LessThanEpsilon( w.u[1] ) )
+                                                    &&  (tx3 || CCCoreLib::LessThanEpsilon( w.u[2] ) ) )
+                                                {
+                                                    TexCoords2D t(  static_cast<float>((tx1 ? tx1->tx*w.u[0] : 0.0) + (tx2 ? tx2->tx*w.u[1] : 0.0) + (tx3 ? tx3->tx*w.u[2] : 0.0)),
+                                                                    static_cast<float>((tx1 ? tx1->ty*w.u[0] : 0.0) + (tx2 ? tx2->ty*w.u[1] : 0.0) + (tx3 ? tx3->ty*w.u[2] : 0.0)) );
+
+                                                    texCoords->addElement(t);
+                                                    texIndexes[j] = static_cast<int>(texCoords->currentSize()) - 1;
+                                                }
+                                            }
+
+                                            croppedMesh->addTriangleTexCoordIndexes(texIndexes[0], texIndexes[1], texIndexes[2]);
+                                        }
+                                        croppedMesh->setTexCoordinatesTable(texCoords);
+                                    }
+                                    else
+                                    {
+                                        ccLog::Warning("[Crop] Failed to transfer texture coordinates on the output mesh (not enough memory)");
+                                        delete texCoords;
+                                        texCoords = nullptr;
+                                    }
+                                }
+                            }
+                        }
+                        catch (const std::bad_alloc&)
+                        {
+                            ccLog::Warning("[Crop] Failed to transfer per-vertex features (color, SF values, etc.) on the output mesh (not enough memory)");
+                            croppedVertices->unallocateColors();
+                            croppedVertices->deleteAllScalarFields();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ccLog::Warning("[Crop] Failed to create output mesh vertices (not enough memory)");
+            }
+        }
+
+        //clean memory
+        if (params.insideMesh)
+        {
+            delete params.insideMesh;
+            params.insideMesh = nullptr;
+        }
+        if (params.outsideMesh)
+        {
+            delete params.outsideMesh;
+            params.outsideMesh = nullptr;
+        }
+
+        if (croppedMesh)
+        {
+            croppedMesh->setDisplay_recursive(entity->getDisplay());
+        }
+        return croppedMesh;
+    }
+
+    //unhandled entity
+    ccLog::Warning("[Crop] Unhandled entity type");
+    return nullptr;
+}
+
+//! see ccClippingBoxTool.cpp
+ccHObject* GetSlice_(ccHObject* obj, ccClipBox* clipBox, bool silent)
+{
+    CCTRACE("GetSlice_");
+    assert(clipBox);
+    if (!obj)
+    {
+        assert(false);
+        return nullptr;
+    }
+
+    if (obj->isKindOf(CC_TYPES::POINT_CLOUD))
+    {
+        CCTRACE("cloud");
+        ccGenericPointCloud* inputCloud = ccHObjectCaster::ToGenericPointCloud(obj);
+
+        ccGenericPointCloud::VisibilityTableType selectionTable;
+        try
+        {
+            selectionTable.resize(inputCloud->size());
+        }
+        catch (const std::bad_alloc&)
+        {
+            CCTRACE("Not enough memory!");
+            return nullptr;
+        }
+        clipBox->flagPointsInside(inputCloud, &selectionTable);
+
+        ccGenericPointCloud* sliceCloud = inputCloud->createNewCloudFromVisibilitySelection(false, &selectionTable, true);
+        if (!sliceCloud)
+        {
+            CCTRACE("Not enough memory!");
+        }
+        else if (sliceCloud->size() == 0)
+        {
+            CCTRACE("empty slice!");
+            delete sliceCloud;
+            sliceCloud = nullptr;
+        }
+        return sliceCloud;
+    }
+    else if (obj->isKindOf(CC_TYPES::MESH))
+    {
+        CCTRACE("mesh");
+        const ccGLMatrix* _transformation = nullptr;
+        ccGLMatrix transformation;
+        if (clipBox->isGLTransEnabled())
+        {
+            transformation = clipBox->getGLTransformation().inverse();
+            _transformation = &transformation;
+        }
+
+        const ccBBox& cropBox = clipBox->getBox();
+        ccHObject* mesh = Crop_(obj, cropBox, true, _transformation);
+        if (!mesh)
+        {
+            CCTRACE("Failed to segment the mesh!");
+            return nullptr;
+        }
+        return mesh;
+    }
+    CCTRACE("neither cloud nor mesh?");
+    return nullptr;
+}
+
+unsigned ComputeGridDimensions_(const ccBBox& localBox,
+                                const bool processDim[3],
+                                int indexMins[3],
+                                int indexMaxs[3],
+                                int gridDim[3],
+                                const CCVector3& gridOrigin,
+                                const CCVector3& cellSizePlusGap)
+{
+    CCTRACE("ComputeGridDimensions_");
+    //compute 'grid' extents in the local clipping box ref.
+    for (int i = 0; i < 3; ++i)
+    {
+        indexMins[i] = 0;
+        indexMaxs[i] = 0;
+        gridDim[i]   = 1;
+    }
+    unsigned cellCount = 1;
+
+    for (unsigned char d = 0; d < 3; ++d)
+    {
+        if (processDim[d])
+        {
+            if (CCCoreLib::LessThanEpsilon(cellSizePlusGap.u[d]))
+            {
+                CCTRACE("Box size (plus gap) is null! Can't apply repetitive process!");
+                return 0;
+            }
+
+            PointCoordinateType a = (localBox.minCorner().u[d] - gridOrigin.u[d]) / cellSizePlusGap.u[d]; //don't forget the user defined gap between 'cells'
+            PointCoordinateType b = (localBox.maxCorner().u[d] - gridOrigin.u[d]) / cellSizePlusGap.u[d];
+
+            indexMins[d] = static_cast<int>(floor(a + static_cast<PointCoordinateType>(1.0e-6)));
+            indexMaxs[d] = static_cast<int>(ceil(b - static_cast<PointCoordinateType>(1.0e-6))) - 1;
+
+            assert(indexMaxs[d] >= indexMins[d]);
+            gridDim[d] = std::max(indexMaxs[d] - indexMins[d] + 1, 1);
+            cellCount *= static_cast<unsigned>(gridDim[d]);
+        }
+    }
+
+    return cellCount;
+}
+
+//! see ccClippingBoxTool::ExtractSlicesAndContours
+bool ExtractSlicesAndContours
+(
+    const std::vector<ccGenericPointCloud*>& clouds,
+    const std::vector<ccGenericMesh*>& meshes,
+    ccClipBox& clipBox,
+    bool singleSliceMode,
+    bool repeatDimensions[3],
+    std::vector<ccHObject*>& outputSlices,
+
+    bool extractEnvelopes,
+    PointCoordinateType maxEdgeLength,
+    EnvelopeType envelopeType,
+    std::vector<ccPolyline*>& outputEnvelopes,
+
+    bool extractLevelSet,
+    double levelSetGridStep,
+    int levelSetMinVertCount,
+    std::vector<ccPolyline*>& levelSet,
+
+    PointCoordinateType gap/*=0*/,
+    bool multiPass/*=false*/,
+    bool splitEnvelopes/*=false*/,
+    bool projectOnBestFitPlane/*=false*/,
+    bool visualDebugMode/*=false*/,
+    bool generateRandomColors/*=false*/,
+    ccProgressDialog* progressDialog/*=nullptr*/)
+{
+    CCTRACE("ExtractSlicesAndContours");
+    //check input
+    if (clouds.empty() && meshes.empty())
+    {
+        CCTRACE("no clouds, no meshes!");
+        return false;
+    }
+
+    //repeat dimensions
+    int repeatDimensionsSum = static_cast<int>(repeatDimensions[0])
+                            + static_cast<int>(repeatDimensions[1])
+                            + static_cast<int>(repeatDimensions[2]);
+
+    if (!singleSliceMode && repeatDimensionsSum == 0)
+    {
+        CCTRACE("No dimension selected to repeat the segmentation process?!");
+        return false;
+    }
+
+    if (extractLevelSet && repeatDimensionsSum != 1)
+    {
+        CCTRACE("Only one repeat/flat dimension should be defined for level set extraction");
+        extractLevelSet = false;
+    }
+
+    //compute the cloud bounding box in the local clipping box ref.
+    ccGLMatrix localTrans;
+    {
+        CCTRACE("isGLTransEnabled:" << clipBox.isGLTransEnabled());
+        if (clipBox.isGLTransEnabled())
+            localTrans = clipBox.getGLTransformation().inverse();
+        else
+            localTrans.toIdentity();
+    }
+
+    CCVector3 gridOrigin = clipBox.getOwnBB().minCorner();
+    CCVector3 cellSize = clipBox.getOwnBB().getDiagVec();
+    CCVector3 cellSizePlusGap = cellSize + CCVector3(gap, gap, gap);
+
+    //apply process
+    try
+    {
+        bool error = false;
+        bool warningsIssued = false;
+        size_t cloudSliceCount = 0;
+
+        if (singleSliceMode)
+        {
+            CCTRACE("singleSliceMode");
+            //single slice: easy
+            outputSlices.reserve(clouds.size());
+            for (size_t ci = 0; ci != clouds.size(); ++ci)
+            {
+                ccHObject* slice = GetSlice_(clouds[ci], &clipBox, false);
+                if (slice)
+                {
+                    CCTRACE("a sclice");
+                    slice->setName(clouds[ci]->getName() + QString(".slice"));
+
+                    //set meta-data
+                    slice->setMetaData(s_originEntityUUID, clouds[ci]->getUniqueID());
+                    slice->setMetaData(s_sliceID, "slice");
+                    if (slice->isKindOf(CC_TYPES::POINT_CLOUD))
+                    {
+                        slice->setMetaData("slice.origin.dim(0)", gridOrigin.x);
+                        slice->setMetaData("slice.origin.dim(1)", gridOrigin.y);
+                        slice->setMetaData("slice.origin.dim(2)", gridOrigin.z);
+                    }
+
+                    outputSlices.push_back(slice);
+                }
+            }
+
+            if (outputSlices.empty())
+            {
+                CCTRACE("outputSlices.empty");
+                //error message already issued
+                return false;
+            }
+            cloudSliceCount = outputSlices.size();
+        }
+        else //repeat mode
+        {
+            CCTRACE("repeat mode");
+            if (!clouds.empty()) //extract sections from clouds
+            {
+                //compute 'grid' extents in the local clipping box ref.
+                ccBBox localBox;
+                for (ccGenericPointCloud* cloud : clouds)
+                {
+                    for (unsigned i = 0; i < cloud->size(); ++i)
+                    {
+                        CCVector3 P = *cloud->getPoint(i);
+                        localTrans.apply(P);
+                        localBox.add(P);
+                    }
+                }
+
+                int indexMins[3]{ 0, 0, 0 };
+                int indexMaxs[3]{ 0, 0, 0 };
+                int gridDim[3]{ 0, 0, 0 };
+                unsigned cellCount = ComputeGridDimensions_(localBox, repeatDimensions, indexMins, indexMaxs,
+                                                            gridDim, gridOrigin, cellSizePlusGap);
+
+                //we'll potentially create up to one (ref.) cloud per input loud and per cell
+                std::vector<CCCoreLib::ReferenceCloud*> refClouds;
+                refClouds.resize(cellCount * clouds.size(), nullptr);
+
+                unsigned subCloudsCount = 0;
+
+                //project points into grid
+                for (size_t ci = 0; ci != clouds.size(); ++ci)
+                {
+                    ccGenericPointCloud* cloud = clouds[ci];
+                    unsigned pointCount = cloud->size();
+
+                    for (unsigned i = 0; i < pointCount; ++i)
+                    {
+                        CCVector3 P = *cloud->getPoint(i);
+                        localTrans.apply(P);
+
+                        //relative coordinates (between 0 and 1)
+                        P -= gridOrigin;
+                        P.x /= cellSizePlusGap.x;
+                        P.y /= cellSizePlusGap.y;
+                        P.z /= cellSizePlusGap.z;
+
+                        int xi = static_cast<int>(floor(P.x));
+                        xi = std::min(std::max(xi, indexMins[0]), indexMaxs[0]);
+                        int yi = static_cast<int>(floor(P.y));
+                        yi = std::min(std::max(yi, indexMins[1]), indexMaxs[1]);
+                        int zi = static_cast<int>(floor(P.z));
+                        zi = std::min(std::max(zi, indexMins[2]), indexMaxs[2]);
+
+                        if (gap == 0 ||
+                            (   (P.x - static_cast<PointCoordinateType>(xi))*cellSizePlusGap.x <= cellSize.x
+                            &&  (P.y - static_cast<PointCoordinateType>(yi))*cellSizePlusGap.y <= cellSize.y
+                            &&  (P.z - static_cast<PointCoordinateType>(zi))*cellSizePlusGap.z <= cellSize.z))
+                        {
+                            int cloudIndex = ((zi - indexMins[2]) * static_cast<int>(gridDim[1]) + (yi - indexMins[1])) * static_cast<int>(gridDim[0]) + (xi - indexMins[0]);
+                            assert(cloudIndex >= 0 && static_cast<size_t>(cloudIndex)* clouds.size() + ci < refClouds.size());
+
+                            CCCoreLib::ReferenceCloud*& destCloud = refClouds[cloudIndex * clouds.size() + ci];
+                            if (!destCloud)
+                            {
+                                destCloud = new CCCoreLib::ReferenceCloud(cloud);
+                                ++subCloudsCount;
+                            }
+
+                            if (!destCloud->addPointIndex(i))
+                            {
+                                CCTRACE("Not enough memory!");
+                                error = true;
+                                break;
+                            }
+                        }
+                    }
+
+                } //project points into grid
+
+                //reset count
+                subCloudsCount = 0;
+
+                //now create the real clouds
+                for (int i = indexMins[0]; i <= indexMaxs[0]; ++i)
+                {
+                    for (int j = indexMins[1]; j <= indexMaxs[1]; ++j)
+                    {
+                        for (int k = indexMins[2]; k <= indexMaxs[2]; ++k)
+                        {
+                            int cloudIndex = ((k - indexMins[2]) * static_cast<int>(gridDim[1]) + (j - indexMins[1])) * static_cast<int>(gridDim[0]) + (i - indexMins[0]);
+                            assert(cloudIndex >= 0 && static_cast<size_t>(cloudIndex)* clouds.size() < refClouds.size());
+
+                            for (size_t ci = 0; ci != clouds.size(); ++ci)
+                            {
+                                ccGenericPointCloud* cloud = clouds[ci];
+                                CCCoreLib::ReferenceCloud* destCloud = refClouds[cloudIndex * clouds.size() + ci];
+                                if (destCloud) //some slices can be empty!
+                                {
+                                    //generate slice from previous selection
+                                    int warnings = 0;
+                                    ccPointCloud* sliceCloud = cloud->isA(CC_TYPES::POINT_CLOUD) ? static_cast<ccPointCloud*>(cloud)->partialClone(destCloud, &warnings) : ccPointCloud::From(destCloud, cloud);
+                                    warningsIssued |= (warnings != 0);
+
+                                    if (sliceCloud)
+                                    {
+                                        if (generateRandomColors)
+                                        {
+                                            ccColor::Rgb col = ccColor::Generator::Random();
+                                            if (!sliceCloud->setColor(col))
+                                            {
+                                                CCTRACE("Not enough memory!");
+                                                error = true;
+                                                i = indexMaxs[0];
+                                                j = indexMaxs[1];
+                                                k = indexMaxs[2];
+                                            }
+                                            sliceCloud->showColors(true);
+                                        }
+
+                                        sliceCloud->setEnabled(true);
+                                        sliceCloud->setVisible(true);
+                                        sliceCloud->setDisplay(cloud->getDisplay());
+
+                                        CCVector3 cellOrigin(   gridOrigin.x + i * cellSizePlusGap.x,
+                                                                gridOrigin.y + j * cellSizePlusGap.y,
+                                                                gridOrigin.z + k * cellSizePlusGap.z);
+                                        QString slicePosStr = QString("(%1 ; %2 ; %3)").arg(cellOrigin.x).arg(cellOrigin.y).arg(cellOrigin.z);
+                                        sliceCloud->setName(cloud->getName() + QString(".slice @ ") + slicePosStr);
+
+                                        //set meta-data
+                                        sliceCloud->setMetaData(s_originEntityUUID, cloud->getUniqueID());
+                                        sliceCloud->setMetaData(s_sliceID, slicePosStr);
+                                        sliceCloud->setMetaData("slice.origin.dim(0)", cellOrigin.x);
+                                        sliceCloud->setMetaData("slice.origin.dim(1)", cellOrigin.y);
+                                        sliceCloud->setMetaData("slice.origin.dim(2)", cellOrigin.z);
+
+                                        //add slice to group
+                                        outputSlices.push_back(sliceCloud);
+                                        ++subCloudsCount;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } //now create the real clouds
+
+                //release memory
+                {
+                    for (size_t i = 0; i < refClouds.size(); ++i)
+                        if (refClouds[i])
+                            delete refClouds[i];
+                    refClouds.clear();
+                }
+
+                cloudSliceCount = outputSlices.size();
+
+            } //extract sections from clouds
+
+            if (!meshes.empty()) //extract sections from meshes
+            {
+                //compute 'grid' extents in the local clipping box ref.
+                ccBBox localBox;
+                for (ccGenericMesh* mesh : meshes)
+                {
+                    ccGenericPointCloud* cloud = mesh->getAssociatedCloud();
+                    for (unsigned i = 0; i < cloud->size(); ++i)
+                    {
+                        CCVector3 P = *cloud->getPoint(i);
+                        localTrans.apply(P);
+                        localBox.add(P);
+                    }
+                }
+
+                int indexMins[3]{ 0, 0, 0 };
+                int indexMaxs[3]{ 0, 0, 0 };
+                int gridDim[3]{ 0, 0, 0 };
+                unsigned cellCount = ComputeGridDimensions_(localBox, repeatDimensions, indexMins, indexMaxs, gridDim, gridOrigin, cellSizePlusGap);
+
+                const ccGLMatrix* _transformation = nullptr;
+                ccGLMatrix transformation;
+                if (clipBox.isGLTransEnabled())
+                {
+                    transformation = clipBox.getGLTransformation().inverse();
+                    _transformation = &transformation;
+                }
+
+                //now extract the slices
+                for (int i = indexMins[0]; i <= indexMaxs[0]; ++i)
+                {
+                    for (int j = indexMins[1]; j <= indexMaxs[1]; ++j)
+                    {
+                        for (int k = indexMins[2]; k <= indexMaxs[2]; ++k)
+                        {
+                            int sliceIndex = ((k - indexMins[2]) * static_cast<int>(gridDim[1]) + (j - indexMins[1])) * static_cast<int>(gridDim[0]) + (i - indexMins[0]);
+
+                            CCVector3 C = gridOrigin + CCVector3(i*cellSizePlusGap.x, j*cellSizePlusGap.y, k*cellSizePlusGap.z);
+                            ccBBox cropBox(C, C + cellSize);
+
+                            for (size_t mi = 0; mi != meshes.size(); ++mi)
+                            {
+                                ccGenericMesh* mesh = meshes[mi];
+                                ccHObject* croppedEnt = Crop_(mesh, cropBox, true, _transformation);
+                                if (croppedEnt)
+                                {
+                                    if (generateRandomColors)
+                                    {
+                                        ccPointCloud* croppedVertices = ccHObjectCaster::ToPointCloud(mesh->getAssociatedCloud());
+                                        if (croppedVertices)
+                                        {
+                                            ccColor::Rgb col = ccColor::Generator::Random();
+                                            if (!croppedVertices->setColor(col))
+                                            {
+                                                CCTRACE("Not enough memory!");
+                                                error = true;
+                                                i = indexMaxs[0];
+                                                j = indexMaxs[1];
+                                                k = indexMaxs[2];
+                                            }
+                                            croppedVertices->showColors(true);
+                                            mesh->showColors(true);
+                                        }
+                                    }
+
+                                    croppedEnt->setEnabled(true);
+                                    croppedEnt->setVisible(true);
+                                    croppedEnt->setDisplay(mesh->getDisplay());
+
+                                    QString slicePosStr = QString("(%1 ; %2 ; %3)").arg(C.x).arg(C.y).arg(C.z);
+                                    croppedEnt->setName(mesh->getName() + QString(".slice @ ") + slicePosStr);
+
+                                    //set meta-data
+                                    croppedEnt->setMetaData(s_originEntityUUID, mesh->getUniqueID());
+                                    croppedEnt->setMetaData(s_sliceID, slicePosStr);
+                                    croppedEnt->setMetaData("slice.origin.dim(0)", C.x);
+                                    croppedEnt->setMetaData("slice.origin.dim(1)", C.y);
+                                    croppedEnt->setMetaData("slice.origin.dim(2)", C.z);
+
+                                    //add slice to group
+                                    outputSlices.push_back(croppedEnt);
+                                }
+                            }
+                        }
+                    }
+                }
+            } //extract sections from meshes
+
+        } //repeat mode
+
+        //extract level set (optionaly)
+        if (!error && extractLevelSet && cloudSliceCount != 0)
+        {
+            for (int iteration = 0; iteration < 1; ++iteration) //fake loop for easy break
+            {
+                CCTRACE("extract level set");
+
+                int Z = 2;
+                assert(repeatDimensionsSum == 1);
+                {
+                    for (int i = 0; i < 3; ++i)
+                    {
+                        if (repeatDimensions[i])
+                        {
+                            Z = i;
+                            break;
+                        }
+                    }
+                }
+                int X = (Z == 2 ? 0 : Z + 1);
+                int Y = (X == 2 ? 0 : X + 1);
+
+                CCVector3 gridOrigin = clipBox.getOwnBB().minCorner();
+                CCVector3 gridSize = clipBox.getOwnBB().getDiagVec();
+                ccGLMatrix globalTrans = localTrans.inverse();
+
+                assert(false == CCCoreLib::LessThanEpsilon(levelSetGridStep));
+                unsigned gridWidth = 1 + static_cast<unsigned>(gridSize.u[X] / levelSetGridStep + 0.5);
+                unsigned gridHeight = 1 + static_cast<unsigned>(gridSize.u[Y] / levelSetGridStep + 0.5);
+
+                //add a margin to avoid issues in the level set generation
+                gridWidth += 2;
+                gridHeight += 2;
+                gridOrigin.u[X] -= levelSetGridStep;
+                gridOrigin.u[Y] -= levelSetGridStep;
+
+                ccRasterGrid grid;
+                if (!grid.init(gridWidth, gridHeight, levelSetGridStep, CCVector3d(0, 0, 0)))
+                {
+                    CCTRACE("Not enough memory!");
+                    error = true;
+                    break;
+                }
+
+                //process all the slices originating from point clouds
+                assert(cloudSliceCount <= outputSlices.size());
+                for (size_t i = 0; i < cloudSliceCount; ++i)
+                {
+                    ccPointCloud* sliceCloud = ccHObjectCaster::ToPointCloud(outputSlices[i]);
+                    assert(sliceCloud);
+
+                    double sliceZ = sliceCloud->getMetaData(QString("slice.origin.dim(%1)").arg(Z)).toDouble();
+                    sliceZ += gridSize.u[Z] / 2;
+
+                    //grid.reset();
+                    for (ccRasterGrid::Row& row : grid.rows)
+                    {
+                        for (ccRasterCell& cell : row)
+                        {
+                            cell.h = 0.0;
+                            cell.nbPoints = 0;
+                        }
+                    }
+
+                    //project the slice in 2D
+                    for (unsigned pi = 0; pi != sliceCloud->size(); ++pi)
+                    {
+                        CCVector3 relativePos = *sliceCloud->getPoint(pi);
+                        localTrans.apply(relativePos);
+                        relativePos -= gridOrigin;
+
+                        int i = static_cast<int>(relativePos.u[X] / levelSetGridStep + 0.5);
+                        int j = static_cast<int>(relativePos.u[Y] / levelSetGridStep + 0.5);
+
+                        //we skip points that fall outside of the grid!
+                        if (    i < 0 || i >= static_cast<int>(gridWidth)
+                            ||  j < 0 || j >= static_cast<int>(gridHeight))
+                        {
+                            //there shouldn't be any actually
+                            assert(false);
+                            continue;
+                        }
+
+                        ccRasterCell& cell = grid.rows[j][i];
+                        cell.h = 1.0;
+                        ++cell.nbPoints;
+                    }
+
+                    grid.updateNonEmptyCellCount();
+                    grid.updateCellStats();
+                    grid.setValid(true);
+
+                    //now extract the contour lines
+                    ccContourLinesGenerator_::Parameters params;
+                    params.emptyCellsValue = std::numeric_limits<double>::quiet_NaN();
+                    params.minVertexCount = levelSetMinVertCount;
+                    params.parentWidget = nullptr; //progressDialog->parentWidget();
+                    params.startAltitude = 0.0;
+                    params.maxAltitude = 1.0;
+                    params.step = 1.0;
+
+                    std::vector<ccPolyline*> contours;
+                    if (ccContourLinesGenerator_::GenerateContourLines(&grid, CCVector2d(gridOrigin.u[X],
+                                                                                         gridOrigin.u[Y]),
+                                                                       params, contours))
+                    {
+                        for (size_t k = 0; k < contours.size(); ++k)
+                        {
+                            ccPolyline* poly = contours[k];
+                            CCCoreLib::GenericIndexedCloudPersist* vertices = poly->getAssociatedCloud();
+                            for (unsigned pi = 0; pi < vertices->size(); ++pi)
+                            {
+                                //convert the vertices from the local coordinate system to the global one
+                                const CCVector3* Pconst = vertices->getPoint(pi);
+                                CCVector3 P;
+                                P.u[X] = Pconst->x;
+                                P.u[Y] = Pconst->y;
+                                P.u[Z] = sliceZ;
+                                *const_cast<CCVector3*>(Pconst) = globalTrans * P;
+                            }
+
+                            static char s_dimNames[3] = { 'X', 'Y', 'Z' };
+                            poly->setName(QString("Contour line %1=%2 (#%3)").arg(s_dimNames[Z]).arg(sliceZ).arg(k + 1));
+                            poly->copyGlobalShiftAndScale(*sliceCloud);
+                            poly->setMetaData(ccPolyline::MetaKeyConstAltitude(), QVariant(sliceZ)); //replace the 'altitude' meta-data by the right value
+
+                            //set meta-data
+                            poly->setMetaData(s_originEntityUUID, sliceCloud->getMetaData(s_originEntityUUID));
+                            poly->setMetaData(s_sliceID, sliceCloud->getMetaData(s_sliceID));
+                            poly->setMetaData("slice.origin.dim(0)", sliceCloud->getMetaData("slice.origin.dim(0)"));
+                            poly->setMetaData("slice.origin.dim(1)", sliceCloud->getMetaData("slice.origin.dim(1)"));
+                            poly->setMetaData("slice.origin.dim(2)", sliceCloud->getMetaData("slice.origin.dim(2)"));
+
+                            levelSet.push_back(poly);
+                        }
+                    }
+                    else
+                    {
+                        CCTRACE("Failed to generate contour lines for cloud #" << (i+1));
+                    }
+                }
+            }
+        }
+
+        //extract envelopes as polylines (optionaly)
+        if (!error && extractEnvelopes && cloudSliceCount != 0)
+        {
+            CCTRACE("extract envelopes as polylines");
+
+            //preferred dimension?
+            PointCoordinateType* preferredNormDir = nullptr;
+            PointCoordinateType* preferredUpDir = nullptr;
+            if (repeatDimensionsSum == 1)
+            {
+                for (int i = 0; i < 3; ++i)
+                {
+                    if (repeatDimensions[i])
+                    {
+                        ccGLMatrix invLocalTrans = localTrans.inverse();
+                        if (!projectOnBestFitPlane) //otherwise the normal will be automatically computed
+                            preferredNormDir = invLocalTrans.getColumn(i);
+                        preferredUpDir = invLocalTrans.getColumn(i < 2 ? 2 : 0);
+                        break;
+                    }
+                }
+            }
+
+            assert(cloudSliceCount <= outputSlices.size());
+
+            //process all the slices originating from point clouds
+            for (size_t i = 0; i < cloudSliceCount; ++i)
+            {
+                ccPointCloud* sliceCloud = ccHObjectCaster::ToPointCloud(outputSlices[i]);
+                assert(sliceCloud);
+
+                std::vector<ccPolyline*> polys;
+                if (ExtractFlatEnvelope_(sliceCloud,
+                    multiPass,
+                    maxEdgeLength,
+                    polys,
+                    envelopeType,
+                    splitEnvelopes,
+                    preferredNormDir,
+                    preferredUpDir,
+                    visualDebugMode))
+                {
+                    if (!polys.empty())
+                    {
+                        for (size_t p = 0; p < polys.size(); ++p)
+                        {
+                            ccPolyline* poly = polys[p];
+                            poly->setColor(ccColor::green);
+                            poly->showColors(true);
+                            poly->setGlobalScale(sliceCloud->getGlobalScale());
+                            poly->setGlobalShift(sliceCloud->getGlobalShift());
+                            QString envelopeName = sliceCloud->getName();
+                            envelopeName.replace("slice", "envelope");
+                            if (polys.size() > 1)
+                            {
+                                envelopeName += QString(" (part %1)").arg(p + 1);
+                            }
+                            poly->setName(envelopeName);
+
+                            //set meta-data
+                            poly->setMetaData(s_originEntityUUID, sliceCloud->getMetaData(s_originEntityUUID));
+                            poly->setMetaData(s_sliceID, sliceCloud->getMetaData(s_sliceID));
+                            poly->setMetaData("slice.origin.dim(0)", sliceCloud->getMetaData("slice.origin.dim(0)"));
+                            poly->setMetaData("slice.origin.dim(1)", sliceCloud->getMetaData("slice.origin.dim(1)"));
+                            poly->setMetaData("slice.origin.dim(2)", sliceCloud->getMetaData("slice.origin.dim(2)"));
+
+                            outputEnvelopes.push_back(poly);
+                        }
+                    }
+                    else
+                    {
+                        CCTRACE(sliceCloud->getName().toStdString() << " : points are too far from each other! Increase the max edge length");
+                        warningsIssued = true;
+                    }
+                }
+                else
+                {
+                    CCTRACE(sliceCloud->getName().toStdString() << " : envelope extraction failed!");
+                    warningsIssued = true;
+                }
+            }
+
+        } //extract envelope polylines
+
+        //release memory
+        if (error) // || singleSliceMode)
+        {
+            for (ccHObject* slice : outputSlices)
+            {
+                delete slice;
+            }
+            outputSlices.resize(0);
+        }
+
+        if (error)
+        {
+            for (ccPolyline* poly : outputEnvelopes)
+            {
+                delete poly;
+            }
+            return false;
+        }
+        else if (warningsIssued)
+        {
+            CCTRACE("[ExtractSlicesAndContours] Warnings were issued during the process! (result may be incomplete)");
+        }
+    }
+    catch (const std::bad_alloc&)
+    {
+        CCTRACE("Not enough memory!");
+        return false;
+    }
+
+    return true;
+}
+// ===========================================================================
+

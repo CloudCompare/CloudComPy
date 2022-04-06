@@ -48,6 +48,7 @@
 #include <ccNormalVectors.h>
 #include <ccHObjectCaster.h>
 #include <ccRasterGrid.h>
+#include <ccClipBox.h>
 
 #include <QString>
 #include <vector>
@@ -231,6 +232,64 @@ void deleteEntity(ccHObject* entity)
     delete entity;
 }
 
+bp::tuple ExtractSlicesAndContours_py
+    (
+    std::vector<ccHObject*> entities,
+    ccBBox bbox,
+    ccGLMatrix bboxTrans = ccGLMatrix(),
+    bool singleSliceMode = true,
+    bool processRepeatX =false,
+    bool processRepeatY =false,
+    bool processRepeatZ =true,
+    bool extractEnvelopes = false,
+    PointCoordinateType maxEdgeLength = 0,
+    int envelopeType = 0,
+    bool extractLevelSet = false,
+    double levelSetGridStep = 0,
+    int levelSetMinVertCount= 0,
+    PointCoordinateType gap = 0,
+    bool multiPass = false,
+    bool splitEnvelopes = false,
+    bool projectOnBestFitPlane = false,
+    bool generateRandomColors = false)
+{
+    std::vector<ccGenericPointCloud*> clouds;
+    std::vector<ccGenericMesh*> meshes;
+    for(auto obj: entities)
+    {
+        if (obj->isKindOf(CC_TYPES::MESH))
+        {
+            ccMesh* mesh = ccHObjectCaster::ToMesh(obj);
+            meshes.push_back(mesh);
+        }
+        else if(obj->isKindOf(CC_TYPES::POINT_CLOUD))
+        {
+            ccGenericPointCloud* cloud = ccHObjectCaster::ToGenericPointCloud(obj);
+            clouds.push_back(cloud);
+        }
+    }
+    CCTRACE("clouds: " << clouds.size() << " meshes: " << meshes.size());
+    ccClipBox clipBox;
+    clipBox.set(bbox, bboxTrans);
+    clipBox.enableGLTransformation(true);
+    bool processDimensions[3] = {processRepeatX, processRepeatY, processRepeatZ};
+
+    EnvelopeType val[3] = {LOWER, UPPER, FULL};
+    if (envelopeType <0) envelopeType = 0;
+    if (envelopeType >2) envelopeType = 2;
+    EnvelopeType envelType = val[envelopeType];
+
+    std::vector<ccHObject*> outputSlices;
+    std::vector<ccPolyline*> outputEnvelopes;
+    std::vector<ccPolyline*> levelSet;
+    ExtractSlicesAndContours(clouds, meshes, clipBox, singleSliceMode, processDimensions, outputSlices,
+                             extractEnvelopes, maxEdgeLength, envelType, outputEnvelopes,
+                             extractLevelSet, levelSetGridStep, levelSetMinVertCount, levelSet,
+                             gap, multiPass, splitEnvelopes, projectOnBestFitPlane, false, generateRandomColors, nullptr);
+    bp::tuple res = bp::make_tuple(outputSlices, outputEnvelopes, levelSet);
+    return res;
+}
+
 BOOST_PYTHON_FUNCTION_OVERLOADS(importFilePy_overloads, importFilePy, 1, 5);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloudPy_overloads, loadPointCloudPy, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadMeshPy_overloads, loadMeshPy, 1, 6);
@@ -241,6 +300,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(computeNormals_overloads, computeNormals, 1, 12)
 BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToCloud_overloads, RasterizeToCloud, 2, 19);
 BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToMesh_overloads, RasterizeToMesh, 2, 19);
 BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeGeoTiffOnly_overloads, RasterizeGeoTiffOnly, 2, 19);
+BOOST_PYTHON_FUNCTION_OVERLOADS(ExtractSlicesAndContours_py_overloads, ExtractSlicesAndContours_py, 2, 18);
 
 
 BOOST_PYTHON_MODULE(_cloudComPy)
@@ -476,6 +536,28 @@ BOOST_PYTHON_MODULE(_cloudComPy)
     def("ComputeVolume25D", ComputeVolume25D, cloudComPy_ComputeVolume25D_doc);
 
     def("invertNormals", invertNormals, cloudComPy_invertNormals_doc);
+
+    def("ExtractSlicesAndContours", ExtractSlicesAndContours_py,
+        ExtractSlicesAndContours_py_overloads(
+            (arg("entities"),
+             arg("bbox"),
+             arg("bboxTrans")=ccGLMatrix(),
+             arg("singleSliceMode")=true,
+             arg("processRepeatX")=false,
+             arg("processRepeatY")=false,
+             arg("processRepeatZ")=true,
+             arg("extractEnvelopes")=false,
+             arg("maxEdgeLength")=0,
+             arg("envelopeType")=0,
+             arg("extractLevelSet")=false,
+             arg("levelSetGridStep")=0,
+             arg("levelSetMinVertCount")=0,
+             arg("gap")=0,
+             arg("multiPass")=false,
+             arg("splitEnvelopes")=false,
+             arg("projectOnBestFitPlane")=false,
+             arg("generateRandomColors")=false),
+            cloudComPy_ExtractSlicesAndContours_doc));
 
     def("RasterizeToCloud", RasterizeToCloud,
 		RasterizeToCloud_overloads(

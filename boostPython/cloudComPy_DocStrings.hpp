@@ -60,6 +60,10 @@ Delete an entity and its children (mesh, cloud...)
 
 :param ccHObject entity: the entity to remove)";
 
+const char* cloudComPy_ExtractSlicesAndContours_doc= R"(
+Extract slices and contours from a set of clouds and meshes.
+)";
+
 const char* cloudComPy_importFile_doc= R"(
 Load any kind of entities (cloud or mesh) from a file.
 
