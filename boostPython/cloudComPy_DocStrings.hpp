@@ -61,7 +61,40 @@ Delete an entity and its children (mesh, cloud...)
 :param ccHObject entity: the entity to remove)";
 
 const char* cloudComPy_ExtractSlicesAndContours_doc= R"(
-Extract slices and contours from a set of clouds and meshes.
+Extract slices, envelopes and contours from a set of clouds and meshes (Cross section).
+
+Slices are the part of cloud or mesh contained in the bounding box used as a tool to cut.
+Slicing can be repeated selectively along the 3 directions X, Y, Z, with optional gaps between slices.
+Optional envelopes are closed polylines defining a concave external boundary of the slices.
+Optional contours are closed polylines defining boundaries (external and internal) of the slices.
+The contours are built via a rasterisation process.
+
+:param list[ccHObjects] entities: the list of point clouds and meshes to slice.
+:param ccBBox bbox: the bounding box used as a slice tool.
+:param ccGLMatrix,optional bboxTrans: optional transformation (rotation translation) of the bounding box, default identity.
+:param boolean,optional singleSliceMode: whether to cut just one slice or repeat the process, default True, i.e. only one slice.
+:param boolean,optional processRepeatX: whether to repeat along the X direction (if singleSliceMode False), default False. 
+:param boolean,optional processRepeatY: whether to repeat along the Y direction (if singleSliceMode False), default False. 
+:param boolean,optional processRepeatZ: whether to repeat along the Z direction (if singleSliceMode False), default True.
+:param boolean,optional extractEnvelopes: whether to extract the envelopes or not, default False.
+:param double,optional maxEdgeLength: maximum edge length for the envelope, default 0=convex envelope.
+:param int,optional envelopeType: type of envelope, default 0.
+                                  0: envelope built on the lower part of the slice, 1: upper part, 2: all the slice.
+:param boolean,optional extractLevelSet: whether to extract contours or not, default False.
+:param double,optional levelSetGridStep: grid step to use for the rasterisation needed to build the contours
+:param int,optional levelSetMinVertCount: number of points required to define a contour, default 0 (change it!).
+:param double,optional gap: gap between slices, default 0.
+:param boolean,optional multiPass: Multi-pass process where longer edges may be temporarily created to obtain a better fit...
+                                   or a worst one! Default False.
+:param boolean,optional splitEnvelopes: split the generated contour(s) in smaller parts to avoid creating edges longer
+                                        than the specified max edge length. Default False.
+:param boolean,optional projectOnBestFitPlane: Before extracting the contour, points can be projected along the repeat dimension
+                                               (if only one is defined) or on the best fit plane. Default False.
+:param boolean,optionalgenerateRandomColors: whether to define random colors per slice (will overwrite existing colors!)
+                                             or not. Default False.
+
+:return: a tuple of 3 lists ([slices], [envelopes], [contours])
+:rtype: tuple
 )";
 
 const char* cloudComPy_importFile_doc= R"(
