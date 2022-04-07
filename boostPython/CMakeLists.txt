@@ -50,7 +50,7 @@ message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
 # --- ----------------------------------------------------------
 # --- target boost.Python library: Python module cloudComPy
 
-project( _cloudComPy VERSION 0.1 )
+project( _cloudComPy VERSION 2.12.0 )
 
 add_library( ${PROJECT_NAME} SHARED )
 
