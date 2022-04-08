@@ -14,6 +14,11 @@
       "ctestCommandArgs": "",
       "variables": [
         {
+          "name": "CMAKE_SHARED_LINKER_FLAGS",
+          "value": "/machine:x64 /FORCE:MULTIPLE",
+          "type": "STRING"
+        },
+        {
           "name": "PYTHON_PREFERED_VERSION:STRING",
           "value": "3.9",
           "type": "STRING"
