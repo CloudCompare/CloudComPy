@@ -68,7 +68,8 @@ void export_geometricalAnalysisTools()
              &CCCoreLib::GeometricalAnalysisTools::FlagDuplicatePoints,
              FlagDuplicatePoints_overloads(
              (arg("theCloud"), arg("minDistanceBetweenPoints")=std::numeric_limits<double>::epsilon(),
-              arg("progressCb")=0, arg("inputOctree")=0),
+              arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr),
+              arg("inputOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr)),
              geometricalAnalysisToolsPy_FlagDuplicatePoints_doc))
             .staticmethod("FlagDuplicatePoints")
 

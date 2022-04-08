@@ -130,7 +130,7 @@ BOOST_PYTHON_MODULE(_PCV)
 
     def("computeShadeVIS", computeShadeVIS,
         computeShadeVIS_overloads(
-        (arg("clouds"), arg("cloudWithNormals")=0, arg("rayCount")=256, arg("resolution")=1024,
+        (arg("clouds"), arg("cloudWithNormals")=bp::ptr((ccPointCloud*)nullptr), arg("rayCount")=256, arg("resolution")=1024,
          arg("is360")=false, arg("isClosedMesh")=false), PCV_computeShadeVIS_doc));
     def("initTrace_PCV", initTrace_PCV, PCV_initTrace_PCV_doc);
 

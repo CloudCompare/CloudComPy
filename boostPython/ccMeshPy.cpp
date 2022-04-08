@@ -30,6 +30,7 @@
 
 #include "ccMeshPy_DocStrings.hpp"
 
+namespace bp = boost::python;
 using namespace boost::python;
 
 ccMesh* cloneMesh_py(ccMesh &self)
@@ -72,7 +73,8 @@ void export_ccMesh()
              &mesh_samplePoints_py,
              mesh_samplePoints_py_overloads(
              (arg("self"), arg("densityBased"), arg("samplingParameter"),
-              arg("withNormals")=true, arg("withRGB")=true, arg("withTexture")=true, arg("pDLg")=0),
+              arg("withNormals")=true, arg("withRGB")=true, arg("withTexture")=true,
+              arg("pDLg")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr)),
              ccGenericMeshPy_samplePoints_doc)[return_value_policy<reference_existing_object>()])
         ;
 
