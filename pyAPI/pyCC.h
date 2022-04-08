@@ -40,7 +40,6 @@
 #include <ccCommandLineInterface.h>
 #include <Neighbourhood.h>
 #include <ccRasterGrid.h>
-#include <ccClipBox.h>
 
 #include "optdefines.h"
 
@@ -381,9 +380,10 @@ struct CLPolyDesc : CLEntityDesc
     CL_ENTITY_TYPE getCLEntityType() const override { return CL_ENTITY_TYPE::CLOUD; }
 };
 
+class ccClipBox;
 
 //! Envelope type, see ccEnvelopeExtractor
-enum EnvelopeType { LOWER, UPPER, FULL };
+enum Envelope_Type { LOWER, UPPER, FULL };
 
 //! Extract slices and optionally envelopes from various clouds and/or clouds
 /** \param clouds input clouds (may be empty if meshes are defined)
@@ -406,7 +406,7 @@ enum EnvelopeType { LOWER, UPPER, FULL };
     \param generateRandomColors randomly colors the extracted slices
     \param progressDialog optional progress dialog
 **/
-bool ExtractSlicesAndContours
+bool ExtractSlicesAndContoursClone
     (
     const std::vector<ccGenericPointCloud*>& clouds,
     const std::vector<ccGenericMesh*>& meshes,
@@ -417,7 +417,7 @@ bool ExtractSlicesAndContours
 
     bool extractEnvelopes,
     PointCoordinateType maxEdgeLength,
-    EnvelopeType envelopeType,
+    Envelope_Type envelopeType,
     std::vector<ccPolyline*>& outputEnvelopes,
 
     bool extractLevelSet,

@@ -45,7 +45,7 @@
 #include <SimpleMesh.h>
 #include <ccMaterialSet.h>
 #include <ccHObject.h>
-#include <ccObject.h>
+//#include <ccObject.h>
 
 //libs/qCC_io
 #include<AsciiFilter.h>
@@ -2625,18 +2625,18 @@ using Hull2D = std::list<Vertex2D *>;
 
 namespace
 {
-    struct Edge
+    struct Edge_
     {
-        Edge() : nearestPointIndex(0), nearestPointSquareDist(-1.0f) {}
+        Edge_() : nearestPointIndex(0), nearestPointSquareDist(-1.0f) {}
 
-        Edge(const VertexIterator& A, unsigned _nearestPointIndex, float _nearestPointSquareDist)
+        Edge_(const VertexIterator& A, unsigned _nearestPointIndex, float _nearestPointSquareDist)
         : itA(A)
         , nearestPointIndex(_nearestPointIndex)
         , nearestPointSquareDist(_nearestPointSquareDist)
     {}
 
         //operator
-        inline bool operator< (const Edge& e) const { return nearestPointSquareDist < e.nearestPointSquareDist; }
+        inline bool operator< (const Edge_& e) const { return nearestPointSquareDist < e.nearestPointSquareDist; }
 
         VertexIterator itA;
         unsigned nearestPointIndex;
@@ -2647,15 +2647,15 @@ namespace
 namespace
 {
     //Last envelope or contour unique ID
-    std::vector<unsigned> s_lastContourUniqueIDs;
+    //std::vector<unsigned> s_lastContourUniqueIDs_;
 
     //Envelope extraction parameters (global)
-    double s_maxEnvelopeEdgeLength = -1.0;
+    //double s_maxEnvelopeEdgeLength_ = -1.0;
 
     //Meta-data key: origin entity UUID
-    constexpr char s_originEntityUUID[] = "OriginEntityUUID";
+    constexpr char s_originEntityUUID_[] = "OriginEntityUUID";
     //Meta-data key: slice (unique) ID
-    constexpr char s_sliceID[] = "SliceID";
+    constexpr char s_sliceID_[] = "SliceID";
 }
 
 #ifndef CC_GDAL_SUPPORT
@@ -3273,7 +3273,7 @@ PointCoordinateType FindNearestCandidate_(  unsigned& minIndex,
 
 bool ExtractConcaveHull2D_( std::vector<Vertex2D>& points,
                             std::list<Vertex2D*>& hullPoints,
-                            EnvelopeType envelopeType,
+                            Envelope_Type envelopeType,
                             bool allowMultiPass,
                             PointCoordinateType maxSquareEdgeLength=0,
                             bool enableVisualDebugMode=false,
@@ -3420,7 +3420,7 @@ bool ExtractConcaveHull2D_( std::vector<Vertex2D>& points,
             ++step;
 
             //build the initial edge list & flag the convex hull points
-            std::multiset<Edge> edges;
+            std::multiset<Edge_> edges;
             //initial number of edges
             assert(hullPoints.size() >= 2);
             size_t initEdgeCount = hullPoints.size();
@@ -3450,7 +3450,7 @@ bool ExtractConcaveHull2D_( std::vector<Vertex2D>& points,
 
                     if (minSquareDist >= 0)
                     {
-                        Edge e(itA, nearestPointIndex, minSquareDist);
+                        Edge_ e(itA, nearestPointIndex, minSquareDist);
                         edges.insert(e);
                     }
                 }
@@ -3466,7 +3466,7 @@ bool ExtractConcaveHull2D_( std::vector<Vertex2D>& points,
             {
                 //current edge (AB)
                 //this should be the edge with the nearest 'candidate'
-                Edge e = *edges.begin();
+                Edge_ e = *edges.begin();
                 edges.erase(edges.begin());
 
                 VertexIterator itA = e.itA;
@@ -3521,8 +3521,8 @@ bool ExtractConcaveHull2D_( std::vector<Vertex2D>& points,
                     if (!edges.empty())
                     {
                         std::vector<VertexIterator> removed;
-                        std::multiset<Edge>::const_iterator lastValidIt = edges.end();
-                        for (std::multiset<Edge>::const_iterator it = edges.begin(); it != edges.end(); ++it)
+                        std::multiset<Edge_>::const_iterator lastValidIt = edges.end();
+                        for (std::multiset<Edge_>::const_iterator it = edges.begin(); it != edges.end(); ++it)
                         {
                             if ((*it).nearestPointIndex == e.nearestPointIndex)
                             {
@@ -3564,7 +3564,7 @@ bool ExtractConcaveHull2D_( std::vector<Vertex2D>& points,
 
                             if (minSquareDist >= 0)
                             {
-                                Edge e(itC, nearestPointIndex, minSquareDist);
+                                Edge_ e(itC, nearestPointIndex, minSquareDist);
                                 edges.insert(e);
                             }
                         }
@@ -3586,7 +3586,7 @@ bool ExtractConcaveHull2D_( std::vector<Vertex2D>& points,
 
                         if (minSquareDist >= 0)
                         {
-                            Edge e(itA,nearestPointIndex,minSquareDist);
+                            Edge_ e(itA,nearestPointIndex,minSquareDist);
                             edges.insert(e);
                         }
                     }
@@ -3605,7 +3605,7 @@ bool ExtractConcaveHull2D_( std::vector<Vertex2D>& points,
 
                         if (minSquareDist >= 0)
                         {
-                            Edge e(itP,nearestPointIndex,minSquareDist);
+                            Edge_ e(itP,nearestPointIndex,minSquareDist);
                             edges.insert(e);
                         }
                     }
@@ -3630,7 +3630,7 @@ ccPolyline* ExtractFlatEnvelope__(  CCCoreLib::GenericIndexedCloudPersist* point
                                     PointCoordinateType maxEdgeLength=0,
                                     const PointCoordinateType* preferredNormDim=nullptr,
                                     const PointCoordinateType* preferredUpDir=nullptr,
-                                    EnvelopeType envelopeType=FULL,
+                                    Envelope_Type envelopeType=FULL,
                                     std::vector<unsigned>* originalPointIndexes=nullptr,
                                     bool enableVisualDebugMode=false,
                                     double maxAngleDeg=0.0)
@@ -3782,7 +3782,7 @@ bool ExtractFlatEnvelope_(  CCCoreLib::GenericIndexedCloudPersist* points,
                             bool allowMultiPass,
                             PointCoordinateType maxEdgeLength,
                             std::vector<ccPolyline*>& parts,
-                            EnvelopeType envelopeType=FULL,
+                            Envelope_Type envelopeType=FULL,
                             bool allowSplitting=true,
                             const PointCoordinateType* preferredNormDir=nullptr,
                             const PointCoordinateType* preferredUpDir=nullptr,
@@ -4361,7 +4361,7 @@ unsigned ComputeGridDimensions_(const ccBBox& localBox,
 }
 
 //! see ccClippingBoxTool::ExtractSlicesAndContours
-bool ExtractSlicesAndContours
+bool ExtractSlicesAndContoursClone
 (
     const std::vector<ccGenericPointCloud*>& clouds,
     const std::vector<ccGenericMesh*>& meshes,
@@ -4372,7 +4372,7 @@ bool ExtractSlicesAndContours
 
     bool extractEnvelopes,
     PointCoordinateType maxEdgeLength,
-    EnvelopeType envelopeType,
+    Envelope_Type envelopeType,
     std::vector<ccPolyline*>& outputEnvelopes,
 
     bool extractLevelSet,
@@ -4448,8 +4448,8 @@ bool ExtractSlicesAndContours
                     slice->setName(clouds[ci]->getName() + QString(".slice"));
 
                     //set meta-data
-                    slice->setMetaData(s_originEntityUUID, clouds[ci]->getUniqueID());
-                    slice->setMetaData(s_sliceID, "slice");
+                    slice->setMetaData(s_originEntityUUID_, clouds[ci]->getUniqueID());
+                    slice->setMetaData(s_sliceID_, "slice");
                     if (slice->isKindOf(CC_TYPES::POINT_CLOUD))
                     {
                         slice->setMetaData("slice.origin.dim(0)", gridOrigin.x);
@@ -4599,8 +4599,8 @@ bool ExtractSlicesAndContours
                                         sliceCloud->setName(cloud->getName() + QString(".slice @ ") + slicePosStr);
 
                                         //set meta-data
-                                        sliceCloud->setMetaData(s_originEntityUUID, cloud->getUniqueID());
-                                        sliceCloud->setMetaData(s_sliceID, slicePosStr);
+                                        sliceCloud->setMetaData(s_originEntityUUID_, cloud->getUniqueID());
+                                        sliceCloud->setMetaData(s_sliceID_, slicePosStr);
                                         sliceCloud->setMetaData("slice.origin.dim(0)", cellOrigin.x);
                                         sliceCloud->setMetaData("slice.origin.dim(1)", cellOrigin.y);
                                         sliceCloud->setMetaData("slice.origin.dim(2)", cellOrigin.z);
@@ -4700,8 +4700,8 @@ bool ExtractSlicesAndContours
                                     croppedEnt->setName(mesh->getName() + QString(".slice @ ") + slicePosStr);
 
                                     //set meta-data
-                                    croppedEnt->setMetaData(s_originEntityUUID, mesh->getUniqueID());
-                                    croppedEnt->setMetaData(s_sliceID, slicePosStr);
+                                    croppedEnt->setMetaData(s_originEntityUUID_, mesh->getUniqueID());
+                                    croppedEnt->setMetaData(s_sliceID_, slicePosStr);
                                     croppedEnt->setMetaData("slice.origin.dim(0)", C.x);
                                     croppedEnt->setMetaData("slice.origin.dim(1)", C.y);
                                     croppedEnt->setMetaData("slice.origin.dim(2)", C.z);
@@ -4844,8 +4844,8 @@ bool ExtractSlicesAndContours
                             poly->setMetaData(ccPolyline::MetaKeyConstAltitude(), QVariant(sliceZ)); //replace the 'altitude' meta-data by the right value
 
                             //set meta-data
-                            poly->setMetaData(s_originEntityUUID, sliceCloud->getMetaData(s_originEntityUUID));
-                            poly->setMetaData(s_sliceID, sliceCloud->getMetaData(s_sliceID));
+                            poly->setMetaData(s_originEntityUUID_, sliceCloud->getMetaData(s_originEntityUUID_));
+                            poly->setMetaData(s_sliceID_, sliceCloud->getMetaData(s_sliceID_));
                             poly->setMetaData("slice.origin.dim(0)", sliceCloud->getMetaData("slice.origin.dim(0)"));
                             poly->setMetaData("slice.origin.dim(1)", sliceCloud->getMetaData("slice.origin.dim(1)"));
                             poly->setMetaData("slice.origin.dim(2)", sliceCloud->getMetaData("slice.origin.dim(2)"));
@@ -4921,8 +4921,8 @@ bool ExtractSlicesAndContours
                             poly->setName(envelopeName);
 
                             //set meta-data
-                            poly->setMetaData(s_originEntityUUID, sliceCloud->getMetaData(s_originEntityUUID));
-                            poly->setMetaData(s_sliceID, sliceCloud->getMetaData(s_sliceID));
+                            poly->setMetaData(s_originEntityUUID_, sliceCloud->getMetaData(s_originEntityUUID_));
+                            poly->setMetaData(s_sliceID_, sliceCloud->getMetaData(s_sliceID_));
                             poly->setMetaData("slice.origin.dim(0)", sliceCloud->getMetaData("slice.origin.dim(0)"));
                             poly->setMetaData("slice.origin.dim(1)", sliceCloud->getMetaData("slice.origin.dim(1)"));
                             poly->setMetaData("slice.origin.dim(2)", sliceCloud->getMetaData("slice.origin.dim(2)"));

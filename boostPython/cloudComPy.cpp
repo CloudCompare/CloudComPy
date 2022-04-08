@@ -274,15 +274,15 @@ bp::tuple ExtractSlicesAndContours_py
     clipBox.enableGLTransformation(true);
     bool processDimensions[3] = {processRepeatX, processRepeatY, processRepeatZ};
 
-    EnvelopeType val[3] = {LOWER, UPPER, FULL};
+    Envelope_Type val[3] = {LOWER, UPPER, FULL};
     if (envelopeType <0) envelopeType = 0;
     if (envelopeType >2) envelopeType = 2;
-    EnvelopeType envelType = val[envelopeType];
+    Envelope_Type envelType = val[envelopeType];
 
     std::vector<ccHObject*> outputSlices;
     std::vector<ccPolyline*> outputEnvelopes;
     std::vector<ccPolyline*> levelSet;
-    ExtractSlicesAndContours(clouds, meshes, clipBox, singleSliceMode, processDimensions, outputSlices,
+    ExtractSlicesAndContoursClone(clouds, meshes, clipBox, singleSliceMode, processDimensions, outputSlices,
                              extractEnvelopes, maxEdgeLength, envelType, outputEnvelopes,
                              extractLevelSet, levelSetGridStep, levelSetMinVertCount, levelSet,
                              gap, multiPass, splitEnvelopes, projectOnBestFitPlane, false, generateRandomColors, nullptr);
