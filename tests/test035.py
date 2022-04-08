@@ -80,31 +80,31 @@ if cc.isPluginRANSAC_SD():
     if not sortmeshes[5].isA(cc.CC_TYPES.SPHERE):
         raise RuntimeError
     
-    if not math.isclose(sortmeshes[3].getRadius(), 1.0, rel_tol=2.e-2):
+    if not math.isclose(sortmeshes[3].getRadius(), 1.0, rel_tol=3.e-2):
         raise RuntimeError
-    if not math.isclose(sortmeshes[4].getRadius(), 1.5, rel_tol=2.e-2):
+    if not math.isclose(sortmeshes[4].getRadius(), 1.5, rel_tol=3.e-2):
         raise RuntimeError
-    if not math.isclose(sortmeshes[5].getRadius(), 2.0, rel_tol=2.e-2):
+    if not math.isclose(sortmeshes[5].getRadius(), 2.0, rel_tol=3.e-2):
         raise RuntimeError
     
     tr_0 = sortmeshes[0].getTransformation()
     t3D0 = tr_0.getParameters1().t3D
-    if not isCoordEqual(t3D0, (3.0, 0.0, 4.0), 0, 2.e-2):
+    if not isCoordEqual(t3D0, (3.0, 0.0, 4.0), 0, 3.e-2):
         print(t3D0)
         raise RuntimeError
     tr_3 = sortmeshes[3].getTransformation()
     t3D3 = tr_3.getParameters1().t3D
-    if not isCoordEqual(t3D3, (0.0, 1.0, 2.0), 0, 2.e-2):
+    if not isCoordEqual(t3D3, (0.0, 1.0, 2.0), 0, 3.e-2):
         print(t3D3)
         raise RuntimeError
     tr_4 = sortmeshes[4].getTransformation()
     t3D4 = tr_4.getParameters1().t3D
-    if not isCoordEqual(t3D4, (-2.0, 5.0, 1.0), 2.e-2):
+    if not isCoordEqual(t3D4, (-2.0, 5.0, 1.0), 3.e-2):
         print(t3D4)
         raise RuntimeError
     tr_5 = sortmeshes[5].getTransformation()
     t3D5 = tr_5.getParameters1().t3D
-    if not isCoordEqual(t3D5, (6.0, -3.0, -2.0), 2.e-2):
+    if not isCoordEqual(t3D5, (6.0, -3.0, -2.0), 3.e-2):
         print(t3D5)
         raise RuntimeError
     
