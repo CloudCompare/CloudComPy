@@ -3049,7 +3049,7 @@ CPLErr ContourWriter_(  double dfLevel,
                         double *padfY,
                         void * userData)
 {
-    CCTRACE("ContourWriter_");
+    //CCTRACE("ContourWriter_");
     if (nPoints < 2)
     {
         //nothing to do
@@ -3816,7 +3816,7 @@ bool ExtractFlatEnvelope_(  CCCoreLib::GenericIndexedCloudPersist* points,
 //! see ccCropTool::Crop
 ccHObject* Crop_(ccHObject* entity, const ccBBox& box, bool inside/*=true*/, const ccGLMatrix* meshRotation/*=nullptr*/)
 {
-    CCTRACE("Crop_");
+    //CCTRACE("Crop_");
     assert(entity);
     if (!entity)
     {
