@@ -19,5 +19,19 @@
 #                                                                        #
 ##########################################################################
 
+set( USE_DOCS
+    BuildLinuxConda.md
+    BuildLinuxCondaDocker.md
+    BuildUbuntuNative.md
+    BuildWindowsConda.md
+    prerequisitesVersions.md
+    ReleaseNotes.md
+    UseDockerLinuxConda.md
+    UseDockerLinuxCondaBinary.md
+    UseLinuxCondaBinary.md
+    UseWindowsCondaBinary.md
+    )
+install(FILES ${USE_DOCS} DESTINATION doc)
+
 add_subdirectory( samples )
 

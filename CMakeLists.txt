@@ -90,4 +90,9 @@ add_subdirectory( doc )
 
 add_subdirectory( sphinxDoc )
 
-
+set( README_DOCS
+    README.md
+    License.txt
+    )
+install(FILES ${README_DOCS} DESTINATION ${CMAKE_INSTALL_PREFIX})
+    

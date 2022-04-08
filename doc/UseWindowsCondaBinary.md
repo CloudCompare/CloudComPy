@@ -13,12 +13,19 @@ You need to create a conda environment for CloudComPy: for instance, in Anaconda
 
 ```
 conda activate
+conda update -y -n base -c defaults conda
+```
+If your environment CloudComPy39 does not exist:
+```
 conda create --name CloudComPy39 python=3.9
    # --- erase previous env if existing
+```
+Add or update the packages:
+```
 conda activate CloudComPy39
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install boost cgal cmake ffmpeg gdal jupyterlab matplotlib mysql numpy opencv openmp pcl pdal psutil qt scipy sphinx_rtd_theme spyder tbb tbb-devel xerces-c
+conda install "boost=1.72" "cgal=5.0" cmake "ffmpeg=4.3" "gdal=3.3" "jupyterlab=3.2" "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.11" "pdal=2.3" "psutil=5.9" "qt=5.12" "scipy=1.8" "sphinx_rtd_theme=1.0" "spyder=5.2" "tbb=2021.5" "tbb-devel=2021.5" "xerces-c=3.2"
 ```
 
 Install the binary in the directory of your choice.
