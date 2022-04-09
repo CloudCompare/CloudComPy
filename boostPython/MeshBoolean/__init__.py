@@ -39,3 +39,5 @@ MeshBoolean is a submodule of cloudCompy:
       cc.MeshBoolean.computeMeshBoolean(...)
 """
 from ._MeshBoolean import *
+initTrace_MeshBoolean()
+

@@ -510,7 +510,7 @@ Compares two IndexAndCode instances based on their index.
 :return: whether the index of 'a' is smaller than the index of 'b'
 :rtype: bool )";
 
-#define dgm_nnss_0 R"(
+const char* DgmOctree_NearestNeighboursSearchStruct_doc= R"(
 Container of in/out parameters for nearest neighbour(s) search.
 
 This structure is generic and can be used in multiple cases.
@@ -565,40 +565,7 @@ and only few informations need to be updated (the query point, etc.).
 :ivar int theNearestPointIndex: The nearest point.
     This field is only used by the "unique nearest neighbour" search algorithm
     (see :py:meth:`findTheNearestNeighborStartingFromCell`).
-)"
-
-#define dgm_nnsss_1 R"(
-Container of in/out parameters for nearest neighbour(s) Spherical search,
-derived from NearestNeighboursSearchStruct:
-
-**--- generic part ---**
-)"
-
-#define dgm_nnsss_2 R"(
-**--- spherical part ----**
-
-:ivar bool ready: Whether pointsInSphericalNeighbourhood is ready or not
-    (see prepare method for init).
-)"
-
-#define dgm_nnsss_3 R"(
-:ivar pointsInSphericalNeighbourhood: All the points that belong
-    to the spherical neighbourhood of the current cell
-:ivar cellsInNeighbourhood: Meta data describing cells neighbourhood
-   (associated to pointsInNeighbourhoodUnsorted)
-:ivar float maxInD2: max SQUARE distance from query point to cell center
-   (to be sure of total inclusion)
-:ivar float minOutD2: min SQUARE distance from query point to cell center
-   (to be sure of total exclusion)
-)"
-
-const char* DgmOctree_NearestNeighboursSearchStruct_doc= dgm_nnss_0;
-
-//#ifdef TEST_CELLS_FOR_SPHERICAL_NN
-//const char* DgmOctree_NearestNeighboursSearchStruct_doc = dgm_nnsss_1 dgm_nnss_0 dgm_nnsss_2 dgm_nnsss_3;
-//#else
-//const char* DgmOctree_NearestNeighboursSearchStruct_doc = dgm_nnsss_1 dgm_nnss_0 dgm_nnsss_2;
-//#endif
+)";
 
 const char* DgmOctree_PointDescriptor_doc= R"(
 Structure used during nearest neighbour search.

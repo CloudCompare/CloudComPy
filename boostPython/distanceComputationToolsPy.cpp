@@ -552,20 +552,27 @@ void export_distanceComputationTools()
              &computeCloud2CloudDistances_py,
              computeCloud2CloudDistances_overloads(
              (arg("comparedCloud"), arg("referenceCloud"), arg("params"),
-              arg("progressCb")=0, arg("compOctree")=0, arg("refOctree")=0),
+              arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr),
+              arg("compOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr),
+              arg("refOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr)),
              distanceComputationToolsPy_computeCloud2CloudDistances_doc))
             .staticmethod("computeCloud2CloudDistances")
         .def("computeCloud2MeshDistances",
              &computeCloud2MeshDistances_py,
              computeCloud2MeshDistances_overloads(
-             (arg("pointCloud"), arg("mesh"), arg("params"), arg("progressCb")=0, arg("cloudOctree")=0),
+             (arg("pointCloud"), arg("mesh"), arg("params"),
+                     arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr),
+                     arg("cloudOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr)),
              distanceComputationToolsPy_computeCloud2MeshDistances_doc))
             .staticmethod("computeCloud2MeshDistances")
         .def("computeApproxCloud2CloudDistance",
              &computeApproxCloud2CloudDistance_py,
              computeApproxCloud2CloudDistance_overloads(
              (arg("comparedCloud"), arg("referenceCloud"), arg("octreeLevel")=7,
-              arg("maxSearchDist")=0, arg("progressCb")=0, arg("compOctree")=0, arg("refOctree")=0),
+              arg("maxSearchDist")=0,
+              arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr),
+              arg("compOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr),
+              arg("refOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr)),
              distanceComputationToolsPy_computeApproxCloud2CloudDistance_doc))
             .staticmethod("computeApproxCloud2CloudDistance")
         .def("computeApproxCloud2MeshDistance",
@@ -575,7 +582,10 @@ void export_distanceComputationTools()
         .def("determineBestOctreeLevel",
              &determineBestOctreeLevel_py,
              determineBestOctreeLevel_overloads(
-             (arg("compCloud"), arg("refMesh")=0, arg("refCloud")=0, arg("maxSearchDist")=0),
+             (arg("compCloud"),
+                     arg("refMesh")=bp::ptr((CCCoreLib::GenericIndexedMesh*)nullptr),
+                     arg("refCloud")=bp::ptr((ccPointCloud*)nullptr),
+                     arg("maxSearchDist")=0),
              distanceComputationToolsPy_determineBestOctreeLevel_doc))
             .staticmethod("determineBestOctreeLevel")
         ;

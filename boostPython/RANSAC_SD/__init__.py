@@ -21,17 +21,24 @@
 #                                                                        #
 ##########################################################################
 
-import os
-import sys
-import math
+"""
+RANSAC_SD is a standard plugin of cloudComPy.
 
-os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
+The availability of the plugin can be tested with the :py:meth:`cloudComPy.isPluginRANSAC_SD` function:
+::
 
-from gendata import getSampleCloud, dataDir
-import cloudComPy as cc
+  isRANSAC_SD_available = cc.isPluginRANSAC_SD()
 
-cloud = cc.loadPointCloud(getSampleCloud(5.0))
+RANSAC_SD is a submodule of cloudCompy:
+::
 
-coords = cloud.toNpArrayCopy()
-if coords.shape != (cloud.size(), 3):
-    raise RuntimeError
+  import cloudComPy as cc
+  # ...
+  if cc.isPluginRANSAC_SD():
+      import cloudComPy.RANSAC_SD
+      params = cc.RANSAC_SD.RansacParams()
+      results = cc.RANSAC_SD.computeRANSAC_SD(cloud, params)
+"""
+from ._RANSAC_SD import *
+initTrace_RANSAC_SD()
+

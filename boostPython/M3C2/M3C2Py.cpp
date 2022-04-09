@@ -37,8 +37,16 @@
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
 
+void initTrace_M3C2()
+{
+#ifdef _PYTHONAPI_DEBUG_
+    ccLogTrace::settrace();
+#endif
+}
+
 ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFilename)
 {
+    CCTRACE("computeM3C2");
     if (clouds.size() < 2)
     {
         CCTRACE("minimum two clouds required for M3C2 computation");
@@ -74,5 +82,5 @@ BOOST_PYTHON_MODULE(_M3C2)
     scope().attr("__doc__") = M3C2_doc;
 
     def("computeM3C2", computeM3C2, return_value_policy<reference_existing_object>(), M3C2_computeM3C2_doc);
-
+    def("initTrace_M3C2", initTrace_M3C2, M3C2_initTrace_M3C2_doc);
 }

@@ -7,3 +7,4 @@ M3C2 plugin
 
 .. autofunction:: computeM3C2
  
+.. autofunction:: initTrace_M3C2

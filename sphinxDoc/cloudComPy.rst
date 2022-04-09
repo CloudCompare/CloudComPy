@@ -14,12 +14,15 @@ cloudComPy module, functions
 .. autofunction:: computeRoughness
 .. autofunction:: ComputeVolume25D
 .. autofunction:: deleteEntity
+.. autofunction:: ExtractConnectedComponents
+.. autofunction:: ExtractSlicesAndContours
 .. autofunction:: filterBySFValue
 .. autofunction:: GetPointCloudRadius
 .. autofunction:: getScalarType
 .. autofunction:: ICP
 .. autofunction:: importFile
 .. autofunction:: initCC
+.. autofunction:: initCloudCompare
 .. autofunction:: invertNormals
 .. autofunction:: isPluginDraco
 .. autofunction:: isPluginFbx
@@ -27,6 +30,7 @@ cloudComPy module, functions
 .. autofunction:: isPluginM3C2
 .. autofunction:: isPluginMeshBoolean
 .. autofunction:: isPluginPCV
+.. autofunction:: isPluginRANSAC_SD
 .. autofunction:: loadMesh
 .. autofunction:: loadPointCloud
 .. autofunction:: loadPolyline

@@ -24,11 +24,12 @@
 import os
 import sys
 import math
+
+os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
+
 from gendata import getSampleCloud, dataDir, isCoordEqual
 import cloudComPy as cc
 import numpy as np
-
-cc.initCC()  # to do once before using plugins or dealing with numpy
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 if cloud.hasColors():

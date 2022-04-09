@@ -219,6 +219,12 @@ struct ccGenericPrimitiveWrap : ccGenericPrimitive, wrapper<ccGenericPrimitive>
     }
 };
 
+ccGLMatrix getTransformation_py(ccGenericPrimitive& self)
+{
+    ccGLMatrix m = self.getTransformation();
+    return m;
+}
+
 class ccQuadricWrap
 {
 public:
@@ -411,6 +417,7 @@ void export_ccPrimitives()
 
     class_<ccGenericPrimitiveWrap, bases<ccMesh>, boost::noncopyable>("ccGenericPrimitive", no_init)
         .def("getTypeName", pure_virtual(&ccGenericPrimitive::getTypeName), ccPrimitivesPy_getTypeName_doc)
+        .def("getTransformation", &getTransformation_py, ccPrimitivesPy_getTransformation_doc)
         ;
 
     class_<ccBox, bases<ccGenericPrimitive>, boost::noncopyable>("ccBox", ccPrimitivesPy_ccBox_doc, init<QString>())
@@ -420,9 +427,18 @@ void export_ccPrimitives()
     class_<ccCone, bases<ccGenericPrimitive>, boost::noncopyable>("ccCone", ccPrimitivesPy_ccCone_doc, init<QString>())
         .def(init<PointCoordinateType, PointCoordinateType, PointCoordinateType,
              optional<PointCoordinateType, PointCoordinateType,const ccGLMatrix*, QString, unsigned, unsigned> >())
+        .def("getHeight", &ccCone::getHeight, ccPrimitivesPy_getHeight_doc)
+        .def("getBottomRadius", &ccCone::getBottomRadius, ccPrimitivesPy_getBottomRadius_doc)
+        .def("getTopRadius", &ccCone::getTopRadius, ccPrimitivesPy_getTopRadius_doc)
+        .def("getBottomCenter", &ccCone::getBottomCenter, ccPrimitivesPy_getBottomCenter_doc)
+        .def("getTopCenter", &ccCone::getTopCenter, ccPrimitivesPy_getTopCenter_doc)
+        .def("getSmallCenter", &ccCone::getSmallCenter, ccPrimitivesPy_getSmallCenter_doc)
+        .def("getLargeCenter", &ccCone::getLargeCenter, ccPrimitivesPy_getLargeCenter_doc)
+        .def("getSmallRadius", &ccCone::getSmallRadius, ccPrimitivesPy_getSmallRadius_doc)
+        .def("getLargeRadius", &ccCone::getLargeRadius, ccPrimitivesPy_getLargeRadius_doc)
         ;
 
-    class_<ccCylinder, bases<ccGenericPrimitive>, boost::noncopyable>("ccCylinder", ccPrimitivesPy_ccCylinder_doc, init<QString>())
+    class_<ccCylinder, bases<ccCone>, boost::noncopyable>("ccCylinder", ccPrimitivesPy_ccCylinder_doc, init<QString>())
         .def(init<PointCoordinateType, PointCoordinateType,
              optional<const ccGLMatrix*, QString, unsigned, unsigned> >())
         ;
@@ -433,6 +449,8 @@ void export_ccPrimitives()
         .def("Fit", &plane_Fit_py, ccPrimitivesPy_ccPlane_Fit_doc, return_value_policy<reference_existing_object>())
             .staticmethod("Fit")
         .def("getEquation", &plane_getEquation_py, ccPrimitivesPy_ccPlane_getEquation_doc)
+        .def("getCenter", &ccPlane::getCenter, ccPrimitivesPy_ccPlane_getCenter_doc)
+        .def("getNormal", &ccPlane::getNormal, ccPrimitivesPy_ccPlane_getNormal_doc)
         ;
 
     class_<ccQuadric, boost::shared_ptr<ccQuadric>, bases<ccGenericPrimitive>, boost::noncopyable >("ccQuadric", ccPrimitivesPy_ccQuadric_doc, no_init)
@@ -446,6 +464,7 @@ void export_ccPrimitives()
     class_<ccSphere, bases<ccGenericPrimitive>, boost::noncopyable >("ccSphere", ccPrimitivesPy_ccSphere_doc, init<QString>())
         .def(init<PointCoordinateType,
              optional<const ccGLMatrix*, QString, unsigned, unsigned> >())
+        .def("getRadius", &ccSphere::getRadius, ccPrimitivesPy_ccSphere_getRadius_doc)
         ;
 
     class_<ccTorus, bases<ccGenericPrimitive>, boost::noncopyable >("ccTorus", ccPrimitivesPy_ccTorus_doc, init<QString>())

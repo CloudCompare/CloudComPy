@@ -145,7 +145,7 @@ determination of the Closest Point Set (Cloud2CloudDistanceComputationParams::CP
 :param DgmOctree,optional refOctree: the pre-computed octree of the reference cloud
        (warning: both octrees must have the same cubical bounding-box - it is automatically computed if 0)
 
-:return: 0 if ok, a negative value otherwise
+:return: >0 if ok, a negative value otherwise
 :rtype: int )";
 
 const char* distanceComputationToolsPy_computeCloud2MeshDistances_doc= R"(
@@ -167,7 +167,7 @@ It is the general way to compare a point cloud with a triangular mesh.
        (warning: its bounding box should be equal to the union of both point cloud
        and mesh bbs and it should be cubical - it is automatically computed if 0)
 
-:return: 0 if ok, a negative value otherwise
+:return: >0 if ok, a negative value otherwise
 :rtype: int )";
 
 const char* distanceComputationToolsPy_computeApproxCloud2CloudDistance_doc= R"(

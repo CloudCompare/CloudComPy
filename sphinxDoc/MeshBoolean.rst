@@ -11,3 +11,4 @@ MeshBoolean plugin
 
 .. autofunction:: computeMeshBoolean
  
+.. autofunction:: initTrace_MeshBoolean

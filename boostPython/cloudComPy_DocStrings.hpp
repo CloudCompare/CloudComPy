@@ -28,7 +28,6 @@ Python3 access to cloudCompare objects is done like this:
 ::
 
   import cloudComPy as cc 
-  cc.initCC()  # to do once before using plugins
   cloud = cc.loadPointCloud("/home/paul/CloudComPy/Data/boule.bin")
  
  )";
@@ -60,6 +59,67 @@ Delete an entity and its children (mesh, cloud...)
     anEntity = None
 
 :param ccHObject entity: the entity to remove)";
+
+const char* cloudComPy_ExtractConnectedComponents_doc= R"(
+Extracts connected components from a set of clouds.
+
+This tool segments the selected cloud(s) in smaller parts separated by a minimum distance. 
+Each part is a connected component (i.e. a set of 'connected' points). 
+CloudCompare uses a 3D grid to extract the connected components.
+This grid is deduced from the octree structure. 
+By selecting on octree level you define how small is the minimum gap between two components.
+If n is the octree level and d the dimension of the clouds (Bounding box side),
+the gap is roughly d/2**n.
+
+:param list[ccPointCloud] clouds: the set of clouds
+:param int,optional octreeLevel: the octree level used to define the connection between nodes, default 8.
+:param int,optional minComponentSize: the minimum number of nodes to constitute a component, default 100.
+:param int,optional maxNumberComponents: maximum number of components accepted (default 100):
+                                         The process stops when this number is reached. 
+                                         The return gives the number of clouds already processed.
+                                         Check this number to see if some clouds have not been processed.
+:param bool optional randomColors: whether to color randomly the components or not, default False.
+
+:return: a tuple (number of clouds processed, list of components)
+:rtype: tuple
+)";
+
+const char* cloudComPy_ExtractSlicesAndContours_doc= R"(
+Extract slices, envelopes and contours from a set of clouds and meshes (Cross section).
+
+Slices are the part of cloud or mesh contained in the bounding box used as a tool to cut.
+Slicing can be repeated selectively along the 3 directions X, Y, Z, with optional gaps between slices.
+Optional envelopes are closed polylines defining a concave external boundary of the slices.
+Optional contours are closed polylines defining boundaries (external and internal) of the slices.
+The contours are built via a rasterisation process.
+
+:param list[ccHObjects] entities: the list of point clouds and meshes to slice.
+:param ccBBox bbox: the bounding box used as a slice tool.
+:param ccGLMatrix,optional bboxTrans: optional transformation (rotation translation) of the bounding box, default identity.
+:param boolean,optional singleSliceMode: whether to cut just one slice or repeat the process, default True, i.e. only one slice.
+:param boolean,optional processRepeatX: whether to repeat along the X direction (if singleSliceMode False), default False. 
+:param boolean,optional processRepeatY: whether to repeat along the Y direction (if singleSliceMode False), default False. 
+:param boolean,optional processRepeatZ: whether to repeat along the Z direction (if singleSliceMode False), default True.
+:param boolean,optional extractEnvelopes: whether to extract the envelopes or not, default False.
+:param double,optional maxEdgeLength: maximum edge length for the envelope, default 0=convex envelope.
+:param int,optional envelopeType: type of envelope, default 0.
+                                  0: envelope built on the lower part of the slice, 1: upper part, 2: all the slice.
+:param boolean,optional extractLevelSet: whether to extract contours or not, default False.
+:param double,optional levelSetGridStep: grid step to use for the rasterisation needed to build the contours
+:param int,optional levelSetMinVertCount: number of points required to define a contour, default 0 (change it!).
+:param double,optional gap: gap between slices, default 0.
+:param boolean,optional multiPass: Multi-pass process where longer edges may be temporarily created to obtain a better fit...
+                                   or a worst one! Default False.
+:param boolean,optional splitEnvelopes: split the generated contour(s) in smaller parts to avoid creating edges longer
+                                        than the specified max edge length. Default False.
+:param boolean,optional projectOnBestFitPlane: Before extracting the contour, points can be projected along the repeat dimension
+                                               (if only one is defined) or on the best fit plane. Default False.
+:param boolean,optionalgenerateRandomColors: whether to define random colors per slice (will overwrite existing colors!)
+                                             or not. Default False.
+
+:return: a tuple of 3 lists ([slices], [envelopes], [contours])
+:rtype: tuple
+)";
 
 const char* cloudComPy_importFile_doc= R"(
 Load any kind of entities (cloud or mesh) from a file.
@@ -165,6 +225,12 @@ const char* cloudComPy_isPluginPCV_doc= R"(
 returns True if CloudComPy is built with the PCV plugin.
 
 :return: True if CloudComPy is built with the PCV plugin, False otherwise.
+:rtype: bool)";
+
+const char* cloudComPy_isPluginRANSAC_SD_doc= R"(
+returns True if CloudComPy is built with the RANSAC_SD plugin.
+
+:return: True if CloudComPy is built with the RANSAC_SD plugin, False otherwise.
 :rtype: bool)";
 
 const char* cloudComPy_loadPointCloud_doc= R"(

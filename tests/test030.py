@@ -24,14 +24,13 @@
 import os
 import sys
 import math
-os.environ["_CCTRACE_"]="ON"
+
+os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
 from gendata import getSampleCloud, dataDir, isCoordEqual
 import cloudComPy as cc
 import numpy as np
 import multiprocessing
-
-#cc.initCC()  # to do once before using plugins or dealing with numpy
 
 m3c2_params_dic={}
 m3c2_params_dic["ExportDensityAtProjScale"] = "false"

@@ -52,4 +52,10 @@ The computation parameters are regrouped in a text file: see the GUI to get a fi
 )";
 
 
+const char* M3C2_initTrace_M3C2_doc=R"(
+Debug trace must be initialized for each Python module.
+
+Done in module init, following the value of environment variable _CCTRACE_ ("ON" if debug traces wanted)
+)";
+
 #endif /* M3C2_DOCSTRINGS_HPP_ */

@@ -24,7 +24,7 @@ message(STATUS "Python API")
 # --- -----------------------------------------
 # --- target C++ library cc Python Api (pyCC)
 
-project( PYCC_LIB VERSION 0.1 )
+project( PYCC_LIB VERSION 2.12.0 )
 
 add_library( PYCC_LIB STATIC )
 set_property(TARGET PYCC_LIB PROPERTY AUTOMOC ON)

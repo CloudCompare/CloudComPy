@@ -78,7 +78,7 @@ void fromNPArray_copy(CCCoreLib::ScalarField &self, bnp::ndarray const & array)
     PyScalarType *s = reinterpret_cast<PyScalarType*>(array.get_data());
     PyScalarType *d = self.data();
     memcpy(d, s, nRows*sizeof(PyScalarType));
-    CCTRACE("copied " << nRows*sizeof(PyScalarType));
+    CCTRACE("copied " << nRows*sizeof(PyScalarType) << " bytes");
     self.computeMinAndMax();
 }
 

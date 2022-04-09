@@ -58,5 +58,11 @@ Result on a ScalarField.
 :rtype: bool
 )";
 
+const char* PCV_initTrace_PCV_doc=R"(
+Debug trace must be initialized for each Python module.
+
+Done in module init, following the value of environment variable _CCTRACE_ ("ON" if debug traces wanted)
+)";
+
 
 #endif /* PCV_DOCSTRINGS_HPP_ */

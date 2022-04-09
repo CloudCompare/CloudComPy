@@ -39,3 +39,4 @@ PCV is a submodule of cloudCompy:
       cc.PCV.computeShadeVIS(...)
 """
 from ._PCV import *
+initTrace_PCV()

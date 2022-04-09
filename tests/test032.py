@@ -24,7 +24,8 @@
 import os
 import sys
 import math
-os.environ["_CCTRACE_"]="ON"
+
+os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
 from gendata import getSampleCloud, dataDir
 import cloudComPy as cc

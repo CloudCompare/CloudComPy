@@ -35,6 +35,13 @@
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
 
+void initTrace_MeshBoolean()
+{
+#ifdef _PYTHONAPI_DEBUG_
+    ccLogTrace::settrace();
+#endif
+}
+
 BOOST_PYTHON_MODULE(_MeshBoolean)
 {
     using namespace boost::python;
@@ -50,5 +57,6 @@ BOOST_PYTHON_MODULE(_MeshBoolean)
 
     def("computeMeshBoolean", &computeMeshBoolean,
         return_value_policy<reference_existing_object>(), MeshBoolean_computeMeshBoolean_doc);
+    def("initTrace_MeshBoolean", initTrace_MeshBoolean, MeshBoolean_initTrace_MeshBoolean_doc);
 
 }

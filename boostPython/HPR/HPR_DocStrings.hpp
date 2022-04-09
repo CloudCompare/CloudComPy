@@ -55,5 +55,11 @@ The viewPoint coordinates are required.
 :rtype: ccPointCloud
 )";
 
+const char* HPR_initTrace_HPR_doc=R"(
+Debug trace must be initialized for each Python module.
+
+Done in module init, following the value of environment variable _CCTRACE_ ("ON" if debug traces wanted)
+)";
+
 
 #endif /* HPR_DOCSTRINGS_HPP_ */

@@ -40,6 +40,7 @@
 #include <ccPlane.h>
 #include <ScalarField.h>
 #include <ccGLMatrix.h>
+#include <ccBBox.h>
 
 #include "ccOctreePy.hpp"
 #include "pyccTrace.h"
@@ -720,7 +721,7 @@ struct ccGLMatrix_from_python_ccGLMatrixTpl
     // Convert obj_ptr into a ccGLMatrix
     static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
     {
-        CCTRACE("construct");
+        CCTRACE("construct ccGLMatrix");
 
         // Grab pointer to memory into which to construct the new ccGLMatrix
         void* storage = ((bp::converter::rvalue_from_python_storage<ccGLMatrix>*) data)->storage.bytes;
@@ -749,7 +750,7 @@ struct ccGLMatrixd_from_python_ccGLMatrixTpl
         bp::extract<ccGLMatrixTpl<double>> glm(obj_ptr);
         if (glm.check())
         {
-            CCTRACE("OK ccGLMatrixTpl<double>");
+            CCTRACE("OK ccGLMatrixd");
         }
         else
         {
@@ -762,7 +763,7 @@ struct ccGLMatrixd_from_python_ccGLMatrixTpl
     // Convert obj_ptr into a ccGLMatrixd
     static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
     {
-        CCTRACE("construct");
+        CCTRACE("construct ccGLMatrixd");
 
         // Grab pointer to memory into which to construct the new ccGLMatrixd
         void* storage = ((bp::converter::rvalue_from_python_storage<ccGLMatrixd>*) data)->storage.bytes;
@@ -770,6 +771,46 @@ struct ccGLMatrixd_from_python_ccGLMatrixTpl
         // in-place construct the new ccGLMatrixd using the character data
         // extracted from the Python object
         ccGLMatrixd* res = new (storage) ccGLMatrixd(bp::extract<ccGLMatrixTpl<double>>(obj_ptr));
+
+        // Stash the memory chunk pointer for later use by boost.python
+        data->convertible = storage;
+    }
+};
+
+struct ccBBox_from_python_ccBBox
+{
+    ccBBox_from_python_ccBBox()
+    {
+        CCTRACE("register ccBBox_from_python_ccBBox");
+    }
+
+    // Determine if obj_ptr can be converted in a ccBBox
+    static void* convertible(PyObject* obj_ptr)
+    {
+        CCTRACE("convertible to ccBBox?");
+        bp::extract<ccBBox> bpo(obj_ptr);
+        if (bpo.check())
+        {
+            CCTRACE("OK ccBBox");
+        }
+        else
+        {
+            CCTRACE("NOK");
+            return 0;
+        }
+        return obj_ptr;
+    }
+
+    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
+    {
+        CCTRACE("construct ccBBox");
+
+        // Grab pointer to memory into which to construct the new ccBBox
+        void* storage = ((bp::converter::rvalue_from_python_storage<ccBBox>*) data)->storage.bytes;
+
+        // in-place construct the new ccBBox using the character data
+        // extracted from the Python object
+        ccBBox* res = new (storage) ccBBox(bp::extract<ccBBox>(obj_ptr));
 
         // Stash the memory chunk pointer for later use by boost.python
         data->convertible = storage;
@@ -809,9 +850,10 @@ void initializeConverters()
     to_python_converter<std::vector<CCCoreLib::DgmOctree::CellDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::CellDescriptor>, false>();
     to_python_converter<std::vector<CCCoreLib::DgmOctree::IndexAndCode>, vector_to_python_list<CCCoreLib::DgmOctree::IndexAndCode>, false>();
     to_python_converter<std::vector<CCCoreLib::DgmOctree::PointDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::PointDescriptor>, false>();
-    to_python_converter<std::vector<ccHObject*>, vector_to_python_list<ccHObject*>, false>();
+    to_python_converter<std::vector<ccHObject*>, vector_to_python_listref<ccHObject*>, false>();
     to_python_converter<std::vector<ccMesh*>, vector_to_python_listref<ccMesh*>, false>();
-    to_python_converter<std::vector<ccPointCloud*>, vector_to_python_list<ccPointCloud*>, false>();
+    to_python_converter<std::vector<ccPointCloud*>, vector_to_python_listref<ccPointCloud*>, false>();
+    to_python_converter<std::vector<ccPolyline*>, vector_to_python_listref<ccPolyline*>, false>();
     to_python_converter<std::vector<QString>, vector_to_python_list<QString>, false>();
     to_python_converter<std::map<QString, int>, map_to_python_dict<QString, int>, false>();
     // register the from-python converter
@@ -837,6 +879,7 @@ void initializeConverters()
     ccHObjectVector_from_python_list();
     ccGLMatrix_from_python_ccGLMatrixTpl();
     ccGLMatrixd_from_python_ccGLMatrixTpl();
+    ccBBox_from_python_ccBBox();
 }
 
 } //namespace anonymous

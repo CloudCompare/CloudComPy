@@ -54,5 +54,11 @@ Original meshes are not modified, a new mesh is built.
 :rtype: ccMesh
 )";
 
+const char* MeshBoolean_initTrace_MeshBoolean_doc=R"(
+Debug trace must be initialized for each Python module.
+
+Done in module init, following the value of environment variable _CCTRACE_ ("ON" if debug traces wanted)
+)";
+
 
 #endif /* MeshBoolean_DOCSTRINGS_HPP_ */

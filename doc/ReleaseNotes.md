@@ -2,6 +2,19 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## April 09, 2022 CloudComPy release:
+
+ - Update to CloudCompare 2.12.0 (april 7 2022)
+ - Add access to plugin RANSAC_SD on Windows and Linux (issue #27). See test035.py.
+ - Cross-section methods (issue #27). See test036.py
+ - Extract Connected Components (issue #27). See test037.py
+ - fix tests, activate trace on all tests to improve debug
+ - add methods on primitives
+ - fix a bug in conversion from C++ to Python, where objects name are missing.
+ - fix keyword arguments problems when default value is nullptr
+ - update README files, and add them in binary.
+ - fix several mistakes in doc. 
+
 ## March 20, 2022 CloudComPy release:
 
  - Add access to plugin PCV (ShadeVis) on Windows and Linux (issue #24). See test032.py.

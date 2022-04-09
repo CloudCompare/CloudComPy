@@ -38,10 +38,18 @@
 namespace bp = boost::python;
 namespace bnp = boost::python::numpy;
 
+void initTrace_HPR()
+{
+#ifdef _PYTHONAPI_DEBUG_
+    ccLogTrace::settrace();
+#endif
+}
+
 ccPointCloud* computeHPR( ccPointCloud* cloud,
                           CCVector3d viewPoint,
                           int octreeLevel = 7)
 {
+    CCTRACE("computeHPR");
     if(octreeLevel < 0 || octreeLevel > CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL)
     {
         CCTRACE("octreeLevel must be between 0 and " << CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL);
@@ -154,5 +162,6 @@ BOOST_PYTHON_MODULE(_HPR)
         computeHPR_overloads(
         (arg("cloud"), arg("viewPoint"), arg("octreeLevel")=7),
         HPR_computeHPR_doc)[return_value_policy<reference_existing_object>()]);
+    def("initTrace_HPR", initTrace_HPR, HPR_initTrace_HPR_doc);
 
 }

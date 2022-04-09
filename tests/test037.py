@@ -27,11 +27,20 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, dataDir
+from gendata import dataDir, getSampleCloud
 import cloudComPy as cc
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
+bbox = cc.ccBBox((-5.0, -5.0, 0.), (5., 5., 1.))
+res=cc.ExtractSlicesAndContours(entities=[cloud], bbox=bbox)
+clouds = res[0]
 
-coords = cloud.toNpArrayCopy()
-if coords.shape != (cloud.size(), 3):
+res2 = cc.ExtractConnectedComponents(clouds=clouds, octreeLevel=6, randomColors=True)
+if res2[0] != 1: # the number of clouds in input
     raise RuntimeError
+components = res2[1]
+if len(components) != 12:
+    raise RuntimeError
+
+cc.SaveEntities(components, os.path.join(dataDir, "components.bin"))
+

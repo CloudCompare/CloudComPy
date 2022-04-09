@@ -50,7 +50,7 @@ message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
 # --- ----------------------------------------------------------
 # --- target boost.Python library: Python module cloudComPy
 
-project( _cloudComPy VERSION 0.1 )
+project( _cloudComPy VERSION 2.12.0 )
 
 add_library( ${PROJECT_NAME} SHARED )
 
@@ -195,6 +195,9 @@ add_subdirectory( PCV )
 add_subdirectory( HPR )
 if ( PLUGIN_STANDARD_QMESH_BOOLEAN )
     add_subdirectory( MeshBoolean )
+endif()
+if ( PLUGIN_STANDARD_QRANSAC_SD )
+    add_subdirectory( RANSAC_SD )
 endif()
 
 

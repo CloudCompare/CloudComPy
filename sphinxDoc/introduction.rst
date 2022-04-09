@@ -13,8 +13,9 @@ feel free to post issues in `GitHub <https://github.com/CloudCompare/CloudComPy/
 Here is an example of a Python script:
 ::
 
+    os.environ["_CCTRACE_"]="ON"                                           # only if you want debug traces from C++
+
     import cloudComPy as cc                                                # import the CloudComPy module
-    cc.initCC()                                                            # to do once before dealing with plugins
 
     cloud = cc.loadPointCloud("myCloud.xyz")                               # read a point cloud from a file
     print("cloud name: %s"%cloud.getName())
