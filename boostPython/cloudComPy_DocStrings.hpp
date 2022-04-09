@@ -60,6 +60,30 @@ Delete an entity and its children (mesh, cloud...)
 
 :param ccHObject entity: the entity to remove)";
 
+const char* cloudComPy_ExtractConnectedComponents_doc= R"(
+Extracts connected components from a set of clouds.
+
+This tool segments the selected cloud(s) in smaller parts separated by a minimum distance. 
+Each part is a connected component (i.e. a set of 'connected' points). 
+CloudCompare uses a 3D grid to extract the connected components.
+This grid is deduced from the octree structure. 
+By selecting on octree level you define how small is the minimum gap between two components.
+If n is the octree level and d the dimension of the clouds (Bounding box side),
+the gap is roughly d/2**n.
+
+:param list[ccPointCloud] clouds: the set of clouds
+:param int,optional octreeLevel: the octree level used to define the connection between nodes, default 8.
+:param int,optional minComponentSize: the minimum number of nodes to constitute a component, default 100.
+:param int,optional maxNumberComponents: maximum number of components accepted (default 100):
+                                         The process stops when this number is reached. 
+                                         The return gives the number of clouds already processed.
+                                         Check this number to see if some clouds have not been processed.
+:param bool optional randomColors: whether to color randomly the components or not, default False.
+
+:return: a tuple (number of clouds processed, list of components)
+:rtype: tuple
+)";
+
 const char* cloudComPy_ExtractSlicesAndContours_doc= R"(
 Extract slices, envelopes and contours from a set of clouds and meshes (Cross section).
 

@@ -49,6 +49,9 @@
 #include <ccHObjectCaster.h>
 #include <ccRasterGrid.h>
 #include <ccClipBox.h>
+#include <ccCommon.h>
+#include <AutoSegmentationTools.h>
+#include <ParallelSort.h>
 
 #include <QString>
 #include <vector>
@@ -290,6 +293,241 @@ bp::tuple ExtractSlicesAndContours_py
     return res;
 }
 
+struct ComponentIndexAndSize
+{
+    unsigned index;
+    unsigned size;
+
+    ComponentIndexAndSize(unsigned i, unsigned s) : index(i), size(s) {}
+
+    static bool DescendingCompOperator(const ComponentIndexAndSize& a, const ComponentIndexAndSize& b)
+    {
+        return a.size > b.size;
+    }
+};
+
+
+std::vector<ccPointCloud*> createComponentsClouds_(   ccGenericPointCloud* cloud,
+                                                      CCCoreLib::ReferenceCloudContainer& components,
+                                                      unsigned minPointsPerComponent,
+                                                      bool randomColors,
+                                                      bool sortBysize=true)
+{
+    CCTRACE("createComponentsClouds_ " << randomColors);
+    std::vector<ccPointCloud*> resultClouds;
+    if (!cloud || components.empty())
+        return resultClouds;
+
+    std::vector<ComponentIndexAndSize> sortedIndexes;
+    std::vector<ComponentIndexAndSize>* _sortedIndexes = nullptr;
+    if (sortBysize)
+    {
+        try
+        {
+            sortedIndexes.reserve(components.size());
+        }
+        catch (const std::bad_alloc&)
+        {
+            CCTRACE("[CreateComponentsClouds] Not enough memory to sort components by size!");
+            sortBysize = false;
+        }
+
+        if (sortBysize) //still ok?
+        {
+            unsigned compCount = static_cast<unsigned>(components.size());
+            for (unsigned i = 0; i < compCount; ++i)
+            {
+                sortedIndexes.emplace_back(i, components[i]->size());
+            }
+
+            ParallelSort(sortedIndexes.begin(), sortedIndexes.end(), ComponentIndexAndSize::DescendingCompOperator);
+
+            _sortedIndexes = &sortedIndexes;
+        }
+    }
+
+    //we create "real" point clouds for all input components
+    {
+        ccPointCloud* pc = cloud->isA(CC_TYPES::POINT_CLOUD) ? static_cast<ccPointCloud*>(cloud) : nullptr;
+
+        //for each component
+        int nbComp =0;
+        for (size_t i = 0; i < components.size(); ++i)
+        {
+            CCCoreLib::ReferenceCloud* compIndexes = _sortedIndexes ? components[_sortedIndexes->at(i).index] : components[i];
+
+            //if it has enough points
+            if (compIndexes->size() >= minPointsPerComponent)
+            {
+                //we create a new entity
+                ccPointCloud* compCloud = (pc ? pc->partialClone(compIndexes) : ccPointCloud::From(compIndexes));
+                if (compCloud)
+                {
+                    //shall we colorize it with random color?
+                    if (randomColors)
+                    {
+                        ccColor::Rgb col = ccColor::Generator::Random();
+                        compCloud->setColor(col);
+                    }
+
+                    //'shift on load' information
+                    if (pc)
+                    {
+                        compCloud->copyGlobalShiftAndScale(*pc);
+                    }
+                    compCloud->setName(QString("CC#%1").arg(nbComp));
+
+                    //we add new CC to group
+                    resultClouds.push_back(compCloud);
+                    nbComp++;
+                }
+                else
+                {
+                    CCTRACE("[CreateComponentsClouds] Failed to create component " << nbComp << "(not enough memory)");
+                }
+            }
+
+            delete compIndexes;
+            compIndexes = nullptr;
+        }
+
+        components.clear();
+
+        if (nbComp == 0)
+        {
+            CCTRACE("No component was created! Check the minimum size...");
+        }
+        else
+        {
+            CCTRACE("[CreateComponentsClouds] " << nbComp << " component(s) were created from cloud " << cloud->getName().toStdString());
+        }
+    }
+    return resultClouds;
+}
+
+bp::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
+                                        int octreeLevel=8,
+                                        int minComponentSize=100,
+                                        int maxNumberComponents=100,
+                                        bool randomColors=false)
+{
+    CCTRACE("ExtractConnectedComponents_py");
+    int realComponentCount = 0;
+    int nbCloudDone = 0;
+
+    std::vector<ccHObject*> resultComponents;
+    bp::tuple res = bp::make_tuple(nbCloudDone, resultComponents);
+
+    std::vector<ccGenericPointCloud*> clouds;
+    {
+        for ( ccHObject *entity : entities )
+        {
+            if (entity->isKindOf(CC_TYPES::POINT_CLOUD))
+                clouds.push_back(ccHObjectCaster::ToGenericPointCloud(entity));
+        }
+    }
+
+    size_t count = clouds.size();
+    if (count == 0)
+        return res;
+
+    bool randColors = randomColors;
+
+    for ( ccGenericPointCloud *cloud : clouds )
+    {
+        if (cloud && cloud->isA(CC_TYPES::POINT_CLOUD))
+        {
+            ccPointCloud* pc = static_cast<ccPointCloud*>(cloud);
+
+            ccOctree::Shared theOctree = cloud->getOctree();
+            if (!theOctree)
+            {
+                theOctree = cloud->computeOctree(nullptr);
+                if (!theOctree)
+                {
+                    CCTRACE("Couldn't compute octree for cloud " <<cloud->getName().toStdString());
+                    break;
+                }
+            }
+
+            //we create/activate CCs label scalar field
+            int sfIdx = pc->getScalarFieldIndexByName(CC_CONNECTED_COMPONENTS_DEFAULT_LABEL_NAME);
+            if (sfIdx < 0)
+            {
+                sfIdx = pc->addScalarField(CC_CONNECTED_COMPONENTS_DEFAULT_LABEL_NAME);
+            }
+            if (sfIdx < 0)
+            {
+                CCTRACE("Couldn't allocate a new scalar field for computing CC labels! Try to free some memory ...");
+                break;
+            }
+            pc->setCurrentScalarField(sfIdx);
+
+            //we try to label all CCs
+            CCCoreLib::ReferenceCloudContainer components;
+            int componentCount = CCCoreLib::AutoSegmentationTools::labelConnectedComponents(cloud,
+                                                                                        static_cast<unsigned char>(octreeLevel),
+                                                                                        false,
+                                                                                        nullptr,
+                                                                                        theOctree.data());
+
+            if (componentCount >= 0)
+            {
+                //if successful, we extract each CC (stored in "components")
+
+                //safety test
+                {
+                    for (size_t i = 0; i < components.size(); ++i)
+                    {
+                        if (components[i]->size() >= minComponentSize)
+                        {
+                            ++realComponentCount;
+                        }
+                    }
+                }
+
+                if (realComponentCount > maxNumberComponents)
+                {
+                    //too many components
+                    CCTRACE("Too many components: " << realComponentCount << " for a maximum of: " << maxNumberComponents);
+                    CCTRACE("Extraction incomplete, modify some parameters and retry");
+                    pc->deleteScalarField(sfIdx);
+                    res = bp::make_tuple(nbCloudDone, resultComponents);
+                    return res;
+                }
+
+                pc->getCurrentInScalarField()->computeMinAndMax();
+                if (!CCCoreLib::AutoSegmentationTools::extractConnectedComponents(cloud, components))
+                {
+                    CCTRACE("[ExtractConnectedComponents] Something went wrong while extracting CCs from cloud " << cloud->getName().toStdString());
+                }
+            }
+            else
+            {
+                CCTRACE("[ExtractConnectedComponents] Something went wrong while extracting CCs from cloud " << cloud->getName().toStdString());
+            }
+
+            //we delete the CCs label scalar field (we don't need it anymore)
+            pc->deleteScalarField(sfIdx);
+            sfIdx = -1;
+
+            //we create "real" point clouds for all CCs
+            if (!components.empty())
+            {
+                std::vector<ccPointCloud*> resultClouds = createComponentsClouds_(cloud, components, minComponentSize, randColors, true);
+                for (ccPointCloud* cloud : resultClouds)
+                    resultComponents.push_back(cloud);
+            }
+            nbCloudDone++;
+
+        }
+    }
+    res = bp::make_tuple(nbCloudDone, resultComponents);
+    return res;
+}
+
+
+
 BOOST_PYTHON_FUNCTION_OVERLOADS(importFilePy_overloads, importFilePy, 1, 5);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloudPy_overloads, loadPointCloudPy, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadMeshPy_overloads, loadMeshPy, 1, 6);
@@ -301,6 +539,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToCloud_overloads, RasterizeToCloud, 2,
 BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToMesh_overloads, RasterizeToMesh, 2, 19);
 BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeGeoTiffOnly_overloads, RasterizeGeoTiffOnly, 2, 19);
 BOOST_PYTHON_FUNCTION_OVERLOADS(ExtractSlicesAndContours_py_overloads, ExtractSlicesAndContours_py, 2, 18);
+BOOST_PYTHON_FUNCTION_OVERLOADS(ExtractConnectedComponents_py_overloads, ExtractConnectedComponents_py, 1, 5);
 
 
 BOOST_PYTHON_MODULE(_cloudComPy)
@@ -536,6 +775,15 @@ BOOST_PYTHON_MODULE(_cloudComPy)
     def("ComputeVolume25D", ComputeVolume25D, cloudComPy_ComputeVolume25D_doc);
 
     def("invertNormals", invertNormals, cloudComPy_invertNormals_doc);
+
+    def("ExtractConnectedComponents", ExtractConnectedComponents_py,
+        ExtractConnectedComponents_py_overloads(
+            (arg("clouds"),
+             arg("octreeLevel")=8,
+             arg("minComponentSize")=100,
+             arg("maxNumberComponents")=100,
+             arg("randomColors")=false),
+            cloudComPy_ExtractConnectedComponents_doc));
 
     def("ExtractSlicesAndContours", ExtractSlicesAndContours_py,
         ExtractSlicesAndContours_py_overloads(

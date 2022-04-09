@@ -91,6 +91,7 @@ set(PYTHONAPI_TEST_SCRIPTS
     test034.py
     test035.py
     test036.py
+    test037.py
     )
 
 # list of utilities
@@ -170,4 +171,5 @@ do_test(test033)
 do_test(test034)
 do_test(test035)
 do_test(test036)
+do_test(test037)
 
