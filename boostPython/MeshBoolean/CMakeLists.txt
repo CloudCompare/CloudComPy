@@ -31,7 +31,7 @@ add_library( ${PROJECT_NAME} SHARED )
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
     target_sources( ${PROJECT_NAME}
-    PUBLIC
+    PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/MeshBooleanPy.cpp
     )
 
@@ -39,7 +39,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 #message(STATUS "generated_ui_list: ${generated_ui_list}")
 #target_sources( ${PROJECT_NAME} PRIVATE ${generated_ui_list} )
 
-target_include_directories( ${PROJECT_NAME} PUBLIC
+target_include_directories( ${PROJECT_NAME} PRIVATE
     ${Boost_INCLUDE_DIRS}
     ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
