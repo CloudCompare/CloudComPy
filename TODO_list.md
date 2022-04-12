@@ -112,4 +112,6 @@ TODO List
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
 - TODO: Plugin PCL (issue#35)
+- TODO: Mesh triangles iterator functions (#issue36)
+
 
