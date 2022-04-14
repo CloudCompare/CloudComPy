@@ -113,5 +113,5 @@ TODO List
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
 - TODO: Plugin PCL (issue#35)
 - TODO: Mesh triangles iterator functions (#issue36)
-
+- TODO: add option for las/laz version (1.3, 1.4) (#issue32)
 
