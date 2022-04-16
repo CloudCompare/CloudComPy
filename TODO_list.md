@@ -114,4 +114,5 @@ TODO List
 - TODO: Plugin PCL (issue#35)
 - TODO: Mesh triangles iterator functions (#issue36)
 - TODO: add option for las/laz version (1.3, 1.4) (#issue32)
+- TODO: Fix the doc on RANSAC_SD, primitives types
 
