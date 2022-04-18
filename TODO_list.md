@@ -111,8 +111,9 @@ TODO List
 - TODO: A tutorial, to find some examples for the principal use cases.
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
-- TODO: Plugin PCL (issue#35)
-- TODO: Mesh triangles iterator functions (#issue36)
-- TODO: add option for las/laz version (1.3, 1.4) (#issue32)
+- TODO: Plugin PCL (issue #35)
+- TODO: Mesh triangles iterator functions (issue #36)
+- TODO: add option for las/laz version (1.3, 1.4) (issue #32)
 - TODO: Fix the doc on RANSAC_SD, primitives types
+- TODO: Cut a mesh with a polyline (Crop2D) (issue #38)
 
