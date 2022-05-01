@@ -24,6 +24,7 @@
 import os
 import sys
 import math
+import numpy as np
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
@@ -51,6 +52,26 @@ if not math.isclose(mesh3.size(), 335696, rel_tol=5e-02):
     raise RuntimeError
 
 mesh3.laplacianSmooth(nbIteration=20, factor=0.2)
+
+# --- access to triangle nodes, per triangle indice
+cloud = mesh1.getAssociatedCloud()
+indexes = mesh1.getTriangleVertIndexes(453)
+p0 = cloud.getPoint(indexes[0])
+p1 = cloud.getPoint(indexes[1])
+p2 = cloud.getPoint(indexes[2])
+
+# --- access to the numpy array of node indexes (one row per triangle)
+d = mesh1.IndexesToNpArray()
+if d.shape != (19602, 3):
+    raise RuntimeError
+if d.dtype != np.dtype('uint32'):
+    raise RuntimeError
+
+d2 = mesh1.IndexesToNpArray_copy()
+if d2.shape != (19602, 3):
+    raise RuntimeError
+if d2.dtype != np.dtype('uint32'):
+    raise RuntimeError
 
 cc.SaveEntities([cloud1, mesh1, mesh2, mesh3], os.path.join(dataDir, "clouds1.bin"))
 
