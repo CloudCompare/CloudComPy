@@ -221,6 +221,12 @@ returns True if CloudComPy is built with the MeshBoolean plugin.
 :return: True if CloudComPy is built with the MeshBoolean plugin, False otherwise.
 :rtype: bool)";
 
+const char* cloudComPy_isPluginPCL_doc= R"(
+returns True if CloudComPy is built with the PCL plugin.
+
+:return: True if CloudComPy is built with the PCL plugin, False otherwise.
+:rtype: bool)";
+
 const char* cloudComPy_isPluginPCV_doc= R"(
 returns True if CloudComPy is built with the PCV plugin.
 

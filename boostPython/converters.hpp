@@ -603,6 +603,69 @@ template<typename T> struct Vector_from_python_tuple_tuple // tuple(Vector3Tpl<T
     }
 };
 
+struct ccPointCloudVector_from_python_list
+{
+    ccPointCloudVector_from_python_list()
+    {
+        CCTRACE("register ccPointCloudVector_from_python_list");
+        bp::converter::registry::push_back(&convertible, &construct, bp::type_id<std::vector<ccPointCloud*> >());
+    }
+
+    // Determine if obj_ptr can be converted in a cvPointCloud*
+    static void* convertible(PyObject* obj_ptr)
+    {
+        CCTRACE("convertible to std::vector<ccPointCloud*>?");
+        if (!PyList_Check(obj_ptr))
+            return 0;
+        CCTRACE("list ok");
+        Py_ssize_t nbobj = PyList_GET_SIZE(obj_ptr);
+        if (nbobj == 0)
+            return 0;
+        CCTRACE("nbobj "<< nbobj);
+        for (Py_ssize_t i = 0; i<nbobj; i++)
+        {
+            PyObject* iptr = PyList_GetItem(obj_ptr, i);
+            bp::extract<ccPointCloud*> cl(iptr);
+            if (cl.check())
+            {
+                CCTRACE("  OK ccPointCloud" << i);
+                continue;
+            }
+            CCTRACE("  NOK " << i);
+            return 0;
+        }
+        return obj_ptr;
+    }
+
+    // Convert obj_ptr into a std::vector<ccPointCloud*>
+    static void construct(PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* data)
+    {
+        CCTRACE("construct");
+        Py_ssize_t nbobj = PyList_GET_SIZE(obj_ptr);
+
+        // Grab pointer to memory into which to construct the new list<ccHObject*>
+        void* storage = ((bp::converter::rvalue_from_python_storage<std::vector<ccPointCloud*> >*) data)->storage.bytes;
+
+        // in-place construct the new list<ccPointCloud*> using the character data
+        // extracted from the Python object
+        std::vector<ccPointCloud*>* res = new (storage) std::vector<ccPointCloud*>;
+        res->resize(nbobj);
+        for (Py_ssize_t i = 0; i<nbobj; i++)
+        {
+            PyObject* iptr = PyList_GetItem(obj_ptr, i);
+            bp::extract<ccPointCloud*> cl(iptr);
+            if (cl.check())
+            {
+                CCTRACE("  Extract OK ccPointCloud" << i);
+                (*res)[i] = cl();
+            }
+        }
+
+        // Stash the memory chunk pointer for later use by boost.python
+        data->convertible = storage;
+    }
+};
+
 struct ccHObjectVector_from_python_list
 {
     ccHObjectVector_from_python_list()
@@ -877,6 +940,7 @@ void initializeConverters()
     Vector_from_python_tuple_tuple<float>();
     Vector_from_python_tuple_tuple<double>();
     ccHObjectVector_from_python_list();
+    ccPointCloudVector_from_python_list();
     ccGLMatrix_from_python_ccGLMatrixTpl();
     ccGLMatrixd_from_python_ccGLMatrixTpl();
     ccBBox_from_python_ccBBox();

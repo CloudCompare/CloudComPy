@@ -706,6 +706,8 @@ BOOST_PYTHON_MODULE(_cloudComPy)
 
     def("isPluginMeshBoolean", &pyccPlugins::isPluginMeshBoolean, cloudComPy_isPluginMeshBoolean_doc);
 
+    def("isPluginPCL", &pyccPlugins::isPluginPCL, cloudComPy_isPluginPCL_doc);
+
     def("isPluginPCV", &pyccPlugins::isPluginPCV, cloudComPy_isPluginPCV_doc);
 
     def("isPluginRANSAC_SD", &pyccPlugins::isPluginRANSAC_SD, cloudComPy_isPluginRANSAC_SD_doc);

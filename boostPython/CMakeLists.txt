@@ -199,5 +199,9 @@ endif()
 if ( PLUGIN_STANDARD_QRANSAC_SD )
     add_subdirectory( RANSAC_SD )
 endif()
+if ( PLUGIN_STANDARD_QPCL )
+    add_subdirectory( PCL )
+endif()
+
 
 
