@@ -106,6 +106,35 @@ bool addChild_py(ccHObject& self, ccHObject* child, int dependencyFlags = ccHObj
 
 CCCoreLib::GenericIndexedCloudPersist* (CCCoreLib::ReferenceCloud::*getAssCloud1)() = &CCCoreLib::ReferenceCloud::getAssociatedCloud;
 
+void showColorsPy(ccHObject& self, bool isShown)
+{
+    if (isShown)
+    {
+        self.showSF(false);
+        if (self.hasColors())
+            self.showColors(true);
+    }
+    else self.showColors(false);
+}
+
+void showSFPy(ccHObject& self, bool isShown)
+{
+    if (isShown)
+    {
+        self.showColors(false);
+        if (self.hasScalarFields())
+            self.showSF(true);
+    }
+    else self.showSF(false);
+}
+
+void showNormalsPy(ccHObject& self, bool isShown)
+{
+    if (isShown && self.hasNormals())
+        self.showNormals(true);
+    else self.showNormals(false);
+}
+
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccGenericPointCloud_computeOctree_overloads, computeOctree, 0, 2)
 BOOST_PYTHON_FUNCTION_OVERLOADS(addChild_py_overloads, addChild_py, 2, 4)
 
@@ -172,8 +201,17 @@ void export_ccGenericCloud()
         .def("getChild", &ccHObject::getChild, return_value_policy<reference_existing_object>(), ccHObject_getChild_doc)
 		.def("getChildrenNumber", &ccHObject::getChildrenNumber, ccHObject_getChildrenNumber_doc)
         .def("getClassID", &ccHObject::getClassID, ccHObject_getClassID_doc)
+        .def("hasColors", &ccHObject::hasColors, ccHObject_hasColors_doc)
+        .def("hasNormals", &ccHObject::hasNormals, ccHObject_hasNormals_doc)
+        .def("colorsShown", &ccHObject::colorsShown, ccHObject_colorsShown_doc)
+        .def("normalsShown", &ccHObject::normalsShown, ccHObject_normalsShown_doc)
+        .def("sfShown", &ccHObject::sfShown, ccHObject_sfShown_doc)
+        .def("hasScalarFields", &ccHObject::hasScalarFields, ccHObject_hasScalarFields_doc)
 		.def("isA", &ccHObject::isA, ccHObject_isA_doc)
         .def("isKindOf", &ccHObject::isKindOf, ccHObject_isKindOf_doc)
+        .def("showColors", & showColorsPy, ccHObject_showColors_doc)
+        .def("showNormals", & showNormalsPy, ccHObject_showNormals_doc)
+        .def("showSF", & showSFPy, ccHObject_showSF_doc)
         ;
 
     class_<ccShiftedObject, bases<ccHObject>, boost::noncopyable>("ccShiftedObject", no_init)

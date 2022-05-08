@@ -118,4 +118,4 @@ TODO List
 - TODO: Cut a mesh with a polyline (Crop2D) (issue #38)
 - TODO: build examples of loop with objects created and destroyed for a stable memory usage (issue #40)
 - TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
-
+- DONE: add functions to handle display state of colors and scalar fields (for save in .bin and opening in GUI) (issue #43)
