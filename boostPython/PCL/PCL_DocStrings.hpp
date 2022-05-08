@@ -49,12 +49,28 @@ Done in module init, following the value of environment variable _CCTRACE_ ("ON"
 )";
 
 const char* PCL_FastGlobalRegistrationFilter_doc= R"(
+Filter based on "Q.-Y. Zhou, J. Park, and V. Koltun, Fast Global Registration, ECCV, 2016."
+See https://github.com/isl-org/FastGlobalRegistration
 )";
 
 const char* PCL_setParameters_doc= R"(
-        )";
+Defines the reference PointCloud, the list of PointCloud to align and the radius to use for registration.
+
+:param ccPointCloud refCloud: the reference cloud
+:param list alignClouds: the list of ccPointCloud to align.
+:param float,optional radius: radius to use for computation, default 0 (automatic estimation of radius)
+)";
 
 const char* PCL_compute_doc= R"(
-        )";
+Compute the PCL fast registration. Call :py:meth:`setParameters` first!
+)";
+
+const char* PCL_getAutoRadius_doc= R"(
+Get the radius value proposed by default for PCL registration.
+:py:meth:`setParameters` with radius 0 should be called first to compute the default radius value.
+
+:return: default radius value
+:rtype: float
+)";
 
 #endif /* PCL_DOCSTRINGS_HPP_ */

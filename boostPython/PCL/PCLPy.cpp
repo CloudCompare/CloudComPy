@@ -35,6 +35,7 @@ void initTrace_PCL()
 #endif
 }
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(FastGlobalRegistrationFilter_setParameters_overloads, FastGlobalRegistrationFilter::setParameters, 2, 3)
 
 
 
@@ -45,8 +46,12 @@ BOOST_PYTHON_MODULE(_PCL)
     scope().attr("__doc__") = PCL_doc;
 
     class_<FastGlobalRegistrationFilter, boost::noncopyable>("FastGlobalRegistrationFilter", PCL_FastGlobalRegistrationFilter_doc)
-        .def("setParameters", &FastGlobalRegistrationFilter::setParameters, PCL_setParameters_doc)
         .def("compute", &FastGlobalRegistrationFilter::compute, PCL_compute_doc)
+        .def("getAutoRadius", &FastGlobalRegistrationFilter::getAutoRadius, PCL_getAutoRadius_doc)
+        .def("setParameters", &FastGlobalRegistrationFilter::setParameters,
+             FastGlobalRegistrationFilter_setParameters_overloads(
+             (arg("refCloud"), arg("alignClouds"), arg("radius")=0.),
+             PCL_setParameters_doc))
         ;
     def("initTrace_PCL", initTrace_PCL, PCL_initTrace_PCL_doc);
 

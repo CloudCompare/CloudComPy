@@ -41,7 +41,7 @@ cloud2ref = cloud2.cloneThis()
 if cc.isPluginPCL():
     import cloudComPy.PCL
     fpcl = cc.PCL.FastGlobalRegistrationFilter()
-    fpcl.setParameters(cloud1, [cloud2], 0.15)
+    fpcl.setParameters(cloud1, [cloud2])
     res=fpcl.compute()
 
     bb1=cloud1.getOwnBB()
