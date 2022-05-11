@@ -114,7 +114,7 @@ TODO List
 - TODO: Plugin PCL (issue #35)
 - DONE: Mesh triangles iterator functions (issue #36)
 - TODO: add option for las/laz version (1.3, 1.4) (issue #32)
-- TODO: Fix the doc on RANSAC_SD, primitives types
+- DONE: Fix the doc on RANSAC_SD, primitives types
 - TODO: Cut a mesh with a polyline (Crop2D) (issue #38)
 - TODO: build examples of loop with objects created and destroyed for a stable memory usage (issue #40)
 - TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
