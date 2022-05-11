@@ -40,6 +40,9 @@ cloud2ref = cloud2.cloneThis()
 
 if cc.isPluginPCL():
     import cloudComPy.PCL
+    
+    # --- pCL registration
+    
     fpcl = cc.PCL.FastGlobalRegistrationFilter()
     fpcl.setParameters(cloud1, [cloud2])
     res=fpcl.compute()
@@ -51,8 +54,34 @@ if cc.isPluginPCL():
     if isCoordEqual(bb1.minCorner(), bb2.minCorner(), 1.e-2) or isCoordEqual(bb1.maxCorner(), bb2.maxCorner(), 1.e-2):
         raise RuntimeError
 
-    if not isCoordEqual(bb1.minCorner(), bb3.minCorner(), 1.e-2) or not isCoordEqual(bb1.maxCorner(), bb3.maxCorner(), 1.e-2):
+    if not isCoordEqual(bb1.minCorner(), bb3.minCorner(), 3.e-2) or not isCoordEqual(bb1.maxCorner(), bb3.maxCorner(), 3.e-2):
         raise RuntimeError
-
-    shapes = [cloud1, cloud2ref, cloud2]
+    
+    # --- PCL normals and curvature
+    
+    cloud3 = cc.loadPointCloud(getSampleCloud2(3.0, 0, 0.1))
+    ne = cc.PCL.NormalEstimation()
+    ne.setParameters(cloud3)
+    res=ne.compute()
+    if not cloud3.hasNormals():
+        raise RuntimeError
+    if not cloud3.hasScalarFields():
+        raise RuntimeError
+    dic = cloud3.getScalarFieldDic()
+    if not 'curvature' in dic.keys():
+        raise RuntimeError
+   
+    # --- PCL smoothing and normals
+    
+    cloud4 = cc.loadPointCloud(getSampleCloud2(3.0, 0, 0.1))
+    su=cc.PCL.MLSSmoothingUpsampling()
+    su.setParameters(cloud4, searchRadius=0.3, upsampleMethod=1)
+    res=su.compute()
+    cloud5=su.getOutputCloud()
+    if cloud5.getName() != 'dataSample2_3 - Cloud_smoothed':
+        raiseRuntimeError
+    if cloud5.size() != 50000:
+        raiseRuntimeError
+        
+    shapes = [cloud1, cloud2ref, cloud2, cloud3, cloud4, cloud5]
     cc.SaveEntities(shapes, os.path.join(dataDir, "cloudsPCL.bin"))

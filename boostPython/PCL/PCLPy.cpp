@@ -68,6 +68,7 @@ BOOST_PYTHON_MODULE(_PCL)
 
     class_<MLSSmoothingUpsampling, boost::noncopyable>("MLSSmoothingUpsampling", PCL_MLSSmoothingUpsampling_doc)
         .def("compute", &MLSSmoothingUpsampling::compute, PCL_MLScompute_doc)
+        .def("getOutputCloud", &MLSSmoothingUpsampling::getOutputCloud, return_value_policy<reference_existing_object>(), PCL_MLSgetOutputCloud_doc)
         .def("setParameters", &MLSSmoothingUpsampling::setParameters,
              MLSSmoothingUpsampling_setParameters_overloads(
              (arg("cloud"), arg("computeNormals")=true, arg("searchRadius")=0.01,

@@ -66,6 +66,9 @@ const char* PCL_FGRFcompute_doc= R"(
 Compute the PCL fast registration, using the PCL library.
 Call :py:meth:`FastGlobalRegistrationFilter.setParameters` first!
 The cloud is moved (no copy of the original).
+
+:return: success
+:rtype: bool
 )";
 
 const char* PCL_FGRFgetAutoRadius_doc= R"(
@@ -83,6 +86,9 @@ See :py:meth:`NormalEstimation.setParameters` and :py:meth:`NormalEstimation.com
 
 const char* PCL_NEcompute_doc= R"(
 compute normals and optionally curvature of a cloud, using the PCL library.
+
+:return: success
+:rtype: bool
 )";
 
 const char* PCL_NLsetParameters_doc= R"(
@@ -103,6 +109,10 @@ See :py:meth:`MLSSmoothingUpsampling.setParameters` :py:meth:`MLSSmoothingUpsamp
 const char* PCL_MLScompute_doc= R"(
 Compute the smoothing and normals of the cloud, using the PCL library.
 Call first :py:meth:`MLSSmoothingUpsampling.setParameters`
+Get the result cloud with :py:meth:`MLSSmoothingUpsampling.getOutputCloud`
+
+:return: success
+:rtype: bool
 )";
 
 const char* PCL_MLSsetParameters_doc= R"(
@@ -120,6 +130,13 @@ Defines the parameters to use for smoothing and normals calculation, using the P
 :param int,optional stepPointDensity: default 4, step point density (RANDOM_UNIFORM_DENSITY).
 :param float,optional dilationVoxelSize: default 0.01, dilation voxel size (VOXEL_GRID_DILATION).
 :param int,optional dilationIterations: default 0 (VOXEL_GRID_DILATION).
+)";
+
+const char* PCL_MLSgetOutputCloud_doc= R"(
+Get the resulting cloud after :py:meth:`MLSSmoothingUpsampling.compute`.
+
+:return: computed cloud
+:rtype: ccPointCloud
 )";
 
 #endif /* PCL_DOCSTRINGS_HPP_ */

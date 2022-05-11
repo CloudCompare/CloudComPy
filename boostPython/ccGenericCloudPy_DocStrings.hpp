@@ -87,6 +87,13 @@ Get the type of this object.
 :rtype: CC_TYPE
 )";
 
+const char* ccHObject_getParent_doc=R"(
+Get the parent of this object.
+
+:return: parent object
+:rtype: ccHObject
+)";
+
 const char* ccHObject_hasColors_doc=R"(
 Returns True if the entity has colors, False otherwise.
 
