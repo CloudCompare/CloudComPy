@@ -23,6 +23,7 @@
 
 """
 PCL is a standard plugin of cloudComPy.
+The plugin implements some methods of the Point Cloud Library (PCL): https://pointclouds.org.
 
 The availability of the plugin can be tested with the :py:meth:`cloudComPy.isPluginPCL` function:
 ::
