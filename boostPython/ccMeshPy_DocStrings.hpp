@@ -44,6 +44,17 @@ Clones this entity.
 
 All the main features of the entity are cloned, except from the octree)";
 
+const char* ccMeshPy_crop2D_doc= R"(
+Crop the mesh using a 2D polyline.
+
+:param ccPolyline poly: polyline object
+:param int orthoDim: normal plane, value in (0, 1, 2) 0 = oY, 1 = oX, 2 = oZ
+:param bool inside: boolean
+
+:return: the cropped cloud. Points are copied, the original cloud is not modified.
+:rtype: ccPointCloud
+)";
+
 const char* ccMeshPy_getAssociatedCloud_doc= R"(
 Returns the cloud corresponding to the mesh vertices.
 

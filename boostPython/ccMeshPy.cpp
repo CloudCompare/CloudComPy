@@ -26,6 +26,7 @@
 #include <ccMesh.h>
 #include <ccGenericPointCloud.h>
 #include <ccPointCloud.h>
+#include <ccPolyline.h>
 #include <GenericProgressCallback.h>
 
 #include "ccMeshPy_DocStrings.hpp"
@@ -116,6 +117,7 @@ void export_ccMesh()
     class_<ccMesh, bases<ccGenericMesh>, boost::noncopyable>("ccMesh", ccMeshPy_ccMesh_doc, no_init)
         .def("clearTriNormals", &ccMesh::clearTriNormals, ccMeshPy_clearTriNormals_doc)
         .def("cloneMesh", &cloneMesh_py, return_value_policy<reference_existing_object>(), ccMeshPy_cloneMesh_doc)
+        .def("crop2D", &ccMesh::crop2D, return_value_policy<reference_existing_object>(), ccMeshPy_crop2D_doc)
         .def("size", &ccMesh::size, ccMeshPy_size_doc)
         .def("getAssociatedCloud", &ccMesh::getAssociatedCloud,
              return_value_policy<reference_existing_object>(), ccMeshPy_getAssociatedCloud_doc)
