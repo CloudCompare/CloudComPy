@@ -50,7 +50,7 @@ toslice = [cloud, sphere1, sphere2] # one cloud, two meshes
 
 # --- bounding box: sclice tool
 
-bbox = cc.ccBBox((-5.0, -5.0, 0.), (5., 5., 0.5))
+bbox = cc.ccBBox((-5.0, -5.0, 0.), (5., 5., 0.5), True)
 
 # --- single slice with the bounding box
 

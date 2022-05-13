@@ -31,7 +31,7 @@ from gendata import dataDir, getSampleCloud
 import cloudComPy as cc
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
-bbox = cc.ccBBox((-5.0, -5.0, 0.), (5., 5., 1.))
+bbox = cc.ccBBox((-5.0, -5.0, 0.), (5., 5., 1.), True)
 res=cc.ExtractSlicesAndContours(entities=[cloud], bbox=bbox)
 clouds = res[0]
 

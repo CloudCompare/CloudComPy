@@ -25,7 +25,7 @@
 const char* ccBBox_doc= R"(
 BoundingBox object.
 
-Can be initialized with a tuple of coordinates (minCorner, maxCorner))";
+Can be initialized with tuples of coordinates and a boolean (minCorner, maxCorner, True))";
 
 const char* ccBBox_minCorner_doc= R"(
 Get the min corner of the bounding box

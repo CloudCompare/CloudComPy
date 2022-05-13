@@ -222,7 +222,7 @@ void export_ccGenericCloud()
         ;
 
     class_<ccBBox>("ccBBox", ccBBox_doc)
-    		.def(init<const CCVector3&, const CCVector3&>())
+    		.def(init<const CCVector3&, const CCVector3&, bool>())
 			.def("minCorner", &ccBBox_minCorner, ccBBox_minCorner_doc)
 			.def("maxCorner", &ccBBox_maxCorner, ccBBox_maxCorner_doc)
 		;
