@@ -47,6 +47,9 @@ meshSize = mesh.size()
 cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.asc")) # OK
 cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.xyz")) # OK (idem .asc)
 cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.las")) # OK
+cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.laz")) # OK
+cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud14.las"), version="1.4") # OK
+cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud14.laz"), version="1.4") # OK
 cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.E57")) # OK  FileIO::setWriterInfo has not been called
 cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.sbf")) # OK
 cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.ply")) # OK  FileIO::setWriterInfo has not been called
@@ -70,6 +73,18 @@ if cloudxyz.size() != 10000:
 
 cloudlas = cc.loadPointCloud(os.path.join(dataDir, "cloud.las"))
 if cloudlas.size() != 10000:
+    raise RuntimeError
+
+cloudlaz = cc.loadPointCloud(os.path.join(dataDir, "cloud.laz"))
+if cloudlaz.size() != 10000:
+    raise RuntimeError
+
+cloud14las = cc.loadPointCloud(os.path.join(dataDir, "cloud14.las"))
+if cloudlas.size() != 10000:
+    raise RuntimeError
+
+cloud14laz = cc.loadPointCloud(os.path.join(dataDir, "cloud14.laz"))
+if cloudlaz.size() != 10000:
     raise RuntimeError
 
 cloudE57 = cc.loadPointCloud(os.path.join(dataDir, "cloud.E57"))

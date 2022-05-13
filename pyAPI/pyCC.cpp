@@ -77,8 +77,13 @@
 #include <QMessageBox>
 
 #include "optdefines.h"
+
 #ifdef PLUGIN_IO_QFBX
 #include <FBXFilter.h>
+#endif
+
+#ifdef PLUGIN_IO_QLASFWF
+#include <LASFWFFilter.h>
 #endif
 
 #ifdef WRAP_PLUGIN_QM3C2
@@ -104,6 +109,12 @@ bool pyccPlugins::_isPluginDraco = false;
 bool pyccPlugins::_isPluginFbx = true;
 #else
 bool pyccPlugins::_isPluginFbx = false;
+#endif
+
+#ifdef PLUGIN_IO_QLAS_FWF
+bool pyccPlugins::_isPluginLasFwf = true;
+#else
+bool pyccPlugins::_isPluginLasFwf = false;
 #endif
 
 #ifdef PLUGIN_STANDARD_QM3C2
@@ -554,9 +565,9 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode, dou
 
 }
 
-::CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename)
+::CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version)
 {
-    CCTRACE("saving cloud");
+    CCTRACE("saving cloud, version " << version.toStdString());
     pyCC* capi = initCloudCompare();
     if ((cloud == nullptr) || filename.isEmpty())
         return ::CC_FERR_BAD_ARGUMENT;
@@ -565,14 +576,27 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode, dou
     parameters.alwaysDisplaySaveDialog = false;
     QFileInfo fi(filename);
     QString ext = fi.suffix();
+    if (!version.isEmpty())
+    {
+        if ((ext == "las" || ext == "laz") && version =="1.4")
+        {
+            ext = "LAS 1.3 or 1.4";
+            CCTRACE("ext: " << ext.toStdString());
+        }
+    }
     QString fileFilter = "";
     const std::vector<FileIOFilter::Shared>& filters = FileIOFilter::GetFilters();
     for (const auto filter : filters)
     {
+        //CCTRACE("filter:" << filter->getDefaultExtension().toStdString());
         QStringList theFilters = filter->getFileFilters(false);
+//        for(auto filt : theFilters)
+//            CCTRACE("filter: " << filt.toStdString());
         QStringList matches = theFilters.filter(ext);
         if (matches.size())
         {
+//            for (auto filt : matches)
+//                CCTRACE("filter: " << filt.toStdString());
             fileFilter = matches.first();
             break;
         }

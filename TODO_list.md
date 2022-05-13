@@ -113,9 +113,9 @@ TODO List
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
 - DONE: Plugin PCL (issue #35)
 - DONE: Mesh triangles iterator functions (issue #36)
-- TODO: add option for las/laz version (1.3, 1.4) (issue #32)
+- DONE: add option for las/laz version (1.3, 1.4) (issue #32)
 - DONE: Fix the doc on RANSAC_SD, primitives types
-- TODO: Cut a mesh with a polyline (Crop2D) (issue #38)
+- DONE: Cut a mesh with a polyline (Crop2D) (issue #38)
 - TODO: build examples of loop with objects created and destroyed for a stable memory usage (issue #40)
 - TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
 - DONE: add functions to handle display state of colors and scalar fields (for save in .bin and opening in GUI) (issue #43)

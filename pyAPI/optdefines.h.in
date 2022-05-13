@@ -2,6 +2,7 @@
 #define __OPTDEFINES_H__
 
 #cmakedefine PLUGIN_IO_QFBX
+#cmakedefine PLUGIN_IO_QLAS_FWF
 #cmakedefine PLUGIN_STANDARD_QM3C2
 #cmakedefine PLUGIN_STANDARD_QPCL
 #cmakedefine PLUGIN_STANDARD_QPCV

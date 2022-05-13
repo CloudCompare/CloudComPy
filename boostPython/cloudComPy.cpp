@@ -540,7 +540,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToMesh_overloads, RasterizeToMesh, 2, 1
 BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeGeoTiffOnly_overloads, RasterizeGeoTiffOnly, 2, 19);
 BOOST_PYTHON_FUNCTION_OVERLOADS(ExtractSlicesAndContours_py_overloads, ExtractSlicesAndContours_py, 2, 18);
 BOOST_PYTHON_FUNCTION_OVERLOADS(ExtractConnectedComponents_py_overloads, ExtractConnectedComponents_py, 1, 5);
-
+BOOST_PYTHON_FUNCTION_OVERLOADS(SavePointCloud_overloads, SavePointCloud, 2, 3);
 
 BOOST_PYTHON_MODULE(_cloudComPy)
 {
@@ -688,7 +688,9 @@ BOOST_PYTHON_MODULE(_cloudComPy)
 
     def("SaveMesh", SaveMesh, cloudComPy_SaveMesh_doc);
 
-    def("SavePointCloud", SavePointCloud, cloudComPy_SavePointCloud_doc);
+    def("SavePointCloud", SavePointCloud, SavePointCloud_overloads(
+         (arg("cloud"), arg("filename"), arg("version")=QString("")),
+         cloudComPy_SavePointCloud_doc));
 
     def("SaveEntities", SaveEntities, cloudComPy_SaveEntities_doc);
 
