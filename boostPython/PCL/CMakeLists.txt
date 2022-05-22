@@ -19,23 +19,23 @@
 #                                                                        #
 ##########################################################################
 
-message(STATUS "Plugin PCV boost Python processing")
+message(STATUS "Plugin PCL boost Python processing")
 
 # --- ----------------------------------------------------------
 # --- target boost.Python library: Python module cloudComPy
 
-project( _PCV VERSION 0.1 )
+project( _PCL VERSION 0.1 )
 
 add_library( ${PROJECT_NAME} SHARED )
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
+#set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
     target_sources( ${PROJECT_NAME}
     PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/PCVPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/PCLPy.cpp
     )
 
-#qt5_wrap_ui( generated_ui_list ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qPCV/ui/qPCVDialog.ui )
+#qt5_wrap_ui( generated_ui_list ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qPCL/ui/qPCLDialog.ui )
 #message(STATUS "generated_ui_list: ${generated_ui_list}")
 #target_sources( ${PROJECT_NAME} PRIVATE ${generated_ui_list} )
 
@@ -46,7 +46,7 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../boostPython
     ${CMAKE_CURRENT_SOURCE_DIR}/../../pyAPI
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qPCV/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qPCL/include
     ${CCCoreLib_SOURCE_DIR}/include
     ${QCC_DB_LIB_SOURCE_DIR}
     )
@@ -60,12 +60,12 @@ target_link_libraries( ${PROJECT_NAME}
 
 if ( UNIX )
     target_link_libraries( ${PROJECT_NAME}
-        QPCV_PLUGIN
+        QPCL_PLUGIN
         )
 endif()
 if ( MSVC )
     target_link_libraries( ${PROJECT_NAME}
-        QPCV_PLUGIN
+        QPCL_PLUGIN
         )
 endif()
 
@@ -92,17 +92,17 @@ set(PYTHONAPI_SCRIPTS
 # --- install
 
 if( WIN32 OR APPLE)
-    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare/cloudComPy/PCV )
-    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/PCV )
+    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare/cloudComPy/PCL )
+    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/PCL )
 else()
-    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare/cloudComPy/PCV)
+    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare/cloudComPy/PCL)
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
 endif()
 
 if(WIN32)
-  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _PCV_d RELEASE_OUTPUT_NAME _PCV)
+  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _PCL_d RELEASE_OUTPUT_NAME _PCL)
 else()
   set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 endif()

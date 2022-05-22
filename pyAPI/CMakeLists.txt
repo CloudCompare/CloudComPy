@@ -40,10 +40,9 @@ endif()
 configure_file(optdefines.h.in optdefines.h)
 
 target_sources( PYCC_LIB
-    PUBLIC
+    PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/pyCC.h
     ${CMAKE_CURRENT_LIST_DIR}/initCC.h
-    PRIVATE
     pyCC.cpp
     initCC.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/CCAppCommon/src/ccPluginManager.cpp

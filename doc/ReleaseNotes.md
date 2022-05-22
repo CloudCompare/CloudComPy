@@ -2,6 +2,18 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## May 13, 2022 CloudComPy release:
+
+ - Update to CloudCompare 2.12.1 (may 7, 2022)
+ - Fix the doc on RANSAC_SD, primitives types.
+ - Add option for las/laz version (1.4) (issue #32), see test020.py.
+ - Plugin PCL (issue #35) see test038.py.
+ - Mesh triangles iterator functions (issue #36), see test011.py.
+ - Cut a mesh with a polyline (Crop2D) (issue #38) see test039.py.
+ - Add functions to handle display state of colors and scalar fields (for save in .bin and opening in GUI) (issue #43).
+   See methods in base classes for point clouds: showColors, showSF, showNormals...
+ - Various small fixes.
+
 ## April 09, 2022 CloudComPy release:
 
  - Update to CloudCompare 2.12.0 (april 7 2022)

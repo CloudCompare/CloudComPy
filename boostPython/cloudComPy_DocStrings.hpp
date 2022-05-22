@@ -221,6 +221,12 @@ returns True if CloudComPy is built with the MeshBoolean plugin.
 :return: True if CloudComPy is built with the MeshBoolean plugin, False otherwise.
 :rtype: bool)";
 
+const char* cloudComPy_isPluginPCL_doc= R"(
+returns True if CloudComPy is built with the PCL plugin.
+
+:return: True if CloudComPy is built with the PCL plugin, False otherwise.
+:rtype: bool)";
+
 const char* cloudComPy_isPluginPCV_doc= R"(
 returns True if CloudComPy is built with the PCV plugin.
 
@@ -322,9 +328,13 @@ const char* cloudComPy_SavePointCloud_doc= R"(
 Save a 3D cloud in a file.
 
 The file name extension determines the format (.asc .las .E57 .sbf .ply .vtk .dxf .pcd .pn .pv .bin)
+An optional string can be used to specify format:
+To use the LAS_FWF IO plugin to save .las or .laz file in format 1.4: version="1.4"
+(without version, las or laz file are saved in format 1.2)
 
 :param ccPointCloud cloud: the cloud to save.
 :param str filename: The cloud file.
+:param string,optional version: optional string, default "", used to specify a particular version.  
 
 :return: 0 or I/O error.
 :rtype: CC_FILE_ERROR)";

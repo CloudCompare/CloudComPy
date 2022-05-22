@@ -51,8 +51,12 @@ struct pyccPlugins
     static bool isPluginDraco() { return _isPluginDraco; };
     static bool _isPluginFbx;
     static bool isPluginFbx() { return _isPluginFbx; };
+    static bool _isPluginLasFwf;
+    static bool isPluginLasFwf() { return _isPluginLasFwf; };
     static bool _isPluginM3C2;
     static bool isPluginM3C2() { return _isPluginM3C2; };
+    static bool _isPluginPCL;
+    static bool isPluginPCL() { return _isPluginPCL; };
     static bool _isPluginPCV;
     static bool isPluginPCV() { return _isPluginPCV; };
     static bool _isPluginRANSAC_SD;
@@ -117,7 +121,7 @@ std::vector<ccHObject*> importFile(const char* filename,
  * \param filename
  * \return IO status
  */
-CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename);
+CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version="");
 
 //! save a mesh to a file
 /*! the file type is given by the extension

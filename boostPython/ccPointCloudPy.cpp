@@ -106,6 +106,14 @@ void coordsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
     CCTRACE("copied " << 3*nRows*sizeof(PointCoordinateType) << " bytes");
 }
 
+bool colorize_py(ccPointCloud &self, float r, float g, float b, float a=1.0f)
+{
+    bool success = self.colorize(r, g, b, a);
+    self.showSF(false);
+    self.showColors(true);
+    return success;
+}
+
 void colorsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
 {
     if (array.get_dtype() != bnp::dtype::get_builtin<ColorCompType>())
@@ -139,6 +147,8 @@ void colorsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
     ColorCompType* d = (ColorCompType*)(self.rgbaColors()->data());
     memcpy(d, s, 4*nRows*sizeof(ColorCompType));
     CCTRACE("copied " << 4*nRows*sizeof(ColorCompType) << " bytes");
+    self.showSF(false);
+    self.showColors(true);
     self.colorsHaveChanged();
 }
 
@@ -273,6 +283,8 @@ bool changeColorLevels_py(ccPointCloud &self, unsigned char sin0,
 
         self.setPointColor(i, newRgb);
     }
+    self.showSF(false);
+    self.showColors(true);
     return true;
 }
 
@@ -354,6 +366,8 @@ bool interpolateColorsFrom_py(ccPointCloud &self, ccGenericPointCloud* otherClou
         CCTRACE("input cloud has no color");
         return false;
     }
+    self.showSF(false);
+    self.showColors(true);
     return self.interpolateColorsFrom(otherCloud, nullptr, octreeLevel);
 }
 
@@ -379,7 +393,10 @@ bp::tuple partialClone_py(ccPointCloud &self,
 bool setColor_py(ccPointCloud &self, QColor unique)
 {
 	ccColor::Rgba col = ccColor::FromQColora(unique);
-	return self.setColor(col);
+    bool success = self.setColor(col);
+    self.showSF(false);
+    self.showColors(true);
+	return success;
 }
 
 bool setColorGradientDefault_py(ccPointCloud &self, unsigned char heightDim)
@@ -387,6 +404,8 @@ bool setColorGradientDefault_py(ccPointCloud &self, unsigned char heightDim)
     ccColorScale::Shared colorScale(nullptr);
     colorScale = ccColorScalesManager::GetDefaultScale();
     bool success = self.setRGBColorByHeight(heightDim, colorScale);
+    self.showSF(false);
+    self.showColors(true);
     return success;
 }
 
@@ -397,12 +416,16 @@ bool setColorGradient_py(ccPointCloud &self, unsigned char heightDim, QColor fir
     colorScale->insert(ccColorScaleElement(0.0, first), false);
     colorScale->insert(ccColorScaleElement(1.0, second), true);
     bool success = self.setRGBColorByHeight(heightDim, colorScale);
+    self.showSF(false);
+    self.showColors(true);
     return success;
 }
 
 bool setColorGradientBanded_py(ccPointCloud &self, unsigned char heightDim, double frequency)
 {
     bool success = self.setRGBColorByBanding(heightDim, frequency);
+    self.showSF(false);
+    self.showColors(true);
     return success;
 }
 
@@ -483,10 +506,10 @@ int (ccPointCloud::*addScalarFieldt)(const char*) = &ccPointCloud::addScalarFiel
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_scale_overloads, scale, 3, 4)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_cloneThis_overloads, cloneThis, 0, 2)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_colorize_overloads, colorize, 3, 4)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(filterPointsByScalarValue_overloads, ccPointCloud::filterPointsByScalarValue, 2, 3)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(enhanceRGBWithIntensitySF_overloads, ccPointCloud::enhanceRGBWithIntensitySF, 1, 4)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(convertCurrentScalarFieldToColors_overloads, ccPointCloud::convertCurrentScalarFieldToColors, 0, 1)
+BOOST_PYTHON_FUNCTION_OVERLOADS(colorize_py_overloads, colorize_py, 4, 5)
 BOOST_PYTHON_FUNCTION_OVERLOADS(interpolateColorsFrom_py_overloads, interpolateColorsFrom_py, 2, 3)
 BOOST_PYTHON_FUNCTION_OVERLOADS(orientNormalsWithFM_py_overloads, orientNormalsWithFM_py, 1, 2)
 BOOST_PYTHON_FUNCTION_OVERLOADS(orientNormalsWithMST_py_overloads, orientNormalsWithMST_py, 1, 2)
@@ -510,8 +533,8 @@ void export_ccPointCloud()
              (arg("destCloud")=0, arg("ignoreChildren")=false),
              ccPointCloudPy_cloneThis_doc)[return_value_policy<reference_existing_object>()])
         .def("changeColorLevels", &changeColorLevels_py, ccPointCloudPy_changeColorLevels_doc)
-        .def("colorize", &ccPointCloud::colorize, ccPointCloud_colorize_overloads(
-         (arg("r"), arg("g"), arg("b"), arg("a")=1.0f),
+        .def("colorize", &colorize_py, colorize_py_overloads(
+         (arg("self"), arg("r"), arg("g"), arg("b"), arg("a")=1.0f),
          ccPointCloudPy_colorize_doc))
         .def("computeGravityCenter", &ccPointCloud::computeGravityCenter, ccPointCloudPy_computeGravityCenter_doc)
         .def("colorsFromNPArray_copy", &colorsFromNPArray_copy, ccPointCloudPy_colorsFromNPArray_copy_doc)

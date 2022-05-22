@@ -44,11 +44,54 @@ Clones this entity.
 
 All the main features of the entity are cloned, except from the octree)";
 
+const char* ccMeshPy_crop2D_doc= R"(
+Crop the mesh using a 2D polyline.
+
+:param ccPolyline poly: polyline object
+:param int orthoDim: normal plane, value in (0, 1, 2) 0 = oY, 1 = oX, 2 = oZ
+:param bool inside: boolean
+
+:return: the cropped cloud. Points are copied, the original cloud is not modified.
+:rtype: ccPointCloud
+)";
+
 const char* ccMeshPy_getAssociatedCloud_doc= R"(
 Returns the cloud corresponding to the mesh vertices.
 
 :return: the associated cloud
 :rtype: ccGenericPointCloud)";
+
+const char* ccMeshPy_getTriangleVertIndexes_doc= R"(
+Returns the 3 indexes of the nodes of a given triangle index.
+
+:param int index: triangle index
+
+:return: a tuple with 3 nodes indexes
+:rtype: tuple )";
+
+const char* ccMeshPy_IndexesToNpArray_doc= R"(
+Wrap the indexes of nodes per triangle in the mesh into a numpy Array, without copy.
+
+Returns a numpy Array of shape (number of triangles, 3).
+Data is not copied, the numpy Array object does not own the data.
+
+**WARNING** No automatic action on the Python side on the variables referencing the C++ object in case of destruction!
+
+:return: numpy Array of shape (number of triangles, 3)
+:rtype: ndarray
+ )";
+
+const char* ccMeshPy_IndexesToNpArray_copy_doc= R"(
+Wrap the indexes of nodes per triangle in the mesh into a numpy Array, with copy.
+
+Returns a numpy Array of shape (number of triangles, 3).
+Data is copied, the  numpy Array object owns its data.
+Ownership is transfered to Python:
+the numpy Array object and its data will be handled by the Python Garbage Collector.
+
+:return: numpy Array of shape (number of triangles, 3)
+:rtype: ndarray
+ )";
 
 const char* ccMeshPy_subdivide_doc= R"(
 Subdivides mesh (so as to ensure that all triangles are falls below 'maxArea'.
@@ -66,6 +109,12 @@ Laplacian smoothing.
 
 :return: success
 :rtype: bool )";
+
+const char* ccMeshPy_size_doc= R"(
+Returns the number of triangles in the mesh.
+
+:return:  number of triangles
+:rtype: int)";
 
 const char* ccMeshPy_triangulate_doc= R"(
 Creates a Delaunay 2.5D mesh from a point cloud.

@@ -21,26 +21,26 @@
 #                                                                        #
 ##########################################################################
 
-import os
-import sys
-import math
+"""
+PCL is a standard plugin of cloudComPy.
+The plugin implements some methods of the Point Cloud Library (PCL): https://pointclouds.org.
 
-os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
+The availability of the plugin can be tested with the :py:meth:`cloudComPy.isPluginPCL` function:
+::
 
-from gendata import dataDir, getSampleCloud
-import cloudComPy as cc
+  isPCL_available = cc.isPluginPCL()
 
-cloud = cc.loadPointCloud(getSampleCloud(5.0))
-bbox = cc.ccBBox((-5.0, -5.0, 0.), (5., 5., 1.), True)
-res=cc.ExtractSlicesAndContours(entities=[cloud], bbox=bbox)
-clouds = res[0]
+PCL is a submodule of cloudCompy:
+::
 
-res2 = cc.ExtractConnectedComponents(clouds=clouds, octreeLevel=6, randomColors=True)
-if res2[0] != 1: # the number of clouds in input
-    raise RuntimeError
-components = res2[1]
-if len(components) != 12:
-    raise RuntimeError
-
-cc.SaveEntities(components, os.path.join(dataDir, "components.bin"))
+  import cloudComPy as cc
+  # ...
+  if cc.isPluginPCL():
+      import cloudComPy.PCL
+      fgr = cc.PCL.FastGlobalRegistrationFilter()
+      fgr.setParameters(...)
+      fgr.compute()
+"""
+from ._PCL import *
+initTrace_PCL()
 

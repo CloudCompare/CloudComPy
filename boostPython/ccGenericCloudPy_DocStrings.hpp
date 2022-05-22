@@ -25,7 +25,7 @@
 const char* ccBBox_doc= R"(
 BoundingBox object.
 
-Can be initialized with a tuple of coordinates (minCorner, maxCorner))";
+Can be initialized with tuples of coordinates and a boolean (minCorner, maxCorner, True))";
 
 const char* ccBBox_minCorner_doc= R"(
 Get the min corner of the bounding box
@@ -87,6 +87,61 @@ Get the type of this object.
 :rtype: CC_TYPE
 )";
 
+const char* ccHObject_getParent_doc=R"(
+Get the parent of this object.
+
+:return: parent object
+:rtype: ccHObject
+)";
+
+const char* ccHObject_hasColors_doc=R"(
+Returns True if the entity has colors, False otherwise.
+
+:return: whether the entity has colors
+:rtype: bool
+)";
+
+const char* ccHObject_hasNormals_doc=R"(
+Returns True if the entity has normals, False otherwise.
+
+:return: whether the entity has normals
+:rtype: bool
+)";
+
+const char* ccHObject_hasScalarFields_doc=R"(
+Returns True if the entity has ScalarFields, False otherwise.
+
+:return: whether the entity has ScalarFields
+:rtype: bool
+)";
+
+const char* ccHObject_colorsShown_doc=R"(
+Returns True if the colors are shown, False otherwise.
+It is used to prepare the state of the entity when it is saved in a .bin format,
+for reopening in the GUI in a predefined state (colors, normal, scalarFields).
+
+:return: whether the colors are shown.
+:rtype: bool
+)";
+
+const char* ccHObject_normalsShown_doc=R"(
+Returns True if the normals are shown, False otherwise.
+It is used to prepare the state of the entity when it is saved in a .bin format,
+for reopening in the GUI in a predefined state (colors, normal, scalarFields).
+
+:return: whether the normals are shown
+:rtype: bool
+)";
+
+const char* ccHObject_sfShown_doc=R"(
+Returns True if the scalar fields are shown, False otherwise.
+It is used to prepare the state of the entity when it is saved in a .bin format,
+for reopening in the GUI in a predefined state (colors, normal, scalarFields).
+
+:return: whether the scalar fields are shown
+:rtype: bool
+)";
+
 const char* ccHObject_isA_doc=R"(
 Check the type of object.
 
@@ -103,6 +158,27 @@ Check the type of object.
 
 :return: OK if object is a kind of this type
 :rtype: bool
+)";
+
+const char* ccHObject_showColors_doc=R"(
+Prepare the state of the entity when it is saved in a .bin format,
+for reopening in the GUI in a predefined state (colors, normal, scalarFields).
+
+:param bool isShown: whether to show or not the colors.
+)";
+
+const char* ccHObject_showNormals_doc=R"(
+Prepare the state of the entity when it is saved in a .bin format,
+for reopening in the GUI in a predefined state (colors, normal, scalarFields).
+
+:param bool isShown: whether to show or not the normals.
+)";
+
+const char* ccHObject_showSF_doc=R"(
+Prepare the state of the entity when it is saved in a .bin format,
+for reopening in the GUI in a predefined state (colors, normal, scalarFields).
+
+:param bool isShown: whether to show or not the ScalarFields.
 )";
 
 const char* ccGenericPointCloud_computeOctree_doc= R"(

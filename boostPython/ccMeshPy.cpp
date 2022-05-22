@@ -26,11 +26,14 @@
 #include <ccMesh.h>
 #include <ccGenericPointCloud.h>
 #include <ccPointCloud.h>
+#include <ccPolyline.h>
 #include <GenericProgressCallback.h>
 
 #include "ccMeshPy_DocStrings.hpp"
 
+
 namespace bp = boost::python;
+namespace bnp = boost::python::numpy;
 using namespace boost::python;
 
 ccMesh* cloneMesh_py(ccMesh &self)
@@ -52,6 +55,39 @@ ccPointCloud* mesh_samplePoints_py( ccGenericMesh&self,
                                     CCCoreLib::GenericProgressCallback* pDlg = nullptr)
 {
     return self.samplePoints(densityBased, samplingParameter, withNormals, withRGB, withTexture, pDlg);
+}
+
+Tuple3Tpl<unsigned int> getTriangleVertIndexes_py(ccMesh &self, unsigned triangleIndex)
+{
+    CCCoreLib::VerticesIndexes* indexes = self.getTriangleVertIndexes(triangleIndex);
+    Tuple3Tpl<unsigned int> ret = {indexes->i1, indexes->i2, indexes->i3};
+    return ret;
+};
+
+bnp::ndarray IndexesToNpArray_copy(ccMesh &self)
+{
+    CCTRACE("IndexesToNpArray with copy, ownership transfered to Python");
+    bnp::dtype dt = bnp::dtype::get_builtin<unsigned>(); // nodes indexes
+    size_t nRows = self.size();
+    CCTRACE("nrows: " << nRows);
+    bp::tuple shape = bp::make_tuple(nRows, 3); // 3 indexes per triangle
+    bp::tuple stride = bp::make_tuple(3*sizeof(unsigned), sizeof(unsigned));
+    unsigned *s = (unsigned*)self.getTriangleVertIndexes(0);
+    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
+    return result.copy();
+}
+
+bnp::ndarray IndexesToNpArray_py(ccMesh &self)
+{
+    CCTRACE("IndexesToNpArray without copy, ownership stays in C++");
+    bnp::dtype dt = bnp::dtype::get_builtin<unsigned>(); // nodes indexes
+    size_t nRows = self.size();
+    CCTRACE("nrows: " << nRows);
+    bp::tuple shape = bp::make_tuple(nRows, 3); // 3 indexes per triangle
+    bp::tuple stride = bp::make_tuple(3*sizeof(unsigned), sizeof(unsigned));
+    unsigned *s = (unsigned*)self.getTriangleVertIndexes(0);
+    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
+    return result;
 }
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(ccMesh_triangulate_overloads, ccMesh::Triangulate, 2, 5)
@@ -81,9 +117,13 @@ void export_ccMesh()
     class_<ccMesh, bases<ccGenericMesh>, boost::noncopyable>("ccMesh", ccMeshPy_ccMesh_doc, no_init)
         .def("clearTriNormals", &ccMesh::clearTriNormals, ccMeshPy_clearTriNormals_doc)
         .def("cloneMesh", &cloneMesh_py, return_value_policy<reference_existing_object>(), ccMeshPy_cloneMesh_doc)
-        .def("size", &ccMesh::size)
+        .def("crop2D", &ccMesh::crop2D, return_value_policy<reference_existing_object>(), ccMeshPy_crop2D_doc)
+        .def("size", &ccMesh::size, ccMeshPy_size_doc)
         .def("getAssociatedCloud", &ccMesh::getAssociatedCloud,
              return_value_policy<reference_existing_object>(), ccMeshPy_getAssociatedCloud_doc)
+        .def("getTriangleVertIndexes", &getTriangleVertIndexes_py, ccMeshPy_getTriangleVertIndexes_doc)
+        .def("IndexesToNpArray", &IndexesToNpArray_py, ccMeshPy_IndexesToNpArray_doc)
+        .def("IndexesToNpArray_copy", &IndexesToNpArray_copy, ccMeshPy_IndexesToNpArray_copy_doc)
         .def("laplacianSmooth", &laplacianSmooth_py, laplacianSmooth_py_overloads(
              (arg("self"), arg("nbIteration")=20, arg("factor")=0.2 ),
               ccMeshPy_laplacianSmooth_doc))

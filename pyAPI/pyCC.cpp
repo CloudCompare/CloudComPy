@@ -77,8 +77,13 @@
 #include <QMessageBox>
 
 #include "optdefines.h"
+
 #ifdef PLUGIN_IO_QFBX
 #include <FBXFilter.h>
+#endif
+
+#ifdef PLUGIN_IO_QLASFWF
+#include <LASFWFFilter.h>
 #endif
 
 #ifdef WRAP_PLUGIN_QM3C2
@@ -106,10 +111,22 @@ bool pyccPlugins::_isPluginFbx = true;
 bool pyccPlugins::_isPluginFbx = false;
 #endif
 
+#ifdef PLUGIN_IO_QLAS_FWF
+bool pyccPlugins::_isPluginLasFwf = true;
+#else
+bool pyccPlugins::_isPluginLasFwf = false;
+#endif
+
 #ifdef PLUGIN_STANDARD_QM3C2
 bool pyccPlugins::_isPluginM3C2 = true;
 #else
 bool pyccPlugins::_isPluginM3C2 = false;
+#endif
+
+#ifdef PLUGIN_STANDARD_QPCL
+bool pyccPlugins::_isPluginPCL = true;
+#else
+bool pyccPlugins::_isPluginPCL = false;
 #endif
 
 #ifdef PLUGIN_STANDARD_QPCV
@@ -548,9 +565,9 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode, dou
 
 }
 
-::CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename)
+::CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version)
 {
-    CCTRACE("saving cloud");
+    CCTRACE("saving cloud, version " << version.toStdString());
     pyCC* capi = initCloudCompare();
     if ((cloud == nullptr) || filename.isEmpty())
         return ::CC_FERR_BAD_ARGUMENT;
@@ -559,14 +576,27 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode, dou
     parameters.alwaysDisplaySaveDialog = false;
     QFileInfo fi(filename);
     QString ext = fi.suffix();
+    if (!version.isEmpty())
+    {
+        if ((ext == "las" || ext == "laz") && version =="1.4")
+        {
+            ext = "LAS 1.3 or 1.4";
+            CCTRACE("ext: " << ext.toStdString());
+        }
+    }
     QString fileFilter = "";
     const std::vector<FileIOFilter::Shared>& filters = FileIOFilter::GetFilters();
     for (const auto filter : filters)
     {
+        //CCTRACE("filter:" << filter->getDefaultExtension().toStdString());
         QStringList theFilters = filter->getFileFilters(false);
+//        for(auto filt : theFilters)
+//            CCTRACE("filter: " << filt.toStdString());
         QStringList matches = theFilters.filter(ext);
         if (matches.size())
         {
+//            for (auto filt : matches)
+//                CCTRACE("filter: " << filt.toStdString());
             fileFilter = matches.first();
             break;
         }
@@ -4665,7 +4695,7 @@ bool ExtractSlicesAndContoursClone
                             int sliceIndex = ((k - indexMins[2]) * static_cast<int>(gridDim[1]) + (j - indexMins[1])) * static_cast<int>(gridDim[0]) + (i - indexMins[0]);
 
                             CCVector3 C = gridOrigin + CCVector3(i*cellSizePlusGap.x, j*cellSizePlusGap.y, k*cellSizePlusGap.z);
-                            ccBBox cropBox(C, C + cellSize);
+                            ccBBox cropBox(C, C + cellSize, true);
 
                             for (size_t mi = 0; mi != meshes.size(); ++mi)
                             {

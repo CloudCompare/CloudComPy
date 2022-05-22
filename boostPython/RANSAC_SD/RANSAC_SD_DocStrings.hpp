@@ -75,7 +75,7 @@ const char* RANSAC_SD_RansacParams_maxNormalDev_deg_doc=R"(
 Maximum deviation from the ideal shape normal vector (in degrees), default 25.)";
 
 const char* RANSAC_SD_RansacParams_probability_doc=R"(
-Probability that no better candidate soit overlooked during th sampling,
+Probability that no better candidate was overlooked during the sampling,
 the lower the better, default 0.01)";
 
 const char* RANSAC_SD_RansacParams_randomColor_doc=R"(
@@ -131,6 +131,12 @@ Maximum tore major radius, default +infinity.)";
 const char* RANSAC_SD_RansacParams_setPrimEnabled_doc=R"(
 Define the type of primitive (plane, sphere, cylinder, cone, torus) enabled.
 By default, plane, sphere, cylinder are enabled.
+Types of primitive are from:
+RANSAC_PRIMITIVE_TYPES.RPT_PLANE
+RANSAC_PRIMITIVE_TYPES.RPT_SPHERE
+RANSAC_PRIMITIVE_TYPES.RPT_CYLINDER
+RANSAC_PRIMITIVE_TYPES.RPT_CONE
+RANSAC_PRIMITIVE_TYPES.RPT_TORUS
 
 :param RANSAC_PRIMITIVE_TYPES rpt: type of primitive
 :param bool isEnabled: whether the type is enabled or not)";
@@ -138,6 +144,12 @@ By default, plane, sphere, cylinder are enabled.
 const char* RANSAC_SD_RansacParams_getPrimEnabled_doc=R"(
 Check the type of primitive (plane, sphere, cylinder, cone, torus) enabled.
 By default, plane, sphere, cylinder are enabled.
+Types of primitive are from:
+RANSAC_PRIMITIVE_TYPES.RPT_PLANE
+RANSAC_PRIMITIVE_TYPES.RPT_SPHERE
+RANSAC_PRIMITIVE_TYPES.RPT_CYLINDER
+RANSAC_PRIMITIVE_TYPES.RPT_CONE
+RANSAC_PRIMITIVE_TYPES.RPT_TORUS
 
 :param RANSAC_PRIMITIVE_TYPES rpt: type of primitive
 

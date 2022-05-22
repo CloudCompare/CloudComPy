@@ -38,6 +38,7 @@ cloudComPy: a Python interface for CloudCompare
    HPR.rst
    M3C2.rst
    MeshBoolean.rst
+   PCL.rst
    PCV.rst
    RANSAC_SD.rst
    

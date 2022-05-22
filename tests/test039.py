@@ -24,57 +24,20 @@
 import os
 import sys
 import math
-import numpy as np
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual, createSymbolicLinks
+from gendata import getSampleCloud2, getSamplePoly, dataDir
 import cloudComPy as cc
 
-createSymbolicLinks() # required for tests on build, before cc.initCC
-
-cloud1 = cc.loadPointCloud(getSampleCloud2(3.0, 0, 0.1))
+cloud1 = cc.loadPointCloud(getSampleCloud2(3.0,0, 0.1))
 cloud1.setName("cloud1")
-if cloud1.size() != 10000:
-    raise RuntimeError
+cloud1.exportCoordToSF(True, True, True)
 
 mesh1 = cc.ccMesh.triangulate(cloud1, cc.TRIANGULATION_TYPES.DELAUNAY_2D_AXIS_ALIGNED)
 mesh1.setName("mesh1")
-if not math.isclose(mesh1.size(), 19602, rel_tol=5e-02):
-    raise RuntimeError
+cc.computeNormals([mesh1], computePerVertexNormals=False)
 
-mesh2 = mesh1.cloneMesh()
-if mesh2.getName() != "mesh1.clone":
-    raise RuntimeError
-
-mesh3 = mesh2.subdivide(0.001)
-if not math.isclose(mesh3.size(), 335696, rel_tol=5e-02):
-    raise RuntimeError
-
-mesh3.laplacianSmooth(nbIteration=20, factor=0.2)
-
-# --- access to triangle nodes, per triangle indice
-cloud = mesh1.getAssociatedCloud()
-indexes = mesh1.getTriangleVertIndexes(453)
-p0 = cloud.getPoint(indexes[0])
-p1 = cloud.getPoint(indexes[1])
-p2 = cloud.getPoint(indexes[2])
-
-# --- access to the numpy array of node indexes (one row per triangle)
-d = mesh1.IndexesToNpArray()
-if d.shape != (19602, 3):
-    raise RuntimeError
-if d.dtype != np.dtype('uint32'):
-    raise RuntimeError
-
-d2 = mesh1.IndexesToNpArray_copy()
-if d2.shape != (19602, 3):
-    raise RuntimeError
-if d2.dtype != np.dtype('uint32'):
-    raise RuntimeError
-
-cc.SaveEntities([cloud1, mesh1, mesh2, mesh3], os.path.join(dataDir, "clouds1.bin"))
-
-
-
-
+poly = cc.loadPolyline(getSamplePoly("poly1"))
+meshCropZ = mesh1.crop2D(poly, 2, True)
+res = cc.SaveEntities([cloud1, mesh1, meshCropZ], os.path.join(dataDir, "cropMesh.bin"))

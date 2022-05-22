@@ -57,7 +57,7 @@ add_library( ${PROJECT_NAME} SHARED )
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
     target_sources( ${PROJECT_NAME}
-    PUBLIC
+    PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/cloudComPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/colorsPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ScalarFieldPy.cpp
@@ -75,7 +75,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     ${CMAKE_CURRENT_LIST_DIR}/NeighbourhoodPy.cpp
     )
 
-target_include_directories( ${PROJECT_NAME} PUBLIC
+target_include_directories( ${PROJECT_NAME} PRIVATE
     ${Boost_INCLUDE_DIRS}
     ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -199,5 +199,9 @@ endif()
 if ( PLUGIN_STANDARD_QRANSAC_SD )
     add_subdirectory( RANSAC_SD )
 endif()
+if ( PLUGIN_STANDARD_QPCL )
+    add_subdirectory( PCL )
+endif()
+
 
 
