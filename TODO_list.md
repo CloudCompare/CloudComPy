@@ -120,4 +120,5 @@ TODO List
 - TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
 - DONE: add functions to handle display state of colors and scalar fields (for save in .bin and opening in GUI) (issue #43)
 - TODO: compute gradients for scalar fields (issue  #46)
+- TODO: get the transformation matrix computed by the fast global registration function in PCL Plugin (issue #35)
 
