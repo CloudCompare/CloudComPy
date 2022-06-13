@@ -37,6 +37,7 @@ tr1.initFromParameters(0.1, (0., 0.1, 0.9), (0.,0.,0.))
 cloud2.applyRigidTransformation(tr1)
 cc.computeNormals([cloud1, cloud2])
 cloud2ref = cloud2.cloneThis()
+cloud2bis = cloud2ref.cloneThis()
 
 if cc.isPluginPCL():
     import cloudComPy.PCL
@@ -46,15 +47,21 @@ if cc.isPluginPCL():
     fpcl = cc.PCL.FastGlobalRegistrationFilter()
     fpcl.setParameters(cloud1, [cloud2])
     res=fpcl.compute()
+    
+    tr2 = fpcl.getTransformation()             # get the transformation applied to cloud2
+    cloud2bis.applyRigidTransformation(tr2)    # apply it to the clone of cloud2 before registration, to check
 
     bb1=cloud1.getOwnBB()
     bb2 = cloud2ref.getOwnBB()
     bb3 = cloud2.getOwnBB()
-
+    bb4 = cloud2bis.getOwnBB()
+    
     if isCoordEqual(bb1.minCorner(), bb2.minCorner(), 1.e-2) or isCoordEqual(bb1.maxCorner(), bb2.maxCorner(), 1.e-2):
         raise RuntimeError
 
     if not isCoordEqual(bb1.minCorner(), bb3.minCorner(), 3.e-2) or not isCoordEqual(bb1.maxCorner(), bb3.maxCorner(), 3.e-2):
+        raise RuntimeError
+    if not isCoordEqual(bb4.minCorner(), bb3.minCorner(), 1.e-6) or not isCoordEqual(bb4.maxCorner(), bb3.maxCorner(), 1.e-6):
         raise RuntimeError
     
     # --- PCL normals and curvature
@@ -83,5 +90,5 @@ if cc.isPluginPCL():
     if cloud5.size() != 50000:
         raiseRuntimeError
         
-    shapes = [cloud1, cloud2ref, cloud2, cloud3, cloud4, cloud5]
+    shapes = [cloud1, cloud2ref, cloud2, cloud2bis, cloud3, cloud4, cloud5]
     cc.SaveEntities(shapes, os.path.join(dataDir, "cloudsPCL.bin"))

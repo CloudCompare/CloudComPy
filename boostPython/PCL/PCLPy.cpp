@@ -51,6 +51,7 @@ BOOST_PYTHON_MODULE(_PCL)
 
     class_<FastGlobalRegistrationFilter, boost::noncopyable>("FastGlobalRegistrationFilter", PCL_FastGlobalRegistrationFilter_doc)
         .def("compute", &FastGlobalRegistrationFilter::compute, PCL_FGRFcompute_doc)
+        .def("getTransformation", &FastGlobalRegistrationFilter::getTransformation, PCL_FGRFgetTransformation_doc)
         .def("getAutoRadius", &FastGlobalRegistrationFilter::getAutoRadius, PCL_FGRFgetAutoRadius_doc)
         .def("setParameters", &FastGlobalRegistrationFilter::setParameters,
              FastGlobalRegistrationFilter_setParameters_overloads(
