@@ -114,7 +114,7 @@ to filter out aberrant values.
 :param int SFindex: The scalar Field index in the Point Cloud.
 :param double radius: spherical neighborhood size (or 0 for automatic size)
 :param bool euclideanDistances: indicates if the scalar values are euclidean distances
-:param DgmOctree,optional theOctree: he octree, if it has already been computed
+:param DgmOctree,optional theOctree: the octree, if it has already been computed
 
 :return: success
 :rtype: bool)";
