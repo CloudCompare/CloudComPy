@@ -35,6 +35,7 @@
 #include <ccColorScalesManager.h>
 #include <ccColorTypes.h>
 #include <ccCommon.h>
+#include <ScalarFieldTools.h>
 
 #include "PyScalarType.h"
 #include "pyccTrace.h"
@@ -288,6 +289,34 @@ bool changeColorLevels_py(ccPointCloud &self, unsigned char sin0,
     return true;
 }
 
+bool computeScalarFieldGradient_py( ccPointCloud &self,
+                                    int SFindex,
+                                    PointCoordinateType radius,
+                                    bool euclideanDistances,
+                                    CCCoreLib::DgmOctree* theOctree = nullptr)
+{
+    int nbSF = self.getNumberOfScalarFields();
+    if (SFindex < 0 || SFindex >= nbSF)
+    {
+        CCTRACE("computeScalarFieldGradient: Wrong Scalar Field index!");
+        return false;
+    }
+    self.setCurrentInScalarField(-1);
+    self.setCurrentOutScalarField(SFindex);
+    QString sfName = QString("%1(%2)").arg(CC_GRADIENT_NORMS_FIELD_NAME, self.getScalarFieldName(SFindex));
+    int ret = CCCoreLib::ScalarFieldTools::computeScalarFieldGradient(&self, radius, euclideanDistances,
+        false, nullptr, theOctree);
+    if (ret != 0)
+    {
+        CCTRACE("computeScalarFieldGradient: error " << ret);
+        return false;
+    }
+    nbSF = self.getNumberOfScalarFields();
+    self.getScalarField(nbSF-1)->computeMinAndMax();
+    self.getScalarField(nbSF-1)->setName(sfName.toStdString().c_str());
+    return true;
+}
+
 bool convertNormalToDipDirSFs_py(ccPointCloud &self)
 {
     // --- from ccEntityAction::convertNormalsTo
@@ -510,6 +539,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(filterPointsByScalarValue_overloads, ccPo
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(enhanceRGBWithIntensitySF_overloads, ccPointCloud::enhanceRGBWithIntensitySF, 1, 4)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(convertCurrentScalarFieldToColors_overloads, ccPointCloud::convertCurrentScalarFieldToColors, 0, 1)
 BOOST_PYTHON_FUNCTION_OVERLOADS(colorize_py_overloads, colorize_py, 4, 5)
+BOOST_PYTHON_FUNCTION_OVERLOADS(computeScalarFieldGradient_py_overloads, computeScalarFieldGradient_py, 4, 5)
 BOOST_PYTHON_FUNCTION_OVERLOADS(interpolateColorsFrom_py_overloads, interpolateColorsFrom_py, 2, 3)
 BOOST_PYTHON_FUNCTION_OVERLOADS(orientNormalsWithFM_py_overloads, orientNormalsWithFM_py, 1, 2)
 BOOST_PYTHON_FUNCTION_OVERLOADS(orientNormalsWithMST_py_overloads, orientNormalsWithMST_py, 1, 2)
@@ -537,6 +567,10 @@ void export_ccPointCloud()
          (arg("self"), arg("r"), arg("g"), arg("b"), arg("a")=1.0f),
          ccPointCloudPy_colorize_doc))
         .def("computeGravityCenter", &ccPointCloud::computeGravityCenter, ccPointCloudPy_computeGravityCenter_doc)
+        .def("computeScalarFieldGradient", &computeScalarFieldGradient_py,
+             computeScalarFieldGradient_py_overloads(
+             (arg("self"), arg("SFindex"), arg("radius"), arg("euclideanDistances"),
+              arg("theOctree")=0), ccPointCloudPy_computeScalarFieldGradient_doc))
         .def("colorsFromNPArray_copy", &colorsFromNPArray_copy, ccPointCloudPy_colorsFromNPArray_copy_doc)
         .def("coordsFromNPArray_copy", &coordsFromNPArray_copy, ccPointCloudPy_coordsFromNPArray_copy_doc)
         .def("convertCurrentScalarFieldToColors", &ccPointCloud::convertCurrentScalarFieldToColors,

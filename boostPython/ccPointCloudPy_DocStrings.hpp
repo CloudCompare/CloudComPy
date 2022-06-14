@@ -102,6 +102,23 @@ Return a tuple of the 3 coordinates of the gravity center of the cloud.
 :return: gravity center coordinates
 :rtype: tuple of float )";
 
+const char* ccPointCloudPy_computeScalarFieldGradient_doc= R"(
+Computes the geometrical gradient of a scalar field associated to a point cloud.
+
+The gradient is a new scalar field.
+See Daniel Girardeau-Montaut's PhD manuscript (Chapter 3, section 3.3.2) for more
+information. As explained in this section, if the scalar field corresponds to
+(euclidean) distances between the points and another entity, then it is possible
+to filter out aberrant values.
+
+:param int SFindex: The scalar Field index in the Point Cloud.
+:param double radius: spherical neighborhood size (or 0 for automatic size)
+:param bool euclideanDistances: indicates if the scalar values are euclidean distances
+:param DgmOctree,optional theOctree: he octree, if it has already been computed
+
+:return: success
+:rtype: bool)";
+
 const char* ccPointCloudPy_convertCurrentScalarFieldToColors_doc= R"(
 Converts current scalar field to RGB colors.
 
