@@ -20,7 +20,11 @@
 ##########################################################################
 
 message( STATUS "genere Sphinx doc ...")
+if (WIN32)
+execute_process( COMMAND sphinxDoc\genSphinxDoc.bat )
+else()
 execute_process( COMMAND pwd )
 execute_process( COMMAND bash sphinxDoc/genSphinxDoc.sh )
+endif()
 message( STATUS "... Done")
 

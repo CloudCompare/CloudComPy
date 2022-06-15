@@ -45,7 +45,7 @@
         },
         {
           "name": "BUILD_REFERENCE_DOC:BOOL",
-          "value": "OFF",
+          "value": "ON",
           "type": "STRING"
         },
         {
