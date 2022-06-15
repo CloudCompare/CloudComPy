@@ -29,6 +29,7 @@
 #include <ccPointCloud.h>
 #include <ccOctree.h>
 #include <ccMesh.h>
+#include <ccFacet.h>
 #include <ScalarField.h>
 #include <ccNormalVectors.h>
 #include <ccHObjectCaster.h>
@@ -151,25 +152,38 @@ py::tuple importFilePy(const char* filename,
 {
     std::vector<ccMesh*> meshes;
     std::vector<ccPointCloud*> clouds;
+    std::vector<ccPolyline*> polys;
+    std::vector<ccFacet*> facets;
     std::vector<QString> structure;
     std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z, extraData, &structure);
     for( auto entity : entities)
     {
-        ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
+       ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
         if (mesh)
         {
             meshes.push_back(mesh);
+            continue;
         }
-        else
+        ccPolyline* poly = ccHObjectCaster::ToPolyline(entity);
+        if (poly)
         {
-            ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(entity);
-            if (cloud)
-            {
-                clouds.push_back(cloud);
-            }
+            polys.push_back(poly);
+            continue;
+        }
+        ccFacet* facet = ccHObjectCaster::ToFacet(entity);
+        if (facet)
+        {
+            facets.push_back(facet);
+            continue;
+        }
+        ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(entity);
+        if (cloud)
+        {
+            clouds.push_back(cloud);
+            continue;
         }
     }
-    py::tuple res = py::make_tuple(meshes, clouds, structure);
+    py::tuple res = py::make_tuple(meshes, clouds, facets, polys, structure);
     return res;
 }
 
