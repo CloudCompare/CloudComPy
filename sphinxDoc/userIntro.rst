@@ -42,6 +42,7 @@ Python3: CloudComPy import
 The starting sequence is:
 ::
 
+    import os
     os.environ["_CCTRACE_"]="ON"          # only if you want debug traces from C++
     import cloudComPy as cc               # import the CloudComPy module
 
