@@ -14,13 +14,13 @@ The ``.bin`` binary format is the native format of CloudCompare and can store se
 Take a look at the details of the formats supported by CloudCompare on `wiki <https://www.cloudcompare.org/doc/wiki/index.php/FILE_I/O>`_.
 
 For clouds, the extensions known by CloudComPy are:
-``.asc`` ``.bin`` ``.drc`` ``.dxf`` ``.E57`` ``.las`` ``.laz`` ``.pcd`` ``.ply`` ``.sbf`` ``.shp`` ``.vtk`` ``.xyz``
+``.asc`` ``.bin`` ``.drc`` ``.dxf`` ``.E57`` ``.las`` ``.laz`` ``.pcd`` ``.ply`` ``.pv`` ``.sbf`` ``.shp`` ``.vtk`` ``.xyz``
 
 For meshes: 
 ``.dxf`` ``.bin`` ``.fbx``  ``.obj`` ``.off`` ``.ply`` ``.stl`` ``.vtk`` 
 
 For polylines:
-``.dxf`` ``.georef`` ``.obj`` ``.poly`` ``.sx`` ``.shp``
+``.dxf`` ``.poly`` ``.sx`` ``.shp``
 
 Load without explicit shift parameters
 --------------------------------------

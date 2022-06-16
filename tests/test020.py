@@ -27,7 +27,7 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual, createSymbolicLinks
+from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual, createSymbolicLinks, getSamplePoly
 import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC
@@ -202,3 +202,21 @@ g= aCloud.computeGravityCenter()
 if not isCoordEqual(g, (-0.050, -0.050, 0.057), tol= 1.e-1):
     raise RuntimeError
 
+poly = cc.loadPolyline(getSamplePoly("poly1"))
+cc.SaveEntities([poly], os.path.join(dataDir, "poly01.poly"))
+cc.SaveEntities([poly], os.path.join(dataDir, "poly01.dxf"))
+cc.SaveEntities([poly], os.path.join(dataDir, "poly01.sx"))
+cc.SaveEntities([poly], os.path.join(dataDir, "poly01.shp"))
+
+p_poly=cc.loadPolyline(os.path.join(dataDir, "poly01.poly"))
+if p_poly.size() != 7:
+    raise RuntimeError
+p_dxf=cc.loadPolyline(os.path.join(dataDir, "poly01.dxf"))
+if p_dxf.size() != 7:
+    raise RuntimeError
+p_sx=cc.loadPolyline(os.path.join(dataDir, "poly01.sx"))
+if p_sx.size() != 7:
+    raise RuntimeError
+p_shp=cc.loadPolyline(os.path.join(dataDir, "poly01.shp"))
+if p_shp.size() != 7:
+    raise RuntimeError

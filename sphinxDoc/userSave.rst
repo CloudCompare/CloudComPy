@@ -6,17 +6,43 @@ Saving Clouds and other entities to files
 Known formats
 -------------
 
+CloudComPy can write a lot of formats of point clouds and meshes.
+The ``.bin`` binary format is the native format of CloudCompare and can store several entities of all types.
+Take a look at the details of the formats supported by CloudCompare on `wiki <https://www.cloudcompare.org/doc/wiki/index.php/FILE_I/O>`_.
+
+For clouds, the extensions known by CloudComPy are:
+``.asc`` ``.bin`` ``.drc`` ``.dxf`` ``.E57`` ``.las`` ``.laz`` ``.pcd`` ``.ply`` ``.pv`` ``.sbf`` ``.shp`` ``.vtk`` ``.xyz``
+
+For meshes:
+``.dxf`` ``.bin`` ``.fbx``  ``.obj`` ``.off`` ``.ply`` ``.stl`` ``.vtk``
+
+For polylines:
+``.dxf`` ``.poly`` ``.sx`` ``.shp``
+
 Saving a Point Cloud
 --------------------
 
-SavePointCloud
+Only the formats ``.las`` and ``.laz`` offers an optional parameter: `version="1.4"` to change from the default version.
+Return code is 0 in case of success.
+::
+
+    ret = cc.SavePointCloud(cloud, "CloudComPy/Data/dataSample.laz")
+    ret = cc.SavePointCloud(cloud, "CloudComPy/Data/dataSample_v14.laz", version="1.4")
 
 Saving a mesh
 -------------
 
-SaveMesh
+Return code is 0 in case of success.
+::
+
+    ret = cc.SaveMesh(mesh, "CloudComPy/Data/mesh.stl")
+
 
 Saving several entities in one file
 -----------------------------------
 
-SaveEntities
+All the entities to save (clouds, meshes, polylines...) must be put in a list.
+Return code is 0 in case of success.
+::
+
+    ret = cc.SaveEntities([cloud, cloud1, cloud2, mesh, poly], "CloudComPy/Data/mixedEntities.bin")
