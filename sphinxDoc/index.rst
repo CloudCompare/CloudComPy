@@ -18,6 +18,10 @@ cloudComPy: a Python interface for CloudCompare
    
    userIntro.rst
    userLoad.rst
+   userSave.rst
+   userEntities.rst
+   userNumpy.rst
+   userUseCases.rst
 
 .. toctree::
    :numbered:

@@ -33,6 +33,8 @@ import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC.init
 
+#---ICP-fragment-begin
+
 cloud1 = cc.loadPointCloud(getSampleCloud(5.0))
 cloud1.setName("cloud1")
 
@@ -49,11 +51,15 @@ cloud2.setName("cloud2_transformed")
 cc.SaveEntities([cloud1, cloud2ref, cloud2], os.path.join(dataDir, "clouds2.bin"))
 
 res=cc.ICP(data=cloud2, model=cloud1, minRMSDecrease=1.e-5,
-           maxIterationCount=20, randomSamplingLimit=50000, removeFarthestPoints=False, method=cc.CONVERGENCE_TYPE.MAX_ITER_CONVERGENCE, adjustScale=False, finalOverlapRatio=0.1)
+           maxIterationCount=20, randomSamplingLimit=50000, removeFarthestPoints=False,
+           method=cc.CONVERGENCE_TYPE.MAX_ITER_CONVERGENCE,
+           adjustScale=False, finalOverlapRatio=0.1)
 tr2 = res.transMat
 cloud3 = res.aligned
 cloud3.applyRigidTransformation(tr2)
 cloud3.setName("cloud2_transformed_afterICP")
+
+#---ICP-fragment-end
 
 nbCpu = psutil.cpu_count()
 bestOctreeLevel = cc.DistanceComputationTools.determineBestOctreeLevel(cloud2ref, None, cloud3)
