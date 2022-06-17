@@ -123,5 +123,6 @@ TODO List
 * DONE: get the transformation matrix computed by the fast global registration function in PCL Plugin (issue #35)
 - TODO: evaluate the feasibility of a virtual 3D view snapshot (issue #49)
 - TODO: evaluate the feasibility of pip or conda packaging of CloudComPy (issue #50)
+- TODO: try reading .ply files with extra columns interpreted as scalarFields, regardless of their names (issue #51)
 
 
