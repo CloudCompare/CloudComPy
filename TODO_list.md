@@ -124,5 +124,5 @@ TODO List
 - TODO: evaluate the feasibility of a virtual 3D view snapshot (issue #49)
 - TODO: evaluate the feasibility of pip or conda packaging of CloudComPy (issue #50)
 - TODO: try reading .ply files with extra columns interpreted as scalarFields, regardless of their names (issue #51)
-
+- TODO: fix the bug in ccGLMatrix constructor (issue #52)
 
