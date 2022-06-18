@@ -42,6 +42,8 @@ find_package( Qt5
     REQUIRED
 )
 
+#find_package( FLANN REQUIRED )
+
 # Testing
 option( BUILD_PY_TESTING "Build tests for CloudComPy" OFF )
 if ( BUILD_PY_TESTING )
