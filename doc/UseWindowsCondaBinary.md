@@ -15,17 +15,17 @@ You need to create a conda environment for CloudComPy: for instance, in Anaconda
 conda activate
 conda update -y -n base -c defaults conda
 ```
-If your environment CloudComPy39 does not exist:
+If your environment CloudComPy310 does not exist:
 ```
-conda create --name CloudComPy39 python=3.9
+conda create --name CloudComPy310 python=3.10
    # --- erase previous env if existing
 ```
 Add or update the packages:
 ```
-conda activate CloudComPy39
+conda activate CloudComPy310
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install "boost=1.72" "cgal=5.0" cmake "ffmpeg=4.3" "gdal=3.3" "jupyterlab=3.2" "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.11" "pdal=2.3" "psutil=5.9" "qt=5.12" "scipy=1.8" "sphinx_rtd_theme=1.0" "spyder=5.2" "tbb=2021.5" "tbb-devel=2021.5" "xerces-c=3.2"
+conda install "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" qhull "qt=5.15" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
 ```
 
 Install the binary in the directory of your choice.
@@ -35,8 +35,8 @@ Install the binary in the directory of your choice.
 From the conda prompt, you have to set the Path and Pythonpath once :
 
 ```
-conda activate CloudComPy39
-cd <path install>\CloudComPy39
+conda activate CloudComPy310
+cd <path install>\CloudComPy310
 envCloudComPy.bat
 ```
 
@@ -67,9 +67,8 @@ An example of notebook is provided in ```doc/samples/histogramOnDistanceComputat
 ### Execute all the Python tests:
 
 ```
-conda activate CloudComPy39
-cd  <path install>\CloudComPy39\doc\PythonAPI_test
-envCloudComPy.bat
+conda activate CloudComPy310
+cd  <path install>\CloudComPy310\doc\PythonAPI_test
 ```
 NB: ```envCloudComPy.bat``` is OK but not mandatory here, ```ctest``` resets the necessary paths
 
