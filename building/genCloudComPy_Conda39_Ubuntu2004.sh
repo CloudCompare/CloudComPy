@@ -1,25 +1,13 @@
-
-## Build on Linux64, with Anaconda3 or miniconda3
-
-The script [below](../genCloudComPy_Conda310_Ubuntu2004.sh) executes the following:
-
- - create or update the conda environment
- - activate the environment
- - build and install CloudComPy (Sources must be cloned from Github and up to date)
- - create the tarfile
- - execute ctest
-
-```
 #!/bin/bash
 
 export CLOUDCOMPY_SRC=${HOME}/projets/CloudComPy/CloudComPy                            # CloudComPy source directory
-export CLOUDCOMPY_BUILD=${HOME}/projets/CloudComPy/buildConda310                       # CloudComPy build directory
+export CLOUDCOMPY_BUILD=${HOME}/projets/CloudComPy/buildConda39                        # CloudComPy build directory
 export CLOUDCOMPY_INSTDIR=${HOME}/projets/CloudComPy/installConda                      # directory for CloudComPy installs
-export CLOUDCOMPY_INSTNAME=CloudComPy310                                               # CloudComPy install directory name
+export CLOUDCOMPY_INSTNAME=CloudComPy39                                                # CloudComPy install directory name
 export CLOUDCOMPY_INSTALL=${CLOUDCOMPY_INSTDIR}/${CLOUDCOMPY_INSTNAME}                 # CloudComPy install directory
-export CLOUDCOMPY_TARFILE=CloudComPy_Conda310_Linux64_"$(date +"%Y%m%d-%H%M")".tgz     # CloudComPy Binary tarfile (will be in ${CLOUDCOMPY_INSTDIR}
+export CLOUDCOMPY_TARFILE=CloudComPy_Conda39_Linux64_"$(date +"%Y%m%d-%H%M")".tgz      # CloudComPy Binary tarfile (will be in ${CLOUDCOMPY_INSTDIR}
 export CONDA_ROOT=${HOME}/anaconda3                                                    # root directory of conda installation
-export CONDA_ENV=CloudComPy310                                                         # conda environment name
+export CONDA_ENV=CloudComPy39                                                          # conda environment name
 export CONDA_PATH=${CONDA_ROOT}/envs/${CONDA_ENV}                                      # conda environment directory
 export CORK_REP=${HOME}/projets/CloudComPy/cork                                        # directory of cork (remove the plugin in cmake options if not needed)
 export DRACO_REP=${HOME}/projets/CloudComPy/dracoInstall                               # directory of draco (remove the plugin in cmake options if not needed)
@@ -46,12 +34,12 @@ conda_buildenv()
     ret=$?
     if [ $ret != "0" ]; then
         conda activate && \
-        conda create -y --name ${CONDA_ENV} python=3.10 && \
+        conda create -y --name ${CONDA_ENV} python=3.9 && \
         conda activate ${CONDA_ENV} || error_exit "conda environment ${CONDA_ENV} cannot be built"
     fi
     conda config --add channels conda-forge && \
     conda config --set channel_priority strict && \
-    conda install -y "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" "qhull=2020.2" "qt=5.15" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
+    conda install -y "boost=1.72" "cgal=5.0" cmake ffmpeg "gdal=3.3" jupyterlab "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5.3" "openmp=8.0" "pcl=1.11" "pdal=2.3" "psutil=5.9" "qhull=2019.1" "qt=5.12" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
 }
 
 # --- CloudComPy build
@@ -155,7 +143,7 @@ cloudcompy_configure()
     -DPLUGIN_STANDARD_QRSA:BOOL="1" \
     -DPYTHONAPI_TEST_DIRECTORY:STRING="CloudComPy/Data" \
     -DPYTHONAPI_TRACES:BOOL="1" \
-    -DPYTHON_PREFERED_VERSION:STRING="3.10" \
+    -DPYTHON_PREFERED_VERSION:STRING="3.9" \
     -DTBB_DIR:PATH="${CONDA_PATH}/lib/cmake/TBB" \
     -DUSE_CONDA_PACKAGES:BOOL="1" \
     -DUSE_EXTERNAL_QHULL_FOR_QHPR:BOOL="0" \
@@ -199,4 +187,3 @@ cloudcompy_configure && \
 cloudcompy_build && \
 cloudcompy_tarfile && \
 cloudcompy_test
-```

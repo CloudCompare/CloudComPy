@@ -1,15 +1,3 @@
-
-## Build on Linux64, with Anaconda3 or miniconda3
-
-The script [below](../genCloudComPy_Conda310_Ubuntu2004.sh) executes the following:
-
- - create or update the conda environment
- - activate the environment
- - build and install CloudComPy (Sources must be cloned from Github and up to date)
- - create the tarfile
- - execute ctest
-
-```
 #!/bin/bash
 
 export CLOUDCOMPY_SRC=${HOME}/projets/CloudComPy/CloudComPy                            # CloudComPy source directory
@@ -199,4 +187,3 @@ cloudcompy_configure && \
 cloudcompy_build && \
 cloudcompy_tarfile && \
 cloudcompy_test
-```
