@@ -407,6 +407,20 @@ The origin of the Dish is at the centre of the base, and the Z-axis lies along t
 :param int,optional precision: drawing precision (angular step = 360/precision), default 24)";
 
 const char* ccPrimitivesPy_toString_doc= R"(
-String version of the transformer coefficients)";
+String version of the transformer coefficients
+
+:return: String version of the transformer coefficients
+:rtype: string)";
+
+const char* ccPrimitivesPy_fromString_doc= R"(
+Static method returning a ccGLMatrix from the string version of the transformer coefficients.
+
+If the creation does not succeed, returns identity transformation.
+
+:param string matText: string version of the transformer coefficients.
+
+:return: ccGLMatrix transformation
+:rtype: ccGLMatrix)";
+
 
 #endif /* CCPRIMITIVESPY_DOCSTRINGS_HPP_ */

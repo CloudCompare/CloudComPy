@@ -180,6 +180,14 @@ template<typename T> QString toString_def_py(ccGLMatrixTpl<T>&self)
     return self.toString();
 }
 
+template<typename T> ccGLMatrixTpl<T> fromString_def_py(const QString &matText)
+{
+    bool success = false;
+    ccGLMatrixTpl<T> mat = ccGLMatrixTpl<T>::FromString(matText, success);
+    if (!success) CCTRACE("ccGLMatrix from string does not succeed! Returning identity.");
+    return mat;
+}
+
 template<typename T> std::vector<double> getColumn_py(ccGLMatrixTpl<T>&self, unsigned index)
 {
 	T* res = self.getColumn(index);
@@ -338,12 +346,14 @@ void export_ccPrimitives()
         ;
 
     class_<ccGLMatrixTpl<float> >("ccGLMatrixTpl_float")
-    	.def(init<const Vector3Tpl<float>&,Vector3Tpl<float>&,Vector3Tpl<float>&,Vector3Tpl<float>&>())
+    	.def(init<const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&>())
         .def("fromDouble", &fromDouble_py, ccPrimitivesPy_fromDouble_doc)
             .staticmethod("fromDouble")
         .def("initFromParameters", initFromParameters1<float>, ccPrimitivesPy_initFromParameters1_doc)
         .def("initFromParameters", initFromParameters2<float>, ccPrimitivesPy_initFromParameters2_doc)
         .def("toString", &toString_def_py<float>, ccPrimitivesPy_toString_doc)
+        .def("fromString", &fromString_def_py<float>, ccPrimitivesPy_fromString_doc)
+        .staticmethod("fromString")
 		.def("getColumn", &getColumn_py<float>, ccPrimitivesPy_getColumn_doc)
         .def("getParameters1", &getParameters1_py<float>, ccPrimitivesPy_getParameters1_py_doc)
         .def("getParameters2", &getParameters2_py<float>, ccPrimitivesPy_getParameters2_py_doc)
@@ -366,10 +376,12 @@ void export_ccPrimitives()
       ;
 
     class_<ccGLMatrixTpl<double> >("ccGLMatrixTpl_double")
-    	.def(init<const Vector3Tpl<double>&,Vector3Tpl<double>&,Vector3Tpl<double>&,Vector3Tpl<double>&>())
+    	.def(init<const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&>())
         .def("initFromParameters", initFromParameters1<double>, ccPrimitivesPy_initFromParameters1_doc)
         .def("initFromParameters", initFromParameters2<double>, ccPrimitivesPy_initFromParameters2_doc)
         .def("toString", &toString_def_py<double>, ccPrimitivesPy_toString_doc)
+        .def("fromString", &fromString_def_py<double>, ccPrimitivesPy_fromString_doc)
+        .staticmethod("fromString")
 		.def("getColumn", &getColumn_py<double>, ccPrimitivesPy_getColumn_doc)
         .def("getParameters1", &getParameters1_py<double>, ccPrimitivesPy_getParameters1_py_doc)
         .def("getParameters2", &getParameters2_py<double>, ccPrimitivesPy_getParameters2_py_doc)
@@ -393,6 +405,7 @@ void export_ccPrimitives()
 
     class_<ccGLMatrix, bases<ccGLMatrixTpl<float> > >("ccGLMatrix", ccPrimitivesPy_ccGLMatrix_doc)
         .def(init<const ccGLMatrixTpl<float>&>())
+        .def(init<const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&>())
         .def("FromToRotation", &FromToRotation_float, ccPrimitivesPy_FromToRotation_doc)
         .def("Interpolate", &Interpolate_float, ccPrimitivesPy_Interpolate_doc)
         .def("FromViewDirAndUpDir", &FromViewDirAndUpDir_float, ccPrimitivesPy_FromViewDirAndUpDir_doc)
@@ -405,6 +418,7 @@ void export_ccPrimitives()
 
     class_<ccGLMatrixd, bases<ccGLMatrixTpl<double> > >("ccGLMatrixd", ccPrimitivesPy_ccGLMatrixd_doc)
         .def(init<const ccGLMatrixTpl<double>&>())
+        .def(init<const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&>())
         .def("FromToRotation", &FromToRotation_double, ccPrimitivesPy_FromToRotation_doc)
         .def("Interpolate", &Interpolate_double, ccPrimitivesPy_Interpolate_doc)
         .def("FromViewDirAndUpDir", &FromViewDirAndUpDir_double, ccPrimitivesPy_FromViewDirAndUpDir_doc)
