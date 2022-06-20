@@ -3,9 +3,9 @@
     {
       "name": "x64-Release",
       "generator": "Ninja",
-      "configurationType": "Release",
+      "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "buildRoot": "C:/Users/paulr/CloudComPy/build/${name}",
+      "buildRoot": "C:/Users/paulr/CloudComPy/build2022/${name}",
       "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy310",
       "anacondaRoot": "C:/Users/paulr/anaconda3/envs/CloudComPy310",
       "Qt5Root": "C:/Users/paulr/anaconda3/envs/CloudComPy310/Library",
