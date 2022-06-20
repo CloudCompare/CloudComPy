@@ -119,12 +119,13 @@ TODO List
 - TODO: build examples of loop with objects created and destroyed for a stable memory usage (issue #40)
 - TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
 * DONE: add functions to handle display state of colors and scalar fields (for save in .bin and opening in GUI) (issue #43)
-- DONE: compute gradients for scalar fields (issue  #46)
+* DONE: compute gradients for scalar fields (issue  #46)
 * DONE: get the transformation matrix computed by the fast global registration function in PCL Plugin (issue #35)
 - TODO: evaluate the feasibility of a virtual 3D view snapshot (issue #49)
 - TODO: evaluate the feasibility of pip or conda packaging of CloudComPy (issue #50)
 - TODO: try reading .ply files with extra columns interpreted as scalarFields, regardless of their names (issue #51)
-- TODO: fix the bug in ccGLMatrix constructor (issue #52)
+* DONE: fix the bug in ccGLMatrix constructor (issue #52)
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
+- TODO: update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows (issue #53)
 
 
