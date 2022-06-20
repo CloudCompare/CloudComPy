@@ -36,6 +36,7 @@
 #include <ccTorus.h>
 #include <ccDish.h>
 #include "ccPrimitivesPy_DocStrings.hpp"
+#include "pyccTrace.h"
 
 #include <QString>
 #include <exception>
@@ -233,6 +234,30 @@ ccGLMatrix getTransformation_py(ccGenericPrimitive& self)
     return m;
 }
 
+class ccGLMatrixWrap
+{
+public:
+    static boost::shared_ptr<ccGLMatrix> initWrapper1(std::vector<double> vec)
+    {
+        CCTRACE("vector size: " << vec.size());
+        if (vec.size() != 16)
+             throw std::range_error("ccGLMatrix constructor takes an array with 16 elements (column major order)");
+        return boost::shared_ptr<ccGLMatrix>(new ccGLMatrix(vec.data()));
+    }
+};
+
+class ccGLMatrixdWrap
+{
+public:
+    static boost::shared_ptr<ccGLMatrixd> initWrapper1(std::vector<double> vec)
+    {
+        CCTRACE("vector size: " << vec.size());
+        if (vec.size() != 16)
+             throw std::range_error("ccGLMatrixd constructor takes an array with 16 elements (column major order)");
+        return boost::shared_ptr<ccGLMatrixd>(new ccGLMatrixd(vec.data()));
+    }
+};
+
 class ccQuadricWrap
 {
 public:
@@ -406,6 +431,7 @@ void export_ccPrimitives()
     class_<ccGLMatrix, bases<ccGLMatrixTpl<float> > >("ccGLMatrix", ccPrimitivesPy_ccGLMatrix_doc)
         .def(init<const ccGLMatrixTpl<float>&>())
         .def(init<const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&>())
+        .def("__init__", make_constructor(&ccGLMatrixWrap::initWrapper1 ))
         .def("FromToRotation", &FromToRotation_float, ccPrimitivesPy_FromToRotation_doc)
         .def("Interpolate", &Interpolate_float, ccPrimitivesPy_Interpolate_doc)
         .def("FromViewDirAndUpDir", &FromViewDirAndUpDir_float, ccPrimitivesPy_FromViewDirAndUpDir_doc)
@@ -419,6 +445,7 @@ void export_ccPrimitives()
     class_<ccGLMatrixd, bases<ccGLMatrixTpl<double> > >("ccGLMatrixd", ccPrimitivesPy_ccGLMatrixd_doc)
         .def(init<const ccGLMatrixTpl<double>&>())
         .def(init<const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&>())
+        .def("__init__", make_constructor(&ccGLMatrixdWrap::initWrapper1 ))
         .def("FromToRotation", &FromToRotation_double, ccPrimitivesPy_FromToRotation_doc)
         .def("Interpolate", &Interpolate_double, ccPrimitivesPy_Interpolate_doc)
         .def("FromViewDirAndUpDir", &FromViewDirAndUpDir_double, ccPrimitivesPy_FromViewDirAndUpDir_doc)

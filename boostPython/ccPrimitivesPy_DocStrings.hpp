@@ -31,12 +31,17 @@ Transformation (M) is composed by a rotation (R) and a translation (T):
 Available operators: ``+= -= *= *``
 
 Default constructor (no parameter) gives identity.
-Alternate constructor:
+
+Alternate constructor 1:
 
 :param tuple X: 3 first elements of the 1st column (last one is 0)
 :param tuple Y: 3 first elements of the 2nd column (last one is 0)
 :param tuple Z: 3 first elements of the 3rd column (last one is 0)
-:param tuple Tr: 3 first elements of the last column (last one is 1))";
+:param tuple Tr: 3 first elements of the last column (last one is 1)
+
+Alternate constructor 2:
+:param list data: 16 elements of the 4x4 matrix, stored in column major order (see :py:meth:`data`)
+)";
 
 const char* ccPrimitivesPy_ccGLMatrixd_doc= R"(
 A 4x4 'transformation' matrix (column major order), double precision (double).
@@ -47,12 +52,17 @@ Transformation (M) is composed by a rotation (R) and a translation (T):
 Available operators: ``+= -= *= *``
 
 Default constructor (no parameter) gives identity.
-Alternate constructor:
+
+Alternate constructor 1:
 
 :param tuple X: 3 first elements of the 1st column (last one is 0)
 :param tuple Y: 3 first elements of the 2nd column (last one is 0)
 :param tuple Z: 3 first elements of the 3rd column (last one is 0)
-:param tuple Tr: 3 first elements of the last column (last one is 1))";
+:param tuple Tr: 3 first elements of the last column (last one is 1)
+
+Alternate constructor 2:
+:param list data: 16 elements of the 4x4 matrix, stored in column major order (see :py:meth:`data`)
+)";
 
 const char* ccPrimitivesPy_ccGLMatrixParams1_doc= R"(
 Equivalent parameters of a ccGLMatrix transformation: a rotation axis, an angle and a translation.
