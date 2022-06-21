@@ -138,11 +138,12 @@ bp::tuple importFilePy(const char* filename,
     CC_SHIFT_MODE mode = AUTO,
     double x = 0,
     double y = 0,
-    double z = 0)
+    double z = 0,
+    QString extraData = QString())
 {
     std::vector<ccMesh*> meshes;
     std::vector<ccPointCloud*> clouds;
-    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z);
+    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z, extraData);
     for( auto entity : entities)
     {
         ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
@@ -169,11 +170,12 @@ ccPointCloud* loadPointCloudPy(
     int skip = 0,
     double x = 0,
     double y = 0,
-    double z = 0)
+    double z = 0,
+    QString extraData = QString())
 {
     std::vector<ccMesh*> meshes;
     std::vector<ccPointCloud*> clouds;
-    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z);
+    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z, extraData);
     for( auto entity : entities)
     {
         ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
@@ -203,11 +205,12 @@ ccMesh* loadMeshPy(
     int skip = 0,
     double x = 0,
     double y = 0,
-    double z = 0)
+    double z = 0,
+    QString extraData = QString())
 {
     std::vector<ccMesh*> meshes;
     std::vector<ccPointCloud*> clouds;
-    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z);
+    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z, extraData);
     for( auto entity : entities)
     {
         ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
@@ -528,9 +531,9 @@ bp::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
 
 
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(importFilePy_overloads, importFilePy, 1, 5);
-BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloudPy_overloads, loadPointCloudPy, 1, 6);
-BOOST_PYTHON_FUNCTION_OVERLOADS(loadMeshPy_overloads, loadMeshPy, 1, 6);
+BOOST_PYTHON_FUNCTION_OVERLOADS(importFilePy_overloads, importFilePy, 1, 6);
+BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloudPy_overloads, loadPointCloudPy, 1, 7);
+BOOST_PYTHON_FUNCTION_OVERLOADS(loadMeshPy_overloads, loadMeshPy, 1, 7);
 BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
 BOOST_PYTHON_FUNCTION_OVERLOADS(GetPointCloudRadius_overloads, GetPointCloudRadius, 1, 2);
 BOOST_PYTHON_FUNCTION_OVERLOADS(ICP_py_overloads, ICP_py, 8, 13);
@@ -668,15 +671,18 @@ BOOST_PYTHON_MODULE(_cloudComPy)
         ;
 
     def("importFile", importFilePy,
-        importFilePy_overloads((arg("filename"), arg("mode")=AUTO, arg("x")=0, arg("y")=0, arg("z")=0),
+        importFilePy_overloads((arg("filename"),
+                arg("mode")=AUTO, arg("x")=0, arg("y")=0, arg("z")=0, arg("extraData")=""),
                                cloudComPy_importFile_doc));
 
     def("loadPointCloud", loadPointCloudPy,
-        loadPointCloudPy_overloads((arg("filename"), arg("mode")=AUTO, arg("skip")=0, arg("x")=0, arg("y")=0, arg("z")=0),
+        loadPointCloudPy_overloads((arg("filename"),
+                arg("mode")=AUTO, arg("skip")=0, arg("x")=0, arg("y")=0, arg("z")=0, arg("extraData")=""),
                 cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
 
     def("loadMesh", loadMeshPy,
-        loadMeshPy_overloads((arg("filename"), arg("mode")=AUTO, arg("skip")=0, arg("x")=0, arg("y")=0, arg("z")=0),
+        loadMeshPy_overloads((arg("filename"),
+                arg("mode")=AUTO, arg("skip")=0, arg("x")=0, arg("y")=0, arg("z")=0, arg("extraData")=""),
                 cloudComPy_loadMesh_doc)[return_value_policy<reference_existing_object>()]);
 
     def("loadPolyline", loadPolyline,

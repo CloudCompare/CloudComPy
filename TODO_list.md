@@ -123,9 +123,9 @@ TODO List
 * DONE: get the transformation matrix computed by the fast global registration function in PCL Plugin (issue #35)
 - TODO: evaluate the feasibility of a virtual 3D view snapshot (issue #49)
 - TODO: evaluate the feasibility of pip or conda packaging of CloudComPy (issue #50)
-- TODO: try reading .ply files with extra columns interpreted as scalarFields, regardless of their names (issue #51)
+* DONE: try reading .ply files with extra columns interpreted as scalarFields, regardless of their names (issue #51)
 * DONE: fix the bug in ccGLMatrix constructor (issue #52)
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
 - TODO: update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows (issue #53)
-
+5
 

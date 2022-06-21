@@ -113,7 +113,8 @@ std::vector<ccHObject*> importFile(const char* filename,
     CC_SHIFT_MODE mode = AUTO,
     double x = 0,
     double y = 0,
-    double z = 0);
+    double z = 0,
+    const QString& extraData=QString());
 
 //! save a point cloud to a file
 /*! the file type is given by the extension
@@ -121,7 +122,7 @@ std::vector<ccHObject*> importFile(const char* filename,
  * \param filename
  * \return IO status
  */
-CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version="");
+CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version=QString());
 
 //! save a mesh to a file
 /*! the file type is given by the extension
