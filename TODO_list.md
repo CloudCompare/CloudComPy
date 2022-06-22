@@ -127,5 +127,5 @@ TODO List
 * DONE: fix the bug in ccGLMatrix constructor (issue #52)
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
 - TODO: update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows (issue #53)
-5
+- TODO: fix the bug on save scalar fields with laz 1.4 (issue #54)
 

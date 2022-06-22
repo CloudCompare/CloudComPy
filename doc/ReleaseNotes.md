@@ -2,6 +2,16 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## June 23, 2022 CloudComPy release:
+
+ - update to CloudCompare 2.12.3 (june 14, 2022)
+ - get the transformation matrix computed by the fast global registration function in PCL Plugin (issue #35)
+ - compute a scalarField gradient (issue #46)
+ - add an extra parameter to LoadParameters, to give a regex filter to ply reader, extra scalar fields selection (issue #51)
+ - fix ccGLMatrix constructor, provide another alternate constructor and method fromString (issue #52)
+ - build the doc on Windows
+ - Various small fixes.
+ 
 ## May 13, 2022 CloudComPy release:
 
  - Update to CloudCompare 2.12.1 (may 7, 2022)
