@@ -12,15 +12,15 @@ normals, several scalarFields, color, an octree structure...
 
     cloud = cc.loadPointCloud("CloudComPy/Data/dataSample_5.0.xyz")
 
-    name = cloud.getName()           # 'dataSample_5 - Cloud'
+    name = cloud.getName()        # 'dataSample_5 - Cloud'
     cloud.setName("sampleCloud")
 
-    nbPoints = cloud.size()          # 1000000
-    pt = cloud.getPoint(12345)       # (-4.880000114440918, -1.5499999523162842, 0.08818499743938446)
+    nbPoints = cloud.size()       # 1000000
+    pt = cloud.getPoint(12345)    # (-4.880000114440918, -1.5499999523162842, 0.08818499743938446)
 
-    bb = cloud.getOwnBB()            # bounding box
-    minCorner = bb.minCorner()       # (-5.0, -5.0, -1.0861680507659912)
-    maxCorner = bb.maxCorner()       # (4.989999771118164, 4.989999771118164, 5.0)
+    bb = cloud.getOwnBB()         # bounding box
+    minCorner = bb.minCorner()    # (-5.0, -5.0, -1.0861680507659912)
+    maxCorner = bb.maxCorner()    # (4.989999771118164, 4.989999771118164, 5.0)
 
     g = cloud.computeGravityCenter()
 
@@ -39,11 +39,11 @@ normals, several scalarFields, color, an octree structure...
     cloud.exportCoordToSF(True, True, True)
     dic = cloud.getScalarFieldDic()  # {'Coord. X': 0, 'Coord. Y': 1, 'Coord. Z': 2}
 
-    SFZ = cloud.getScalarField(0)
-    sfmin = SFZ.getMin()             # -5.0
-    sfmax = SFZ.getMax()             # 4.989999771118164
-    mean, variance = SFZ.computeMeanAndVariance()
-    SFZ.getValue(12345)              # -4.880000114440918
+    SFX = cloud.getScalarField(dic['Coord. X'])
+    sfmin = SFX.getMin()             # -5.0
+    sfmax = SFX.getMax()             # 4.989999771118164
+    mean, variance = SFX.computeMeanAndVariance()
+    SFX.getValue(12345)              # -4.880000114440918
 
     # --- colors
 

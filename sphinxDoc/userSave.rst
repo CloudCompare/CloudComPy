@@ -22,8 +22,17 @@ For polylines:
 Saving a Point Cloud
 --------------------
 
-Only the formats ``.las`` and ``.laz`` offers an optional parameter: `version="1.4"` to change from the default version.
-Return code is 0 in case of success.
+For most formats, the only parameters are the cloud and the filename
+(CloudComPy does not offer yet all the flexibility of CloudCompare).
+The format is defined by the filename extension.
+Return code is 0 in case of success:
+::
+
+    ret = cc.SavePointCloud(cloud, "CloudComPy/Data/dataSample.bin")
+
+
+The formats ``.las`` and ``.laz`` (las compressed) offers an optional parameter: `version="1.4"`
+to change from the default version.
 ::
 
     ret = cc.SavePointCloud(cloud, "CloudComPy/Data/dataSample.laz")
@@ -32,6 +41,9 @@ Return code is 0 in case of success.
 Saving a mesh
 -------------
 
+For all formats, the only parameters are the mesh and the filename.
+(CloudComPy does not offer yet all the flexibility of CloudCompare).
+The format is defined by the filename extension.
 Return code is 0 in case of success.
 ::
 

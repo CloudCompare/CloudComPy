@@ -3,10 +3,10 @@
 cloudComPy: a first example
 =============================
 
-This project proposes a Python module to interface to CloudCompare,
+This project proposes a Python module to interface to `CloudCompare <https://cloudcompare.org>`_,
 of equivalent level to the command mode of CloudCompare.
 
-CloudComPy does not yet cover all the features of CloudCompare. 
+`CloudComPy <https://github.com/CloudCompare/CloudComPy>`_ does not yet cover all the features of CloudCompare. 
 Features are added according to the needs reported by users, 
 feel free to post issues in `GitHub <https://github.com/CloudCompare/CloudComPy/issues>`_.
 
