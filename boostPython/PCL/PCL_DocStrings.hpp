@@ -71,6 +71,13 @@ The cloud is moved (no copy of the original).
 :rtype: bool
 )";
 
+const char* PCL_FGRFgetTransformation_doc= R"(
+get the transformation matrix after the PCL fast registration.
+
+:return: the transformation matrix
+:rtype: ccGLMatrix
+)";
+
 const char* PCL_FGRFgetAutoRadius_doc= R"(
 Get the radius value proposed by default for PCL registration.
 :py:meth:`FastGlobalRegistrationFilter.setParameters` with radius 0 should be called first to compute the default radius value.

@@ -122,7 +122,7 @@ The contours are built via a rasterisation process.
 )";
 
 const char* cloudComPy_importFile_doc= R"(
-Load any kind of entities (cloud or mesh) from a file.
+Load the entities (cloud or mesh) from a file containing several entities.
 
 **WARNING** 
 Shift parameters are not always taken into account, depending on the type of file,
@@ -130,11 +130,17 @@ shift values, following the internal rules of CloudCompare: when using the Cloud
 shift dialog at import is not always available. When the shift dialog is not proposed
 in the GUI, shift parameters are likely not taken into account in CloudCompare.
 
+Optional string extraData can be used in ply file, for instance, to select extra fields
+for import as scalarFields (by default, all extra fields are imported as scalar fields).
+Here, the filter is a regular expression that works on the field name in uppercase.
+
+
 :param str filename: file Name
 :param CC_SHIFT_MODE,optional mode: default AUTO, value from AUTO, XYZ, FIRST_GLOBAL_SHIFT, NO_GLOBAL_SHIFT
 :param float,optional x: default 0
 :param float,optional y: default 0
 :param float,optional z: default 0
+:param string,optional extraData: default empty string
 
 :return: a tuple (list of meshes, list of clouds)
 :rtype: tuple
@@ -242,14 +248,18 @@ returns True if CloudComPy is built with the RANSAC_SD plugin.
 const char* cloudComPy_loadPointCloud_doc= R"(
 Load a 3D cloud from a file.
 
-:param str filename: file name
-:param CC_SHIFT_MODE,optional shiftMode: shift mode from `CC_SHIFT_MODE` enum, default `AUTO`.
-
 **WARNING** 
 Shift parameters are not always taken into account, depending on the type of file,
 shift values, following the internal rules of CloudCompare: when using the CloudCompare GUI,
 shift dialog at import is not always available. When the shift dialog is not proposed
 in the GUI, shift parameters are likely not taken into account in CloudCompare.
+
+Optional string extraData can be used in ply file, for instance, to select extra fields
+for import as scalarFields (by default, all extra fields are imported as scalar fields).
+Here, the filter is a regular expression that works on the field name in uppercase.
+
+:param str filename: file name
+:param CC_SHIFT_MODE,optional shiftMode: shift mode from `CC_SHIFT_MODE` enum, default `AUTO`.
 
   - `CC_SHIFT_MODE.AUTO`: automatic shift of coordinates
   - `CC_SHIFT_MODE.XYZ`:  coordinates shift given by x, y, z parameters
@@ -260,6 +270,7 @@ in the GUI, shift parameters are likely not taken into account in CloudCompare.
 :param float,optional x: shift value for coordinates (mode XYZ),  default 0
 :param float,optional y: shift value for coordinates (mode XYZ),  default 0
 :param float,optional z: shift value for coordinates (mode XYZ),  default 0
+:param string,optional extraData: default empty string
 
 :return: a `ccPointCloud` object. Usage: see ccPointCloud doc.
 :rtype: ccPointCloud)";
@@ -272,7 +283,11 @@ Shift parameters are not always taken into account, depending on the type of fil
 shift values, following the internal rules of CloudCompare: when using the CloudCompare GUI,
 shift dialog at import is not always available. When the shift dialog is not proposed
 in the GUI, shift parameters are likely not taken into account in CloudCompare.
-  
+ 
+Optional string extraData can be used in ply file, for instance, to select extra fields
+for import as scalarFields (by default, all extra fields are imported as scalar fields).
+Here, the filter is a regular expression that works on the field name in uppercase.
+ 
 :param str filename: file name
 :param CC_SHIFT_MODE,optional shiftMode: shift mode from `CC_SHIFT_MODE` enum, default `AUTO`.
 
@@ -285,6 +300,7 @@ in the GUI, shift parameters are likely not taken into account in CloudCompare.
 :param float,optional x: shift value for coordinates (mode XYZ),  default 0
 :param float,optional y: shift value for coordinates (mode XYZ),  default 0
 :param float,optional z: shift value for coordinates (mode XYZ),  default 0
+:param string,optional extraData: default empty string
 
 :return: a `ccMesh` object. Usage: see ccMesh doc.
 :rtype: ccMesh)";

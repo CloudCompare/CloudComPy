@@ -5,7 +5,7 @@
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "buildRoot": "C:/Users/paulr/CloudComPy/build/${name}",
+      "buildRoot": "C:/Users/paulr/CloudComPy/build2019/${name}",
       "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy39",
       "anacondaRoot": "C:/Users/paulr/anaconda3/envs/CloudComPy39",
       "Qt5Root": "C:/Qt/5.15.2/msvc2019_64",
@@ -45,7 +45,7 @@
         },
         {
           "name": "BUILD_REFERENCE_DOC:BOOL",
-          "value": "OFF",
+          "value": "ON",
           "type": "STRING"
         },
         {

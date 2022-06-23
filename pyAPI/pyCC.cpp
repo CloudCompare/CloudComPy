@@ -166,10 +166,12 @@ struct CLLoadParameters: public FileIOFilter::LoadParameters
         autoComputeNormals = false;
         _coordinatesShiftEnabled = &m_coordinatesShiftEnabled;
         _coordinatesShift = &m_coordinatesShift;
+        extraData.setPattern(".+"); // one or more character
     }
 
     bool m_coordinatesShiftEnabled;
     CCVector3d m_coordinatesShift;
+    QRegExp m_extraData;
 };
 
 //! internal attributes (cloned from plugins/ccCommandLineInterface.h)
@@ -397,9 +399,11 @@ ccPolyline* loadPolyline(
     return nullptr;
 }
 
-std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode, double x, double y, double z)
+std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode,
+                                   double x, double y, double z, const QString& extraData)
 {
-    CCTRACE("Opening file: " << filename << " mode: " << mode << " x: " << x << " y: " << y << " z: " << z);
+    CCTRACE("Opening file: " << filename << " mode: " << mode
+            << " x: " << x << " y: " << y << " z: " << z << " extraData: " << extraData.toStdString());
     // TODO adapted code from ccCommandLineParser::importFile
     pyCC* capi = initCloudCompare();
     FileIOFilter::Shared filter = nullptr;
@@ -415,6 +419,11 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode, dou
     capi->m_loadingParameters.shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG;
     capi->m_loadingParameters.m_coordinatesShiftEnabled = false;
     capi->m_loadingParameters.m_coordinatesShift = CCVector3d(0, 0, 0);
+
+    if (!extraData.isEmpty())
+    {
+        capi->m_loadingParameters.extraData.setPattern(extraData);
+    }
 
     switch (mode)
     {

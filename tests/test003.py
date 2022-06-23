@@ -69,3 +69,8 @@ if not math.isclose(filteredSize, 113325, rel_tol=1e-03):
     raise RuntimeError
 
 res = cc.SavePointCloud(fcloud, os.path.join(dataDir, "res3.xyz"))
+
+if not cloud.computeScalarFieldGradient(1, radius, True):
+    raise RuntimeError
+
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud03.bin"))

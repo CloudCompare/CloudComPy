@@ -31,12 +31,17 @@ Transformation (M) is composed by a rotation (R) and a translation (T):
 Available operators: ``+= -= *= *``
 
 Default constructor (no parameter) gives identity.
-Alternate constructor:
+
+Alternate constructor 1:
 
 :param tuple X: 3 first elements of the 1st column (last one is 0)
 :param tuple Y: 3 first elements of the 2nd column (last one is 0)
 :param tuple Z: 3 first elements of the 3rd column (last one is 0)
-:param tuple Tr: 3 first elements of the last column (last one is 1))";
+:param tuple Tr: 3 first elements of the last column (last one is 1)
+
+Alternate constructor 2:
+:param list data: 16 elements of the 4x4 matrix, stored in column major order (see :py:meth:`data`)
+)";
 
 const char* ccPrimitivesPy_ccGLMatrixd_doc= R"(
 A 4x4 'transformation' matrix (column major order), double precision (double).
@@ -47,12 +52,17 @@ Transformation (M) is composed by a rotation (R) and a translation (T):
 Available operators: ``+= -= *= *``
 
 Default constructor (no parameter) gives identity.
-Alternate constructor:
+
+Alternate constructor 1:
 
 :param tuple X: 3 first elements of the 1st column (last one is 0)
 :param tuple Y: 3 first elements of the 2nd column (last one is 0)
 :param tuple Z: 3 first elements of the 3rd column (last one is 0)
-:param tuple Tr: 3 first elements of the last column (last one is 1))";
+:param tuple Tr: 3 first elements of the last column (last one is 1)
+
+Alternate constructor 2:
+:param list data: 16 elements of the 4x4 matrix, stored in column major order (see :py:meth:`data`)
+)";
 
 const char* ccPrimitivesPy_ccGLMatrixParams1_doc= R"(
 Equivalent parameters of a ccGLMatrix transformation: a rotation axis, an angle and a translation.
@@ -407,6 +417,20 @@ The origin of the Dish is at the centre of the base, and the Z-axis lies along t
 :param int,optional precision: drawing precision (angular step = 360/precision), default 24)";
 
 const char* ccPrimitivesPy_toString_doc= R"(
-String version of the transformer coefficients)";
+String version of the transformer coefficients
+
+:return: String version of the transformer coefficients
+:rtype: string)";
+
+const char* ccPrimitivesPy_fromString_doc= R"(
+Static method returning a ccGLMatrix from the string version of the transformer coefficients.
+
+If the creation does not succeed, returns identity transformation.
+
+:param string matText: string version of the transformer coefficients.
+
+:return: ccGLMatrix transformation
+:rtype: ccGLMatrix)";
+
 
 #endif /* CCPRIMITIVESPY_DOCSTRINGS_HPP_ */

@@ -33,6 +33,28 @@ import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC
 
+# --- transformation matrix data (4x4 matrix stored in major column order)
+
+tr1 = cc.ccGLMatrix()
+tr1.initFromParameters(0.47, (1.5, 2.9, 6.3), (5,3,-2))
+m_data_str = tr1.toString()
+m_data = tr1.data()
+tr1b = cc.ccGLMatrix.fromString(m_data_str)
+m_datab = tr1b.data()
+for i in range(16):
+    if m_data[i] != m_datab[i]:
+        raise RuntimeError
+
+tr2 = cc.ccGLMatrixd()
+tr2.initFromParameters(0.47, (1.5, 2.9, 6.3), (5,3,-2))
+m_data2_str = tr2.toString()
+m_data2 = tr2.data()
+tr2b = cc.ccGLMatrixd.fromString(m_data2_str)
+m_data2b = tr2b.data()
+for i in range(16):
+    if not math.isclose(m_data2[i], m_data2b[i]):
+        raise RuntimeError
+
 # --- a rotated object
 
 sphere = cc.ccSphere(1.0)

@@ -46,7 +46,9 @@ set(SPHINXBUILD sphinx-build)
 
 configure_file(conf.py.in conf.py)
 
-if (USE_CONDA_PACKAGES)
+if(WIN32)
+    configure_file(genSphinxDocWindows.bat.in genSphinxDoc.bat)
+elseif (USE_CONDA_PACKAGES)
     configure_file(genSphinxDocConda.sh.in genSphinxDoc.sh)
 else()
     configure_file(genSphinxDoc.sh.in genSphinxDoc.sh)
