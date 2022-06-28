@@ -122,7 +122,8 @@ Resizes memory (no exception thrown).
 :rtype: bool)";
 
 const char* ScalarFieldPy_setName_doc= R"(
-Sets the name of the ScalarField.
+Sets the name of the ScalarField. No control is done on the uniqueness of the name.
+It is your responsability to ensure this uniqueness.
 
 :param str name: new name for the ScalarField )";
 

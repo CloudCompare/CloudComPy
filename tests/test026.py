@@ -33,10 +33,14 @@ import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC
 
-# --- transformation matrix data (4x4 matrix stored in major column order)
+#---transformations-begin
+# --- a transformation from a rotation angle and axis, plus a translation 
 
 tr1 = cc.ccGLMatrix()
 tr1.initFromParameters(0.47, (1.5, 2.9, 6.3), (5,3,-2))
+
+# --- check the access to transformation matrix data (4x4 matrix stored in major column order)
+
 m_data_str = tr1.toString()
 m_data = tr1.data()
 tr1b = cc.ccGLMatrix.fromString(m_data_str)
@@ -45,8 +49,12 @@ for i in range(16):
     if m_data[i] != m_datab[i]:
         raise RuntimeError
 
+# --- transformations can be stored in double precision
+#     (useful if you iterate on transformations)
+
 tr2 = cc.ccGLMatrixd()
 tr2.initFromParameters(0.47, (1.5, 2.9, 6.3), (5,3,-2))
+
 m_data2_str = tr2.toString()
 m_data2 = tr2.data()
 tr2b = cc.ccGLMatrixd.fromString(m_data2_str)
@@ -55,27 +63,31 @@ for i in range(16):
     if not math.isclose(m_data2[i], m_data2b[i]):
         raise RuntimeError
 
-# --- a rotated object
+# --- create a cloud from a primitive object (ellipsoid built from a sphere)
 
 sphere = cc.ccSphere(1.0)
 cloud = sphere.samplePoints(False, 100000)
 cloud.scale(1.0, 3.0, 9.0)
-boundingBox = cloud.getOwnBB()
 
+boundingBox = cloud.getOwnBB()
 if not isCoordEqual(boundingBox.minCorner(), (-1., -3., -9.), 1.e-2):
     raise RuntimeError
 if not isCoordEqual(boundingBox.maxCorner(), (1., 3., 9.), 1.e-2):
     raise RuntimeError
 
+# --- rotate the cloud: define the transformation, then apply it
+
 transform1 = cc.ccGLMatrix()
 transform1.initFromParameters(0.25, (1.5, 2.9, 6.3), (0,0,0))
 cloud.applyRigidTransformation(transform1)
-boundingBox = cloud.getOwnBB()
 
+boundingBox = cloud.getOwnBB()
 if not isCoordEqual(boundingBox.minCorner(), (-1.510, -2.944, -8.937), 1.e-2):
     raise RuntimeError
 if not isCoordEqual(boundingBox.maxCorner(), (1.510, 2.944, 8.937), 1.e-2):
     raise RuntimeError
+
+# --- get the transformation parameters (rotation angle and vector) 
 
 matrixParams1 = transform1.getParameters1()
 
@@ -84,7 +96,10 @@ if not math.isclose(matrixParams1.alpha_rad, 0.25, rel_tol=1.e-5):
 if not isCoordEqual(matrixParams1.axis3D, (0.211393, 0.408694, 0.887852), 1.e-5):
     raise RuntimeError
 
+# --- get the transformation parameters (the 3 angles phi, psi, theta)
+
 matrixParams2 = transform1.getParameters2()
+
 if not math.isclose(matrixParams2.phi_rad, 0.225260, rel_tol=1.e-5):
     raise RuntimeError
 if not math.isclose(matrixParams2.psi_rad, 0.0639141, rel_tol=1.e-5):
@@ -94,7 +109,10 @@ if not math.isclose(matrixParams2.theta_rad, 0.0954226, rel_tol=1.e-5):
 if not isCoordEqual(matrixParams2.t3D, (0., 0., 0.)):
     raise RuntimeError
 
+# --- transformation product, inverse
+
 x =transform1*transform1
+
 mpx = x.getParameters1()
 if not math.isclose(mpx.alpha_rad, 0.5, rel_tol=1.e-5):
     raise RuntimeError
@@ -102,6 +120,7 @@ if not isCoordEqual(mpx.axis3D, (0.211393, 0.408694, 0.887852), 1.e-5):
     raise RuntimeError
 
 rotinv = transform1.inverse()
+
 mpi = rotinv.getParameters1()
 if not math.isclose(mpi.alpha_rad, 0.25, rel_tol=1.e-5):
     raise RuntimeError
@@ -115,31 +134,41 @@ if not math.isclose(mpxi.alpha_rad, 0.25, rel_tol=1.e-5):
 if not isCoordEqual(mpxi.axis3D, (0.211393, 0.408694, 0.887852), 1.e-5):
     raise RuntimeError
 
+# --- manipulations with angles phi theta and psi
+
 rotphi = cc.ccGLMatrix()
 rotphi.initFromParameters(0.1, (0., 0., 1.), (0,0,0))
+
 a1 = rotphi.getParameters2()
 if not math.isclose(a1.phi_rad, 0.1, rel_tol=1.e-7):
     raise RuntimeError
 
 rotpsi = cc.ccGLMatrix()
 rotpsi.initFromParameters(0.2, (1., 0., 0.), (0,0,0))
+
 a2 = rotpsi.getParameters2()
 if not math.isclose(a2.psi_rad, 0.2, rel_tol=1.e-7):
     raise RuntimeError
 
 rottheta = cc.ccGLMatrix()
 rottheta.initFromParameters(0.3, (0., 1., 0.), (0,0,0))
+
 a3 = rottheta.getParameters2()
 if not math.isclose(a3.theta_rad, 0.3, rel_tol=1.e-7):
     raise RuntimeError
 
 rotTaitBryan = rotphi*rottheta*rotpsi
+
 a = rotTaitBryan.getParameters2()
 if not isCoordEqual((a.phi_rad, a.psi_rad, a.theta_rad), (0.1, 0.2, 0.3), 1.e-7):
     raise RuntimeError
 
 mat = (rotTaitBryan.transposed()).transposed()
+
+# --- access to transformation data from numpy
+
 v= np.array(rotTaitBryan.data()) - np.array(mat.data())
+
 d2 = np.inner(v, v)
 if d2>1e-14:
     raise RuntimeError
@@ -158,31 +187,42 @@ d2 = np.inner(v, v)
 if d2>1e-14:
     raise RuntimeError
 
+# --- interpolation between transformations
+
 rot1 = cc.ccGLMatrix()
 rot1.initFromParameters(math.pi/3., (0., 0., 1.), (0,0,0))
 rot2 = cc.ccGLMatrix()
 rot2.initFromParameters(2*math.pi/3., (0., 0., 1.), (0,0,0))
 rotation = cc.ccGLMatrix.Interpolate(0.5, rot1, rot2)
+
 a = rotation.getParameters1()
 if not isCoordEqual(a.axis3D, (0., 0., 1.)):
     raise RuntimeError
 if not math.isclose(a.alpha_rad, math.pi/2., rel_tol=1.e-7):
     raise RuntimeError
 
+# --- create a transformation matrix that rotates a vector to another
+
 rot1 = cc.ccGLMatrix.FromToRotation((1., 0., 0.),(0., 0., 1.))
+
 a = rot1.getParameters1()
 if not isCoordEqual(a.axis3D, (0., -1., 0.)):
     raise RuntimeError
 if not math.isclose(a.alpha_rad, math.pi/2., rel_tol=1.e-7):
     raise RuntimeError
 
+# --- generate a ‘viewing’ matrix from a looking vector and a ‘up’ direction
+
 r2 = math.sqrt(2.)
 rot1 = cc.ccGLMatrix.FromViewDirAndUpDir((0., r2, r2), (0., -r2, r2))
+
 a = rot1.getParameters1()
 if not isCoordEqual(a.axis3D, (-1., 0., 0.)):
     raise RuntimeError
 if not math.isclose(a.alpha_rad, 3*math.pi/4., rel_tol=1.e-7):
     raise RuntimeError
+
+# --- angles manipulation
 
 rotx = cc.ccGLMatrix.xRotation(rotTaitBryan)
 ax=rotx.getParameters1()
@@ -196,6 +236,8 @@ if not isCoordEqual(ay.axis3D, (0., 1., 0.)):
     raise RuntimeError
 if not isCoordEqual(az.axis3D, (0., 0., 1.)):
     raise RuntimeError
+
+#---transformations-end
 
 # ---delete a C++ entity
 
