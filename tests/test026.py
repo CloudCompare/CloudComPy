@@ -236,7 +236,6 @@ if not isCoordEqual(ay.axis3D, (0., 1., 0.)):
     raise RuntimeError
 if not isCoordEqual(az.axis3D, (0., 0., 1.)):
     raise RuntimeError
-
 #---transformations-end
 
 # ---delete a C++ entity

@@ -99,7 +99,6 @@ if not isCoordEqual(g, (-1.0050000e+00, -2.0050001e+00, -2.9903808e+00)):
 # --- inverse translation
 
 cloud.translate((1, 2, 3))
-
 #---scale-translate-end
 
 g = cloud.computeGravityCenter()

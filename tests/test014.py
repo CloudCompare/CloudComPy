@@ -53,10 +53,14 @@ nb = octree.getNumberOfProjectedPoints()
 if nb != 1000000:
     raise RuntimeError
 
+#---normals01-begin
 cloud.exportNormalToSF(True, True, True)
+
 sf=cloud.getScalarField(2)
 if sf.getName() != 'Nz':
     raise RuntimeError
+#---normals01-end
+
 sfmin = sf.getMin()
 sfmax = sf.getMax()
 if not math.isclose(sfmin, 0.06670579, rel_tol=1e-06):
@@ -71,13 +75,22 @@ if not math.isclose(meanvar[1], 0.04167303, rel_tol=1e-06):
 
 if cloud.hasColors():
     raise RuntimeError
+
+#---normals02-begin
 cloud.convertNormalToRGB()
+
 if not cloud.hasColors():
     raise RuntimeError
+#---normals02-end
 
+#---normals03-begin
 cloud.convertNormalToDipDirSFs()
+
 dicsf = cloud.getScalarFieldDic()
 sfdip = cloud.getScalarField(dicsf['Dip (degrees)'])
+sfdipd = cloud.getScalarField(dicsf['Dip direction (degrees)'])
+#---normals03-end
+
 sfmin = sfdip.getMin()
 sfmax = sfdip.getMax()
 if not math.isclose(sfmin, 0.0791, rel_tol=1e-02):
@@ -85,7 +98,6 @@ if not math.isclose(sfmin, 0.0791, rel_tol=1e-02):
 if not math.isclose(sfmax, 86.175, rel_tol=1e-02):
     raise RuntimeError
 
-sfdipd = cloud.getScalarField(dicsf['Dip direction (degrees)'])
 sfmin = sfdipd.getMin()
 sfmax = sfdipd.getMax()
 if not math.isclose(sfmin, 0., abs_tol=1e-01):
@@ -93,6 +105,7 @@ if not math.isclose(sfmin, 0., abs_tol=1e-01):
 if not math.isclose(sfmax, 360., abs_tol=1e-01):
     raise RuntimeError
 
+#---normals04-begin
 if not cloud.orientNormalsWithFM():
     raise RuntimeError
 
@@ -101,6 +114,7 @@ if not cloud.orientNormalsWithMST():
 
 if not cc.invertNormals([cloud]):
     raise RuntimeError
+#---normals04-end
 
 cloud.exportNormalToSF(True, True, True)
 sf=cloud.getScalarField(2)

@@ -76,7 +76,7 @@ cloud transformations
 
 Basic transformations :py:meth:`~.cloudComPy.ccPointCloud.translate` and :py:meth:`~.cloudComPy.ccPointCloud.scale`
 allow to translate a cloud or rescale it, with separate factors along the 3 directions and an optional center (see 
-`test001.py <../PythonAPI_test/test001.py>`_.
+`test001.py <../PythonAPI_test/test001.py>`_).
 
 .. include:: ../tests/test001.py
    :start-after: #---scale-translate-begin
@@ -87,7 +87,7 @@ allow to translate a cloud or rescale it, with separate factors along the 3 dire
 More complex transformations, based on rotation, require a :py:class:`cloudComPy.ccGLMatrix` object to define the transformation,
 which is applied to the cloud with the method :py:meth:`~.cloudComPy.ccPointCloud.applyRigidTransformation`.
 
-The methods :py:meth:`~.cloudComPy.ccGLMatrix.initFromParameters` allows to define the transformation with rotations 
+The method :py:meth:`~.cloudComPy.ccGLMatrix.initFromParameters` allows to define the transformation with rotations 
 (see `Euler angles <https://en.wikipedia.org/wiki/Euler_angles>`_).
 The following code is extract from `test026.py <../PythonAPI_test/test026.py>`_.
 
@@ -99,13 +99,101 @@ The following code is extract from `test026.py <../PythonAPI_test/test026.py>`_.
 
 cloud normals
 -------------
-convertNormalToDipDirSFs orientNormalsWithFM orientNormalsWithMST
-invertNormals
+
+Once computed, normals can be exported to scalar fields with :py:meth:`~.cloudComPy.ccPointCloud.exportNormalToSF`:
+
+.. include:: ../tests/test014.py
+   :start-after: #---normals01-begin
+   :end-before:  #---normals01-end
+   :literal:
+   :code: python
+
+Normals can also be converted to color with :py:meth:`~.cloudComPy.ccPointCloud.convertNormalToRGB`:
+
+.. include:: ../tests/test014.py
+   :start-after: #---normals02-begin
+   :end-before:  #---normals02-end
+   :literal:
+   :code: python
+
+To compute strike and dip fields from normals, use :py:meth:`~.cloudComPy.ccPointCloud.convertNormalToDipDirSFs` 
+(see definition for `Strike and dip <https://en.wikipedia.org/wiki/Strike_and_dip>`_):
+
+.. include:: ../tests/test014.py
+   :start-after: #---normals03-begin
+   :end-before:  #---normals03-end
+   :literal:
+   :code: python
+
+Normals can be inverted with :py:meth:`cloudComPy.invertNormals`,
+reoriented with a `Fast Marching method <https://en.wikipedia.org/wiki/Fast_marching_method>`_ 
+or a `Minimum Spanning Tree method <https://en.wikipedia.org/wiki/Fast_marching_method>`_, 
+with :py:meth:`~.cloudComPy.ccPointCloud.orientNormalsWithFM`
+and :py:meth:`~.cloudComPy.ccPointCloud.orientNormalsWithMST`.
+
+.. include:: ../tests/test014.py
+   :start-after: #---normals04-begin
+   :end-before:  #---normals04-end
+   :literal:
+   :code: python
+
+The previous code is extract from `test014.py <../PythonAPI_test/test014.py>`_.
 
 cloud colors
 ------------
 
-color manipulation test029
+The :py:class:`cloudComPy.QColor` class wraps the `Qt5 QColor <https://doc.qt.io/qt-5/qcolor.html>`_ class 
+and provides provides colors based on RGB, HSV or CMYK values. 
+See `test028.py <../PythonAPI_test/test028.py>`_ for an example of use of :py:class:`cloudComPy.QColor` methods.
+
+Several methods of :py:class:`cloudComPy.ccPointCloud` allow to colorize the cloud:
+
+ - :py:meth:`~.cloudComPy.ccPointCloud.colorize`
+ - :py:meth:`~.cloudComPy.ccPointCloud.fromRgb`
+ - :py:meth:`~.cloudComPy.ccPointCloud.fromRgbF`
+ - :py:meth:`~.cloudComPy.ccPointCloud.setColorGradient`
+ - :py:meth:`~.cloudComPy.ccPointCloud.setColorGradientDefault`
+ - :py:meth:`~.cloudComPy.ccPointCloud.setColorGradientBanded`
+ - :py:meth:`~.cloudComPy.ccPointCloud.changeColorLevels`
+ - :py:meth:`~.cloudComPy.ccPointCloud.convertRGBToGreyScale`
+
+.. include:: ../tests/test029.py
+   :start-after: #---colors01-begin
+   :end-before:  #---colors01-end
+   :literal:
+   :code: python
+
+ScalarFields can be used to define or modify colors, colors can be used to define scalarFields:
+
+ - :py:meth:`~.cloudComPy.ccPointCloud.convertCurrentScalarFieldToColors`
+ - :py:meth:`~.cloudComPy.ccPointCloud.enhanceRGBWithIntensitySF`
+ - :py:meth:`~.cloudComPy.ccPointCloud.sfFromColor`
+
+.. include:: ../tests/test029.py
+   :start-after: #---colors02-begin
+   :end-before:  #---colors02-end
+   :literal:
+   :code: python
+ 
+If you don't need any more colors, it is possible to free some memory 
+with :py:meth:`~.cloudComPy.ccPointCloud.unallocateColors`:
+ 
+.. include:: ../tests/test029.py
+   :start-after: #---colors03-begin
+   :end-before:  #---colors03-end
+   :literal:
+   :code: python
+
+With two clouds "sharing a same region", it is possible to define the color of one cloud
+by interpolation from the other cloud, with :py:meth:`~.cloudComPy.ccPointCloud.interpolateColorsFrom`
+
+.. include:: ../tests/test029.py
+   :start-after: #---colors04-begin
+   :end-before:  #---colors04-end
+   :literal:
+   :code: python
+
+The previous code is extract from `test029.py <../PythonAPI_test/test029.py>`_.
 
 scalar fields
 -------------
