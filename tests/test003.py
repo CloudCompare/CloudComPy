@@ -70,7 +70,10 @@ if not math.isclose(filteredSize, 113325, rel_tol=1e-03):
 
 res = cc.SavePointCloud(fcloud, os.path.join(dataDir, "res3.xyz"))
 
+#---cloudsf01-begin
+radius = cc.GetPointCloudRadius([cloud], 12) # number of nodes wanted within the radius
 if not cloud.computeScalarFieldGradient(1, radius, True):
     raise RuntimeError
+#---cloudsf01-end
 
 res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud03.bin"))

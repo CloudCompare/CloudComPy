@@ -97,6 +97,8 @@ The following code is extract from `test026.py <../PythonAPI_test/test026.py>`_.
    :literal:
    :code: python
 
+.. _Cloud_Normals:
+
 cloud normals
 -------------
 
@@ -138,6 +140,8 @@ and :py:meth:`~.cloudComPy.ccPointCloud.orientNormalsWithMST`.
    :code: python
 
 The previous code is extract from `test014.py <../PythonAPI_test/test014.py>`_.
+
+.. _Cloud_Colors:
 
 cloud colors
 ------------
@@ -197,7 +201,67 @@ The previous code is extract from `test029.py <../PythonAPI_test/test029.py>`_.
 
 scalar fields
 -------------
-name, min, max, mean, variance
+
+when a scalar field is modified with Numpy (see :ref:`ScalarField_Numpy`),
+you must reinitialise the min and max value of the scalar field with :py:meth:`~.cloudComPy.ScalarField.computeMinAndMax`.
+
+.. include:: ../tests/test002.py
+   :start-after: #---sfNumpy01-begin
+   :end-before:  #---sfNumpy01-end
+   :literal:
+   :code: python
+
+General information and statistics are available with:
+
+ - :py:meth:`~.cloudComPy.ScalarField.getName`
+ - :py:meth:`~.cloudComPy.ScalarField.getMin`
+ - :py:meth:`~.cloudComPy.ScalarField.getMax`
+ - :py:meth:`~.cloudComPy.ScalarField.computeMeanAndVariance`
+ - :py:meth:`~.cloudComPy.ScalarField.getValue`
+
+.. include:: ../tests/test002.py
+   :start-after: #---sfNumpy02-begin
+   :end-before:  #---sfNumpy02-end
+   :literal:
+   :code: python
+ 
+To change the scalar field name, set a value on a point, fill the scalar field with a uniform value, use:
+
+ - :py:meth:`~.cloudComPy.ScalarField.setName`
+ - :py:meth:`~.cloudComPy.ScalarField.setValue`
+ - :py:meth:`~.cloudComPy.ScalarField.fill`
+
+.. include:: ../tests/test002.py
+   :start-after: #---sfNumpy03-begin
+   :end-before:  #---sfNumpy03-end
+   :literal:
+   :code: python
+
+Scalar fields can be built from normals or colors, and can be used to define colors:
+see :ref:`Cloud_Normals` and :ref:`Cloud_Colors`.
+
+To get a scalar field gradient, use :py:meth:`cloudComPy.ccPointCloud.computeScalarFieldGradient`
+with an appropriate radius:
+
+.. include:: ../tests/test003.py
+   :start-after: #---cloudsf01-begin
+   :end-before:  #---cloudsf01-end
+   :literal:
+   :code: python
+
+
+filterPointsByScalarValue
+
+deleteAllScalarFields, deleteScalarField
+
+setCurrentDisplayedScalarField 
+setCurrentInScalarField 
+setCurrentOutScalarField
+setCurrentScalarField
+getCurrentDisplayedScalarField
+getCurrentDisplayedScalarFieldIndex 
+getCurrentInScalarField
+getCurrentOutScalarField
 
 meshes introspection and manipulation
 -------------------------------------

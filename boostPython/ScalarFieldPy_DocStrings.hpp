@@ -40,7 +40,7 @@ Returns a tuple (mean, variance).
 :rtype: tuple )";
 
 const char* ScalarFieldPy_computeMinAndMax_doc= R"(
-Should be called before getMin or getMax, for instance after modifying.
+Should be called before getMin or getMax, for instance after modifying
 the scalar field with Numpy.
 
 No return!)";

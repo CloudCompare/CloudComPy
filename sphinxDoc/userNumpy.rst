@@ -1,7 +1,12 @@
 
-==================================================================
-operations on coordinates, scalarFields, colors, meshes with Numpy
-==================================================================
+===================================================================
+operations on coordinates, scalar fields, colors, meshes with Numpy
+===================================================================
+
+.. _ScalarField_Numpy:
+
+Modify or create a scalar field with Numpy
+------------------------------------------
 
 coords, scalar fields
 CloudComPy-->numpy, numpy-->CloudComPy

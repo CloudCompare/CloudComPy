@@ -96,3 +96,30 @@ asf2 = sf2.toNpArray()
 ok = np.allclose(asf1, asf2, rtol=1.e-6)
 if not ok:
     raise RuntimeError
+
+#---sfNumpy01-begin
+dic = cloud1.getScalarFieldDic()
+sf1 = cloud1.getScalarField(dic['Coord. Z'])
+max1 = sf1.getMax()
+asf1 = sf1.toNpArray()   # access to Numpy array, without copy
+asf1[0] = 2*max1         # modification in place
+sf1.computeMinAndMax()
+#---sfNumpy01-end
+
+if not math.isclose(sf1.getMax(), 2*max1):
+    raise RuntimeError
+
+#---sfNumpy02-begin
+sfname = sf1.getName()
+sfmin = sf1.getMin()
+sfmax = sf1.getMax()
+mean, var = sf1.computeMeanAndVariance()
+val = sf1.getValue(23)
+#---sfNumpy02-end
+
+#---sfNumpy03-begin
+sf1.setName("aNewName")
+sf1.fill(0.5)
+sf1.setValue(3, 2.25) # index, value
+#---sfNumpy03-end
+
