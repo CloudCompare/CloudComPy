@@ -159,8 +159,13 @@ meshobj = cc.loadMesh(os.path.join(dataDir, "mesh.obj"))
 if meshobj.size() != meshSize:
     raise RuntimeError
 
+#---meshcloud01-begin
 meshply = cc.loadMesh(os.path.join(dataDir, "mesh.ply"))
+cloud1 = meshply.getAssociatedCloud()
+#---meshcloud01-end
 if meshply.size() != meshSize:
+    raise RuntimeError
+if cloud1.size() != 10000:
     raise RuntimeError
 
 meshbin = cc.loadMesh(os.path.join(dataDir, "mesh.bin"))

@@ -97,6 +97,12 @@ The following code is extract from `test026.py <../PythonAPI_test/test026.py>`_.
    :literal:
    :code: python
 
+cloud copy, destruction
+-----------------------
+
+TODO: clone, partialClone (test019) deleteEntity
+
+
 .. _Cloud_Normals:
 
 cloud normals
@@ -180,7 +186,8 @@ ScalarFields can be used to define or modify colors, colors can be used to defin
    :code: python
  
 If you don't need any more colors, it is possible to free some memory 
-with :py:meth:`~.cloudComPy.ccPointCloud.unallocateColors`:
+with :py:meth:`~.cloudComPy.ccPointCloud.unallocateColors`
+(**WARNING** be sure to have no more Python objects referencing the deleted object):
  
 .. include:: ../tests/test029.py
    :start-after: #---colors03-begin
@@ -237,6 +244,8 @@ To change the scalar field name, set a value on a point, fill the scalar field w
    :literal:
    :code: python
 
+The previous code is extract from `test002.py <../PythonAPI_test/test002.py>`_.
+
 Scalar fields can be built from normals or colors, and can be used to define colors:
 see :ref:`Cloud_Normals` and :ref:`Cloud_Colors`.
 
@@ -249,29 +258,90 @@ with an appropriate radius:
    :literal:
    :code: python
 
+The previous code is extract from `test003.py <../PythonAPI_test/test003.py>`_.
 
-filterPointsByScalarValue
+Some methods of :py:class:`cloudComPy.ccPointCloud`, directly wrapped from CloudCompare GUI, 
+are used to select a current scalar field.
+This is required by some other methods, working with the current selected scalar field:
 
-deleteAllScalarFields, deleteScalarField
+ - :py:meth:`~.cloudComPy.ccPointCloud.setCurrentDisplayedScalarField`
+ - :py:meth:`~.cloudComPy.ccPointCloud.setCurrentInScalarField`
+ - :py:meth:`~.cloudComPy.ccPointCloud.setCurrentOutScalarField`
+ - :py:meth:`~.cloudComPy.ccPointCloud.setCurrentScalarField`
+ - :py:meth:`~.cloudComPy.ccPointCloud.getCurrentDisplayedScalarField`
+ - :py:meth:`~.cloudComPy.ccPointCloud.getCurrentDisplayedScalarFieldIndex`
+ - :py:meth:`~.cloudComPy.ccPointCloud.getCurrentInScalarField`
+ - :py:meth:`~.cloudComPy.ccPointCloud.getCurrentOutScalarField`
 
-setCurrentDisplayedScalarField 
-setCurrentInScalarField 
-setCurrentOutScalarField
-setCurrentScalarField
-getCurrentDisplayedScalarField
-getCurrentDisplayedScalarFieldIndex 
-getCurrentInScalarField
-getCurrentOutScalarField
+For instance, the :py:meth:`~.cloudComPy.ccPointCloud.filterPointsByScalarValue` method
+relies on :py:meth:`~.cloudComPy.ccPointCloud.setCurrentDisplayedScalarField` to work.
+The points of the input cloud are filtered by keeping (or excluding) the points 
+for which the value of the scalar field belongs to a (min,max) interval.
 
-code extrait de test002 et test003
+.. include:: ../tests/test019.py
+   :start-after: #---filterPoints01-begin
+   :end-before:  #---filterPoints01-end
+   :literal:
+   :code: python
+
+The previous code is extract from `test019.py <../PythonAPI_test/test019.py>`_.
+
+If you need to free some memory and do not need any more some scalar fields,
+you can use the following methods of :py:class:`cloudComPy.ccPointCloud`
+(**WARNING** be sure to have no more Python objects referencing the deleted object):
+
+ - :py:meth:`~.cloudComPy.ccPointCloud.deleteAllScalarFields`
+ - :py:meth:`~.cloudComPy.ccPointCloud.deleteScalarField`
 
 meshes introspection and manipulation
 -------------------------------------
 
-cloneMesh, subdivide, laplacianSmooth
-access to triangle nodes
-computePerVertexNormals
+In CloudCompare and CloudComPy 3D meshes are triangular meshes (:py:class:`~.cloudComPy.ccMesh`), 
+built on a set of vertices, which constitute an associated cloud.
+To get this cloud, use :py:meth:`~.cloudComPy.ccMesh.getAssociatedCloud` which gives a :py:class:`~.cloudComPy.ccPointCloud`.
+
+.. include:: ../tests/test020.py
+   :start-after: #---meshcloud01-begin
+   :end-before:  #---meshcloud01-end
+   :literal:
+   :code: python
+
+When a cloud represents a kind of 2.5D elevated surface, a mesh can be built using the nodes of a the cloud
+with :py:meth:`cloudComPy.ccMesh.triangulate`.
+
+.. include:: ../tests/test011.py
+   :start-after: #---triangulate01-begin
+   :end-before:  #---triangulate01-end
+   :literal:
+   :code: python
+
+A mesh have a name, distinct of the associated cloud name, a size which is the number of triangles.
+
+ - :py:meth:`~.cloudComPy.ccMesh.getName`
+ - :py:meth:`~.cloudComPy.ccMesh.setName`
+ - :py:meth:`~.cloudComPy.ccMesh.size`
+ 
+A mesh can have normals, computed either on vertices or on triangles:
+
+.. include:: ../tests/test014.py
+   :start-after: #---meshNormals01-begin
+   :end-before:  #---meshNormals01-end
+   :literal:
+   :code: python
+
+If you need to iterate through the triangles and their vertices, use :py:meth:`~.cloudComPy.ccMesh.getTriangleVertIndexes`:
+
+.. include:: ../tests/test011.py
+   :start-after: #---triangleVertices01-begin
+   :end-before:  #---triangleVertices01-end
+   :literal:
+   :code: python
+
+
+subdivide, laplacianSmooth
 samplePoints
+normalsShown, sfShown, showColors, showNormals, showSF
+clone, deleteEntity cloneMesh, 
 
 primitives
 ----------

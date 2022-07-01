@@ -127,12 +127,14 @@ if not math.isclose(sfmax, -0.06670579, rel_tol=1e-06):
 if not math.isclose(sfmin, -0.9999990, rel_tol=1e-06):
     raise RuntimeError
 
+#---meshNormals01-begin
 cloud1 = cc.loadPointCloud(getSampleCloud2(3.0,0, 0.1))
 cloud1.setName("cloud1")
 plane = cc.ccPlane.Fit(cloud1)
 mesh1 = cc.ccMesh.triangulate(cloud1, cc.TRIANGULATION_TYPES.DELAUNAY_2D_AXIS_ALIGNED)
 mesh1.setName("mesh1")
 cc.computeNormals([mesh1], computePerVertexNormals=False)
+#---meshNormals01-end
 res = cc.SaveEntities([cloud, cloud1, mesh1], os.path.join(dataDir, "cloudmesh.bin"))
 if res != cc.CC_FILE_ERROR.CC_FERR_NO_ERROR:
     raise RuntimeError

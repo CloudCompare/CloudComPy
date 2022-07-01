@@ -33,13 +33,16 @@ import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC
 
+#---triangulate01-begin
 cloud1 = cc.loadPointCloud(getSampleCloud2(3.0, 0, 0.1))
 cloud1.setName("cloud1")
-if cloud1.size() != 10000:
-    raise RuntimeError
 
 mesh1 = cc.ccMesh.triangulate(cloud1, cc.TRIANGULATION_TYPES.DELAUNAY_2D_AXIS_ALIGNED)
 mesh1.setName("mesh1")
+#---triangulate01-end
+
+if cloud1.size() != 10000:
+    raise RuntimeError
 if not math.isclose(mesh1.size(), 19602, rel_tol=5e-02):
     raise RuntimeError
 
@@ -53,12 +56,14 @@ if not math.isclose(mesh3.size(), 335696, rel_tol=5e-02):
 
 mesh3.laplacianSmooth(nbIteration=20, factor=0.2)
 
+#---triangleVertices01-begin
 # --- access to triangle nodes, per triangle indice
 cloud = mesh1.getAssociatedCloud()
 indexes = mesh1.getTriangleVertIndexes(453)
 p0 = cloud.getPoint(indexes[0])
 p1 = cloud.getPoint(indexes[1])
 p2 = cloud.getPoint(indexes[2])
+#---triangleVertices01-end
 
 # --- access to the numpy array of node indexes (one row per triangle)
 d = mesh1.IndexesToNpArray()

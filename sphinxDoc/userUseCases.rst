@@ -15,6 +15,7 @@ crop2D mesh (test039)
 Compute distances between clouds and meshes
 -------------------------------------------
 distances computeApproxCloud2MeshDistance computeCloud2MeshDistances...
+split distances.
 
 Cloud registration
 ------------------
