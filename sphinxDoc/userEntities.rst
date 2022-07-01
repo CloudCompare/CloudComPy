@@ -263,6 +263,8 @@ getCurrentDisplayedScalarFieldIndex
 getCurrentInScalarField
 getCurrentOutScalarField
 
+code extrait de test002 et test003
+
 meshes introspection and manipulation
 -------------------------------------
 
