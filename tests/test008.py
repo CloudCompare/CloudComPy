@@ -46,11 +46,13 @@ if cone.getTypeName() != 'Cone':
 if cone.size() != 96:
     raise RuntimeError
 
+#---primitiveTypeName01-begin
 cylinder = cc.ccCylinder(0.5, 6.0)
 if cylinder.getTypeName() != 'Cylinder':
     raise RuntimeError
 if cylinder.size() != 96:
     raise RuntimeError
+#---primitiveTypeName01-end
 
 plane = cc.ccPlane(3.0, 4.0)
 if plane.getTypeName() != 'Plane':

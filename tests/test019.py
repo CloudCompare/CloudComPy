@@ -31,8 +31,8 @@ from gendata import getSampleCloud, dataDir
 import numpy as np
 import cloudComPy as cc
 
+#---partialClone01-begin
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
-
 
 refCloud = cc.CloudSamplingTools.noiseFilter(cloud, 0.04, 1.0)
 if refCloud.__class__ != cc.ReferenceCloud:
@@ -44,6 +44,7 @@ origCloud = refCloud.getAssociatedCloud()
 if res != 0:
     raise RuntimeError
 noiseCloud.setName("noiseCloud")
+#---partialClone01-end
 
 
 params = cc.SFModulationParams()

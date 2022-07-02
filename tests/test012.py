@@ -32,6 +32,7 @@ import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC
 
+#---planeFit01-begin
 cloud1 = cc.loadPointCloud(getSampleCloud2(3.0,0, 0.1))
 cloud1.setName("cloud1")
 tr1 = cc.ccGLMatrix()
@@ -40,6 +41,8 @@ cloud1.applyRigidTransformation(tr1)
 
 plane = cc.ccPlane.Fit(cloud1)
 equation = plane.getEquation()
+tr2 = plane.getTransformation()
+#---planeFit01-end
 eqRef = [0.4032580554485321, -0.2757962644100189, 0.8725361824035645, 8.782577514648438]
 for i in range(4):
     if not math.isclose(equation[i], eqRef[i], rel_tol=1.e-3):

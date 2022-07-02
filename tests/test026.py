@@ -240,9 +240,14 @@ if not isCoordEqual(az.axis3D, (0., 0., 1.)):
 
 # ---delete a C++ entity
 
-cl = cloud.cloneThis()
-cc.deleteEntity(cl) # delete the cloud copy
-cl = None
+#---cloneThis01-begin
+cloned = cloud.cloneThis()
+#---cloneThis01-end
+
+#---deleteEntity01-begin
+cc.deleteEntity(cloned) # delete the cloud copy
+cloned = None
+#---deleteEntity01-end
 
 # --- build a polyline from a bounding box
 

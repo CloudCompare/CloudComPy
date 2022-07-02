@@ -114,8 +114,36 @@ The following code is extract from :download:`test026.py <../tests/test026.py>`.
 cloud copy, destruction
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-TODO: clone, partialClone (test019) deleteEntity
+A cloud can be cloned with all its features except from the octree with :py:meth:`~.cloudComPy.ccPointCloud.cloneThis`:
 
+.. include:: ../tests/test026.py
+   :start-after: #---cloneThis01-begin
+   :end-before:  #---cloneThis01-end
+   :literal:
+   :code: python
+
+To free memory, a cloud can be deleted with :py:meth:`cloudComPy.deleteEntity` 
+(**WARNING** be sure to have no more Python objects referencing the deleted object):
+
+.. include:: ../tests/test026.py
+   :start-after: #---deleteEntity01-begin
+   :end-before:  #---deleteEntity01-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test026.py <../tests/test026.py>`.
+
+Some methods give a selection from a cloud as a :py:class:`cloudComPy.ReferenceCloud` which is a light structure 
+referencing the selected nodes in the original cloud. To convert this selection in a new cloud, use the method
+:py:meth:`~.cloudComPy.ccPointCloud.partialClone`:
+
+.. include:: ../tests/test019.py
+   :start-after: #---partialClone01-begin
+   :end-before:  #---partialClone01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test019.py <../tests/test019.py>`.
 
 .. _Cloud_Normals:
 
@@ -355,6 +383,8 @@ A mesh can have normals, computed either on vertices or on triangles:
 
 The above code snippet is from :download:`test014.py <../tests/test014.py>`.
 
+Normals on triangles can be deleted with :py:meth:`~.cloudComPy.ccMesh.clearTriNormals`.
+
 If you need to iterate through the triangles and their vertices, use :py:meth:`~.cloudComPy.ccMesh.getTriangleVertIndexes`:
 
 .. include:: ../tests/test011.py
@@ -401,7 +431,7 @@ The above code snippets are from :download:`test011.py <../tests/test011.py>`.
 Generate a cloud from a mesh
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A mesh can be used to create a cloud with `~.cloudComPy.ccMesh.samplePoints`,
+A mesh can be used to create a cloud with :py:meth:`~.cloudComPy.ccMesh.samplePoints`,
 with a target either of number of points or of density of points:
 
 .. include:: ../tests/test015.py
@@ -415,11 +445,170 @@ The above code snippet is from :download:`test015.py <../tests/test015.py>`.
 mesh copy, destruction
 ~~~~~~~~~~~~~~~~~~~~~~
 
-TODO: clone, deleteEntity cloneMesh, 
+A mesh can be cloned with all its features, except from the octree, with :py:meth`~.cloudComPy.ccMesh.cloneMesh`:
+
+.. include:: ../tests/test011.py
+   :start-after: #---cloneMesh01-begin
+   :end-before:  #---cloneMesh01-end
+   :literal:
+   :code: python
+
+To free memory, a mesh can be deleted with :py:meth:`cloudComPy.deleteEntity` 
+(**WARNING** be sure to have no more Python objects referencing the deleted object):
+
+.. include:: ../tests/test011.py
+   :start-after: #---deleteEntity02-begin
+   :end-before:  #---deleteEntity02-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test011.py <../tests/test011.py>`.
 
 primitives
 ----------
-ccBox ccCone ccCylinder ccPlane ccSphere ccTorus ccQuadric ccDish
+
+Primitives regroups all the geometric generators provided by CloudCompare:
+
+ - :py:class:`~.cloudComPy.ccBox`
+ - :py:class:`~.cloudComPy.ccCone`
+ - :py:class:`~.cloudComPy.ccCylinder`
+ - :py:class:`~.cloudComPy.ccPlane`
+ - :py:class:`~.cloudComPy.ccQuadric`
+ - :py:class:`~.cloudComPy.ccSphere`
+ - :py:class:`~.cloudComPy.ccTorus`
+ - :py:class:`~.cloudComPy.ccDish`
+
+All the primitives derives from :py:class:`~.cloudComPy.ccGenericPrimitive`
+which is derived from :py:class:`~.cloudComPy.ccMesh`. Thus, all the mesh methods apply here.
+
+All primitive constructors use as argument: geometrical features, an optional drawing precision,
+an optional transformation (always possible afterwards).
+
+The primitives have some more methods than the meshes:
+
+ - :py:meth:`~.cloudComPy.ccGenericPrimitive.getTransformation`
+ - :py:meth:`~.cloudComPy.ccGenericPrimitive.getTypeName`
+
+.. include:: ../tests/test008.py
+   :start-after: #---primitiveTypeName01-begin
+   :end-before:  #---primitiveTypeName01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test011.py <../tests/test011.py>`.
+
+Box
+~~~
+
+.. include:: ../tests/test009.py
+   :start-after: #---ccBox01-begin
+   :end-before:  #---ccBox01-end
+   :literal:
+   :code: python
+
+Cone
+~~~~
+
+Cone axis corresponds to the ‘Z’ dimension by default.
+
+.. include:: ../tests/test009.py
+   :start-after: #---ccCone01-begin
+   :end-before:  #---ccCone01-end
+   :literal:
+   :code: python
+
+A :py:class:`~.cloudComPy.ccCone` offers several methods to retreive its geometric features:
+
+ - :py:meth:`~.cloudComPy.ccCone.getBottomCenter`
+ - :py:meth:`~.cloudComPy.ccCone.getBottomRadius`
+ - :py:meth:`~.cloudComPy.ccCone.getHeight`
+ - :py:meth:`~.cloudComPy.ccCone.getLargeCenter`
+ - :py:meth:`~.cloudComPy.ccCone.getLargeRadius`
+ - :py:meth:`~.cloudComPy.ccCone.getSmallCenter`
+ - :py:meth:`~.cloudComPy.ccCone.getSmallRadius`
+ - :py:meth:`~.cloudComPy.ccCone.getTopCenter`
+ - :py:meth:`~.cloudComPy.ccCone.getTopRadius`
+
+Cylinder
+~~~~~~~~
+
+.. include:: ../tests/test009.py
+   :start-after: #---ccCylinder01-begin
+   :end-before:  #---ccCylinder01-end
+   :literal:
+   :code: python
+
+A :py:class:`~.cloudComPy.ccCylinder` derives from a :py:class:`~.cloudComPy.ccCone`.
+It is internally represented by a cone with the same top and bottom radius.
+
+Plane
+~~~~~
+
+.. include:: ../tests/test009.py
+   :start-after: #---ccPlane01-begin
+   :end-before:  #---ccPlane01-end
+   :literal:
+   :code: python
+
+By default, plane normal corresponds to 'Z' dimension.
+
+A :py:class:`~.cloudComPy.ccPlane` offers several methods to retreive its geometric features:
+
+ - :py:meth:`~.cloudComPy.ccPlane.getCenter`
+ - :py:meth:`~.cloudComPy.ccPlane.getEquation`
+ - :py:meth:`~.cloudComPy.ccPlane.getNormal`
+
+The method :py:meth:`~.cloudComPy.ccPlane.Fit` allows to adjust a plane primitive on a cloud:
+
+.. include:: ../tests/test012.py
+   :start-after: #---planeFit01-begin
+   :end-before:  #---planeFit01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test012.py <../tests/test012.py>`.
+
+Quadric
+~~~~~~~
+
+.. include:: ../tests/test009.py
+   :start-after: #---ccQuadric01-begin
+   :end-before:  #---ccQuadric01-end
+   :literal:
+   :code: python
+
+Quadric orthogonal dimension is ‘Z’ by default.
+
+Sphere
+~~~~~~
+
+.. include:: ../tests/test009.py
+   :start-after: #---ccSphere01-begin
+   :end-before:  #---ccSphere01-end
+   :literal:
+   :code: python
+
+A :py:class:`~.cloudComPy.ccSphere` offers the method :py:meth:`~.cloudComPy.ccSphere.getRadius`.
+
+Torus
+~~~~~
+
+.. include:: ../tests/test009.py
+   :start-after: #---ccTorus01-begin
+   :end-before:  #---ccTorus01-end
+   :literal:
+   :code: python
+
+Dish
+~~~~
+
+.. include:: ../tests/test009.py
+   :start-after: #---ccDish01-begin
+   :end-before:  #---ccDish01-end
+   :literal:
+   :code: python
+
+Unless Otherwise noted, the above code snippets are from :download:`test009.py <../tests/test009.py>`.
 
 polylines
 ---------
