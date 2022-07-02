@@ -3,8 +3,11 @@
 Clouds, meshes, scalar fields: introspection, manipulation
 ==========================================================
 
+Clouds an scalar fields
+-----------------------
+
 cloud introspection
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 3D Clouds contains a set of indexed points and have several optional associated features:
 normals, several scalarFields, color, an octree structure...
@@ -83,11 +86,11 @@ If you need to save clouds for reopening with CloudCompare GUI, with a predefine
  - :py:meth:`~.cloudComPy.ccPointCloud.setCurrentDisplayedScalarField`
 
 cloud transformations
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 Basic transformations :py:meth:`~.cloudComPy.ccPointCloud.translate` and :py:meth:`~.cloudComPy.ccPointCloud.scale`
 allow to translate a cloud or rescale it, with separate factors along the 3 directions and an optional center (see 
-`test001.py <../PythonAPI_test/test001.py>`_).
+:download:`test001.py <../tests/test001.py>`).
 
 .. include:: ../tests/test001.py
    :start-after: #---scale-translate-begin
@@ -100,7 +103,7 @@ which is applied to the cloud with the method :py:meth:`~.cloudComPy.ccPointClou
 
 The method :py:meth:`~.cloudComPy.ccGLMatrix.initFromParameters` allows to define the transformation with rotations 
 (see `Euler angles <https://en.wikipedia.org/wiki/Euler_angles>`_).
-The following code is extract from `test026.py <../PythonAPI_test/test026.py>`_.
+The following code is extract from :download:`test026.py <../tests/test026.py>`.
 
 .. include:: ../tests/test026.py
    :start-after: #---transformations-begin
@@ -109,7 +112,7 @@ The following code is extract from `test026.py <../PythonAPI_test/test026.py>`_.
    :code: python
 
 cloud copy, destruction
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 
 TODO: clone, partialClone (test019) deleteEntity
 
@@ -117,7 +120,7 @@ TODO: clone, partialClone (test019) deleteEntity
 .. _Cloud_Normals:
 
 cloud normals
--------------
+~~~~~~~~~~~~~
 
 Once computed, normals can be exported to scalar fields with :py:meth:`~.cloudComPy.ccPointCloud.exportNormalToSF`:
 
@@ -156,16 +159,16 @@ and :py:meth:`~.cloudComPy.ccPointCloud.orientNormalsWithMST`.
    :literal:
    :code: python
 
-The above code snippets are from `test014.py <../PythonAPI_test/test014.py>`_.
+The above code snippets are from :download:`test014.py <../tests/test014.py>`.
 
 .. _Cloud_Colors:
 
 cloud colors
-------------
+~~~~~~~~~~~~
 
 The :py:class:`cloudComPy.QColor` class wraps the `Qt5 QColor <https://doc.qt.io/qt-5/qcolor.html>`_ class 
 and provides provides colors based on RGB, HSV or CMYK values. 
-See `test028.py <../PythonAPI_test/test028.py>`_ for an example of use of :py:class:`cloudComPy.QColor` methods.
+See :download:`test028.py <../tests/test028.py>` for an example of use of :py:class:`cloudComPy.QColor` methods.
 
 Several methods of :py:class:`cloudComPy.ccPointCloud` allow to colorize the cloud:
 
@@ -215,10 +218,10 @@ by interpolation from the other cloud, with :py:meth:`~.cloudComPy.ccPointCloud.
    :literal:
    :code: python
 
-The above code snippets are from `test029.py <../PythonAPI_test/test029.py>`_.
+The above code snippets are from :download:`test029.py <../tests/test029.py>`.
 
 scalar fields
--------------
+~~~~~~~~~~~~~
 
 when a scalar field is modified with Numpy (see :ref:`ScalarField_Numpy`),
 you must reinitialise the min and max value of the scalar field with :py:meth:`~.cloudComPy.ScalarField.computeMinAndMax`.
@@ -255,7 +258,7 @@ To change the scalar field name, set a value on a point, fill the scalar field w
    :literal:
    :code: python
 
-The above code snippets are from `test002.py <../PythonAPI_test/test002.py>`_.
+The above code snippets are from :download:`test002.py <../tests/test002.py>`.
 
 Scalar fields can be built from normals or colors, and can be used to define colors:
 see :ref:`Cloud_Normals` and :ref:`Cloud_Colors`.
@@ -269,7 +272,7 @@ with an appropriate radius:
    :literal:
    :code: python
 
-The previous code is extract from `test003.py <../PythonAPI_test/test003.py>`_.
+The previous code is extract from :download:`test003.py <../tests/test003.py>`.
 
 Some methods of :py:class:`cloudComPy.ccPointCloud`, directly wrapped from CloudCompare GUI, 
 are used to select a current scalar field.
@@ -295,7 +298,7 @@ for which the value of the scalar field belongs to a (min,max) interval.
    :literal:
    :code: python
 
-The previous code is extract from `test019.py <../PythonAPI_test/test019.py>`_.
+The previous code is extract from :download:`test019.py <../tests/test019.py>`.
 
 If you need to free some memory and do not need any more some scalar fields,
 you can use the following methods of :py:class:`cloudComPy.ccPointCloud`
@@ -304,8 +307,25 @@ you can use the following methods of :py:class:`cloudComPy.ccPointCloud`
  - :py:meth:`~.cloudComPy.ccPointCloud.deleteAllScalarFields`
  - :py:meth:`~.cloudComPy.ccPointCloud.deleteScalarField`
 
-meshes introspection and manipulation
--------------------------------------
+meshes
+------
+
+create a mesh from a cloud
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When a cloud represents a kind of 2.5D elevated surface, a mesh can be built using the nodes of a the cloud
+with :py:meth:`cloudComPy.ccMesh.triangulate`.
+
+.. include:: ../tests/test011.py
+   :start-after: #---triangulate01-begin
+   :end-before:  #---triangulate01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test011.py <../tests/test011.py>`.
+
+meshes introspection
+~~~~~~~~~~~~~~~~~~~~
 
 In CloudCompare and CloudComPy 3D meshes are triangular meshes (:py:class:`~.cloudComPy.ccMesh`), 
 built on a set of vertices, which constitute an associated cloud.
@@ -317,14 +337,7 @@ To get this cloud, use :py:meth:`~.cloudComPy.ccMesh.getAssociatedCloud` which g
    :literal:
    :code: python
 
-When a cloud represents a kind of 2.5D elevated surface, a mesh can be built using the nodes of a the cloud
-with :py:meth:`cloudComPy.ccMesh.triangulate`.
-
-.. include:: ../tests/test011.py
-   :start-after: #---triangulate01-begin
-   :end-before:  #---triangulate01-end
-   :literal:
-   :code: python
+The above code snippet is from :download:`test020.py <../tests/test020.py>`.
 
 A mesh have a name, distinct of the associated cloud name, a size which is the number of triangles.
 
@@ -340,6 +353,8 @@ A mesh can have normals, computed either on vertices or on triangles:
    :literal:
    :code: python
 
+The above code snippet is from :download:`test014.py <../tests/test014.py>`.
+
 If you need to iterate through the triangles and their vertices, use :py:meth:`~.cloudComPy.ccMesh.getTriangleVertIndexes`:
 
 .. include:: ../tests/test011.py
@@ -347,6 +362,8 @@ If you need to iterate through the triangles and their vertices, use :py:meth:`~
    :end-before:  #---triangleVertices01-end
    :literal:
    :code: python
+
+The above code snippet is from :download:`test011.py <../tests/test011.py>`.
 
 If you want to save meshes to reopen them with the CloudCompare GUI, with a predefined state of what is displayed
 (colors, normals, scalar fields), use the ``.bin`` format and define the state with the following functions:
@@ -357,6 +374,9 @@ If you want to save meshes to reopen them with the CloudCompare GUI, with a pred
  - :py:meth:`~.cloudComPy.ccMesh.colorsShown`
  - :py:meth:`~.cloudComPy.ccMesh.normalsShown`
  - :py:meth:`~.cloudComPy.ccMesh.sfShown`
+
+meshes modifications
+~~~~~~~~~~~~~~~~~~~~
 
 A mesh can be refined using :py:meth:`~.cloudComPy.ccMesh.subdivide` 
 to force all triangles to have an area smaller than a given maximum. The result is a new mesh.
@@ -376,7 +396,10 @@ by moving the vertices slightly over several iterations:
    :literal:
    :code: python
 
-The above code snippets are from `test011.py <../PythonAPI_test/test011.py>`_.
+The above code snippets are from :download:`test011.py <../tests/test011.py>`.
+
+Generate a cloud from a mesh
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A mesh can be used to create a cloud with `~.cloudComPy.ccMesh.samplePoints`,
 with a target either of number of points or of density of points:
@@ -387,9 +410,12 @@ with a target either of number of points or of density of points:
    :literal:
    :code: python
 
-The above code snippet is from `test051.py <../PythonAPI_test/test015.py>`_.
+The above code snippet is from :download:`test015.py <../tests/test015.py>`.
 
-clone, deleteEntity cloneMesh, 
+mesh copy, destruction
+~~~~~~~~~~~~~~~~~~~~~~
+
+TODO: clone, deleteEntity cloneMesh, 
 
 primitives
 ----------
