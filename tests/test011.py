@@ -50,11 +50,16 @@ mesh2 = mesh1.cloneMesh()
 if mesh2.getName() != "mesh1.clone":
     raise RuntimeError
 
+#---subdivide01-begin
 mesh3 = mesh2.subdivide(0.001)
+mesh3.setName("mesh3")
+#---subdivide01-end
 if not math.isclose(mesh3.size(), 335696, rel_tol=5e-02):
     raise RuntimeError
 
+#---laplacianSmooth01-begin
 mesh3.laplacianSmooth(nbIteration=20, factor=0.2)
+#---laplacianSmooth01-end
 
 #---triangleVertices01-begin
 # --- access to triangle nodes, per triangle indice

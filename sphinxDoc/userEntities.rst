@@ -65,11 +65,22 @@ There are methods to convert scalarField to colors and vice-versa.
         cloud.setCurrentScalarField(2)
         cloud.convertCurrentScalarFieldToColors()
 
-Normals
+Normals can be computed with :py:meth:`~.cloudComPy.ccPointCloud.computeNormals`:
 ::
 
     if not cloud.hasNormals():
         cc.computeNormals([cloud])
+
+If you need to save clouds for reopening with CloudCompare GUI, with a predefined state of what is shown
+(colors, normals, scalar fields), use the ``.bin`` format and define the state with the following functions:
+
+ - :py:meth:`~.cloudComPy.ccPointCloud.showColors`
+ - :py:meth:`~.cloudComPy.ccPointCloud.showNormals`
+ - :py:meth:`~.cloudComPy.ccPointCloud.showSF`
+ - :py:meth:`~.cloudComPy.ccPointCloud.colorsShown`
+ - :py:meth:`~.cloudComPy.ccPointCloud.normalsShown`
+ - :py:meth:`~.cloudComPy.ccPointCloud.sfShown`
+ - :py:meth:`~.cloudComPy.ccPointCloud.setCurrentDisplayedScalarField`
 
 cloud transformations
 ---------------------
@@ -145,7 +156,7 @@ and :py:meth:`~.cloudComPy.ccPointCloud.orientNormalsWithMST`.
    :literal:
    :code: python
 
-The previous code is extract from `test014.py <../PythonAPI_test/test014.py>`_.
+The above code snippets are from `test014.py <../PythonAPI_test/test014.py>`_.
 
 .. _Cloud_Colors:
 
@@ -204,7 +215,7 @@ by interpolation from the other cloud, with :py:meth:`~.cloudComPy.ccPointCloud.
    :literal:
    :code: python
 
-The previous code is extract from `test029.py <../PythonAPI_test/test029.py>`_.
+The above code snippets are from `test029.py <../PythonAPI_test/test029.py>`_.
 
 scalar fields
 -------------
@@ -244,7 +255,7 @@ To change the scalar field name, set a value on a point, fill the scalar field w
    :literal:
    :code: python
 
-The previous code is extract from `test002.py <../PythonAPI_test/test002.py>`_.
+The above code snippets are from `test002.py <../PythonAPI_test/test002.py>`_.
 
 Scalar fields can be built from normals or colors, and can be used to define colors:
 see :ref:`Cloud_Normals` and :ref:`Cloud_Colors`.
@@ -337,10 +348,47 @@ If you need to iterate through the triangles and their vertices, use :py:meth:`~
    :literal:
    :code: python
 
+If you want to save meshes to reopen them with the CloudCompare GUI, with a predefined state of what is displayed
+(colors, normals, scalar fields), use the ``.bin`` format and define the state with the following functions:
 
-subdivide, laplacianSmooth
-samplePoints
-normalsShown, sfShown, showColors, showNormals, showSF
+ - :py:meth:`~.cloudComPy.ccMesh.showColors`
+ - :py:meth:`~.cloudComPy.ccMesh.showNormals`
+ - :py:meth:`~.cloudComPy.ccMesh.showSF`
+ - :py:meth:`~.cloudComPy.ccMesh.colorsShown`
+ - :py:meth:`~.cloudComPy.ccMesh.normalsShown`
+ - :py:meth:`~.cloudComPy.ccMesh.sfShown`
+
+A mesh can be refined using :py:meth:`~.cloudComPy.ccMesh.subdivide` 
+to force all triangles to have an area smaller than a given maximum. The result is a new mesh.
+
+.. include:: ../tests/test011.py
+   :start-after: #---subdivide01-begin
+   :end-before:  #---subdivide01-end
+   :literal:
+   :code: python
+
+The mesh can be "smoothed" with :py:meth:`~.cloudComPy.ccMesh.laplacianSmooth`
+by moving the vertices slightly over several iterations:
+
+.. include:: ../tests/test011.py
+   :start-after: #---laplacianSmooth01-begin
+   :end-before:  #---laplacianSmooth01-end
+   :literal:
+   :code: python
+
+The above code snippets are from `test011.py <../PythonAPI_test/test011.py>`_.
+
+A mesh can be used to create a cloud with `~.cloudComPy.ccMesh.samplePoints`,
+with a target either of number of points or of density of points:
+
+.. include:: ../tests/test015.py
+   :start-after: #---samplePoints01-begin
+   :end-before:  #---samplePoints01-end
+   :literal:
+   :code: python
+
+The above code snippet is from `test051.py <../PythonAPI_test/test015.py>`_.
+
 clone, deleteEntity cloneMesh, 
 
 primitives

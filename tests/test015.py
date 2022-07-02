@@ -38,8 +38,10 @@ cloud1.setName("cloud1")
 mesh1 = cc.ccMesh.triangulate(cloud=cloud1, type=cc.TRIANGULATION_TYPES.DELAUNAY_2D_AXIS_ALIGNED, dim=2)
 mesh1.setName("mesh1")
 
+#---samplePoints01-begin
 cloud2=mesh1.samplePoints(densityBased=True, samplingParameter=50, withNormals=True)
 cloud2.setName("cloud2")
+#---samplePoints01-end
 if not math.isclose(cloud2.size(), 6489, rel_tol=0.20):
     raise RuntimeError
 
