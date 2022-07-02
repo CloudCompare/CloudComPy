@@ -3,6 +3,8 @@
 Saving Clouds and other entities to files
 =========================================
 
+.. _save_formats:
+
 Known formats
 -------------
 

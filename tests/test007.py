@@ -92,7 +92,9 @@ poly.set2DMode(True)
 if not poly.is2DMode():
     raise RuntimeError
 
+#---smoothChaikin01-begin
 p2 = poly.smoothChaikin(0.2, 4)
+#---smoothChaikin01-end
 lg = p2.computeLength()
 if not math.isclose(lg, 17.504, rel_tol=1e-04):
     raise RuntimeError

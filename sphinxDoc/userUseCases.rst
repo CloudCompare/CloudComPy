@@ -7,6 +7,8 @@ Create a point cloud with numpy
 -------------------------------
 (test017 , 25, 26, 31)
 
+.. _crop_cloud:
+
 Cut a cloud or a mesh with a polyline
 -------------------------------------
 crop2D (cloud)

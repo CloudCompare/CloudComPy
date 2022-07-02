@@ -4,6 +4,8 @@
 Loading clouds and other entities from files
 ============================================
 
+.. _load_formats:
+
 Known formats
 -------------
 

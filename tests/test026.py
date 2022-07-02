@@ -268,6 +268,7 @@ y = np.float32(np.array((cmin[1], cmin[1], cmin[1], cmin[1], cmax[1], cmax[1], c
 z = np.float32(np.array((cmin[2], cmin[2], cmax[2], cmax[2], cmax[2], cmax[2], cmin[2], cmin[2])))
 coords = np.column_stack((x,y,z))
 
+#---polyFromCloud01-begin
 cloud1 = cc.ccPointCloud("boundingBox1")
 cloud1.coordsFromNPArray_copy(coords)
 cloud1.applyRigidTransformation(transform1)
@@ -276,18 +277,22 @@ poly1 = cc.ccPolyline(cloud1)
 poly1.addChild(cloud1)
 poly1.addPointIndex(0, cloud1.size())
 poly1.setClosed(True)
+#---polyFromCloud01-end
 
 # --- another way do define the polyline 
 
+#---polyFromCloud02-begin
 cloud2 = cc.ccPointCloud("boundingBox2")
 poly2 = cc.ccPolyline(cloud2)
 poly2.addChild(child=cloud2, dependencyFlags = cc.DEPENDENCY_FLAGS.DP_NONE, insertIndex=-1)
-cloud2.reserve(8)
-for i in range(8):
+cloud2.reserve(cloud1.size())   # fill the cloud with ordered points
+for i in range(cloud1.size()):
     cloud2.addPoint(cloud1.getPoint(i))
 cloud2.shrinkToFit()
 poly2.addPointIndex(0, cloud2.size())
 poly2.setClosed(True)
+#---polyFromCloud02-end
+
 res = cc.SaveEntities([cloud, poly1, poly2], os.path.join(dataDir, "boundingBoxes.bin"))
 
 

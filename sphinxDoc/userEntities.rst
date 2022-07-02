@@ -612,7 +612,72 @@ Unless Otherwise noted, the above code snippets are from :download:`test009.py <
 
 polylines
 ---------
-isClosed setClosed segmentCount size is2DMode set2DMode smoothChaikin
+
+A :py:class:`~.cloudComPy.ccPolyline` is considered as a cloud of points (in a specific order)
+with a open/closed state information.
+Polylines are often used as tools to cut clouds (see :ref:`crop_cloud`).
+
+A polyline can be created from a cloud (the points have to be in the good order):
+
+.. include:: ../tests/test026.py
+   :start-after: #---polyFromCloud01-begin
+   :end-before:  #---polyFromCloud01-end
+   :literal:
+   :code: python
+
+Another way (here, we simulate the cloud creation):
+
+.. include:: ../tests/test026.py
+   :start-after: #---polyFromCloud02-begin
+   :end-before:  #---polyFromCloud02-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test026.py <../tests/test026.py>`.
+
+A polyline can be imported from several formats (see :ref:`load_formats`).
+
+The ``.poly`` format is a very simple ASCII format, a line per point, x y z. for example:
+::
+
+    -4.0  4.0  0.0
+     0.0  3.5  0.0
+     4.0  4.0  0.0
+     3.5  0.0  0.0
+     4.0 -4.0  0.0
+     0.0 -3.5  0.0
+    -4.0 -4.0  0.0
+    -3.5  0.0  0.0
+
+The :py:class:`~.cloudComPy.ccPolyline` offers several information methods:
+
+ - :py:meth:`~.cloudComPy.ccPolyline.isClosed`
+ - :py:meth:`~.cloudComPy.ccPolyline.is2DMode`
+ - :py:meth:`~.cloudComPy.ccPolyline.segmentCount`
+ - :py:meth:`~.cloudComPy.ccPolyline.size`
+ - :py:meth:`~.cloudComPy.ccPolyline.getAssociatedCloud`
+ - :py:meth:`~.cloudComPy.ccPolyline.getBoundingBox`
+
+The status of the polyline can be modified:
+
+ - :py:meth:`~.cloudComPy.ccPolyline.setClosed`
+ - :py:meth:`~.cloudComPy.ccPolyline.set2DMode`
+
+When creating the polyline from a cloud (see examples above) you will need:
+
+ - :py:meth:`~.cloudComPy.ccPolyline.addChild`
+ - :py:meth:`~.cloudComPy.ccPolyline.addPointIndex`
+
+The method :py:meth:`~.cloudComPy.ccPolyline.smoothChaikin` is used to smooth the polyline
+by adding nodes over several iterations:
+
+.. include:: ../tests/test007.py
+   :start-after: #---smoothChaikin01-begin
+   :end-before:  #---smoothChaikin01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test007.py <../tests/test007.py>`.
 
 facets
 ------
