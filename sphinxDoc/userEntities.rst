@@ -649,7 +649,7 @@ The ``.poly`` format is a very simple ASCII format, a line per point, x y z. for
     -4.0 -4.0  0.0
     -3.5  0.0  0.0
 
-The :py:class:`~.cloudComPy.ccPolyline` offers several information methods:
+The class :py:class:`~.cloudComPy.ccPolyline` offers several information methods:
 
  - :py:meth:`~.cloudComPy.ccPolyline.isClosed`
  - :py:meth:`~.cloudComPy.ccPolyline.is2DMode`
@@ -679,8 +679,101 @@ by adding nodes over several iterations:
 
 The above code snippet is from :download:`test007.py <../tests/test007.py>`.
 
-facets
-------
+2D polygons (facets)
+--------------------
+
+The class :py:class:`~.cloudComPy.ccFacet` is a tool used to fit  a 2D polygon to a point cloud.
+It is very similar to the :py:meth:`~.cloudComPy.ccPlane.Fit` method but the extents of the fitted plane
+follows the contour of the cloud (on its 2D projection on the plane).
+
+The 2D polygon is created using the static method :py:meth:`~.cloudComPy.ccFacet.Create`.
+If you want a convex contour, leave the argument ``maxEdgeLength`` to its default, 0.
+A positive value will gives a concave contour respecting maxEdgeLength.
+
+It is possible to provide a plane equation as optional argument (see :py:meth:`cloudComPy.ccPlane.getEquation`).
+
+The class :py:class:`~.cloudComPy.ccFacet` provides several useful methods:
+
+================================================== =========================================================
+:py:meth:`~.cloudComPy.ccFacet.getCenter`          the facet plane center
+:py:meth:`~.cloudComPy.ccFacet.getNormal`          the facet plane normal
+:py:meth:`~.cloudComPy.ccFacet.getPlaneEquation`   the facet plane equation: [a, b, c, d] as ``ax+by+cz=d``
+:py:meth:`~.cloudComPy.ccFacet.getContour`         the contour polyline
+:py:meth:`~.cloudComPy.ccFacet.getContourVertices` the point cloud with the contour vertices
+:py:meth:`~.cloudComPy.ccFacet.getSurface`         the area of the polygon
+================================================== =========================================================
+
+.. include:: ../tests/test021.py
+   :start-after: #---facetCreate01-begin
+   :end-before:  #---facetCreate01-end
+   :literal:
+   :code: python
+
+With the plane equation:
+
+.. include:: ../tests/test021.py
+   :start-after: #---facetCreate02-begin
+   :end-before:  #---facetCreate02-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test021.py <../tests/test021.py>`.
 
 octrees
 -------
+
+The Octree structure of CloudCompare is very efficient for *nearest neighbour extraction* and used throughout CloudCompare.
+The `CloudCompare wiki <https://www.cloudcompare.org/doc/wiki/index.php/Main_Page>`_ provides a good introduction to 
+the `CloudCompare octree <https://www.cloudcompare.org/doc/wiki/index.php/CloudCompare_octree>`_.
+
+Most of the time, you don't need to manipulate explicitely the octree, but some methods have been wrapped in CloudComPy,
+to allow for some very specific processing.
+
+If you need to search points in particular neighbourhood, :py:class:`~.cloudComPy.ccOctree` provides useful methods
+illustrated in the following example. 
+
+Firstly, compute the octree. Define your neighbourhood either with a radius 
+or the number of nodes you want in this neighbourhood.
+
+.. include:: ../tests/test016.py
+   :start-after: #---octree01-begin
+   :end-before:  #---octree01-end
+   :literal:
+   :code: python
+
+Search neighbours in a sphere:
+
+.. include:: ../tests/test016.py
+   :start-after: #---octree02-begin
+   :end-before:  #---octree02-end
+   :literal:
+   :code: python
+
+Get information on the points found:
+
+.. include:: ../tests/test016.py
+   :start-after: #---octree05-begin
+   :end-before:  #---octree05-end
+   :literal:
+   :code: python
+
+It is also possible to search in a cylinder:
+
+.. include:: ../tests/test016.py
+   :start-after: #---octree03-begin
+   :end-before:  #---octree03-end
+   :literal:
+   :code: python
+
+or in a box:
+
+.. include:: ../tests/test016.py
+   :start-after: #---octree04-begin
+   :end-before:  #---octree04-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test016.py <../tests/test016.py>` where you will find
+examples of how to use the other methods in the octree.
+
+

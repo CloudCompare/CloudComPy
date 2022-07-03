@@ -59,6 +59,7 @@ surface2 = polygon2.getSurface()
 if not math.isclose(surface2, 56, rel_tol=1e-02):
     raise RuntimeError
 
+#---facetCreate01-begin
 polygon3 = cc.ccFacet.Create(cloudCropZ, maxEdgeLength=0.5)
 center3 = polygon3.getCenter()
 normal3 = polygon3.getNormal()
@@ -68,7 +69,9 @@ vert3 = polygon3.getContourVertices()
 surface3 = polygon3.getSurface()
 if not math.isclose(surface3, 56, rel_tol=2e-02):
     raise RuntimeError
+#---facetCreate01-end
 
+#---facetCreate02-begin
 polygon4 = cc.ccFacet.Create(cloud=cloudCropZ, maxEdgeLength=0.05, planeEquation=(0., 0., 1., 0.))
 center4 = polygon4.getCenter()
 normal4 = polygon4.getNormal()
@@ -78,6 +81,7 @@ vert4 = polygon4.getContourVertices()
 surface4 = polygon4.getSurface()
 if not math.isclose(surface4, 56, rel_tol=1e-02):
     raise RuntimeError
+#---facetCreate02-end
 
 cc.SaveEntities([cloud, cloudCropZ, vert1, vert2, vert3, vert4], os.path.join(dataDir, "polygons2D.bin"))
 
