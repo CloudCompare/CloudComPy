@@ -58,8 +58,56 @@ The above code snippets are from :download:`test026.py <../tests/test026.py>`.
 
 Cut a cloud or a mesh with a polyline
 -------------------------------------
-crop2D (cloud)
-crop2D mesh (test039)
+
+Cut a cloud with a polyline
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The method :py:meth:`~.cloudComPy.ccPointCloud.crop2D` is used to cut a cloud by a 2D polyline.
+The normal to the plan of the polyline can only be one of the cardinal axes oX, oY or oZ.
+The original cloud is not modified, a new cloud is created with either the nodes inside or the nodes outside.
+
+First step, get a cloud and the polyline tool:
+
+.. include:: ../tests/test007.py
+   :start-after: #---cloudCrop2D01-begin
+   :end-before:  #---cloudCrop2D01-end
+   :literal:
+   :code: python
+
+Second step, close the polyline:
+
+.. include:: ../tests/test007.py
+   :start-after: #---cloudCrop2D02-begin
+   :end-before:  #---cloudCrop2D02-end
+   :literal:
+   :code: python
+
+Third step, cut:
+
+.. include:: ../tests/test007.py
+   :start-after: #---cloudCrop2D03-begin
+   :end-before:  #---cloudCrop2D03-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test007.py <../tests/test007.py>`.
+
+Cut a mesh with a polyline
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+As with the cloud, the method :py:meth:`~.cloudComPy.ccMesh.crop2D` is used to cut a mesh by a 2D polyline.
+The normal to the plan of the polyline can only be one of the cardinal axes oX, oY or oZ.
+The original mesh is not modified, a new mesh is created with either the triangles inside or the triangles outside.
+
+In this example, scalar fields and normals are defined, to check they are kept in the result.
+
+.. include:: ../tests/test039.py
+   :start-after: #---crop2Dmesh01-begin
+   :end-before:  #---crop2Dmesh01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test039.py <../tests/test039.py>`.
 
 Compute distances between clouds and meshes
 -------------------------------------------

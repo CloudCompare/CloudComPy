@@ -32,8 +32,10 @@ import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC.init
 
+#---cloudCrop2D01-begin
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 poly = cc.loadPolyline(getSamplePoly("poly1"))
+#---cloudCrop2D01-end
 if poly.getBoundingBox() != [(-2.0, -3.0, 0.0), (3.0, 4.0, 0.0)]:
     raise RuntimeError
 
@@ -51,7 +53,9 @@ if poly.isClosed():
 if poly.segmentCount() != 6:
     raise RuntimeError
 
+#---cloudCrop2D02-begin
 poly.setClosed(True)
+#---cloudCrop2D02-end
 if not poly.isClosed():
     raise RuntimeError
 
@@ -65,7 +69,9 @@ poly.setName("myPoly")
 if poly.getName() != "myPoly":
     raise RuntimeError
 
+#---cloudCrop2D03-begin
 cloudCropZ = cloud.crop2D(poly, 2, True)
+#---cloudCrop2D03-end
 cc.SavePointCloud(cloudCropZ, os.path.join(dataDir, "cloudCropZ.xyz"))
 npts = cloudCropZ.size()
 print("cloud.size %s" % npts)
