@@ -3,6 +3,8 @@
 operations on coordinates, scalar fields, colors, meshes with Numpy
 ===================================================================
 
+.. _coordinates_Numpy:
+
 Read, modify or create cloud coordinates with Numpy
 ---------------------------------------------------
 

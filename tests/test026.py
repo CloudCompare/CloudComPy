@@ -302,6 +302,7 @@ transform1 = cc.ccGLMatrix()
 transform1.initFromParameters(0.25, (1.5, 2.9, 6.3), (0,0,0))
 cloud.applyRigidTransformation(transform1)
 
+#---coordsBoundinGBox-begin
 cmin = boundingBox.minCorner()
 cmax = boundingBox.maxCorner()
 
@@ -309,6 +310,7 @@ x = np.float32(np.array((cmin[0], cmax[0], cmax[0], cmin[0], cmin[0], cmax[0], c
 y = np.float32(np.array((cmin[1], cmin[1], cmin[1], cmin[1], cmax[1], cmax[1], cmax[1], cmax[1])))
 z = np.float32(np.array((cmin[2], cmin[2], cmax[2], cmax[2], cmax[2], cmax[2], cmin[2], cmin[2])))
 coords = np.column_stack((x,y,z))
+#---coordsBoundinGBox-end
 
 #---polyFromCloud01-begin
 cloud1 = cc.ccPointCloud("boundingBox1")

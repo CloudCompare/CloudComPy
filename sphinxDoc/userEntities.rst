@@ -207,7 +207,7 @@ Another way to check:
    :literal:
    :code: python
 
-An interpolation between transformations cand computed with :py:meth:`~.cloudComPy.ccGLMatrix.Interpolate`:
+An interpolation between transformations can be computed with :py:meth:`~.cloudComPy.ccGLMatrix.Interpolate`:
 
 .. include:: ../tests/test026.py
    :start-after: #---transformations13-begin

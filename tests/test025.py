@@ -33,6 +33,7 @@ import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC
 
+#---createCloudNumpy02-begin
 # --- generate a set of coords and a scalar field
 
 npts = 1000000
@@ -42,11 +43,15 @@ y = np.float32(-5. + 10.*np.random.random((npts)))
 z = np.float32(np.sin(h * np.sqrt(x**2 + y**2)) / np.sqrt(x**2 + y**2))
 coords = np.column_stack((x,y,z))
 
-# --- create the pointCloud, add the scalar field, save
+# --- create the pointCloud
 
 cloud = cc.ccPointCloud("wave_%d"%h)
 cloud.coordsFromNPArray_copy(coords)
+
+# --- add the scalar field
+
 res = cloud.exportCoordToSF(False, False, True)
+#---createCloudNumpy02-end
 
 rcloud = cc.RasterizeToCloud(cloud, 0.01)
 
