@@ -100,6 +100,7 @@ if not cloud1.interpolateColorsFrom(cloud):
     raise RuntimeError
 #---colors04-end
 
+#---colorsArray01-begin
 cola = cloud.colorsToNpArray()
 if not cola.shape == (1000000, 4):
     raise RuntimeError
@@ -111,6 +112,7 @@ if not colaCopy.shape == (1000000, 4):
     raise RuntimeError
 if not colaCopy.dtype == 'uint8':
     raise RuntimeError
+#---colorsArray01-end
 
 diff = cola - colaCopy
 if diff.mean() != 0:

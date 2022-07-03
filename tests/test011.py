@@ -72,6 +72,7 @@ p1 = cloud.getPoint(indexes[1])
 p2 = cloud.getPoint(indexes[2])
 #---triangleVertices01-end
 
+#---triangleIndexes01-begin
 # --- access to the numpy array of node indexes (one row per triangle)
 d = mesh1.IndexesToNpArray()
 if d.shape != (19602, 3):
@@ -84,6 +85,7 @@ if d2.shape != (19602, 3):
     raise RuntimeError
 if d2.dtype != np.dtype('uint32'):
     raise RuntimeError
+#---triangleIndexes01-end
 
 cc.SaveEntities([cloud1, mesh1, mesh2, mesh3], os.path.join(dataDir, "clouds1.bin"))
 

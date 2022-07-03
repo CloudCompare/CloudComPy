@@ -105,9 +105,131 @@ The method :py:meth:`~.cloudComPy.ccGLMatrix.initFromParameters` allows to defin
 (see `Euler angles <https://en.wikipedia.org/wiki/Euler_angles>`_).
 The following code is extract from :download:`test026.py <../tests/test026.py>`.
 
+Define a transformation from a rotation angle and axis, plus a translation,
+with :py:meth:`~.cloudComPy.ccGLMatrix.initFromParameters`.
+
 .. include:: ../tests/test026.py
-   :start-after: #---transformations-begin
-   :end-before:  #---transformations-end
+   :start-after: #---transformations01-begin
+   :end-before:  #---transformations01-end
+   :literal:
+   :code: python
+
+Sometimes, you need to store or retreive the transformation matrix data (4x4 matrix stored in major column order),
+use :py:meth:`~.cloudComPy.ccGLMatrix.toString`, :py:meth:`~.cloudComPy.ccGLMatrix.fromString` 
+and :py:meth:`~.cloudComPy.ccGLMatrix.data`.
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations02-begin
+   :end-before:  #---transformations02-end
+   :literal:
+   :code: python
+
+If you need to keep precision while iterating on transformations, for instance, it is better to work
+with double precision transformations :py:class:`cloudComPy.ccGLMatrixd`
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations03-begin
+   :end-before:  #---transformations03-end
+   :literal:
+   :code: python
+
+For these transformation examples, we create an ellipsoid cloud:
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations04-begin
+   :end-before:  #---transformations04-end
+   :literal:
+   :code: python
+
+And we rotate it, with a transformation and the method :py:meth:`~.cloudComPy.ccPointCloud.applyRigidTransformation`
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations05-begin
+   :end-before:  #---transformations05-end
+   :literal:
+   :code: python
+
+You can get the rotation parameters of a transformation in the form of a rotation angle and a vector
+with :py:meth:`~.cloudComPy.ccGLMatrix.getParameters1`
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations06-begin
+   :end-before:  #---transformations06-end
+   :literal:
+   :code: python
+
+You can also get the rotation parameters of a transformation in the form of the 3 angles phi, psi, theta
+with :py:meth:`~.cloudComPy.ccGLMatrix.getParameters2`
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations07-begin
+   :end-before:  #---transformations07-end
+   :literal:
+   :code: python
+
+The product of two transformations gives a transformation
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations08-begin
+   :end-before:  #---transformations08-end
+   :literal:
+   :code: python
+
+To get the inverse of a transformation, use :py:meth:`~.cloudComPy.ccGLMatrix.inverse`
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations09-begin
+   :end-before:  #---transformations09-end
+   :literal:
+   :code: python
+
+Let's play with the 3 rotations phi, psi, theta:
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations10-begin
+   :end-before:  #---transformations10-end
+   :literal:
+   :code: python
+
+The transposed version of a transformation gives an inverse rotation:
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations11-begin
+   :end-before:  #---transformations11-end
+   :literal:
+   :code: python
+
+Another way to check:
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations12-begin
+   :end-before:  #---transformations12-end
+   :literal:
+   :code: python
+
+An interpolation between transformations cand computed with :py:meth:`~.cloudComPy.ccGLMatrix.Interpolate`:
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations13-begin
+   :end-before:  #---transformations13-end
+   :literal:
+   :code: python
+
+There is also the method :py:meth:`~.cloudComPy.ccGLMatrix.FromToRotation`
+to get a transformation matrix that rotates a vector to another:
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations14-begin
+   :end-before:  #---transformations14-end
+   :literal:
+   :code: python
+
+You can generate a ‘viewing’ matrix from a looking vector and a ‘up’ direction
+with :py:meth:`~.cloudComPy.ccGLMatrix.FromViewDirAndUpDir`
+
+.. include:: ../tests/test026.py
+   :start-after: #---transformations15-begin
+   :end-before:  #---transformations15-end
    :literal:
    :code: python
 

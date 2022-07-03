@@ -30,8 +30,10 @@ os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 from gendata import getSampleCloud, dataDir
 import cloudComPy as cc
 
+#---coordsToNumpy01-begin
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 
 coords = cloud.toNpArrayCopy()
 if coords.shape != (cloud.size(), 3):
     raise RuntimeError
+#---coordsToNumpy01-end
