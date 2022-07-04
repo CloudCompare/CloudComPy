@@ -111,8 +111,82 @@ The above code snippet is from :download:`test039.py <../tests/test039.py>`.
 
 Compute distances between clouds and meshes
 -------------------------------------------
-distances computeApproxCloud2MeshDistance computeCloud2MeshDistances...
-split distances.
+
+The idea is to build a scalarField giving, for each node in a cloud, 
+the distance between this node and another cloud or mesh.
+The process can be long, several tools help to find an optimal set of parameters.
+
+Compute distances between a cloud and a mesh (C2M)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The method :py:meth:`cloudComPy.DistanceComputationTools.computeApproxCloud2MeshDistance` 
+gives an approximate solution, without too much cpu time. You get an approximate distance scalar field,
+and statistics (min, max, mean, variance, error max).
+
+.. include:: ../tests/test009.py
+   :start-after: #---C2M01-begin
+   :end-before:  #---C2M01-end
+   :literal:
+   :code: python
+
+The structure :py:meth:`cloudComPy.Cloud2MeshDistancesComputationParams` 
+is used to define the optimal parameters for accurate distance calculation.
+For instance, if the cloud and mesh are close, filling the parameter ``maxSearchDist`` can greatly speed up the process, 
+but setting it to a non-zero value force a single thread processing.
+The result is a new scalar field in the cloud, with accurate distances to the mesh.
+
+.. include:: ../tests/test009.py
+   :start-after: #---C2M02-begin
+   :end-before:  #---C2M02-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test009.py <../tests/test009.py>`.
+
+.. _compute_C2C:
+
+Compute distances between two clouds (C2C)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The method :py:meth:`cloudComPy.DistanceComputationTools.computeApproxCloud2CloudDistance` 
+gives an approximate solution, without too much cpu time. You get an approximate distance scalar field,
+and statistics (min, max, mean, variance, error max).
+
+.. include:: ../tests/test010.py
+   :start-after: #---C2C01-begin
+   :end-before:  #---C2C01-end
+   :literal:
+   :code: python
+
+The structure :py:meth:`cloudComPy.Cloud2CloudDistancesComputationParams` 
+is used to define the optimal parameters for accurate distance calculation.
+For instance, if the two clouds are close, filling the parameter ``maxSearchDist`` can greatly speed up the process, 
+but setting it to a non-zero value force a single thread processing.
+The result is a new scalar field in the cloud, with accurate distances to the cloud.
+
+.. include:: ../tests/test010.py
+   :start-after: #---C2C02-begin
+   :end-before:  #---C2C02-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test010.py <../tests/test010.py>`.
+
+Compute split distances between two clouds (C2C)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The use case is similar to :ref:`compute_C2C`
+but we need to split the distance components according to the cardinal directions.
+Here, we set the parameter ``setSplitDistances`` to `cloud.size()` to create 3 scalar fields of the cloud size.
+They are not associated to the cloud, and we have to do that explicitely if we need it.
+
+.. include:: ../tests/test009.py
+   :start-after: #---C2C01-begin
+   :end-before:  #---C2C01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test009.py <../tests/test009.py>`.
 
 Cloud registration
 ------------------

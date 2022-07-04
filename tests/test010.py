@@ -61,12 +61,19 @@ cloud3.setName("cloud2_transformed_afterICP")
 
 #---ICP-fragment-end
 
+#---C2C01-begin
+stats = cc.DistanceComputationTools.computeApproxCloud2CloudDistance(cloud2ref, cloud3)
+print(stats) # min, max, mean, variance, error max
+#---C2C01-end
+
+#---C2C02-begin
 nbCpu = psutil.cpu_count()
 bestOctreeLevel = cc.DistanceComputationTools.determineBestOctreeLevel(cloud2ref, None, cloud3)
 params = cc.Cloud2CloudDistancesComputationParams()
 params.maxThreadCount = nbCpu
 params.octreeLevel = bestOctreeLevel
 cc.DistanceComputationTools.computeCloud2CloudDistances(cloud2ref, cloud3, params)
+#---C2C02-end
 
 sf = cloud2ref.getScalarField(cloud2ref.getNumberOfScalarFields()-1)
 mindist = sf.getMin()

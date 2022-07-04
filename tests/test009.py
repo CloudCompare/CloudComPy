@@ -116,15 +116,19 @@ if dish.size() != 2520:
     raise RuntimeError
 #---ccDish01-end
 
+#---C2M01-begin
 stats = cc.DistanceComputationTools.computeApproxCloud2MeshDistance(cloud, cylinder)
 print(stats) # min, max, mean, variance, error max
+#---C2M01-end
 
+#---C2M02-begin
 nbCpu = psutil.cpu_count()
 bestOctreeLevel = cc.DistanceComputationTools.determineBestOctreeLevel(cloud,cylinder)
 params = cc.Cloud2MeshDistancesComputationParams()
 params.maxThreadCount = nbCpu
 params.octreeLevel = bestOctreeLevel
 cc.DistanceComputationTools.computeCloud2MeshDistances(cloud, cylinder, params)
+#---C2M02-end
 
 bestOctreeLevel = cc.DistanceComputationTools.determineBestOctreeLevel(cone.getAssociatedCloud(), sphere)
 params.octreeLevel = bestOctreeLevel
@@ -135,6 +139,43 @@ params2 = cc.Cloud2CloudDistancesComputationParams()
 params2.maxThreadCount = nbCpu
 params2.octreeLevel = bestOctreeLevel
 cc.DistanceComputationTools.computeCloud2CloudDistances(dish.getAssociatedCloud(), box.getAssociatedCloud(), params2)
+
+# --- compute split distances cloud - cylinder vertices
+
+#---C2C01-begin
+stats = cc.DistanceComputationTools.computeApproxCloud2CloudDistance(cloud, cylinder.getAssociatedCloud())
+print(stats) # min, max, mean, variance, error max
+
+nbCpu = psutil.cpu_count()
+bestOctreeLevel = cc.DistanceComputationTools.determineBestOctreeLevel(cloud, None, cylinder.getAssociatedCloud())
+params = cc.Cloud2CloudDistancesComputationParams()
+params.maxThreadCount = nbCpu
+params.octreeLevel = bestOctreeLevel
+params.setSplitDistances(cloud.size()) # creates 3 scalar fields of cloud.size(), not yet associated to the cloud
+
+cc.DistanceComputationTools.computeCloud2CloudDistances(cloud, cylinder.getAssociatedCloud(), params)
+
+sfx = params.getSplitDistance(0)       # access to scalar fields
+sfx.computeMinAndMax()
+sfy = params.getSplitDistance(1)
+sfy.computeMinAndMax()
+sfz = params.getSplitDistance(2)
+sfz.computeMinAndMax()
+
+asfx = sfx.toNpArray()                 # add the scalar fields to the cloud
+asfy = sfy.toNpArray()
+asfz = sfz.toNpArray()
+cloud.addScalarField("dx")
+cloud.addScalarField("dy")
+cloud.addScalarField("dz")
+dic = cloud.getScalarFieldDic()
+csfx = cloud.getScalarField(dic["dx"])
+csfy = cloud.getScalarField(dic["dy"])
+csfz = cloud.getScalarField(dic["dz"])
+csfx.fromNpArrayCopy(asfx)
+csfy.fromNpArrayCopy(asfy)
+csfz.fromNpArrayCopy(asfz)
+#---C2C01-end
 
 cc.SaveEntities([cloud, box, cone, cylinder, plane, sphere, torus, quadric, dish], os.path.join(dataDir, "entities2.bin"))
 

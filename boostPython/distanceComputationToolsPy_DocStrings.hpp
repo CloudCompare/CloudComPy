@@ -81,12 +81,16 @@ warning Not compatible with max search distance (see maxSearchDist). Default Non
 const char* distanceComputationToolsPy_setSplitDistances_doc= R"(
 Split distances (one scalar field per dimension: X, Y and Z).
 
-Default None for each dimension)";
+To activate split distance, fill this with the cloud size, it will create 3 scalar fields
+to store the X, Y and Z distances. These scalar fields are not associated to the cloud.
+(that can be done explicitely later).
+
+Default None)";
 
 const char* distanceComputationToolsPy_getSplitDistance_doc= R"(
 Split distances (one scalar field per dimension: X, Y and Z).
 
-Default None for each dimension)";
+Default None)";
 
 const char* distanceComputationToolsPy_resetFormerDistances_doc= R"(
 Whether to keep the existing distances as is (if any) or not.
