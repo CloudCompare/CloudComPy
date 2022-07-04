@@ -30,23 +30,32 @@ os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual
 import cloudComPy as cc
 
+#---PCLregistration01-begin
 cloud1 = cc.loadPointCloud(getSampleCloud2(3.0, 0, 0.1))
+
 cloud2 = cloud1.cloneThis()
 tr1 = cc.ccGLMatrix()
 tr1.initFromParameters(0.1, (0., 0.1, 0.9), (0.,0.,0.))
 cloud2.applyRigidTransformation(tr1)
+
 cc.computeNormals([cloud1, cloud2])
+
 cloud2ref = cloud2.cloneThis()
 cloud2bis = cloud2ref.cloneThis()
+#---PCLregistration01-end
 
+#---PCLregistration02-begin
 if cc.isPluginPCL():
     import cloudComPy.PCL
+    #---PCLregistration02-end
     
     # --- pCL registration
     
+    #---PCLregistration03-begin
     fpcl = cc.PCL.FastGlobalRegistrationFilter()
     fpcl.setParameters(cloud1, [cloud2])
     res=fpcl.compute()
+    #---PCLregistration03-end
     
     tr2 = fpcl.getTransformation()             # get the transformation applied to cloud2
     cloud2bis.applyRigidTransformation(tr2)    # apply it to the clone of cloud2 before registration, to check

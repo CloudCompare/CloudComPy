@@ -663,6 +663,8 @@ Cylinder
 A :py:class:`~.cloudComPy.ccCylinder` derives from a :py:class:`~.cloudComPy.ccCone`.
 It is internally represented by a cone with the same top and bottom radius.
 
+.. _plane_properties:
+
 Plane
 ~~~~~
 
@@ -801,6 +803,8 @@ by adding nodes over several iterations:
 
 The above code snippet is from :download:`test007.py <../tests/test007.py>`.
 
+.. _2D_polygons:
+
 2D polygons (facets)
 --------------------
 
@@ -840,6 +844,8 @@ With the plane equation:
    :code: python
 
 The above code snippets are from :download:`test021.py <../tests/test021.py>`.
+
+.. _octrees:
 
 octrees
 -------

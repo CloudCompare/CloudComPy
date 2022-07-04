@@ -37,7 +37,7 @@ createSymbolicLinks() # required for tests on build, before cc.initCC
 cloud1 = cc.loadPointCloud(getSampleCloud2(3.0, 0, 0.1))
 cloud1.setName("cloud1")
 
-mesh1 = cc.ccMesh.triangulate(cloud1, cc.TRIANGULATION_TYPES.DELAUNAY_2D_AXIS_ALIGNED)
+mesh1 = cc.ccMesh.triangulate(cloud1, cc.TRIANGULATION_TYPES.DELAUNAY_2D_AXIS_ALIGNED, dim=2)
 mesh1.setName("mesh1")
 #---triangulate01-end
 
@@ -87,7 +87,18 @@ if d2.dtype != np.dtype('uint32'):
     raise RuntimeError
 #---triangleIndexes01-end
 
-cc.SaveEntities([cloud1, mesh1, mesh2, mesh3], os.path.join(dataDir, "clouds1.bin"))
+#---triangulate02-begin
+cloud2 = cc.loadPointCloud(getSampleCloud2(3.0, 0, 0.1))
+cloud2.setName("cloud2")
+tr1 = cc.ccGLMatrix()
+tr1.initFromParameters(0.5, (0.7, 0.7, 0.7), (0.,0.,0.))
+cloud2.applyRigidTransformation(tr1)
+
+mesh4 = cc.ccMesh.triangulate(cloud2, cc.TRIANGULATION_TYPES.DELAUNAY_2D_BEST_LS_PLANE)
+mesh4.setName("mesh4")
+#---triangulate02-end
+
+cc.SaveEntities([cloud1, cloud2, mesh1, mesh2, mesh3, mesh4], os.path.join(dataDir, "clouds1.bin"))
 
 #---deleteEntity02-begin
 cc.deleteEntity(mesh3)

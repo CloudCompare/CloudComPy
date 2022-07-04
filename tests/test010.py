@@ -33,8 +33,7 @@ import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC.init
 
-#---ICP-fragment-begin
-
+#---ICP01-begin
 cloud1 = cc.loadPointCloud(getSampleCloud(5.0))
 cloud1.setName("cloud1")
 
@@ -43,13 +42,15 @@ cloud2ref.setName("cloud2_reference")
 
 cloud2 = cloud2ref.cloneThis()
 tr1 = cc.ccGLMatrix()
-# -------------------- z -- y -- x
+# --------------------  z -- y -- x  (rotation x 0.1, translation z 0.3)
 tr1.initFromParameters(0.0, 0.0, 0.1, (0.0, 0.0, 0.3))
 cloud2.applyRigidTransformation(tr1)
 cloud2.setName("cloud2_transformed")
 
 cc.SaveEntities([cloud1, cloud2ref, cloud2], os.path.join(dataDir, "clouds2.bin"))
+#---ICP01-end
 
+#---ICP02-begin
 res=cc.ICP(data=cloud2, model=cloud1, minRMSDecrease=1.e-5,
            maxIterationCount=20, randomSamplingLimit=50000, removeFarthestPoints=False,
            method=cc.CONVERGENCE_TYPE.MAX_ITER_CONVERGENCE,
@@ -58,8 +59,7 @@ tr2 = res.transMat
 cloud3 = res.aligned
 cloud3.applyRigidTransformation(tr2)
 cloud3.setName("cloud2_transformed_afterICP")
-
-#---ICP-fragment-end
+#---ICP02-end
 
 #---C2C01-begin
 stats = cc.DistanceComputationTools.computeApproxCloud2CloudDistance(cloud2ref, cloud3)
