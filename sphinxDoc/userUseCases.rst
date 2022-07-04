@@ -310,10 +310,190 @@ To find cloud nodes in the neighbourhood of a given point, the octree offers sev
 to search in a sphere, a cylinder, a box. See :ref:`octrees` for examples of use.
 
 
-Cloud sampling, noise filter
-----------------------------
-sample cloud, noise filter... (test019)
-filterBySFValue
+Cloud sampling, noise filter, filter by scalar field
+----------------------------------------------------
+
+The class :py:class:`cloudComPy.CloudSamplingTools` offers several cloud sampling filters.
+
+Noise filter
+~~~~~~~~~~~~
+
+The :py:meth:`~.cloudComPy.CloudSamplingTools.noiseFilter` method 
+is based on the distance to the approximate local surface.
+This filter removes points based on their distance relatively to the best fit plane computed on their neighbors.
+
+The mandatory parameters are the cloud, the neighbourhood radius and the number of sigmas:
+
+The result is a selection (:py:class:`~.cloudComPy.ReferenceCloud`)
+that must be transformed in :py:class:`~.cloudComPy.ccPointCloud` with :py:meth:`~.cloudComPy.ccPointCloud.partialClone`
+
+.. include:: ../tests/test019.py
+   :start-after: #---partialClone01-begin
+   :end-before:  #---partialClone01-end
+   :literal:
+   :code: python
+
+Resample cloud spatially
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :py:meth:`~.cloudComPy.CloudSamplingTools.resampleCloudSpatially` method 
+resamples a point cloud (process based on inter point distance)
+The cloud is resampled so that there is no point nearer than a given distance to other points.
+It works by picking a reference point, removing all points which are to close to this point, 
+and repeating these two steps until the result is reached.
+
+The mandatory parameters are the cloud and the distance.
+
+The result is a selection (:py:class:`~.cloudComPy.ReferenceCloud`)
+that must be transformed in :py:class:`~.cloudComPy.ccPointCloud` with :py:meth:`~.cloudComPy.ccPointCloud.partialClone`
+
+.. include:: ../tests/test019.py
+   :start-after: #---resampleCloudSpatially01-begin
+   :end-before:  #---resampleCloudSpatially01-end
+   :literal:
+   :code: python
+
+Subsample cloud randomly
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :py:meth:`~.cloudComPy.CloudSamplingTools.subsampleCloudRandomly` method 
+subsamples a point cloud (process based on random selections).
+This is a very simple subsampling algorithm that simply consists in selecting “n” different points, in a random way.
+
+The mandatory parameters are the cloud and the total number of points to keep.
+
+The result is a selection (:py:class:`~.cloudComPy.ReferenceCloud`)
+that must be transformed in :py:class:`~.cloudComPy.ccPointCloud` with :py:meth:`~.cloudComPy.ccPointCloud.partialClone`
+
+.. include:: ../tests/test019.py
+   :start-after: #---SubsampleRandom01-begin
+   :end-before:  #---SubsampleRandom01-end
+   :literal:
+   :code: python
+
+resample cloud with octree at level
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :py:meth:`~.cloudComPy.CloudSamplingTools.resampleCloudWithOctreeAtLevel` method 
+is a resampling algorithm is applied inside each cell of the octree. 
+The different resampling methods are represented as an enumerator (see :py:class:`~.cloudComPy.RESAMPLING_CELL_METHOD`)
+and consist in simple processes such as replacing all the points lying in a cell by the cell center 
+or by the points gravity center.
+
+The mandatory parameters are the cloud, the octree level and the resampling method.
+
+.. include:: ../tests/test019.py
+   :start-after: #---resampleOctreeLevel01-begin
+   :end-before:  #---resampleOctreeLevel01-end
+   :literal:
+   :code: python
+
+resample cloud with octree
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :py:meth:`~.cloudComPy.CloudSamplingTools.resampleCloudWithOctree` method 
+is the same as :py:meth:`~.cloudComPy.CloudSamplingTools.resampleCloudWithOctreeAtLevel` method, 
+apart the fact that instead of giving a specific octree subdivision level as input parameter, 
+one can specify an approximative number of points for the resulting cloud 
+(the algorithm will automatically determine the corresponding octree level).
+
+The mandatory parameters are the cloud, the approximate number of points and the resampling method.
+
+.. include:: ../tests/test019.py
+   :start-after: #---resampleOctree01-begin
+   :end-before:  #---resampleOctree01-end
+   :literal:
+   :code: python
+
+Statistical Outliers Removal (SOR) filter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :py:meth:`~.cloudComPy.CloudSamplingTools.sorFilter` method 
+removes points based on their mean distance to their distance 
+(by comparing it to the average distance of all points to their neighbors). 
+It is equivalent to `PCL Library <https://pointclouds.org/>`_ 
+`StatisticalOutlierRemoval <https://pointclouds.org/documentation/classpcl_1_1_statistical_outlier_removal.html>`_ filter 
+(see `Removing outliers using a StatisticalOutlierRemoval filter <https://pcl.readthedocs.io/projects/tutorials/en/master/statistical_outlier.html?highlight=outlier>`_)
+
+The only mandatory parameter is the cloud.
+
+The result is a selection (:py:class:`~.cloudComPy.ReferenceCloud`)
+that must be transformed in :py:class:`~.cloudComPy.ccPointCloud` with :py:meth:`~.cloudComPy.ccPointCloud.partialClone`
+
+.. include:: ../tests/test019.py
+   :start-after: #---sorFilter01-begin
+   :end-before:  #---sorFilter01-end
+   :literal:
+   :code: python
+
+subsample cloud with octree at level
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :py:meth:`~.cloudComPy.CloudSamplingTools.subsampleCloudWithOctreeAtLevel` method 
+applies a subsampling algorithm inside each cell of the octree. 
+The different subsampling methods are represented as an enumerator 
+(see :py:class:`~.cloudComPy.SUBSAMPLING_CELL_METHOD`) 
+and consist in simple processes such as choosing a random point, 
+or the one closest to the cell center. 
+
+The mandatory parameters are the cloud, the octree level and the subsampling method.
+
+The result is a selection (:py:class:`~.cloudComPy.ReferenceCloud`)
+that must be transformed in :py:class:`~.cloudComPy.ccPointCloud` with :py:meth:`~.cloudComPy.ccPointCloud.partialClone`
+
+.. include:: ../tests/test019.py
+   :start-after: #---subsampleOctreeLevel01-begin
+   :end-before:  #---subsampleOctreeLevel01-end
+   :literal:
+   :code: python
+
+subsample cloud with octree
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :py:meth:`~.cloudComPy.CloudSamplingTools.subsampleCloudWithOctree` method 
+is the same as :py:meth:`~.cloudComPy.CloudSamplingTools.subsampleCloudWithOctreeAtLevel` method, 
+apart the fact that instead of giving a specific octree subdivision level as input parameter, 
+one can specify an approximative number of points for the resulting cloud 
+(the algorithm will automatically determine the corresponding octree level).
+
+The mandatory parameters are the cloud, the approximate number of points and the subsampling method.
+
+The result is a selection (:py:class:`~.cloudComPy.ReferenceCloud`)
+that must be transformed in :py:class:`~.cloudComPy.ccPointCloud` with :py:meth:`~.cloudComPy.ccPointCloud.partialClone`
+
+.. include:: ../tests/test019.py
+   :start-after: #---subsampleOctree01-begin
+   :end-before:  #---subsampleOctree01-end
+   :literal:
+   :code: python
+
+All the above code snippets are from `test019.py <..//PythonAPI_test/test019.py>`_.
+
+filter by scalar field values
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :py:func:`cloudComPy.filterBySFValue` method 
+creates a new point cloud by filtering points using the current out ScalarField
+(see :py:meth:`cloudComPy.ccPointCloud.setCurrentOutScalarField`).
+It keeps the points whose ScalarField value is between the min and max parameters.
+
+Here, we create a scalar field based on curvature:
+
+.. include:: ../tests/test003.py
+   :start-after: #---curvature01-begin
+   :end-before:  #---curvature01-end
+   :literal:
+   :code: python
+
+Then, we apply the filter:
+
+.. include:: ../tests/test003.py
+   :start-after: #---filterSFValue01-begin
+   :end-before:  #---filterSFValue01-end
+   :literal:
+   :code: python
+
+The above code snippets are from `test003.py <..//PythonAPI_test/test003.py>`_.
 
 Generate histograms
 -------------------
