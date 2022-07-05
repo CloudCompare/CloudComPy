@@ -704,7 +704,55 @@ Finally, a simple rasterization to mesh:
 
 Finding an optimal bounding box
 -------------------------------
-(test027)
+
+:py:mod:`~.cloudComPy.minimalBoundingBox` is a pure Python plugin built with CloudComPy.
+
+This tool is provided as an example of CloudComPy pure Python extension.
+
+The :py:func:`~.cloudComPy.minimalBoundingBox.findRotation` function finds a minimal bounding box for a cloud, 
+not oriented along the main axes, and the corresponding rotation.
+It is not proven that the solution meets to the minimum, and the performance and robustness
+can certainly be improved.
+
+We have to import minimalBoundingBox
+
+.. include:: ../tests/test027.py
+   :start-after: #---optimalBB00-begin
+   :end-before:  #---optimalBB00-end
+   :literal:
+   :code: python
+
+
+We create an ellipsoid, and apply a rotation on it, so that its bounding box is far from optimal.
+
+.. include:: ../tests/test027.py
+   :start-after: #---optimalBB01-begin
+   :end-before:  #---optimalBB01-end
+   :literal:
+   :code: python
+
+The :py:func:`~.cloudComPy.minimalBoundingBox.findRotation` function returns several objects.
+
+ - the optimized bounding box
+ - the rotation (double precision) to go the object on axes to the original object
+ - the polyline representing the optimal bounding box, aligned with the original object
+ - the cloud associated to this polyline
+
+.. include:: ../tests/test027.py
+   :start-after: #---optimalBB02-begin
+   :end-before:  #---optimalBB02-end
+   :literal:
+   :code: python
+
+To check the results, we apply the rotation (inverse) to a copy of the cloud and polyline.
+
+.. include:: ../tests/test027.py
+   :start-after: #---optimalBB03-begin
+   :end-before:  #---optimalBB03-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test027.py <../tests/test027.py>`.
 
 .. _cloud_comparison_M3C2:
 

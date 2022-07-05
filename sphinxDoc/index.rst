@@ -53,6 +53,7 @@ cloudComPy: a Python interface for CloudCompare
    PCL.rst
    PCV.rst
    RANSAC_SD.rst
+   MinimalBoundingBox.rst
    
 .. toctree::
    :numbered:
