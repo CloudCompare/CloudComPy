@@ -497,7 +497,68 @@ The above code snippets are from `test003.py <..//PythonAPI_test/test003.py>`_.
 
 Generate histograms
 -------------------
-(test022)
+
+To draw plots or to generate csv files from scalar field data, we use numpy, matplotlib and csv.
+
+histogram as a figure
+~~~~~~~~~~~~~~~~~~~~~
+
+Here, we want to obtain a histogram of distances as a figure from a scalar field.
+We get a numpy array from the scalar field.
+
+.. include:: ../tests/test022.py
+   :start-after: #---histogram01-begin
+   :end-before:  #---histogram01-end
+   :literal:
+   :code: python
+
+We need matplotlib and numpy.
+
+.. include:: ../tests/test022.py
+   :start-after: #---histogram02-begin
+   :end-before:  #---histogram02-end
+   :literal:
+   :code: python
+
+Building a png histogram from a Numpy array is a standard use of matplotlib.
+
+.. include:: ../tests/test022.py
+   :start-after: #---histogram03-begin
+   :end-before:  #---histogram03-end
+   :literal:
+   :code: python
+   
+The above code snippets are from `test022.py <..//PythonAPI_test/test022.py>`_.
+
+histogram as a csv file
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Here, we want to obtain a histogram of distances as a csv file from a scalar field.
+We get a numpy array from the scalar field.
+
+.. include:: ../tests/test022.py
+   :start-after: #---histogram01-begin
+   :end-before:  #---histogram01-end
+   :literal:
+   :code: python
+
+We need matplotlib and csv.
+
+.. include:: ../tests/test022.py
+   :start-after: #---histogram04-begin
+   :end-before:  #---histogram04-end
+   :literal:
+   :code: python
+
+Building a csv histogram from a Numpy array is a standard use of csv.
+
+.. include:: ../tests/test022.py
+   :start-after: #---histogram05-begin
+   :end-before:  #---histogram05-end
+   :literal:
+   :code: python
+   
+The above code snippets are from `test022.py <..//PythonAPI_test/test022.py>`_.
 
 Compute a 2.5D volume
 ---------------------
