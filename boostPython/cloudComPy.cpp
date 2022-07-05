@@ -782,7 +782,10 @@ BOOST_PYTHON_MODULE(_cloudComPy)
 		.def_readonly("averageNeighborsPerCell", &ReportInfoVol::averageNeighborsPerCell)
 		;
 
-    def("ComputeVolume25D", ComputeVolume25D, cloudComPy_ComputeVolume25D_doc);
+    def("ComputeVolume25D", ComputeVolume25D,
+            (arg("reportInfo"), arg("ground"), arg("ceil"), arg("vertDim"),
+             arg("gridStep"), arg("groundHeight"), arg("ceilHeight")),
+            cloudComPy_ComputeVolume25D_doc);
 
     def("invertNormals", invertNormals, cloudComPy_invertNormals_doc);
 

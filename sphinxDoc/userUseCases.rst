@@ -224,7 +224,7 @@ to get the precise overlap of the clouds.
    :literal:
    :code: python
 
-The above code snippets are from `test010.py <..//PythonAPI_test/test010.py>`_.
+The above code snippets are from :download:`test010.py <../tests/test010.py>`.
 
 Cloud registration with the PCL plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -260,7 +260,7 @@ The :py:mod:`~.cloudComPy.PCL` plugin gives access to the class :py:class:`~.clo
    :literal:
    :code: python
 
-The above code snippets are from `test038.py <..//PythonAPI_test/test038.py>`_.
+The above code snippets are from :download:`test038.py <../tests/test038.py>`.
 
 Cloud triangulation: create a mesh
 ----------------------------------
@@ -284,7 +284,7 @@ Otherwise we tell the algorithm to find the best fitting plane:
    :literal:
    :code: python
 
-The above code snippets are from `test011.py <..//PythonAPI_test/test011.py>`_.
+The above code snippets are from :download:`test011.py <../tests/test011.py>`.
 
 Fitting ccPlane
 ---------------
@@ -467,7 +467,7 @@ that must be transformed in :py:class:`~.cloudComPy.ccPointCloud` with :py:meth:
    :literal:
    :code: python
 
-All the above code snippets are from `test019.py <..//PythonAPI_test/test019.py>`_.
+All the above code snippets are from :download:`test019.py <../tests/test019.py>`.
 
 filter by scalar field values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -493,7 +493,7 @@ Then, we apply the filter:
    :literal:
    :code: python
 
-The above code snippets are from `test003.py <..//PythonAPI_test/test003.py>`_.
+The above code snippets are from :download:`test003.py <../tests/test003.py>`.
 
 Generate histograms
 -------------------
@@ -528,7 +528,7 @@ Building a png histogram from a Numpy array is a standard use of matplotlib.
    :literal:
    :code: python
    
-The above code snippets are from `test022.py <..//PythonAPI_test/test022.py>`_.
+The above code snippets are from :download:`test022.py <../tests/test022.py>`.
 
 histogram as a csv file
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -558,11 +558,72 @@ Building a csv histogram from a Numpy array is a standard use of csv.
    :literal:
    :code: python
    
-The above code snippets are from `test022.py <..//PythonAPI_test/test022.py>`_.
+The above code snippets are from :download:`test022.py <../tests/test022.py>`.
 
 Compute a 2.5D volume
 ---------------------
-ComputeVolume25D (test023)
+
+The :py:func:`cloudComPy.ComputeVolume25D` method 
+computes a 2.5D volume between a cloud and a ground plane,or two clouds,
+following a given direction (X, Y or Z).
+If only one cloud is given, the direction (X, Y or Z) defines the normal to the plane used for calculation.
+The calculation uses a cartesian grid, you provide the gridStep.
+
+The :py:class:`cloudComPy.ReportInfoVol` structure is completed by the calculation and the following information:
+
++---------------------------------+-------------------------------------------------------------------------+
+| volume:                         | the resulting volume                                                    |
++---------------------------------+-------------------------------------------------------------------------+
+| addedVolume:                    | the positive part of the volume (ceil > floor)                          |
++---------------------------------+-------------------------------------------------------------------------+
+| removedVolume:                  | the negative part of the volume (ceil < floor)                          |
++---------------------------------+-------------------------------------------------------------------------+
+| surface:                        | the section of the point cloud along in the given direction             |
++---------------------------------+-------------------------------------------------------------------------+
+| matchingPercent:                | percentage of the section matching ceil and floor                       |
++---------------------------------+-------------------------------------------------------------------------+
+| ceilNonMatchingPercent:         | percentage of the ceil section non matching floor                       |
++---------------------------------+-------------------------------------------------------------------------+
+| float groundNonMatchingPercent: | percentage of the floor section non matching ceil                       |
++---------------------------------+-------------------------------------------------------------------------+
+| int averageNeighborsPerCell:    | average Neighbor number per cell                                        |
+|                                 |                                                                         |
+|                                 | (see ``gridStep`` argument of :py:func:`~.cloudComPy.ComputeVolume25D`) |
++---------------------------------+-------------------------------------------------------------------------+
+
+A first example with a flat floor:
+
+.. include:: ../tests/test023.py
+   :start-after: #---computeVol25D01-begin
+   :end-before:  #---computeVol25D01-end
+   :literal:
+   :code: python
+
+check the results:
+
+.. include:: ../tests/test023.py
+   :start-after: #---computeVol25D02-begin
+   :end-before:  #---computeVol25D02-end
+   :literal:
+   :code: python
+
+A second example with a cloud floor, translated to obtain non matching parts:
+
+.. include:: ../tests/test023.py
+   :start-after: #---computeVol25D03-begin
+   :end-before:  #---computeVol25D03-end
+   :literal:
+   :code: python
+
+check the results:
+
+.. include:: ../tests/test023.py
+   :start-after: #---computeVol25D04-begin
+   :end-before:  #---computeVol25D04-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test023.py <../tests/test023.py>`.
 
 Cloud rasterisation
 -------------------

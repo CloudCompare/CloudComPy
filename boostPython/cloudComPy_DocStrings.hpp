@@ -35,7 +35,7 @@ Python3 access to cloudCompare objects is done like this:
 const char* cloudComPy_ComputeVolume25D_doc= R"(
 Compute a 2.5D volume between a cloud and a ground plane,or two clouds,following a given direction (X, Y or Z).
 
-If only one cloud is given, the direction (X, Y or Z) define the normal to the plane used for calculation.
+If only one cloud is given, the direction (X, Y or Z) defines the normal to the plane used for calculation.
 
 :param ReportInfoVol reportInfo: the object instance to be completed with results
 :param ccPointCloud ground: either a point cloud or None
