@@ -130,5 +130,7 @@ TODO List
 - TODO: fix the bug on save scalar fields with laz 1.4 (issue #54)
 - TODO: improve C2C split distances (issue #56)
 - TODO: get access to E57 structure, check version of libE57 (issue #58)
+- TODO: implement sensors and scattering angles calculation (issue #59)
+- TODO: implement GuessBestParams for M2C2 plugin (issue #60)
 
 
