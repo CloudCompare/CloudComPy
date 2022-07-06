@@ -30,6 +30,7 @@ os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 from gendata import getSampleCloud, dataDir, isCoordEqual
 import cloudComPy as cc
 import numpy as np
+#---M3C2params01-begin
 import multiprocessing
 
 m3c2_params_dic={}
@@ -66,12 +67,15 @@ with open(paramFilename, 'w') as f:
     f.write("[General]\n")
     for k,v in m3c2_params_dic.items():
         f.write("%s=%s\n"%(k,v))
+#---M3C2params01-end
 
+#---computeM3C2_01-begin
 if cc.isPluginM3C2():
     import cloudComPy.M3C2
     cloud = cc.loadPointCloud(getSampleCloud(5.0))
     cloud1 = cc.loadPointCloud(getSampleCloud(1.0))
     cloud2 = cc.M3C2.computeM3C2([cloud,cloud1], paramFilename)
+#---computeM3C2_01-end
     
     if cloud2 is None:
         raise RuntimeError

@@ -758,28 +758,263 @@ The above code snippets are from :download:`test027.py <../tests/test027.py>`.
 
 Cloud comparison with plugin M3C2
 ---------------------------------
-(test030)
+
+The :py:mod:`~.cloudComPy.M3C2` plugin is introduced 
+in the `CloudCompare Plugins wiki - M3C2 <http://www.cloudcompare.org/doc/wiki/index.php/M3C2_(plugin)>`_.
+The plugin computes signed distances between two clouds.
+
+The :py:func:`~.cloudComPy.M3C2.computeM3C2` function relies on a large number of parameters grouped in a file.
+The CloudCompare GUI offers a 'guess parameters' option and a way to save the parameters to a file.
+In CloudComPy, the 'guess parameters' option is not yet wrapped. The only way is to generate the file with the GUI
+and edit it with parameters adapted to the clouds. Unfortunately, some parameters are not easy to guess without the GUI.
+
+The M3C2 params file generated below corresponds to the 'guess params' option of the GUI for the clouds of this example:
+
+.. include:: ../tests/test030.py
+   :start-after: #---M3C2params01-begin
+   :end-before:  #---M3C2params01-end
+   :literal:
+   :code: python
+
+
+You have to import the The :py:mod:`~.cloudComPy.M3C2` plugin.
+The :py:func:`~.cloudComPy.M3C2.computeM3C2` function requires only the two clouds and the params file,
+and produces a cloud with new scalar field 'M3C2 distance':
+
+.. include:: ../tests/test030.py
+   :start-after: #---computeM3C2_01-begin
+   :end-before:  #---computeM3C2_01-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test030.py <../tests/test030.py>`.
 
 ShadeVIS (ambiant occlusion) with Plugin PCV
 --------------------------------------------
-(test032)
+
+The PCV plugin is documented in the
+`CloudCompare Plugins wiki - PCV <http://www.cloudcompare.org/doc/wiki/index.php/ShadeVis_(plugin)>`_.
+It calculates the illumination of a point cloud (or vertices of a mesh) 
+as if the light was coming from a theoretical hemisphere or sphere around the object 
+(the user can also provide its own set of light directions - see below). 
+
+You have to import the The :py:mod:`~.cloudComPy.PCV` plugin.
+
+.. include:: ../tests/test032.py
+   :start-after: #---PCV01-begin
+   :end-before:  #---PCV01-end
+   :literal:
+   :code: python
+
+We first try to illuminate the cloud with a dish as light source, oriented to create unrealistic sharp shadows.
+The cloud used as light source must have normals.
+
+.. include:: ../tests/test032.py
+   :start-after: #---PCV02-begin
+   :end-before:  #---PCV02-end
+   :literal:
+   :code: python
+
+The :py:func:`~.cloudComPy.PCV.computeShadeVIS` function takes a list of objects (clouds or meshes)
+as first parameter, and will add a scalar field `illuminance (PCV)` to these clouds or meshes.
+The second parameter is the optional light source. There are several other optional parameters.
+
+.. include:: ../tests/test032.py
+   :start-after: #---PCV03-begin
+   :end-before:  #---PCV03-end
+   :literal:
+   :code: python
+
+The Scalar field is renamed to keep it and compute the illuminance with the default hemispheric light source.
+
+.. include:: ../tests/test032.py
+   :start-after: #---PCV04-begin
+   :end-before:  #---PCV04-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test032.py <../tests/test032.py>`.
 
 Compute Hidden Point Removal with plugin HPR
 --------------------------------------------
-(test033)
+
+The HPR plugin is described in the
+`CloudCompare Plugins wiki - HPR <http://www.cloudcompare.org/doc/wiki/index.php/Hidden_Point_Removal_(plugin)>`_.
+
+The algorithm filters out the points of a cloud that wouldn't be seen 
+(by the current 3D camera) if the cloud was a closed surface. 
+Therefore it tries to remove the points that should be hidden in the current viewport configuration.
+
+Without GUI, in CloudComPy, we have to explitely provide the coordinates of the viewpoint
+in :py:func:`~.cloudComPy.HPR.computeHPR`.
+
+.. include:: ../tests/test033.py
+   :start-after: #---HPR01-begin
+   :end-before:  #---HPR01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test033.py <../tests/test033.py>`.
 
 Boolean operations on meshes with plugin MeshBoolean
 ----------------------------------------------------
-(test034)
+
+The MeshBoolean plugin is described in the
+`CloudCompare Plugins wiki - Mesh_Bolean <http://www.cloudcompare.org/doc/wiki/index.php/Mesh_Boolean_(plugin)>`_.
+
+This plugin can be used to perform Boolean operations on meshes (also called CSG = Constructive Solid Geometry). 
+
+In the example, we try an intersection of two primitives, a sphere and a cylinder,
+ with :py:func:`~.cloudComPy.MeshBoolean.computeMeshBoolean`.
+
+.. include:: ../tests/test034.py
+   :start-after: #---MeshBoolean01-begin
+   :end-before:  #---MeshBoolean01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test034.py <../tests/test034.py>`.
 
 Finding primitives on a cloud with plugin RANSAC-SD
 ---------------------------------------------------
-(test035)
+
+The RANSAC-SD plugin is documented in the
+`CloudCompare Plugins wiki - RANSAC Shape Detection <https://www.cloudcompare.org/doc/wiki/index.php/RANSAC_Shape_Detection_(plugin)>`_.
+
+The RANSAC-SD plugin (RANdom SAmple Consensus) is used to detect simple shapes
+(planes, spheres, cylinders, cones, torus) in a cloud.
+
+You have to import the The :py:mod:`~.cloudComPy.RANSAC_SD` plugin.
+
+The :py:func:`~.cloudComPy.RANSAC_SD.computeRANSAC_SD` function 
+requires a set of parameters: :py:class:`~.cloudComPy.RANSAC_SD.RansacParams`.
+
+The :py:meth:`~.cloudComPy.RANSAC_SD.RansacParams.optimizeForCloud` method helps to get a correct set of parameters.
+By default, the algorithm searchs only planes, spheres and cylinders, 
+you can enable or disable a primitive type with  ``setPrimEnabled``.
+
+For the example we regroup 4 clouds (samples from 3 spheres and 1 cylinder) in a single cloud.
+
+.. include:: ../tests/test035.py
+   :start-after: #---RANSACSD01-begin
+   :end-before:  #---RANSACSD01-end
+   :literal:
+   :code: python
+
+The :py:func:`~.cloudComPy.RANSAC_SD.computeRANSAC_SD` function returns a list of meshes and clouds for the shapes found.
+
+.. include:: ../tests/test035.py
+   :start-after: #---RANSACSD02-begin
+   :end-before:  #---RANSACSD02-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test035.py <../tests/test035.py>`.
 
 Sclices and contours
 --------------------
-(test036)
+
+The concepts are presented in the 
+`CloudCompare wiki - Cross Section <https://www.cloudcompare.org/doc/wiki/index.php/Cross_Section>`_.
+
+Given a bounding box used as a cut tool, and a list of entities to sclice (clouds and meshes),
+the :py:func:`~.cloudComPy.ExtractSlicesAndContours` function allows to:
+
+ - segment the entities (slice)
+ - extract the envelope of all the points inside the slice
+ - extract one or several contours of the points inside each slice
+ - repeat the segmentation or extraction processes above along one or several dimensions
+   (to extract multiple 'slices' for instances)
+
+For the example, we create a list of objects to slice, one cloud and two meshes.
+
+.. include:: ../tests/test036.py
+   :start-after: #---slicemat-begin
+   :end-before:  #---slicemat-end
+   :literal:
+   :code: python
+
+We define a bounding box as a cutting tool:
+
+.. include:: ../tests/test036.py
+   :start-after: #---slicebbox-begin
+   :end-before:  #---slicebbox-end
+   :literal:
+   :code: python
+
+First, generate a single slice: the function returns a list containing a single slice
+
+.. include:: ../tests/test036.py
+   :start-after: #---slice00-begin
+   :end-before:  #---slice00-end
+   :literal:
+   :code: python
+
+then, repeat the slices along Z with a gap: the function returns a list containing several slices
+
+.. include:: ../tests/test036.py
+   :start-after: #---slice01-begin
+   :end-before:  #---slice01-end
+   :literal:
+   :code: python
+
+next, the same as above, plus envelopes:
+the function returns a tuple(list of slices, list of envelopes)
+
+.. include:: ../tests/test036.py
+   :start-after: #---slice02-begin
+   :end-before:  #---slice02-end
+   :literal:
+   :code: python
+
+after, the same as above, with a rotation of the bounding box:
+the function returns a tuple(list of slices, list of envelopes)
+
+.. include:: ../tests/test036.py
+   :start-after: #---slice03-begin
+   :end-before:  #---slice03-end
+   :literal:
+   :code: python
+
+finally, the same as above, plus contours: 
+the function returns a tuple(list of slices, list of envelopes, list of contours)
+
+.. include:: ../tests/test036.py
+   :start-after: #---slice04-begin
+   :end-before:  #---slice04-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test036.py <../tests/test036.py>`.
 
 ExtractConnectedComponents
 --------------------------
-(test037)
+
+The tool used here is described in
+`CloudCompare wiki - Label Connected Components <https://www.cloudcompare.org/doc/wiki/index.php/Label_Connected_Components>`_.
+
+This tool segments the selected cloud(s) in smaller parts separated by a minimum distance. 
+Each part is a connected component (i.e. a set of 'connected' points). 
+
+For the test, we create a cloud with clear gaps, using a sclice operation:
+
+.. include:: ../tests/test037.py
+   :start-after: #---extractCC01-begin
+   :end-before:  #---extractCC01-end
+   :literal:
+   :code: python
+
+The :py:func:`~.cloudComPy.ExtractConnectedComponents` function use the octree level 
+to define the size of the gap between the components. 
+
+.. include:: ../tests/test037.py
+   :start-after: #---extractCC02-begin
+   :end-before:  #---extractCC02-end
+   :literal:
+   :code: python
+
+The function returns a tuple (number of clouds processed, list of components)
+
+The above code snippets are from :download:`test037.py <../tests/test037.py>`.
+
+

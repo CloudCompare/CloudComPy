@@ -21,7 +21,7 @@ For meshes:
 For polylines:
 ``.dxf`` ``.poly`` ``.sx`` ``.shp``
 
-See `test020.py <../PythonAPI_test/test020.py>`_ for an example.
+See :download:`test020.py <../tests/test020.py>` for an example.
 
 Saving a Point Cloud
 --------------------
