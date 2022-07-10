@@ -187,7 +187,7 @@ Compute split distances between two clouds (C2C)
 The use case is similar to :ref:`compute_C2C`
 but we need to split the distance components according to the cardinal directions.
 Here, we set the parameter ``setSplitDistances`` to `cloud.size()` to create 3 scalar fields of the cloud size.
-They are not associated to the cloud, and we have to do that explicitely if we need it.
+They are not associated to the cloud, this will be done when the distances are computed.
 
 .. include:: ../tests/test009.py
    :start-after: #---C2C01-begin
@@ -195,6 +195,13 @@ They are not associated to the cloud, and we have to do that explicitely if we n
    :literal:
    :code: python
 
+The cloud contains four new scalar fields:
+
+ - ``C2C absolute distances``
+ - ``C2C absolute distances (X)``
+ - ``C2C absolute distances (Y)``
+ - ``C2C absolute distances (Z)``
+ 
 The above code snippet is from :download:`test009.py <../tests/test009.py>`.
 
 Cloud registration

@@ -207,6 +207,15 @@ int computeCloud2CloudDistances_py( CCCoreLib::GenericIndexedCloudPersist* compa
     CCCoreLib::ScalarField* sf = compCloud->getScalarField(sfIdx);
     sf->computeMinAndMax();
     sf->setName("C2C absolute distances");
+    const char* sfNames[] = {"C2C absolute distances (X)", "C2C absolute distances (Y)", "C2C absolute distances (Z)"};
+    for (int i=0; i<3; i++)
+    if (ccScalarField* sfi = dynamic_cast<ccScalarField*>(params.splitDistances[i]))
+    {
+        sfi->computeMinAndMax();
+        sfi->setName(sfNames[i]);
+        int isf = compCloud->addScalarField(sfi);
+        params.splitDistances[i] = nullptr;
+    }
     return 1;
 }
 

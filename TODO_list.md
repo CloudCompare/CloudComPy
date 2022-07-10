@@ -117,6 +117,7 @@ TODO List
 * DONE: get the transformation matrix computed by the fast global registration function in PCL Plugin (issue #35)
 * DONE: try reading .ply files with extra columns interpreted as scalarFields, regardless of their names (issue #51)
 * DONE: fix the bug in ccGLMatrix constructor (issue #52)
+* DONE: improve C2C split distances (issue #56)
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: Try PyBind11 as a replacement for boost.python : potentially faster and lighter.
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
@@ -128,7 +129,6 @@ TODO List
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
 - TODO: update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows (issue #53)
 - TODO: fix the bug on save scalar fields with laz 1.4 (issue #54)
-- TODO: improve C2C split distances (issue #56)
 - TODO: get access to E57 structure, check version of libE57 (issue #58)
 - TODO: implement sensors and scattering angles calculation (issue #59)
 - TODO: implement GuessBestParams for M2C2 plugin (issue #60)
