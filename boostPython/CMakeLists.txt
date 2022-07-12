@@ -72,6 +72,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     ${CMAKE_CURRENT_LIST_DIR}/registrationToolsPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/cloudSamplingToolsPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ccFacetPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ccSensorPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/NeighbourhoodPy.cpp
     )
 

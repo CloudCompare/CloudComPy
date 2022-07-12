@@ -36,6 +36,9 @@
 #include <ccColorTypes.h>
 #include <ccCommon.h>
 #include <ScalarFieldTools.h>
+#include <ccSensor.h>
+#include <ccGBLSensor.h>
+#include <ccHObjectCaster.h>
 
 #include "PyScalarType.h"
 #include "pyccTrace.h"
@@ -530,6 +533,30 @@ bool sfFromColor_py(ccPointCloud &self, bool exportR, bool exportG, bool exportB
     return true;
 }
 
+std::vector<ccSensor*> getSensors(ccPointCloud &self)
+{
+    std::vector<ccSensor*> sensors;
+    for (unsigned i = 0; i < self.getChildrenNumber(); ++i)
+    {
+        ccHObject* child = self.getChild(i);
+        if (child && child->isKindOf(CC_TYPES::SENSOR))
+        {
+            if (child->isKindOf(CC_TYPES::GBL_SENSOR))
+            {
+                ccGBLSensor* sensor = ccHObjectCaster::ToGBLSensor(child);
+                sensors.push_back(sensor);
+                CCTRACE("ccGBLSensor found")
+            }
+            else
+            {
+                ccSensor* sensor = ccHObjectCaster::ToSensor(child);
+                sensors.push_back(sensor);
+                CCTRACE("ccSensor found")
+            }
+        }
+    }
+    return sensors;
+}
 
 int (ccPointCloud::*addScalarFieldt)(const char*) = &ccPointCloud::addScalarField;
 
@@ -610,6 +637,7 @@ void export_ccPointCloud()
              return_value_policy<reference_existing_object>(), ccPointCloudPy_getScalarFieldByName_doc)
         .def("getScalarFieldDic", &getScalarFieldDic_py, ccPointCloudPy_getScalarFieldDic_doc)
         .def("getScalarFieldName", &ccPointCloud::getScalarFieldName, ccPointCloudPy_getScalarFieldName_doc)
+        .def("getSensors", getSensors, ccPointCloudPy_getSensors_doc)
         .def("hasColors", &ccPointCloud::hasColors, ccPointCloudPy_hasColors_doc)
         .def("hasNormals", &ccPointCloud::hasNormals, ccPointCloudPy_hasNormals_doc)
         .def("hasScalarFields", &ccPointCloud::hasScalarFields, ccPointCloudPy_hasScalarFields_doc)

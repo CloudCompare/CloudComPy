@@ -41,6 +41,8 @@
 #include <ScalarField.h>
 #include <ccGLMatrix.h>
 #include <ccBBox.h>
+#include <ccSensor.h>
+#include <ccGBLSensor.h>
 
 #include "ccOctreePy.hpp"
 #include "pyccTrace.h"
@@ -74,6 +76,22 @@ struct ccOctree_to_python
 struct ccPointCloud_to_python
 {
     static PyObject* convert(ccPointCloud* c)
+    {
+        return bp::incref(bp::object(c).ptr());
+    }
+};
+
+struct ccSensor_to_python
+{
+    static PyObject* convert(ccSensor* c)
+    {
+        return bp::incref(bp::object(c).ptr());
+    }
+};
+
+struct ccGBLSensor_to_python
+{
+    static PyObject* convert(ccGBLSensor* c)
     {
         return bp::incref(bp::object(c).ptr());
     }
@@ -940,6 +958,8 @@ void initializeConverters()
     CCTRACE("initializeConverters");
     to_python_converter<ccOctree*, ccOctree_to_python, false>();
     to_python_converter<ccPointCloud*, ccPointCloud_to_python, false>();
+    to_python_converter<ccSensor*, ccSensor_to_python, false>();
+    to_python_converter<ccGBLSensor*, ccGBLSensor_to_python, false>();
     to_python_converter<ccMesh*, ccMesh_to_python, false>();
     to_python_converter<ccPlane*, ccPlane_to_python, false>();
     to_python_converter<CCCoreLib::ScalarField*, ScalarField_to_python, false>();
@@ -967,6 +987,7 @@ void initializeConverters()
     to_python_converter<std::vector<ccMesh*>, vector_to_python_listref<ccMesh*>, false>();
     to_python_converter<std::vector<ccPointCloud*>, vector_to_python_listref<ccPointCloud*>, false>();
     to_python_converter<std::vector<ccPolyline*>, vector_to_python_listref<ccPolyline*>, false>();
+    to_python_converter<std::vector<ccSensor*>, vector_to_python_listref<ccSensor*>, false>();
     to_python_converter<std::vector<QString>, vector_to_python_list<QString>, false>();
     to_python_converter<std::map<QString, int>, map_to_python_dict<QString, int>, false>();
     // register the from-python converter

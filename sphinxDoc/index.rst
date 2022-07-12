@@ -34,6 +34,7 @@ cloudComPy: a Python interface for CloudCompare
    ccOctree.rst
    ccMesh.rst
    ccPrimitives.rst
+   ccSensor.rst
    ScalarField.rst
    DistanceComputationTools.rst
    GeometricalAnalysisTools.rst

@@ -129,8 +129,11 @@ TODO List
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
 - TODO: update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows (issue #53)
 - TODO: fix the bug on save scalar fields with laz 1.4 (issue #54)
+- TODO: get access to TSL info (sensors position, transformation...) (issue #57)
 - TODO: get access to E57 structure, check version of libE57 (issue #58)
 - TODO: implement sensors and scattering angles calculation (issue #59)
 - TODO: implement GuessBestParams for M2C2 plugin (issue #60)
+- TODO: add CSF filter (issue #61)
+
 
 

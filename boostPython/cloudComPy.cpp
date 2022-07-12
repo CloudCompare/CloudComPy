@@ -36,6 +36,7 @@
 #include "registrationToolsPy.hpp"
 #include "cloudSamplingToolsPy.hpp"
 #include "ccFacetPy.hpp"
+#include "ccSensorPy.hpp"
 #include "NeighbourhoodPy.hpp"
 
 #include "initCC.h"
@@ -565,6 +566,7 @@ BOOST_PYTHON_MODULE(_cloudComPy)
     export_registrationTools();
     export_cloudSamplingTools();
     export_ccFacet();
+    export_ccSensor();
     export_Neighbourhood();
 
     // TODO: function load entities ("file.bin")
