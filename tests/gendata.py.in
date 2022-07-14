@@ -27,6 +27,7 @@ import cloudComPy as cc
 import subprocess
 
 dataDir = os.path.join(os.environ["@USER_HOME@"], "@PYTHONAPI_TEST_DIRECTORY@")
+dataExtDir = os.path.join(os.environ["@USER_HOME@"], "@PYTHONAPI_EXTDATA_DIRECTORY@")
 if not os.path.exists(dataDir):
     os.makedirs(dataDir)
 

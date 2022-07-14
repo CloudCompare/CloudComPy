@@ -3,14 +3,14 @@
 Clouds, meshes, scalar fields: introspection, manipulation
 ==========================================================
 
-Clouds an scalar fields
------------------------
+Clouds and scalar fields
+------------------------
 
 cloud introspection
 ~~~~~~~~~~~~~~~~~~~
 
 3D Clouds contains a set of indexed points and have several optional associated features:
-normals, several scalarFields, color, an octree structure...
+normals, several scalarFields, color, an octree structure, sensors...
 ::
 
     cloud = cc.loadPointCloud("CloudComPy/Data/dataSample_5.0.xyz")
@@ -456,6 +456,50 @@ you can use the following methods of :py:class:`cloudComPy.ccPointCloud`
 
  - :py:meth:`~.cloudComPy.ccPointCloud.deleteAllScalarFields`
  - :py:meth:`~.cloudComPy.ccPointCloud.deleteScalarField`
+
+sensors
+~~~~~~~
+Acquisition data files sometimes contain information on the sensors used to capture data.
+
+A short introduction to sensors in CloudCompare is given in
+`CloudCompare wiki - Sensors <https://www.cloudcompare.org/doc/wiki/index.php/Entities#Sensors>`_.
+
+CloudComPy gives access to basic information on sensors: 
+
+- type of sensor,
+- position and orientation,
+- graphic scale,
+- uncertainty.
+
+For the test, we need a data file to download 
+`here <http://sourceforge.net/projects/e57-3d-imgfmt/files/E57Example-data/manitouNoInvalidPoints.e57/download>`_.
+
+.. include:: ../tests/test041.py
+   :start-after: #---sensor001-begin
+   :end-before:  #---sensor001-end
+   :literal:
+   :code: python
+
+There are several point clouds in the example, with one sensor per cloud.
+The :py:meth:`~.cloudComPy.ccPointCloud.getSensors` method gives a list of sensors associated to the cloud.
+Generic sensor :py:class:`cloudComPy.ccSensor` provides the following methods:
+
+- :py:meth:`~.cloudComPy.ccSensor.getType`
+- :py:meth:`~.cloudComPy.ccHObject.getClassID`
+- :py:meth:`~.cloudComPy.ccSensor.getGraphicScale`
+- :py:meth:`~.cloudComPy.ccSensor.getRigidTransformation`
+
+The Ground Based Lidar (GBL) sensor :py:class:`cloudComPy.ccGBLSensor` provides also:
+
+- :py:meth:`~.cloudComPy.ccGBLSensor.getUncertainty`
+
+.. include:: ../tests/test041.py
+   :start-after: #---sensor002-begin
+   :end-before:  #---sensor002-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test041.py <../tests/test041.py>`.
 
 meshes
 ------

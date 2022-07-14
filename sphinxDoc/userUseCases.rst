@@ -1024,4 +1024,3 @@ The function returns a tuple (number of clouds processed, list of components)
 
 The above code snippets are from :download:`test037.py <../tests/test037.py>`.
 
-

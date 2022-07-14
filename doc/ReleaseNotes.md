@@ -2,6 +2,12 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## July xx, 2022 CloudComPy release:
+
+ - add a user documentation with some use cases.
+ - improve C2C split distances (issue #56), see test009.py
+ - get access to sensor TSL info (sensors position, transformation...) (issue #57), see test041.py
+ 
 ## June 22, 2022 CloudComPy release:
 
  - update to CloudCompare 2.12.3 (june 14, 2022)
