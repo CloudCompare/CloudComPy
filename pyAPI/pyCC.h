@@ -114,7 +114,8 @@ std::vector<ccHObject*> importFile(const char* filename,
     double x = 0,
     double y = 0,
     double z = 0,
-    const QString& extraData=QString());
+    const QString& extraData=QString(),
+    std::vector<QString>* structure=nullptr);
 
 //! save a point cloud to a file
 /*! the file type is given by the extension

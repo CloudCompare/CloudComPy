@@ -73,6 +73,14 @@ struct ccOctree_to_python
     }
 };
 
+struct ccHObject_to_python
+{
+    static PyObject* convert(ccHObject* c)
+    {
+        return bp::incref(bp::object(c).ptr());
+    }
+};
+
 struct ccPointCloud_to_python
 {
     static PyObject* convert(ccPointCloud* c)
@@ -957,6 +965,7 @@ void initializeConverters()
     // register the to-python converter
     CCTRACE("initializeConverters");
     to_python_converter<ccOctree*, ccOctree_to_python, false>();
+    to_python_converter<ccHObject*, ccHObject_to_python, false>();
     to_python_converter<ccPointCloud*, ccPointCloud_to_python, false>();
     to_python_converter<ccSensor*, ccSensor_to_python, false>();
     to_python_converter<ccGBLSensor*, ccGBLSensor_to_python, false>();

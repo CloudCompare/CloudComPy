@@ -399,8 +399,29 @@ ccPolyline* loadPolyline(
     return nullptr;
 }
 
+std::vector<QString>* exploreDB(ccHObject* db, std::vector<QString>* dbtext, int level)
+{
+    std::stringstream levstr;
+    levstr << level;
+    std::string lstr = levstr.str();
+    int nbChildren = db->getChildrenNumber();
+
+    for (int i=0; i<nbChildren; i++)
+    {
+        ccHObject* child = db->getChild(i);
+        QString item ="";
+        item += lstr.c_str();
+        item += " ";
+        item += child->getName();
+        dbtext->push_back(item);
+        dbtext = exploreDB(child, dbtext, level+1);
+    }
+    return dbtext;
+}
+
 std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode,
-                                   double x, double y, double z, const QString& extraData)
+                                   double x, double y, double z,
+                                   const QString& extraData, std::vector<QString>* structure)
 {
     CCTRACE("Opening file: " << filename << " mode: " << mode
             << " x: " << x << " y: " << y << " z: " << z << " extraData: " << extraData.toStdString());
@@ -465,6 +486,10 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode,
     {
         CCTRACE("LoadFromFile returns no entities");
         return entities;
+    }
+    if (structure)
+    {
+        structure = exploreDB(db, structure, 0);
     }
 
     if (mode != CC_SHIFT_MODE::NO_GLOBAL_SHIFT)

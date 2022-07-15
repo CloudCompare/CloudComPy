@@ -61,4 +61,11 @@ for entity in entities[1]:
     print("uncertainty", uncertainty)
 #---sensor002-end
 
+#---sensor003-begin
+    structure = entities[-1]
+#---sensor003-end
+    if len(structure)!= 343:
+        raise RuntimeError
+    for str in structure:
+        print(str)
 

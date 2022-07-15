@@ -144,7 +144,8 @@ bp::tuple importFilePy(const char* filename,
 {
     std::vector<ccMesh*> meshes;
     std::vector<ccPointCloud*> clouds;
-    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z, extraData);
+    std::vector<QString> structure;
+    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z, extraData, &structure);
     for( auto entity : entities)
     {
         ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
@@ -161,7 +162,7 @@ bp::tuple importFilePy(const char* filename,
             }
         }
     }
-    bp::tuple res = bp::make_tuple(meshes, clouds);
+    bp::tuple res = bp::make_tuple(meshes, clouds, structure);
     return res;
 }
 

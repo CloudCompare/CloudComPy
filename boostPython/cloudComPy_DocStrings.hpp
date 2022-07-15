@@ -122,7 +122,10 @@ The contours are built via a rasterisation process.
 )";
 
 const char* cloudComPy_importFile_doc= R"(
-Load the entities (cloud or mesh) from a file containing several entities.
+Load the entities (cloud or mesh) from a file containing several entities,
+and get file structure
+(some files as ``.E57`` provide structured information on content, 
+given here as a list of strings).
 
 **WARNING** 
 Shift parameters are not always taken into account, depending on the type of file,
@@ -142,7 +145,7 @@ Here, the filter is a regular expression that works on the field name in upperca
 :param float,optional z: default 0
 :param string,optional extraData: default empty string
 
-:return: a tuple (list of meshes, list of clouds)
+:return: a tuple (list of meshes, list of clouds, file structure)
 :rtype: tuple
 )";
 

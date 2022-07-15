@@ -73,10 +73,17 @@ Get child by index.
 
 )";
 
-const char* ccHObject_getChildrenNumber_doc=R"(
-Get the number of children of this object.
+const char* ccHObject_getChildCountRecursive_doc=R"(
+Get the number of children of this object, recursively.
 
-:return: number of children
+:return: number of children, recursively
+:rtype: int
+)";
+
+const char* ccHObject_getChildrenNumber_doc=R"(
+Get the number of direct children of this object.
+
+:return: number of direct children
 :rtype: int
 )";
 
