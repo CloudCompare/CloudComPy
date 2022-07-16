@@ -119,6 +119,7 @@ TODO List
 * DONE: fix the bug in ccGLMatrix constructor (issue #52)
 * DONE: improve C2C split distances (issue #56)
 * DONE: get access to sensor TSL info (sensors position, transformation...) (issue #57)
+* DONE: get access to E57 structure, check version of libE57 (issue #58)
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: Try PyBind11 as a replacement for boost.python : potentially faster and lighter.
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
@@ -130,10 +131,10 @@ TODO List
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
 - TODO: update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows (issue #53)
 - TODO: fix the bug on save scalar fields with laz 1.4 (issue #54)
-- TODO: get access to E57 structure, check version of libE57 (issue #58)
 - TODO: implement sensors and scattering angles calculation (issue #59)
 - TODO: implement GuessBestParams for M2C2 plugin (issue #60)
 - TODO: add CSF filter (issue #61)
+- TODO: fix or document memory leak problem (issue #62)
 
 
 
