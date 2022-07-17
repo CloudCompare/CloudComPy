@@ -9,6 +9,7 @@ These release notes start with the October 18, 2021 CloudComPy release.
  - get access to sensor TSL info (sensors position, transformation...) (issue #57), see test041.py
  - get access to E57 structure (issue #58), see test041.py
  - compute scattering angles (issue #59), see test041.py
+ - implement GuessBestParams for M2C2 plugin (issue #60), see test030.py
  
 ## June 22, 2022 CloudComPy release:
 

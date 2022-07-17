@@ -772,25 +772,26 @@ The plugin computes signed distances between two clouds.
 
 The :py:func:`~.cloudComPy.M3C2.computeM3C2` function relies on a large number of parameters grouped in a file.
 The CloudCompare GUI offers a 'guess parameters' option and a way to save the parameters to a file.
-In CloudComPy, the 'guess parameters' option is not yet wrapped. The only way is to generate the file with the GUI
-and edit it with parameters adapted to the clouds. Unfortunately, some parameters are not easy to guess without the GUI.
-
-The M3C2 params file generated below corresponds to the 'guess params' option of the GUI for the clouds of this example:
-
-.. include:: ../tests/test030.py
-   :start-after: #---M3C2params01-begin
-   :end-before:  #---M3C2params01-end
-   :literal:
-   :code: python
-
+The :py:func:`~.cloudComPy.M3C2.M3C2gessParamsToFile` function do the same job.
 
 You have to import the The :py:mod:`~.cloudComPy.M3C2` plugin.
+The :py:func:`~.cloudComPy.M3C2.M3C2gessParamsToFile` function requires the two clouds, the params file,
+and a boolean to get a fast guess or not.
 The :py:func:`~.cloudComPy.M3C2.computeM3C2` function requires only the two clouds and the params file,
 and produces a cloud with new scalar field 'M3C2 distance':
 
 .. include:: ../tests/test030.py
    :start-after: #---computeM3C2_01-begin
    :end-before:  #---computeM3C2_01-end
+   :literal:
+   :code: python
+
+The params file has a simple syntax and can be created from scratch or edited.
+The M3C2 params file generated below corresponds to the 'guess params' option of the GUI for the clouds of this example:
+
+.. include:: ../tests/test030.py
+   :start-after: #---M3C2params01-begin
+   :end-before:  #---M3C2params01-end
    :literal:
    :code: python
 
