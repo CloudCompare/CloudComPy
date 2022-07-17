@@ -69,3 +69,16 @@ for entity in entities[1]:
     for str in structure:
         print(str)
 
+#---sensor004-begin
+cc.computeNormals(entities[1])
+for entity in entities[1]:
+    sensors = entity.getSensors()
+    if len(sensors) < 1:
+        raise RuntimeError
+    sensor= sensors[0]
+    sensor.ComputeScatteringAngles()
+#---sensor004-end
+
+res = cc.SaveEntities(entities[1], os.path.join(dataDir, "manitouNoInvalidPoints.bin"))
+    
+

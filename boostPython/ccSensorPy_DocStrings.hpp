@@ -56,7 +56,13 @@ Returns the sensor graphic representation scale
 :rtype: float
 )";
 
-//const char* ccSensorPy_ccSensor__doc= R"()";
+const char* ccSensorPy_ccSensor_ComputeScatteringAnglesPy_doc= R"(
+Compute scattering angles for this sensor.
+The result is a new or updated scalar field on the cloud.
+
+:param ccPointCloud,optional cloud: cloud on which the scattering angles are computed, default parent point cloud
+:param bool,optional toDegreeFlag: whether to convert angles in degrees or leave in radians, default True
+)";
 //const char* ccSensorPy_ccSensor__doc= R"()";
 
 const char* ccSensorPy_ccGBLSensor_doc= R"(

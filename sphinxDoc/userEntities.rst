@@ -499,6 +499,15 @@ The Ground Based Lidar (GBL) sensor :py:class:`cloudComPy.ccGBLSensor` provides 
    :literal:
    :code: python
 
+Sensors are also used to compute scattering angles with :py:meth:`~.cloudComPy.ccSensor.ComputeScatteringAngles`.
+
+.. include:: ../tests/test041.py
+   :start-after: #---sensor004-begin
+   :end-before:  #---sensor004-end
+   :literal:
+   :code: python
+
+
 The above code snippets are from :download:`test041.py <../tests/test041.py>`.
 
 meshes

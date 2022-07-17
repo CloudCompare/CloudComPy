@@ -26,7 +26,7 @@ See :download:`test020.py <../tests/test020.py>` for an example.
 Saving a Point Cloud
 --------------------
 
-For most formats, the only parameters are the cloud and the filename
+For most formats, the only parameters of :py:func:`cloudComPy.SavePointCloud` are the cloud and the filename
 (CloudComPy does not offer yet all the flexibility of CloudCompare).
 The format is defined by the filename extension.
 Return code is 0 in case of success:
@@ -45,7 +45,7 @@ to change from the default version.
 Saving a mesh
 -------------
 
-For all formats, the only parameters are the mesh and the filename.
+For all formats, the only parameters of :py:func:`cloudComPy.SaveMesh` are the mesh and the filename.
 (CloudComPy does not offer yet all the flexibility of CloudCompare).
 The format is defined by the filename extension.
 Return code is 0 in case of success.
@@ -58,7 +58,7 @@ Saving several entities in one file
 -----------------------------------
 
 All the entities to save (clouds, meshes, polylines...) must be put in a list.
-Return code is 0 in case of success.
+the :py:func:`cloudComPy.SaveEntities` function return code is 0 in case of success.
 ::
 
     ret = cc.SaveEntities([cloud, cloud1, cloud2, mesh, poly], "CloudComPy/Data/mixedEntities.bin")
