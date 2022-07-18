@@ -122,6 +122,7 @@ TODO List
 * DONE: get access to E57 structure, check version of libE57 (issue #58)
 * DONE: implement sensors and scattering angles calculation (issue #59)
 * DONE: implement GuessBestParams for M2C2 plugin (issue #60)
+* DONE: fix or document memory leak problem (issue #62)
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: Try PyBind11 as a replacement for boost.python : potentially faster and lighter.
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
@@ -134,7 +135,6 @@ TODO List
 - TODO: update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows (issue #53)
 - TODO: fix the bug on save scalar fields with laz 1.4 (issue #54)
 - TODO: add CSF filter (issue #61)
-- TODO: fix or document memory leak problem (issue #62)
 
 
 

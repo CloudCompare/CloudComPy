@@ -1025,3 +1025,44 @@ The function returns a tuple (number of clouds processed, list of components)
 
 The above code snippets are from :download:`test037.py <../tests/test037.py>`.
 
+Avoid memory leaks in an iterative process
+------------------------------------------
+
+In a pure Python script, the garbage collector takes care of the objects that are no longer referenced.
+With CloudComPy, there is no shared reference count between a CloudComPy Python object and the CloudCompare C++ object wrapped.
+In other words, if a Python object is deleted, the wrapped C++ object remains. 
+Conversely, if a CloudCompare C++ object is deleted, 
+the corresponding Python object is not automatically deleted, but is no longer usable.
+
+To avoid memory leaks, you should delete explicitely the objects that are no longer used with 
+the :py:func:`cloudComPy.deleteEntity` function.
+
+For instance, we create some data:
+
+.. include:: ../tests/test042.py
+   :start-after: #---extractCC01-begin
+   :end-before:  #---extractCC01-end
+   :literal:
+   :code: python
+
+Then, we iterate on :py:func:`~.cloudComPy.ExtractConnectedComponents`
+
+.. include:: ../tests/test042.py
+   :start-after: #---extractCC02-begin
+   :end-before:  #---extractCC02-end
+   :literal:
+   :code: python
+
+I we do not delete explicitely the extracted components, they are kept forever in CloudCompare.
+To avoid the memory leak:
+
+.. include:: ../tests/test042.py
+   :start-after: #---extractCC03-begin
+   :end-before:  #---extractCC03-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test042.py <../tests/test042.py>`.
+
+
+

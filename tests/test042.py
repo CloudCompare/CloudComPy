@@ -24,6 +24,7 @@
 import os
 import sys
 import math
+import psutil
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
@@ -31,22 +32,35 @@ from gendata import dataDir, getSampleCloud
 import cloudComPy as cc
 
 #---extractCC01-begin
+process = psutil.Process(os.getpid())
+mem_start = process.memory_full_info().rss
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 bbox = cc.ccBBox((-5.0, -5.0, 0.), (5., 5., 1.), True)
 res=cc.ExtractSlicesAndContours(entities=[cloud], bbox=bbox)
-clouds = res[0] # result = [one cloud]
+clouds = res[0]
+print('input data memory usage:', process.memory_full_info().rss - mem_start)
 #---extractCC01-end
 
 #---extractCC02-begin
-res2 = cc.ExtractConnectedComponents(clouds=clouds, octreeLevel=6, randomColors=True)
-components = res2[1]
-for comp in components:
-    comp.showColors(True)
-#---extractCC02-end
-if res2[0] != 1: # the number of clouds in input
-    raise RuntimeError
-if len(components) != 12:
-    raise RuntimeError
-
-cc.SaveEntities(components, os.path.join(dataDir, "components.bin"))
-
+for i in range(10):
+    mem_start = process.memory_full_info().rss
+    res2 = cc.ExtractConnectedComponents(clouds=clouds, octreeLevel=6, randomColors=True)
+    components = res2[1]
+    for comp in components:
+        comp.showColors(True)
+    #---extractCC02-end
+    if res2[0] != 1: # the number of clouds in input
+        raise RuntimeError
+    if len(components) != 12:
+        raise RuntimeError
+    #---extractCC03-begin
+    for comp in components:
+        cc.deleteEntity(comp)
+    # be sure to have no more Python variable referencing the deleted items
+    components = None
+    res2 = None
+    addedMemory = process.memory_full_info().rss - mem_start
+    print(f'iteration {i}, ExtractConnectedComponents added memory: ', addedMemory)
+    #---extractCC03-end
+    if i > 1 and addedMemory >0:
+        raise RuntimeError
