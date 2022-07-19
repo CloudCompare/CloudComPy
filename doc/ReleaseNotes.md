@@ -2,17 +2,21 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
-## July xx, 2022 CloudComPy release:
+## July 19, 2022 CloudComPy release:
 
+ - update to CloudCompare master > 2.12.4 (july 19, 2022)
  - add a user documentation with some use cases.
  - improve C2C split distances (issue #56), see test009.py
  - get access to sensor TSL info (sensors position, transformation...) (issue #57), see test041.py
  - get access to E57 structure (issue #58), see test041.py
  - compute scattering angles (issue #59), see test041.py
  - implement GuessBestParams for M2C2 plugin (issue #60), see test030.py
- - add a use case for memory leaks in iterative processes (issue #62), see test042.py
  - compute CSF filter on a cloud (issue #61), see test043.py
- 
+ - add a use case for memory leaks in iterative processes (issue #62), see test042.py
+ - Various small fixes.
+
+** NOTE**: issues #49, #50, #53, #54 are still under analysis, they will require further development.
+
 ## June 22, 2022 CloudComPy release:
 
  - update to CloudCompare 2.12.3 (june 14, 2022)
