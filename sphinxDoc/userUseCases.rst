@@ -919,6 +919,35 @@ The :py:func:`~.cloudComPy.RANSAC_SD.computeRANSAC_SD` function returns a list o
 
 The above code snippets are from :download:`test035.py <../tests/test035.py>`.
 
+compute Cloth Simulation Filter on a cloud with CSF plugin
+----------------------------------------------------------
+
+The concepts are presented in the 
+`CloudCompare wiki - CSF (plugin) <https://www.cloudcompare.org/doc/wiki/index.php/CSF_(plugin)>`_.
+
+You have to import the The :py:mod:`~.cloudComPy.CSF` plugin.
+
+The :py:func:`~.cloudComPy.CSF.computeCSF` function takes a ccPointCloud in input and several optional parameters.
+The function produce two clouds: "ground points" and "off-ground points".
+
+A first example with default parameters:
+
+.. include:: ../tests/test043.py
+   :start-after: #---CSF01-begin
+   :end-before:  #---CSF01-end
+   :literal:
+   :code: python
+
+And a second example:
+
+.. include:: ../tests/test043.py
+   :start-after: #---CSF02-begin
+   :end-before:  #---CSF02-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test043.py <../tests/test043.py>`.
+
 Sclices and contours
 --------------------
 

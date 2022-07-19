@@ -242,6 +242,12 @@ returns True if CloudComPy is built with the PCV plugin.
 :return: True if CloudComPy is built with the PCV plugin, False otherwise.
 :rtype: bool)";
 
+const char* cloudComPy_isPluginCSF_doc= R"(
+returns True if CloudComPy is built with the CSF plugin.
+
+:return: True if CloudComPy is built with the CSF plugin, False otherwise.
+:rtype: bool)";
+
 const char* cloudComPy_isPluginRANSAC_SD_doc= R"(
 returns True if CloudComPy is built with the RANSAC_SD plugin.
 

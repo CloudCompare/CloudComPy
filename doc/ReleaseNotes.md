@@ -11,6 +11,7 @@ These release notes start with the October 18, 2021 CloudComPy release.
  - compute scattering angles (issue #59), see test041.py
  - implement GuessBestParams for M2C2 plugin (issue #60), see test030.py
  - add a use case for memory leaks in iterative processes (issue #62), see test042.py
+ - compute CSF filter on a cloud (issue #61), see test043.py
  
 ## June 22, 2022 CloudComPy release:
 

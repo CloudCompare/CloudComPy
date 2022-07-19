@@ -59,6 +59,8 @@ struct pyccPlugins
     static bool isPluginPCL() { return _isPluginPCL; };
     static bool _isPluginPCV;
     static bool isPluginPCV() { return _isPluginPCV; };
+    static bool _isPluginCSF;
+    static bool isPluginCSF() { return _isPluginCSF; };
     static bool _isPluginRANSAC_SD;
     static bool isPluginRANSAC_SD() { return _isPluginRANSAC_SD; };
     static bool _isPluginHPR;

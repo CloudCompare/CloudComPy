@@ -191,9 +191,15 @@ endif()
 
 # --- plugins
 
-add_subdirectory( M3C2 )
-add_subdirectory( PCV )
-add_subdirectory( HPR )
+if ( PLUGIN_STANDARD_QM3C2 )
+    add_subdirectory( M3C2 )
+endif()
+if ( PLUGIN_STANDARD_QPCV )
+    add_subdirectory( PCV )
+endif()
+if ( PLUGIN_STANDARD_QHPR )
+    add_subdirectory( HPR )
+endif()
 if ( PLUGIN_STANDARD_QMESH_BOOLEAN )
     add_subdirectory( MeshBoolean )
 endif()
@@ -202,6 +208,9 @@ if ( PLUGIN_STANDARD_QRANSAC_SD )
 endif()
 if ( PLUGIN_STANDARD_QPCL )
     add_subdirectory( PCL )
+endif()
+if ( PLUGIN_STANDARD_QCSF )
+    add_subdirectory( CSF )
 endif()
 
 
