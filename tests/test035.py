@@ -30,6 +30,7 @@ os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 from gendata import dataDir, isCoordEqual
 import cloudComPy as cc
 
+#---RANSACSD01-begin
 tr0 = cc.ccGLMatrix()
 tr0.initFromParameters(math.pi/3., (0., 1., 0.), (3.0, 0.0, 4.0))
 cylinder = cc.ccCylinder(0.5, 2.0, tr0)
@@ -54,13 +55,16 @@ cloud = c0.cloneThis()
 cloud.fuse(c1)
 cloud.fuse(c2)
 cloud.fuse(c3)
+#---RANSACSD01-end
 
+#---RANSACSD02-begin
 if cc.isPluginRANSAC_SD():
     import cloudComPy.RANSAC_SD
     params = cc.RANSAC_SD.RansacParams()
     params.optimizeForCloud(cloud)
     print(params.epsilon, params.bitmapEpsilon)
     meshes, clouds = cc.RANSAC_SD.computeRANSAC_SD(cloud, params)
+    #---RANSACSD02-end
     
     sortmeshes = [m for m in meshes if m is not None]
     sortmeshes.sort(key= lambda m: m.getName())

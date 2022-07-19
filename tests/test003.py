@@ -53,24 +53,32 @@ radius = cc.GetPointCloudRadius(clouds=[cloud], nodes=6)
 if not math.isclose(radius, 0.0207, rel_tol=1e-02):
     raise RuntimeError
 
+#---curvature01-begin
 radius = 0.03
-
 res = cc.computeCurvature(cc.CurvatureType.GAUSSIAN_CURV, radius, [cloud])
 nsf = cloud.getNumberOfScalarFields()
 sfc = cloud.getScalarField(nsf - 1)
+
 if sfc.getName() != "Gaussian curvature (0.03)":
     raise RuntimeError
+#---curvature01-end
 
+#---filterSFValue01-begin
 cloud.setCurrentOutScalarField(nsf - 1)
 fcloud = cc.filterBySFValue(0.01, sfc.getMax(), cloud)
 filteredSize = fcloud.size()
+#---filterSFValue01-end
+
 print("filtered cloud size: %s" % filteredSize)
 if not math.isclose(filteredSize, 113325, rel_tol=1e-03):
     raise RuntimeError
 
 res = cc.SavePointCloud(fcloud, os.path.join(dataDir, "res3.xyz"))
 
+#---cloudsf01-begin
+radius = cc.GetPointCloudRadius([cloud], 12) # number of nodes wanted within the radius
 if not cloud.computeScalarFieldGradient(1, radius, True):
     raise RuntimeError
+#---cloudsf01-end
 
 res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud03.bin"))

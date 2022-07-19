@@ -48,15 +48,20 @@ cc.DistanceComputationTools.computeCloud2MeshDistances(cloud, cylinder, params)
 
 # --- save distances histogram, png file
 
+#---histogram01-begin
+sf = cloud.getScalarField(cloud.getScalarFieldDic()['C2M absolute distances'])
+asf = sf.toNpArray()
+#---histogram01-end
+
+#---histogram02-begin
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import colors
+#---histogram02-end
+
+#---histogram03-begin
 matplotlib.use('agg') # png images
-
-
-sf=cloud.getScalarField(cloud.getScalarFieldDic()['C2M absolute distances'])
-asf= sf.toNpArray()
 
 (n, bins, patches) = plt.hist(asf, bins=256, density=1) # histogram for matplotlib
 fracs = bins / bins.max()
@@ -66,15 +71,22 @@ for thisfrac, thispatch in zip(fracs, patches):
     thispatch.set_facecolor(color)
 
 plt.savefig(os.path.join(dataDir, "histogram.png"))
+#---histogram03-end
 
 # --- save distances histogram, csv file
 
+#---histogram04-begin
+import numpy as np
 import csv
+#---histogram04-end
+
+#---histogram05-begin
 (n, bins) = np.histogram(asf, bins=256) # numpy histogram (without graphics)
 with open(os.path.join(dataDir, "histogram.csv"), 'w') as f:
     writer = csv.writer(f, delimiter=';')
     writer.writerow(("Class", "Value", "Class start", "Class end"))
     for i in range(n.size):
         writer.writerow((i, n[i], bins[i], bins[i+1]))
+#---histogram05-end
 
 cc.SaveEntities([cloud, cylinder], os.path.join(dataDir, "cloudCylinder.bin"))

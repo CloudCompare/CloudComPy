@@ -36,6 +36,7 @@
 #include "registrationToolsPy.hpp"
 #include "cloudSamplingToolsPy.hpp"
 #include "ccFacetPy.hpp"
+#include "ccSensorPy.hpp"
 #include "NeighbourhoodPy.hpp"
 
 #include "initCC.h"
@@ -143,7 +144,8 @@ bp::tuple importFilePy(const char* filename,
 {
     std::vector<ccMesh*> meshes;
     std::vector<ccPointCloud*> clouds;
-    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z, extraData);
+    std::vector<QString> structure;
+    std::vector<ccHObject*> entities = importFile(filename, mode, x, y, z, extraData, &structure);
     for( auto entity : entities)
     {
         ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
@@ -160,7 +162,7 @@ bp::tuple importFilePy(const char* filename,
             }
         }
     }
-    bp::tuple res = bp::make_tuple(meshes, clouds);
+    bp::tuple res = bp::make_tuple(meshes, clouds, structure);
     return res;
 }
 
@@ -565,6 +567,7 @@ BOOST_PYTHON_MODULE(_cloudComPy)
     export_registrationTools();
     export_cloudSamplingTools();
     export_ccFacet();
+    export_ccSensor();
     export_Neighbourhood();
 
     // TODO: function load entities ("file.bin")
@@ -718,6 +721,8 @@ BOOST_PYTHON_MODULE(_cloudComPy)
 
     def("isPluginPCV", &pyccPlugins::isPluginPCV, cloudComPy_isPluginPCV_doc);
 
+    def("isPluginCSF", &pyccPlugins::isPluginCSF, cloudComPy_isPluginCSF_doc);
+
     def("isPluginRANSAC_SD", &pyccPlugins::isPluginRANSAC_SD, cloudComPy_isPluginRANSAC_SD_doc);
 
     def("computeCurvature", computeCurvature, cloudComPy_computeCurvature_doc);
@@ -782,7 +787,10 @@ BOOST_PYTHON_MODULE(_cloudComPy)
 		.def_readonly("averageNeighborsPerCell", &ReportInfoVol::averageNeighborsPerCell)
 		;
 
-    def("ComputeVolume25D", ComputeVolume25D, cloudComPy_ComputeVolume25D_doc);
+    def("ComputeVolume25D", ComputeVolume25D,
+            (arg("reportInfo"), arg("ground"), arg("ceil"), arg("vertDim"),
+             arg("gridStep"), arg("groundHeight"), arg("ceilHeight")),
+            cloudComPy_ComputeVolume25D_doc);
 
     def("invertNormals", invertNormals, cloudComPy_invertNormals_doc);
 

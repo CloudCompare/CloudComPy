@@ -69,8 +69,9 @@ An example of notebook is provided in ```doc/samples/histogramOnDistanceComputat
 ```
 conda activate CloudComPy39
 cd  <path install>\CloudComPy39\doc\PythonAPI_test
+envCloudComPy.bat
 ```
-NB: ```envCloudComPy.bat``` is not mandatory here, ```ctest``` resets the necessary paths
+NB: ```envCloudComPy.bat``` is OK but not mandatory here, ```ctest``` resets the necessary paths
 
 To execute all the tests (about two minutes):
 

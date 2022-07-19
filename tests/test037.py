@@ -30,15 +30,21 @@ os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 from gendata import dataDir, getSampleCloud
 import cloudComPy as cc
 
+#---extractCC01-begin
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 bbox = cc.ccBBox((-5.0, -5.0, 0.), (5., 5., 1.), True)
 res=cc.ExtractSlicesAndContours(entities=[cloud], bbox=bbox)
-clouds = res[0]
+clouds = res[0] # result = [one cloud]
+#---extractCC01-end
 
+#---extractCC02-begin
 res2 = cc.ExtractConnectedComponents(clouds=clouds, octreeLevel=6, randomColors=True)
+components = res2[1]
+for comp in components:
+    comp.showColors(True)
+#---extractCC02-end
 if res2[0] != 1: # the number of clouds in input
     raise RuntimeError
-components = res2[1]
 if len(components) != 12:
     raise RuntimeError
 

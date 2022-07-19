@@ -27,6 +27,7 @@ enable_testing()
 # --- target tests
 
 set(PYTHONAPI_TEST_DIRECTORY "CloudComPyData" CACHE STRING "Directory path for tests to be created in your user directory, to store samples and generated data")
+set(PYTHONAPI_EXTDATA_DIRECTORY "CloudComPyExternalData" CACHE STRING "Directory path for example files to be created in your user directory, to store downloaded external samples")
 if(WIN32)
     set(USER_HOME "USERPROFILE")
 else()
@@ -95,6 +96,9 @@ set(PYTHONAPI_TEST_SCRIPTS
     test038.py
     test039.py
     test040.py
+    test041.py
+    test042.py
+    test043.py
     )
 
 # list of utilities
@@ -178,4 +182,5 @@ do_test(test037)
 do_test(test038)
 do_test(test039)
 do_test(test040)
+do_test(test041)
 

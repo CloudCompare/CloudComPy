@@ -322,6 +322,13 @@ Return the ScalarField name if index is valid, otherwise None.
 :rtype: str or None
 )";
 
+const char* ccPointCloudPy_getSensors_doc= R"(
+Returns a list of sensors if any, otherwise empty list.
+
+:return: list of :py:class:`ccSensor`
+:rtype: list
+)";
+
 const char* ccPointCloudPy_hasColors_doc= R"(
 Return whether the cloud has Colors.
 

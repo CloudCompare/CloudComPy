@@ -29,22 +29,48 @@ os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
 from gendata import dataDir, createSymbolicLinks
 import cloudComPy as cc
+
+#---optimalBB00-begin
 from cloudComPy.minimalBoundingBox import findRotation
+#---optimalBB00-end
 
 createSymbolicLinks() # required for tests on build, before cc.initCC.init
 
 # --- a rotated object, with a non optimal bounding box
 
+#---optimalBB01-begin
 sphere = cc.ccSphere(1.0)
 cloud = sphere.samplePoints(False, 100000)
 cloud.scale(1.0, 3.0, 9.0)
-boundingBox = cloud.getOwnBB()
+
+cloudBeforeRot = cloud.cloneThis()
+cloudBeforeRot.setName("cloudBeforeRot")
 
 transform1 = cc.ccGLMatrix()
-transform1.initFromParameters(0.25, (1.5, 2.9, 6.3), (0,0,0))
+transform1.initFromParameters(1., (1.5, 2.5, 2.), (0,0,0))
 cloud.applyRigidTransformation(transform1)
+cloud.setName("rotated object")
+#---optimalBB01-end
 
 # --- find an optimal bounding box with the associated rotation
 
+#---optimalBB02-begin
 boundingBox, rotinv, poly, clbbox = findRotation(cloud)
-res = cc.SaveEntities([cloud, poly], os.path.join(dataDir, "optimalBoundingBox.bin"))
+#---optimalBB02-end
+
+#---optimalBB03-begin
+rotation = (cc.ccGLMatrix.fromDouble(rotinv)).inverse()
+axisObj = cloud.cloneThis()
+axisObj.applyRigidTransformation(rotation)
+axisObj.setName("object on axes")
+
+clb = clbbox.cloneThis()
+clb.applyRigidTransformation(rotation)
+axisPoly = cc.ccPolyline(clb)
+axisPoly.addChild(clb)
+axisPoly.addPointIndex(0, clb.size())
+axisPoly.setClosed(True)
+
+res = cc.SaveEntities([cloudBeforeRot, cloud, axisObj, poly, axisPoly], os.path.join(dataDir, "optimalBoundingBox.bin"))
+#---optimalBB03-end
+

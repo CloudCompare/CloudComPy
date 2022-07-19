@@ -33,6 +33,9 @@ import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC
 
+#---octree01-begin
+# --- get a sample cloud, build the octree
+
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 octree = cloud.computeOctree(progressCb=None, autoAddChild=True)
 if (octree.getNumberOfProjectedPoints() != 1000000):
@@ -42,14 +45,18 @@ if (octree.getNumberOfProjectedPoints() != 1000000):
 
 r=0.05
 level = octree.findBestLevelForAGivenNeighbourhoodSizeExtraction(r)
-level3 = octree.findBestLevelForAGivenPopulationPerCell(3)
+level12 = octree.findBestLevelForAGivenPopulationPerCell(12)
+#---octree01-end
 
+#---octree02-begin
 # --- search in a sphere
 
-neighbours = octree.getPointsInSphericalNeighbourhood((-1.500000, 2.000000, -0.026529), r, level)
+neighbours = octree.getPointsInSphericalNeighbourhood((-1.5, 2.0, -0.026529), r, level)
 if len(neighbours) != 37:
     raise RuntimeError
+#---octree02-end
 
+#---octree03-begin
 # --- search in a cylinder
 
 params = cc.CylindricalNeighbourhood()
@@ -61,7 +68,9 @@ params.maxHalfLength = 1
 neighboursCyl = octree.getPointsInCylindricalNeighbourhood(params)
 if len(neighboursCyl) != 81:
     raise RuntimeError
+#---octree03-end
 
+#---octree04-begin
 # --- search in a box
 
 params = cc.BoxNeighbourhood()
@@ -72,7 +81,9 @@ params.dimensions = (0.05, 0.04, 0.03)
 neighboursBox = octree.getPointsInBoxNeighbourhood(params)
 if len(neighboursBox) != 9:
     raise RuntimeError
+#---octree04-end
 
+#---octree05-begin
 # --- get information on some points
 
 pt = neighbours[0].point
@@ -80,6 +91,7 @@ id = neighbours[0].pointIndex
 sd = neighbours[0].squareDistd
 if (math.sqrt(sd) > r):
     raise RuntimeError
+#---octree05-end
 
 # --- exploring the octree:
 #     the octree is a tridimensionnal matrix of cubical cells

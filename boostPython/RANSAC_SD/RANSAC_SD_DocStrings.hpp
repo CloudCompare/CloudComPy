@@ -132,11 +132,12 @@ const char* RANSAC_SD_RansacParams_setPrimEnabled_doc=R"(
 Define the type of primitive (plane, sphere, cylinder, cone, torus) enabled.
 By default, plane, sphere, cylinder are enabled.
 Types of primitive are from:
-RANSAC_PRIMITIVE_TYPES.RPT_PLANE
-RANSAC_PRIMITIVE_TYPES.RPT_SPHERE
-RANSAC_PRIMITIVE_TYPES.RPT_CYLINDER
-RANSAC_PRIMITIVE_TYPES.RPT_CONE
-RANSAC_PRIMITIVE_TYPES.RPT_TORUS
+
+ - RANSAC_PRIMITIVE_TYPES.RPT_PLANE
+ - RANSAC_PRIMITIVE_TYPES.RPT_SPHERE
+ - RANSAC_PRIMITIVE_TYPES.RPT_CYLINDER
+ - RANSAC_PRIMITIVE_TYPES.RPT_CONE
+ - RANSAC_PRIMITIVE_TYPES.RPT_TORUS
 
 :param RANSAC_PRIMITIVE_TYPES rpt: type of primitive
 :param bool isEnabled: whether the type is enabled or not)";
@@ -145,11 +146,12 @@ const char* RANSAC_SD_RansacParams_getPrimEnabled_doc=R"(
 Check the type of primitive (plane, sphere, cylinder, cone, torus) enabled.
 By default, plane, sphere, cylinder are enabled.
 Types of primitive are from:
-RANSAC_PRIMITIVE_TYPES.RPT_PLANE
-RANSAC_PRIMITIVE_TYPES.RPT_SPHERE
-RANSAC_PRIMITIVE_TYPES.RPT_CYLINDER
-RANSAC_PRIMITIVE_TYPES.RPT_CONE
-RANSAC_PRIMITIVE_TYPES.RPT_TORUS
+
+ - RANSAC_PRIMITIVE_TYPES.RPT_PLANE
+ - RANSAC_PRIMITIVE_TYPES.RPT_SPHERE
+ - RANSAC_PRIMITIVE_TYPES.RPT_CYLINDER
+ - RANSAC_PRIMITIVE_TYPES.RPT_CONE
+ - RANSAC_PRIMITIVE_TYPES.RPT_TORUS
 
 :param RANSAC_PRIMITIVE_TYPES rpt: type of primitive
 

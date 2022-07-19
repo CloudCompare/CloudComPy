@@ -59,6 +59,8 @@ struct pyccPlugins
     static bool isPluginPCL() { return _isPluginPCL; };
     static bool _isPluginPCV;
     static bool isPluginPCV() { return _isPluginPCV; };
+    static bool _isPluginCSF;
+    static bool isPluginCSF() { return _isPluginCSF; };
     static bool _isPluginRANSAC_SD;
     static bool isPluginRANSAC_SD() { return _isPluginRANSAC_SD; };
     static bool _isPluginHPR;
@@ -114,7 +116,8 @@ std::vector<ccHObject*> importFile(const char* filename,
     double x = 0,
     double y = 0,
     double z = 0,
-    const QString& extraData=QString());
+    const QString& extraData=QString(),
+    std::vector<QString>* structure=nullptr);
 
 //! save a point cloud to a file
 /*! the file type is given by the extension

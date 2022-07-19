@@ -66,30 +66,41 @@ sfname = cloud.getScalarFieldName(25)
 if sfname is not None:
     raise RuntimeError
 
+#---scale-translate-begin
+# --- get a reference before transformation
 g = cloud.computeGravityCenter()
+
 print("gravityCenter: (%14.7e, %14.7e, %14.7e)" % (g[0], g[1], g[2]))
 if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03, 9.6193114e-03)):
     raise RuntimeError
 
+# --- rescale the cloud along Z direction, center at origin
+
 cloud.scale(1.0, 1.0, 2.0, (0., 0., 0.))
+
 g = cloud.computeGravityCenter()
 print("gravityCenter: (%14.7e, %14.7e, %14.7e)" % (g[0], g[1], g[2]))
 if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03, 1.9238623e-02)):
     raise RuntimeError
 
+# --- inverse scaling
+
 cloud.scale(1, 1, 0.5)
-g = cloud.computeGravityCenter()
-print("gravityCenter: (%14.7e, %14.7e, %14.7e)" % (g[0], g[1], g[2]))
-if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03, 9.6193114e-03)):
-    raise RuntimeError
+
+# --- a simple translation
 
 cloud.translate((-1, -2, -3))
+
 g = cloud.computeGravityCenter()
 print("gravityCenter: (%14.7e, %14.7e, %14.7e)" % (g[0], g[1], g[2]))
 if not isCoordEqual(g, (-1.0050000e+00, -2.0050001e+00, -2.9903808e+00)):
     raise RuntimeError
 
+# --- inverse translation
+
 cloud.translate((1, 2, 3))
+#---scale-translate-end
+
 g = cloud.computeGravityCenter()
 print("gravityCenter: (%14.7e, %14.7e, %14.7e)" % (g[0], g[1], g[2]))
 if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03, 9.6193114e-03)):

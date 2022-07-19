@@ -35,6 +35,7 @@ cloud = cc.loadPointCloud(getSampleCloud(5.0))
 if cloud.hasColors():
     raise RuntimeError
 
+#---colors01-begin
 cloud.colorize(0.2, 0.3, 0.4, 1.0) 
 if not cloud.hasColors():
     raise RuntimeError
@@ -59,9 +60,12 @@ if not cloud.changeColorLevels(60, 180, 20, 220, 1, 1, 1):
 
 if not cloud.convertRGBToGreyScale():
     raise RuntimeError
+#---colors01-end
 
+#---colors02-begin
 cloud.exportCoordToSF(True, True, True)
 cloud.setCurrentDisplayedScalarField(0)
+
 if not cloud.convertCurrentScalarFieldToColors(mixWithExistingColor=False):
     raise RuntimeError
 
@@ -69,24 +73,34 @@ if not cloud.enhanceRGBWithIntensitySF(sfIdx=1):
     raise RuntimeError
 
 n1 = cloud.getNumberOfScalarFields()
-cloud.sfFromColor(True, True, True, False, False)
+
+cloud.sfFromColor(True, True, True, False, False) # export R, G, B, not alpha, not composite
+
 n2 = cloud.getNumberOfScalarFields()
 if (n2-n1) != 3:
     raise RuntimeError
+#---colors02-end
 
+#---colors03-begin
 cloud.unallocateColors()
 if cloud.hasColors():
     raise RuntimeError
+#---colors03-end
+
 
 cloud.exportCoordToSF(True, True, True)
 cloud.setCurrentDisplayedScalarField(0)
 if not cloud.convertCurrentScalarFieldToColors():
     raise RuntimeError
 
+#---colors04-begin
 cloud1 = cc.loadPointCloud(getSampleCloud(1.0))
+
 if not cloud1.interpolateColorsFrom(cloud):
     raise RuntimeError
+#---colors04-end
 
+#---colorsArray01-begin
 cola = cloud.colorsToNpArray()
 if not cola.shape == (1000000, 4):
     raise RuntimeError
@@ -98,6 +112,7 @@ if not colaCopy.shape == (1000000, 4):
     raise RuntimeError
 if not colaCopy.dtype == 'uint8':
     raise RuntimeError
+#---colorsArray01-end
 
 diff = cola - colaCopy
 if diff.mean() != 0:

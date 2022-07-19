@@ -31,6 +31,7 @@ from gendata import dataDir
 
 import cloudComPy as cc
 
+#---MeshBoolean01-begin
 tr1 = cc.ccGLMatrix()
 tr1.initFromParameters(0.0, (0., 0., 0.), (1.0, 0.0, 0.0))
 sphere = cc.ccSphere(2, tr1, "aSphere")
@@ -39,7 +40,9 @@ cylinder = cc.ccCylinder(2.0, 5.0)
 
 if cc.isPluginMeshBoolean():
     import cloudComPy.MeshBoolean
-    mesh = cc.MeshBoolean.computeMeshBoolean(sphere, cylinder, cc.MeshBoolean.CSG_OPERATION.INTERSECT)
+    mesh = cc.MeshBoolean.computeMeshBoolean(sphere, cylinder, 
+                                             cc.MeshBoolean.CSG_OPERATION.INTERSECT)
+    #---MeshBoolean01-end
     if mesh.size() != 1020:
         raise RuntimeError
 

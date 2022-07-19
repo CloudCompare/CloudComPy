@@ -33,11 +33,15 @@ import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC
 
+#---computeVol25D01-begin
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 
 report = cc.ReportInfoVol()
+isOk = cc.ComputeVolume25D(report, ground=None, ceil=cloud, 
+                           vertDim=2, gridStep=0.05, groundHeight=0, ceilHeight=0)
+#---computeVol25D01-end
 
-isOk = cc.ComputeVolume25D(report, None, cloud, 2, 0.05, 0, 0)
+#---computeVol25D02-begin
 if not isOk:
     raise RuntimeError
 if not math.isclose(report.volume, 0.995, rel_tol=1e-03):
@@ -56,13 +60,19 @@ if not math.isclose(report.groundNonMatchingPercent, 0., abs_tol=1e-03):
     raise RuntimeError
 if not math.isclose(report.averageNeighborsPerCell, 8., abs_tol=1e-03):
     raise RuntimeError
+#---computeVol25D02-end
 
+#---computeVol25D03-begin
 cloud2 = cc.loadPointCloud(getSampleCloud(2.0))
-cloud2.translate((1,2, -3))
+cloud2.translate((1,2, -3)) # creates a translated floor, 
+                            # with a non matching part with the ceil 
 
 report = cc.ReportInfoVol()
+isOk = cc.ComputeVolume25D(report, ground=cloud2, ceil=cloud,
+                           vertDim=2, gridStep=0.05, groundHeight=0, ceilHeight=0) 
+#---computeVol25D03-end
 
-isOk = cc.ComputeVolume25D(report, cloud2, cloud, 2, 0.05, 0, 0)
+#---computeVol25D04-begin
 if not isOk:
     raise RuntimeError
 if not math.isclose(report.volume, 216.609, rel_tol=1e-03):
@@ -81,5 +91,6 @@ if not math.isclose(report.groundNonMatchingPercent, 21.8, rel_tol=1e-03):
     raise RuntimeError
 if not math.isclose(report.averageNeighborsPerCell, 7.93, rel_tol=1e-03):
     raise RuntimeError
+#---computeVol25D04-end
 
 

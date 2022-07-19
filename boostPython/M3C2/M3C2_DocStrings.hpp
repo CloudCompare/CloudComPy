@@ -42,7 +42,8 @@ M3C2 is a submodule of cloudCompy:
 
 const char* M3C2_computeM3C2_doc=R"(
 Compute Multiscale Model to Model Cloud Comparison (plugin M3C2)
-The computation parameters are regrouped in a text file: see the GUI to get a first version.
+The computation parameters are regrouped in a text file:
+see :py:func:`M3C2gessParamsToFile` or the GUI to get a first version.
 
 :param list clouds: two or three clouds to compare. If a 3rd cloud is present, it will be used as core points.
 :param string paramFilename: full path of the parameter file
@@ -56,6 +57,18 @@ const char* M3C2_initTrace_M3C2_doc=R"(
 Debug trace must be initialized for each Python module.
 
 Done in module init, following the value of environment variable _CCTRACE_ ("ON" if debug traces wanted)
+)";
+
+const char* M3C2_M3C2gessParamsToFile_doc=R"(
+Guess the parameters for compute_M3C2 and save them to a file.
+
+:param list clouds: two or three clouds to compare. If a 3rd cloud is present, it will be used as core points.
+:param string paramFilename: full path of the parameter file
+:param bool fastMode: True corresponds to the values of the GUI dialog before Guess params button, 
+                      False corresponds to the values of the GUI dialog after Guess params button.
+
+:return: success
+:rtype: bool
 )";
 
 #endif /* M3C2_DOCSTRINGS_HPP_ */

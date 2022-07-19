@@ -29,6 +29,11 @@
           "type": "STRING"
         },
         {
+          "name": "PYTHONAPI_EXTDATA_DIRECTORY",
+          "value": "CloudComPy/ExternalData",
+          "type": "STRING"
+        },
+        {
           "name": "PYTHONAPI_TRACES:BOOL",
           "value": "ON",
           "type": "STRING"

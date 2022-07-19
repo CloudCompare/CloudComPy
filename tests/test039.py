@@ -30,6 +30,7 @@ os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 from gendata import getSampleCloud2, getSamplePoly, dataDir
 import cloudComPy as cc
 
+#---crop2Dmesh01-begin
 cloud1 = cc.loadPointCloud(getSampleCloud2(3.0,0, 0.1))
 cloud1.setName("cloud1")
 cloud1.exportCoordToSF(True, True, True)
@@ -40,4 +41,6 @@ cc.computeNormals([mesh1], computePerVertexNormals=False)
 
 poly = cc.loadPolyline(getSamplePoly("poly1"))
 meshCropZ = mesh1.crop2D(poly, 2, True)
+#---crop2Dmesh01-end
+
 res = cc.SaveEntities([cloud1, mesh1, meshCropZ], os.path.join(dataDir, "cropMesh.bin"))

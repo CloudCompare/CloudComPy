@@ -32,6 +32,7 @@ import cloudComPy as cc
 
 # --- define material to slice
 
+#---slicemat-begin
 tr1 = cc.ccGLMatrix()
 tr1.initFromParameters(0.0, (0., 0., 0.), (-2.0, 0.0, 0.0))
 sphere1 = cc.ccSphere(3.0, tr1)
@@ -46,15 +47,20 @@ cloud = c1.cloneThis()
 cloud.fuse(c2)
 
 toslice = [cloud, sphere1, sphere2] # one cloud, two meshes
+#---slicemat-end
 
 
-# --- bounding box: sclice tool
+# --- bounding box: slice tool
 
+#---slicebbox-begin
 bbox = cc.ccBBox((-5.0, -5.0, 0.), (5., 5., 0.5), True)
+#---slicebbox-end
 
 # --- single slice with the bounding box
 
+#---slice00-begin
 res=cc.ExtractSlicesAndContours(entities=toslice, bbox=bbox)
+#---slice00-end
 if len(res[0]) !=1:
     raise RuntimeError
 shapes = toslice + res[0]
@@ -62,7 +68,10 @@ cc.SaveEntities(shapes, os.path.join(dataDir, "slice0.bin"))
 
 # --- repeat slices along Z with gap
 
-res=cc.ExtractSlicesAndContours(entities=toslice, bbox=bbox, singleSliceMode=False, gap=0.5, generateRandomColors=True)
+#---slice01-begin
+res=cc.ExtractSlicesAndContours(entities=toslice, bbox=bbox, singleSliceMode=False,
+                                gap=0.5, generateRandomColors=True)
+#---slice01-end
 if len(res[0]) !=18:
     raise RuntimeError
 shapes = res[0]
@@ -70,8 +79,11 @@ cc.SaveEntities(shapes, os.path.join(dataDir, "slices1.bin"))
 
 # --- repeat slices along Z with gap, extract envelopes
 
-res=cc.ExtractSlicesAndContours(entities=toslice, bbox=bbox, singleSliceMode=False, gap=0.5, generateRandomColors=True,
+#---slice02-begin
+res=cc.ExtractSlicesAndContours(entities=toslice, bbox=bbox, singleSliceMode=False, 
+                                gap=0.5, generateRandomColors=True,
                                 extractEnvelopes=True, maxEdgeLength=0.1, envelopeType=2)
+#---slice02-end
 if (len(res[0]) !=18) or (len(res[1]) !=6):
     raise RuntimeError
 shapes = res[0] + res[1]
@@ -79,10 +91,13 @@ cc.SaveEntities(shapes, os.path.join(dataDir, "slices2.bin"))
 
 # --- add a rotation of the bounding box
 
+#---slice03-begin
 tr0 = cc.ccGLMatrix()
 tr0.initFromParameters(math.pi/12., (0., 1., 0.), (0.0, 0.0, 0.0))
-res=cc.ExtractSlicesAndContours(entities=toslice, bbox=bbox, bboxTrans=tr0, singleSliceMode=False, gap=0.5, generateRandomColors=True,
+res=cc.ExtractSlicesAndContours(entities=toslice, bbox=bbox, bboxTrans=tr0, 
+                                singleSliceMode=False, gap=0.5, generateRandomColors=True,
                                 extractEnvelopes=True, maxEdgeLength=0.1, envelopeType=2)
+#---slice03-end
 if (len(res[0]) !=21) or (len(res[1]) !=8):
     raise RuntimeError
 shapes = res[0] + res[1]
@@ -90,9 +105,13 @@ cc.SaveEntities(shapes, os.path.join(dataDir, "slices3.bin"))
 
 # --- extract also contours
 
-res=cc.ExtractSlicesAndContours(entities=toslice, bbox=bbox, bboxTrans=tr0, singleSliceMode=False, gap=0.5, generateRandomColors=True,
+#---slice04-begin
+res=cc.ExtractSlicesAndContours(entities=toslice, bbox=bbox, bboxTrans=tr0, 
+                                singleSliceMode=False, gap=0.5, generateRandomColors=True,
                                 extractEnvelopes=True, maxEdgeLength=0.1, envelopeType=2,
-                                extractLevelSet=True, levelSetGridStep=0.05, levelSetMinVertCount=100)
+                                extractLevelSet=True, levelSetGridStep=0.05, 
+                                levelSetMinVertCount=100)
+#---slice04-end
 if (len(res[0]) !=21) or (len(res[1]) !=8) or (len(res[2]) !=20):
     raise RuntimeError
 shapes = res[0] + res[1] +res[2]

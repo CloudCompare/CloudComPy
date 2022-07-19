@@ -31,94 +31,115 @@ from gendata import getSampleCloud, dataDir
 import numpy as np
 import cloudComPy as cc
 
+#---partialClone01-begin
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 
+refCloud = cc.CloudSamplingTools.noiseFilter(cloud, 0.04, 1.0) # selection on cloud
+origCloud = refCloud.getAssociatedCloud()            # the original cloud ~ cloud
+(noiseCloud, res) = origCloud.partialClone(refCloud) # ccPointCloud from selection, status
+noiseCloud.setName("noiseCloud")
 
-refCloud = cc.CloudSamplingTools.noiseFilter(cloud, 0.04, 1.0)
 if refCloud.__class__ != cc.ReferenceCloud:
     raise RuntimeError
 if refCloud.size() != 7489:
     raise RuntimeError
-origCloud = refCloud.getAssociatedCloud()
-(noiseCloud, res) = origCloud.partialClone(refCloud)
 if res != 0:
     raise RuntimeError
-noiseCloud.setName("noiseCloud")
+#---partialClone01-end
 
-
+#---resampleCloudSpatially01-begin
 params = cc.SFModulationParams()
 refCloud = cc.CloudSamplingTools.resampleCloudSpatially(cloud, 0.05, params)
-if refCloud.size() != 55465:
-    raise RuntimeError
 (spatialCloud, res) = cloud.partialClone(refCloud)
-if res != 0:
-    raise RuntimeError
 spatialCloud.setName("spatialCloud")
 
-
-refCloud = cc.CloudSamplingTools.subsampleCloudRandomly(cloud, 50000)
-if refCloud.size() != 50000:
+if refCloud.size() != 55465:
     raise RuntimeError
-(randomCloud, res) = cloud.partialClone(refCloud)
 if res != 0:
     raise RuntimeError
+#---resampleCloudSpatially01-end
+
+#---SubsampleRandom01-begin
+refCloud = cc.CloudSamplingTools.subsampleCloudRandomly(cloud, 50000)
+(randomCloud, res) = cloud.partialClone(refCloud)
 randomCloud.setName("randomCloud")
 
+if refCloud.size() != 50000:
+    raise RuntimeError
+if res != 0:
+    raise RuntimeError
+#---SubsampleRandom01-end
 
+
+#---resampleOctree01-begin
 resOctrCloud = cc.CloudSamplingTools.resampleCloudWithOctree(randomCloud, newNumberOfPoints=5000,
                                          resamplingMethod=cc.RESAMPLING_CELL_METHOD.CELL_CENTER)
-if resOctrCloud.size() < 1900 or resOctrCloud.size() > 8000:
-    raise RuntimeError
 resOctrCloud.setName("resOctrCloud")
 
+if resOctrCloud.size() < 1900 or resOctrCloud.size() > 8000:
+    raise RuntimeError
+#---resampleOctree01-end
+
+#---resampleOctreeLevel01-begin
 resOctrAlCloud  = cc.CloudSamplingTools.resampleCloudWithOctreeAtLevel(randomCloud, octreeLevel=5,
                                          resamplingMethod=cc.RESAMPLING_CELL_METHOD.CELL_CENTER)
-if resOctrAlCloud.size() < 2050 or resOctrAlCloud.size() > 2100:
-    raise RuntimeError
 resOctrAlCloud.setName("resOctrAlCloud")
 
+if resOctrAlCloud.size() < 2050 or resOctrAlCloud.size() > 2100:
+    raise RuntimeError
+#---resampleOctreeLevel01-end
 
+#---sorFilter01-begin
 refCloud = cc.CloudSamplingTools.sorFilter(randomCloud)
-if refCloud.size() < 43000 or refCloud.size() > 45000:
-    raise RuntimeError
 (sorCloud, res) = randomCloud.partialClone(refCloud)
-if res != 0:
-    raise RuntimeError
 sorCloud.setName("sorCloud")
 
-
-refCloud = cc.CloudSamplingTools.subsampleCloudWithOctree(cloud, 25000,
-                                                          cc.SUBSAMPLING_CELL_METHOD.RANDOM_POINT)
-if refCloud.size() != 36777:
+if refCloud.size() < 43000 or refCloud.size() > 45000:
     raise RuntimeError
-(subOctreeCloud, res) = cloud.partialClone(refCloud)
 if res != 0:
     raise RuntimeError
+#---sorFilter01-end
+
+
+#---subsampleOctree01-begin
+refCloud = cc.CloudSamplingTools.subsampleCloudWithOctree(cloud, 25000,
+                                 cc.SUBSAMPLING_CELL_METHOD.RANDOM_POINT)
+(subOctreeCloud, res) = cloud.partialClone(refCloud)
 subOctreeCloud.setName("subOctreeCloud")
 
-
-refCloud = cc.CloudSamplingTools.subsampleCloudWithOctreeAtLevel(cloud, 5,
-                                                                 cc.SUBSAMPLING_CELL_METHOD.NEAREST_POINT_TO_CELL_CENTER)
-if refCloud.size() != 2262:
+if refCloud.size() != 36777:
     raise RuntimeError
-(subOctLevCloud, res) = cloud.partialClone(refCloud)
 if res != 0:
     raise RuntimeError
+#---subsampleOctree01-end
+
+
+#---subsampleOctreeLevel01-begin
+refCloud = cc.CloudSamplingTools.subsampleCloudWithOctreeAtLevel(cloud, 5,
+                    cc.SUBSAMPLING_CELL_METHOD.NEAREST_POINT_TO_CELL_CENTER)
+(subOctLevCloud, res) = cloud.partialClone(refCloud)
 subOctLevCloud.setName("subOctLevCloud")
+
+if refCloud.size() != 2262:
+    raise RuntimeError
+if res != 0:
+    raise RuntimeError
+#---subsampleOctreeLevel01-end
 
 cloud.fuse(randomCloud)   # fuse to clouds to have duplicated points
 if cloud.size() != 1050000:
     raise RuntimeError
 
+#---filterPoints01-begin
 dupSFindex = cloud.addScalarField("DuplicateFlags")
 cloud.setCurrentScalarField(dupSFindex)
 ret = cc.GeometricalAnalysisTools.FlagDuplicatePoints(cloud) # identify duplicated points
 if ret != cc.ErrorCode.NoError:
     raise RuntimeError
-noDuplicateCloud = cloud.filterPointsByScalarValue(0., 0., outside=False) # remove duplicated points
-if noDuplicateCloud.size() != 1000000:
+noDuplCloud = cloud.filterPointsByScalarValue(0., 0., outside=False) # remove duplicated pts
+#---filterPoints01-end
+if noDuplCloud.size() != 1000000:
     raise RuntimeError
 
-
-entities = [noiseCloud, spatialCloud, randomCloud, resOctrCloud, resOctrAlCloud, sorCloud, subOctreeCloud, subOctLevCloud, cloud, noDuplicateCloud]
+entities = [noiseCloud, spatialCloud, randomCloud, resOctrCloud, resOctrAlCloud, sorCloud, subOctreeCloud, subOctLevCloud, cloud, noDuplCloud]
 cc.SaveEntities(entities, os.path.join(dataDir, "samplings.bin"))

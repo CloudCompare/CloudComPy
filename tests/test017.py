@@ -33,6 +33,7 @@ import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC
 
+#---createCloudNumpy01-begin
 # --- generate a set of coords and a scalar field
 
 npts = 10000000
@@ -45,11 +46,16 @@ z = np.float32(r*np.cos(phi))
 coords = np.column_stack((x,y,z))
 dr = np.float32(np.sqrt(x*x + y*y + z*z) -5)
 
-# --- create the pointCloud, add the scalar field, save
+# --- create the pointCloud, add the scalar field
 
 cl = cc.ccPointCloud("boule")
 cl.coordsFromNPArray_copy(coords)
 cl.addScalarField("delta")
 sf = cl.getScalarField(0)
 sf.fromNpArrayCopy(dr)
+
+# --- save the point cloud
+
 res = cc.SavePointCloud(cl, os.path.join(dataDir, "boule.bin"))
+#---createCloudNumpy01-end
+

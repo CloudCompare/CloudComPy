@@ -35,7 +35,7 @@ Python3 access to cloudCompare objects is done like this:
 const char* cloudComPy_ComputeVolume25D_doc= R"(
 Compute a 2.5D volume between a cloud and a ground plane,or two clouds,following a given direction (X, Y or Z).
 
-If only one cloud is given, the direction (X, Y or Z) define the normal to the plane used for calculation.
+If only one cloud is given, the direction (X, Y or Z) defines the normal to the plane used for calculation.
 
 :param ReportInfoVol reportInfo: the object instance to be completed with results
 :param ccPointCloud ground: either a point cloud or None
@@ -122,7 +122,10 @@ The contours are built via a rasterisation process.
 )";
 
 const char* cloudComPy_importFile_doc= R"(
-Load the entities (cloud or mesh) from a file containing several entities.
+Load the entities (cloud or mesh) from a file containing several entities,
+and get file structure
+(some files as ``.E57`` provide structured information on content, 
+given here as a list of strings).
 
 **WARNING** 
 Shift parameters are not always taken into account, depending on the type of file,
@@ -142,7 +145,7 @@ Here, the filter is a regular expression that works on the field name in upperca
 :param float,optional z: default 0
 :param string,optional extraData: default empty string
 
-:return: a tuple (list of meshes, list of clouds)
+:return: a tuple (list of meshes, list of clouds, file structure)
 :rtype: tuple
 )";
 
@@ -237,6 +240,12 @@ const char* cloudComPy_isPluginPCV_doc= R"(
 returns True if CloudComPy is built with the PCV plugin.
 
 :return: True if CloudComPy is built with the PCV plugin, False otherwise.
+:rtype: bool)";
+
+const char* cloudComPy_isPluginCSF_doc= R"(
+returns True if CloudComPy is built with the CSF plugin.
+
+:return: True if CloudComPy is built with the CSF plugin, False otherwise.
 :rtype: bool)";
 
 const char* cloudComPy_isPluginRANSAC_SD_doc= R"(

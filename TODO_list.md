@@ -105,27 +105,36 @@ Windows version is built with Anaconda3 packages. Anaconda provides all the libr
 TODO List
 ---------
 
-- TODO: try to have ctest working at build step on Windows and Linux (incomplete)
-- TODO: Try PyBind11 as a replacement for boost.python : potentially faster and lighter.
-- TODO: build the reference documentation on Windows
-- TODO: A tutorial, to find some examples for the principal use cases.
-- TODO: A kind of automatic test coverage, to find examples for a particular function.
-- TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
+* DONE: build the reference documentation on Windows
+* DONE: A tutorial, to find some examples for the principal use cases : replaced by a user documentation with use cases
 * DONE: Plugin PCL (issue #35)
 * DONE: Mesh triangles iterator functions (issue #36)
 * DONE: add option for las/laz version (1.3, 1.4) (issue #32)
 * DONE: Fix the doc on RANSAC_SD, primitives types
 * DONE: Cut a mesh with a polyline (Crop2D) (issue #38)
-- TODO: build examples of loop with objects created and destroyed for a stable memory usage (issue #40)
-- TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
 * DONE: add functions to handle display state of colors and scalar fields (for save in .bin and opening in GUI) (issue #43)
 * DONE: compute gradients for scalar fields (issue  #46)
 * DONE: get the transformation matrix computed by the fast global registration function in PCL Plugin (issue #35)
-- TODO: evaluate the feasibility of a virtual 3D view snapshot (issue #49)
-- TODO: evaluate the feasibility of pip or conda packaging of CloudComPy (issue #50)
 * DONE: try reading .ply files with extra columns interpreted as scalarFields, regardless of their names (issue #51)
 * DONE: fix the bug in ccGLMatrix constructor (issue #52)
+* DONE: improve C2C split distances (issue #56)
+* DONE: get access to sensor TSL info (sensors position, transformation...) (issue #57)
+* DONE: get access to E57 structure, check version of libE57 (issue #58)
+* DONE: implement sensors and scattering angles calculation (issue #59)
+* DONE: implement GuessBestParams for M2C2 plugin (issue #60)
+* DONE: build examples of loop with objects created and destroyed for a stable memory usage (issue #40)
+* DONE: fix or document memory leak problem (issue #62)
+* DONE: add CSF filter (issue #61)
+- TODO: try to have ctest working at build step on Windows and Linux (incomplete)
+- TODO: Try PyBind11 as a replacement for boost.python : potentially faster and lighter.
+- TODO: A kind of automatic test coverage, to find examples for a particular function.
+- TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
+- TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
+- TODO: evaluate the feasibility of a virtual 3D view snapshot (issue #49)
+- TODO: evaluate the feasibility of pip or conda packaging of CloudComPy (issue #50)
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
 - TODO: update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows (issue #53)
 - TODO: fix the bug on save scalar fields with laz 1.4 (issue #54)
+
+
 
