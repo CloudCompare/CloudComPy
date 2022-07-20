@@ -138,4 +138,6 @@ TODO List
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
 - TODO: evaluate the feasibility of a virtual 3D view snapshot (issue #49)
 - TODO: evaluate the feasibility of pip or conda packaging of CloudComPy (issue #50)
+- TODO: a use case with invalid points (E57 file) and scalar fields to resize (issue #64)
+
 
