@@ -136,5 +136,5 @@ TODO List
 - TODO: update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows (issue #53)
 - TODO: fix the bug on save scalar fields with laz 1.4 (issue #54)
 - TODO: check possibilaty of automatic downloading of sample files for ctest, update README for ctest (issue #65)
-
+- TODO: get access to global shift: see ccShiftedObject::getGlobalShift (issue #66)
 
