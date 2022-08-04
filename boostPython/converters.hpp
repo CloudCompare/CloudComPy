@@ -47,8 +47,6 @@
 #include "ccOctreePy.hpp"
 #include "pyccTrace.h"
 
-namespace bp = boost::python;
-
 namespace
 {
 
@@ -956,76 +954,75 @@ struct ccBBox_from_python_ccBBox
     }
 };
 
-void initializeConverters()
+void initializeConverters(py::module &m0)
 {
-    using namespace boost::python;
 #ifdef _PYTHONAPI_DEBUG_
     ccLogTrace::settrace();
 #endif
     // register the to-python converter
     CCTRACE("initializeConverters");
-    to_python_converter<ccOctree*, ccOctree_to_python, false>();
-    to_python_converter<ccHObject*, ccHObject_to_python, false>();
-    to_python_converter<ccPointCloud*, ccPointCloud_to_python, false>();
-    to_python_converter<ccSensor*, ccSensor_to_python, false>();
-    to_python_converter<ccGBLSensor*, ccGBLSensor_to_python, false>();
-    to_python_converter<ccMesh*, ccMesh_to_python, false>();
-    to_python_converter<ccPlane*, ccPlane_to_python, false>();
-    to_python_converter<CCCoreLib::ScalarField*, ScalarField_to_python, false>();
-    to_python_converter<QString, QString_to_python_str, false>(); //"false" because QString_to_python_str has no member get_pytype
-    to_python_converter<Vector2Tpl<float>, Vector2Tpl_to_python_tuple<float>, false>();
-    to_python_converter<Vector2Tpl<double>, Vector2Tpl_to_python_tuple<double>, false>();
-    to_python_converter<Vector3Tpl<float>, Vector3Tpl_to_python_tuple<float>, false>();
-    to_python_converter<Vector3Tpl<double>, Vector3Tpl_to_python_tuple<double>, false>();
-    to_python_converter<Tuple3Tpl<unsigned int>, Tuple3Tpl_to_python_tuple<unsigned int>, false>();
-    to_python_converter<Tuple3Tpl<unsigned char>, Tuple3Tpl_to_python_tuple<unsigned char>, false>();
-    to_python_converter<Tuple3Tpl<short>, Tuple3Tpl_to_python_tuple<short>, false>();
-    to_python_converter<Tuple3Tpl<int>, Tuple3Tpl_to_python_tuple<int>, false>();
-    to_python_converter<std::vector<int>, vector_to_python_list<int>, false>();
-    to_python_converter<std::vector<unsigned int>, vector_to_python_list<unsigned int>, false>();
-    to_python_converter<std::vector<float>, vector_to_python_list<float>, false>();
-    to_python_converter<std::vector<double>, vector_to_python_list<double>, false>();
-    to_python_converter<std::vector<unsigned long long>, vector_to_python_list<unsigned long long>, false>();
-    to_python_converter<std::vector<Vector3Tpl<float> >, vector_to_python_list<Vector3Tpl<float> >, false>();
-    to_python_converter<std::vector<Vector3Tpl<double> >, vector_to_python_list<Vector3Tpl<double> >, false>();
-    to_python_converter<std::vector<PointDescriptor_persistent_py>, vector_to_python_list<PointDescriptor_persistent_py>, false>();
-    to_python_converter<std::vector<CCCoreLib::DgmOctree::CellDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::CellDescriptor>, false>();
-    to_python_converter<std::vector<CCCoreLib::DgmOctree::IndexAndCode>, vector_to_python_list<CCCoreLib::DgmOctree::IndexAndCode>, false>();
-    to_python_converter<std::vector<CCCoreLib::DgmOctree::PointDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::PointDescriptor>, false>();
-    to_python_converter<std::vector<ccHObject*>, vector_to_python_listref<ccHObject*>, false>();
-    to_python_converter<std::vector<ccMesh*>, vector_to_python_listref<ccMesh*>, false>();
-    to_python_converter<std::vector<ccPointCloud*>, vector_to_python_listref<ccPointCloud*>, false>();
-    to_python_converter<std::vector<ccPolyline*>, vector_to_python_listref<ccPolyline*>, false>();
-    to_python_converter<std::vector<ccSensor*>, vector_to_python_listref<ccSensor*>, false>();
-    to_python_converter<std::vector<QString>, vector_to_python_list<QString>, false>();
-    to_python_converter<std::map<QString, int>, map_to_python_dict<QString, int>, false>();
-    // register the from-python converter
-    QString_from_python_str();
-    Vector2Tpl_from_python_tuple<float>();
-    Vector2Tpl_from_python_tuple<double>();
-    Vector2Tpl_from_python_list<float>();
-    Vector2Tpl_from_python_list<double>();
-    Vector3Tpl_from_python_tuple<float>();
-    Vector3Tpl_from_python_tuple<double>();
-    Vector3Tpl_from_python_list<float>();
-    Vector3Tpl_from_python_list<double>();
-    Vector_from_python_list<float>();
-    Vector_from_python_list<double>();
-    Tuple3Tpl_from_python_tuple<int>();
-    Tuple3Tpl_from_python_tuple<unsigned int>();
-    Tuple3Tpl_from_python_tuple<unsigned char>();
-    Tuple3Tpl_from_python_tuple<short>();
-    Vector_from_python_tuple<unsigned int>();
-    Vector_from_python_tuple<float>();
-    Vector_from_python_tuple<double>();
-    Vector_from_python_tuple<unsigned long long>();
-    Vector_from_python_tuple_tuple<float>();
-    Vector_from_python_tuple_tuple<double>();
-    ccHObjectVector_from_python_list();
-    ccPointCloudVector_from_python_list();
-    ccGLMatrix_from_python_ccGLMatrixTpl();
-    ccGLMatrixd_from_python_ccGLMatrixTpl();
-    ccBBox_from_python_ccBBox();
+//    to_python_converter<ccOctree*, ccOctree_to_python, false>();
+//    to_python_converter<ccHObject*, ccHObject_to_python, false>();
+//    to_python_converter<ccPointCloud*, ccPointCloud_to_python, false>();
+//    to_python_converter<ccSensor*, ccSensor_to_python, false>();
+//    to_python_converter<ccGBLSensor*, ccGBLSensor_to_python, false>();
+//    to_python_converter<ccMesh*, ccMesh_to_python, false>();
+//    to_python_converter<ccPlane*, ccPlane_to_python, false>();
+//    to_python_converter<CCCoreLib::ScalarField*, ScalarField_to_python, false>();
+//    to_python_converter<QString, QString_to_python_str, false>(); //"false" because QString_to_python_str has no member get_pytype
+//    to_python_converter<Vector2Tpl<float>, Vector2Tpl_to_python_tuple<float>, false>();
+//    to_python_converter<Vector2Tpl<double>, Vector2Tpl_to_python_tuple<double>, false>();
+//    to_python_converter<Vector3Tpl<float>, Vector3Tpl_to_python_tuple<float>, false>();
+//    to_python_converter<Vector3Tpl<double>, Vector3Tpl_to_python_tuple<double>, false>();
+//    to_python_converter<Tuple3Tpl<unsigned int>, Tuple3Tpl_to_python_tuple<unsigned int>, false>();
+//    to_python_converter<Tuple3Tpl<unsigned char>, Tuple3Tpl_to_python_tuple<unsigned char>, false>();
+//    to_python_converter<Tuple3Tpl<short>, Tuple3Tpl_to_python_tuple<short>, false>();
+//    to_python_converter<Tuple3Tpl<int>, Tuple3Tpl_to_python_tuple<int>, false>();
+//    to_python_converter<std::vector<int>, vector_to_python_list<int>, false>();
+//    to_python_converter<std::vector<unsigned int>, vector_to_python_list<unsigned int>, false>();
+//    to_python_converter<std::vector<float>, vector_to_python_list<float>, false>();
+//    to_python_converter<std::vector<double>, vector_to_python_list<double>, false>();
+//    to_python_converter<std::vector<unsigned long long>, vector_to_python_list<unsigned long long>, false>();
+//    to_python_converter<std::vector<Vector3Tpl<float> >, vector_to_python_list<Vector3Tpl<float> >, false>();
+//    to_python_converter<std::vector<Vector3Tpl<double> >, vector_to_python_list<Vector3Tpl<double> >, false>();
+//    to_python_converter<std::vector<PointDescriptor_persistent_py>, vector_to_python_list<PointDescriptor_persistent_py>, false>();
+//    to_python_converter<std::vector<CCCoreLib::DgmOctree::CellDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::CellDescriptor>, false>();
+//    to_python_converter<std::vector<CCCoreLib::DgmOctree::IndexAndCode>, vector_to_python_list<CCCoreLib::DgmOctree::IndexAndCode>, false>();
+//    to_python_converter<std::vector<CCCoreLib::DgmOctree::PointDescriptor>, vector_to_python_list<CCCoreLib::DgmOctree::PointDescriptor>, false>();
+//    to_python_converter<std::vector<ccHObject*>, vector_to_python_listref<ccHObject*>, false>();
+//    to_python_converter<std::vector<ccMesh*>, vector_to_python_listref<ccMesh*>, false>();
+//    to_python_converter<std::vector<ccPointCloud*>, vector_to_python_listref<ccPointCloud*>, false>();
+//    to_python_converter<std::vector<ccPolyline*>, vector_to_python_listref<ccPolyline*>, false>();
+//    to_python_converter<std::vector<ccSensor*>, vector_to_python_listref<ccSensor*>, false>();
+//    to_python_converter<std::vector<QString>, vector_to_python_list<QString>, false>();
+//    to_python_converter<std::map<QString, int>, map_to_python_dict<QString, int>, false>();
+//    // register the from-python converter
+//    QString_from_python_str();
+//    Vector2Tpl_from_python_tuple<float>();
+//    Vector2Tpl_from_python_tuple<double>();
+//    Vector2Tpl_from_python_list<float>();
+//    Vector2Tpl_from_python_list<double>();
+//    Vector3Tpl_from_python_tuple<float>();
+//    Vector3Tpl_from_python_tuple<double>();
+//    Vector3Tpl_from_python_list<float>();
+//    Vector3Tpl_from_python_list<double>();
+//    Vector_from_python_list<float>();
+//    Vector_from_python_list<double>();
+//    Tuple3Tpl_from_python_tuple<int>();
+//    Tuple3Tpl_from_python_tuple<unsigned int>();
+//    Tuple3Tpl_from_python_tuple<unsigned char>();
+//    Tuple3Tpl_from_python_tuple<short>();
+//    Vector_from_python_tuple<unsigned int>();
+//    Vector_from_python_tuple<float>();
+//    Vector_from_python_tuple<double>();
+//    Vector_from_python_tuple<unsigned long long>();
+//    Vector_from_python_tuple_tuple<float>();
+//    Vector_from_python_tuple_tuple<double>();
+//    ccHObjectVector_from_python_list();
+//    ccPointCloudVector_from_python_list();
+//    ccGLMatrix_from_python_ccGLMatrixTpl();
+//    ccGLMatrixd_from_python_ccGLMatrixTpl();
+//    ccBBox_from_python_ccBBox();
 }
 
 } //namespace anonymous

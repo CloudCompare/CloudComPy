@@ -21,30 +21,13 @@
 
 #include "cloudComPy.hpp"
 
-#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
-#include "converters.hpp"
-#include "colorsPy.hpp"
-#include "ScalarFieldPy.hpp"
-#include "ccGenericCloudPy.hpp"
-#include "ccOctreePy.hpp"
-#include "ccPointCloudPy.hpp"
-#include "ccMeshPy.hpp"
-#include "ccPrimitivesPy.hpp"
-#include "ccPolylinePy.hpp"
-#include "distanceComputationToolsPy.hpp"
-#include "geometricalAnalysisToolsPy.hpp"
-#include "registrationToolsPy.hpp"
-#include "cloudSamplingToolsPy.hpp"
-#include "ccFacetPy.hpp"
-#include "ccSensorPy.hpp"
-#include "NeighbourhoodPy.hpp"
-
 #include "initCC.h"
 #include "pyCC.h"
 #include "PyScalarType.h"
 #include <ccGLMatrix.h>
 #include <ccHObject.h>
 #include <ccPointCloud.h>
+#include <ccMesh.h>
 #include <ScalarField.h>
 #include <ccNormalVectors.h>
 #include <ccHObjectCaster.h>
@@ -61,13 +44,11 @@
 
 #include "pyccTrace.h"
 #include "cloudComPy_DocStrings.hpp"
+#include "conversions.hpp"
 
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
-char const* greet()
+QString greet()
 {
-   return "hello, world, this is CloudCompare Python Interface: 'CloudComPy'";
+   return QString("Hello, World, this is CloudCompare Python Interface: 'CloudComPy'");
 }
 
 void initCC_py()
@@ -135,7 +116,7 @@ ICPres ICP_py(  ccHObject* data,
     return a;
 }
 
-bp::tuple importFilePy(const char* filename,
+py::tuple importFilePy(const char* filename,
     CC_SHIFT_MODE mode = AUTO,
     double x = 0,
     double y = 0,
@@ -162,7 +143,7 @@ bp::tuple importFilePy(const char* filename,
             }
         }
     }
-    bp::tuple res = bp::make_tuple(meshes, clouds, structure);
+    py::tuple res = py::make_tuple(meshes, clouds, structure);
     return res;
 }
 
@@ -240,7 +221,7 @@ void deleteEntity(ccHObject* entity)
     delete entity;
 }
 
-bp::tuple ExtractSlicesAndContours_py
+py::tuple ExtractSlicesAndContours_py
     (
     std::vector<ccHObject*> entities,
     ccBBox bbox,
@@ -294,7 +275,7 @@ bp::tuple ExtractSlicesAndContours_py
                              extractEnvelopes, maxEdgeLength, envelType, outputEnvelopes,
                              extractLevelSet, levelSetGridStep, levelSetMinVertCount, levelSet,
                              gap, multiPass, splitEnvelopes, projectOnBestFitPlane, false, generateRandomColors, nullptr);
-    bp::tuple res = bp::make_tuple(outputSlices, outputEnvelopes, levelSet);
+    py::tuple res = py::make_tuple(outputSlices, outputEnvelopes, levelSet);
     return res;
 }
 
@@ -410,7 +391,7 @@ std::vector<ccPointCloud*> createComponentsClouds_(   ccGenericPointCloud* cloud
     return resultClouds;
 }
 
-bp::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
+py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
                                         int octreeLevel=8,
                                         int minComponentSize=100,
                                         int maxNumberComponents=100,
@@ -421,7 +402,7 @@ bp::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
     int nbCloudDone = 0;
 
     std::vector<ccHObject*> resultComponents;
-    bp::tuple res = bp::make_tuple(nbCloudDone, resultComponents);
+    py::tuple res = py::make_tuple(nbCloudDone, resultComponents);
 
     std::vector<ccGenericPointCloud*> clouds;
     {
@@ -497,7 +478,7 @@ bp::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
                     CCTRACE("Too many components: " << realComponentCount << " for a maximum of: " << maxNumberComponents);
                     CCTRACE("Extraction incomplete, modify some parameters and retry");
                     pc->deleteScalarField(sfIdx);
-                    res = bp::make_tuple(nbCloudDone, resultComponents);
+                    res = py::make_tuple(nbCloudDone, resultComponents);
                     return res;
                 }
 
@@ -527,75 +508,66 @@ bp::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
 
         }
     }
-    res = bp::make_tuple(nbCloudDone, resultComponents);
+    res = py::make_tuple(nbCloudDone, resultComponents);
     return res;
 }
 
 
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(importFilePy_overloads, importFilePy, 1, 6);
-BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloudPy_overloads, loadPointCloudPy, 1, 7);
-BOOST_PYTHON_FUNCTION_OVERLOADS(loadMeshPy_overloads, loadMeshPy, 1, 7);
-BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
-BOOST_PYTHON_FUNCTION_OVERLOADS(GetPointCloudRadius_overloads, GetPointCloudRadius, 1, 2);
-BOOST_PYTHON_FUNCTION_OVERLOADS(ICP_py_overloads, ICP_py, 8, 13);
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeNormals_overloads, computeNormals, 1, 12);
-BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToCloud_overloads, RasterizeToCloud, 2, 19);
-BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToMesh_overloads, RasterizeToMesh, 2, 19);
-BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeGeoTiffOnly_overloads, RasterizeGeoTiffOnly, 2, 19);
-BOOST_PYTHON_FUNCTION_OVERLOADS(ExtractSlicesAndContours_py_overloads, ExtractSlicesAndContours_py, 2, 18);
-BOOST_PYTHON_FUNCTION_OVERLOADS(ExtractConnectedComponents_py_overloads, ExtractConnectedComponents_py, 1, 5);
-BOOST_PYTHON_FUNCTION_OVERLOADS(SavePointCloud_overloads, SavePointCloud, 2, 3);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(importFilePy_overloads, importFilePy, 1, 6);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloudPy_overloads, loadPointCloudPy, 1, 7);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(loadMeshPy_overloads, loadMeshPy, 1, 7);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(GetPointCloudRadius_overloads, GetPointCloudRadius, 1, 2);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(ICP_py_overloads, ICP_py, 8, 13);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(computeNormals_overloads, computeNormals, 1, 12);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToCloud_overloads, RasterizeToCloud, 2, 19);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToMesh_overloads, RasterizeToMesh, 2, 19);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeGeoTiffOnly_overloads, RasterizeGeoTiffOnly, 2, 19);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(ExtractSlicesAndContours_py_overloads, ExtractSlicesAndContours_py, 2, 18);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(ExtractConnectedComponents_py_overloads, ExtractConnectedComponents_py, 1, 5);
+//BOOST_PYTHON_FUNCTION_OVERLOADS(SavePointCloud_overloads, SavePointCloud, 2, 3);
 
-BOOST_PYTHON_MODULE(_cloudComPy)
+PYBIND11_MODULE(_cloudComPy, m0)
 {
-    using namespace boost::python;
 
-    bnp::initialize();
-    initializeConverters();
+    //bnp::initialize();
+    //initializeConverters(m0);
 
-    export_colors();
-    export_ScalarField();
-    export_ccGenericCloud();
-    export_ccPolyline();
-    export_ccOctree();
-    export_ccPointCloud();
-    export_ccMesh();
-    export_ccPrimitives();
-    export_distanceComputationTools();
-    export_geometricalAnalysisTools();
-    export_registrationTools();
-    export_cloudSamplingTools();
-    export_ccFacet();
-    export_ccSensor();
-    export_Neighbourhood();
+    export_colors(m0);
+//    export_ScalarField(m0);
+//    export_ccGenericCloud(m0);
+//    export_ccPolyline(m0);
+//    export_ccOctree(m0);
+//    export_ccPointCloud(m0);
+//    export_ccMesh(m0);
+//    export_ccPrimitives(m0);
+//    export_distanceComputationTools(m0);
+//    export_geometricalAnalysisTools(m0);
+    export_registrationTools(m0);
+//    export_cloudSamplingTools(m0);
+//    export_ccFacet(m0);
+//    export_ccSensor(m0);
+//    export_Neighbourhood(m0);
 
-    // TODO: function load entities ("file.bin")
-    // TODO: more methods on distanceComputationTools
-    // TODO: methods from ccEntityAction.h to transpose without dialogs
-    // TODO: explore menus edit, tools, plugins
-    // TODO: parameters on save mesh or clouds
-    // TODO: 2D Polygon (cf. ccFacet.h)           <== issue Github
-    // TODO: save histogram as .csv or .png       <== issue Github
+    m0.doc() = cloudComPy_doc;
 
-    scope().attr("__doc__") = cloudComPy_doc;
+    m0.def("greet", &greet);
 
-    def("greet", greet);
+    py::enum_<CC_SHIFT_MODE>(m0, "CC_SHIFT_MODE")
+        .value("AUTO", CC_SHIFT_MODE::AUTO)
+        .value("XYZ", CC_SHIFT_MODE::XYZ)
+        .value("FIRST_GLOBAL_SHIFT", CC_SHIFT_MODE::FIRST_GLOBAL_SHIFT)
+        .value("NO_GLOBAL_SHIFT", CC_SHIFT_MODE::NO_GLOBAL_SHIFT)
+        .export_values();
 
-    enum_<CC_SHIFT_MODE>("CC_SHIFT_MODE")
-        .value("AUTO", AUTO)
-        .value("XYZ", XYZ)
-        .value("FIRST_GLOBAL_SHIFT", FIRST_GLOBAL_SHIFT)
-        .value("NO_GLOBAL_SHIFT", NO_GLOBAL_SHIFT)
-        ;
-
-	enum_<CC_DIRECTION>("CC_DIRECTION")
+    py::enum_<CC_DIRECTION>(m0, "CC_DIRECTION")
 		.value("X", CC_DIRECTION::X)
 		.value("Y", CC_DIRECTION::Y)
 		.value("Z", CC_DIRECTION::Z)
-		;
+        .export_values();
 
-    enum_<CC_FILE_ERROR>("CC_FILE_ERROR")
+    py::enum_<CC_FILE_ERROR>(m0, "CC_FILE_ERROR")
         .value("CC_FERR_NO_ERROR", CC_FERR_NO_ERROR)
         .value("CC_FERR_BAD_ARGUMENT", CC_FERR_BAD_ARGUMENT)
         .value("CC_FERR_UNKNOWN_FILE", CC_FERR_UNKNOWN_FILE)
@@ -614,22 +586,22 @@ BOOST_PYTHON_MODULE(_cloudComPy)
         .value("CC_FERR_THIRD_PARTY_LIB_FAILURE", CC_FERR_THIRD_PARTY_LIB_FAILURE)
         .value("CC_FERR_THIRD_PARTY_LIB_EXCEPTION", CC_FERR_THIRD_PARTY_LIB_EXCEPTION)
         .value("CC_FERR_NOT_IMPLEMENTED", CC_FERR_NOT_IMPLEMENTED)
-        ;
+        .export_values();
 
-    enum_<CurvatureType>("CurvatureType")
+    py::enum_<CurvatureType>(m0, "CurvatureType")
         .value("GAUSSIAN_CURV", GAUSSIAN_CURV)
         .value("MEAN_CURV", MEAN_CURV)
         .value("NORMAL_CHANGE_RATE", NORMAL_CHANGE_RATE)
-        ;
+        .export_values();
 
-    enum_<CCCoreLib::LOCAL_MODEL_TYPES>("LOCAL_MODEL_TYPES")
+    py::enum_<CCCoreLib::LOCAL_MODEL_TYPES>(m0, "LOCAL_MODEL_TYPES")
         .value("NO_MODEL", CCCoreLib::NO_MODEL )
         .value("LS", CCCoreLib::LS )
         .value("TRI", CCCoreLib::TRI )
         .value("QUADRIC", CCCoreLib::QUADRIC )
-        ;
+        .export_values();
 
-    enum_<ccNormalVectors::Orientation>("Orientation")
+    py::enum_<ccNormalVectors::Orientation>(m0, "Orientation")
         .value("PLUS_X", ccNormalVectors::PLUS_X )
         .value("MINUS_X", ccNormalVectors::MINUS_X )
         .value("PLUS_Y", ccNormalVectors::PLUS_Y )
@@ -644,25 +616,25 @@ BOOST_PYTHON_MODULE(_cloudComPy)
         .value("PLUS_SENSOR_ORIGIN", ccNormalVectors::PLUS_SENSOR_ORIGIN )
         .value("MINUS_SENSOR_ORIGIN", ccNormalVectors::MINUS_SENSOR_ORIGIN )
         .value("UNDEFINED", ccNormalVectors::UNDEFINED )
-        ;
+        .export_values();
 
-	enum_<ccRasterGrid::ProjectionType>("ProjectionType")
+    py::enum_<ccRasterGrid::ProjectionType>(m0, "ProjectionType")
 		.value("PROJ_MINIMUM_VALUE", ccRasterGrid::PROJ_MINIMUM_VALUE)
 		.value("PROJ_AVERAGE_VALUE", ccRasterGrid::PROJ_AVERAGE_VALUE)
 		.value("PROJ_MAXIMUM_VALUE", ccRasterGrid::PROJ_MAXIMUM_VALUE)
 		.value("INVALID_PROJECTION_TYPE", ccRasterGrid::INVALID_PROJECTION_TYPE)
-		;
+        .export_values();
 
-	enum_<ccRasterGrid::EmptyCellFillOption>("EmptyCellFillOption")
+    py::enum_<ccRasterGrid::EmptyCellFillOption>(m0, "EmptyCellFillOption")
 		.value("LEAVE_EMPTY", ccRasterGrid::LEAVE_EMPTY)
 		.value("FILL_MINIMUM_HEIGHT", ccRasterGrid::FILL_MINIMUM_HEIGHT)
 		.value("FILL_MAXIMUM_HEIGHT", ccRasterGrid::FILL_MAXIMUM_HEIGHT)
 		.value("FILL_CUSTOM_HEIGHT", ccRasterGrid::FILL_CUSTOM_HEIGHT)
 		.value("FILL_AVERAGE_HEIGHT", ccRasterGrid::FILL_AVERAGE_HEIGHT)
 		.value("INTERPOLATE", ccRasterGrid::INTERPOLATE)
-		;
+        .export_values();
 
-    enum_<ccRasterGrid::ExportableFields>("ExportableFields")
+    py::enum_<ccRasterGrid::ExportableFields>(m0, "ExportableFields")
         .value("PER_CELL_HEIGHT", ccRasterGrid::PER_CELL_HEIGHT)
         .value("PER_CELL_COUNT", ccRasterGrid::PER_CELL_COUNT)
         .value("PER_CELL_MIN_HEIGHT", ccRasterGrid::PER_CELL_MIN_HEIGHT)
@@ -671,85 +643,82 @@ BOOST_PYTHON_MODULE(_cloudComPy)
         .value("PER_CELL_HEIGHT_STD_DEV", ccRasterGrid::PER_CELL_HEIGHT_STD_DEV)
         .value("PER_CELL_HEIGHT_RANGE", ccRasterGrid::PER_CELL_HEIGHT_RANGE)
         .value("PER_CELL_INVALID", ccRasterGrid::PER_CELL_INVALID)
-        ;
+        .export_values();
 
-    def("importFile", importFilePy,
-        importFilePy_overloads((arg("filename"),
-                arg("mode")=AUTO, arg("x")=0, arg("y")=0, arg("z")=0, arg("extraData")=""),
-                               cloudComPy_importFile_doc));
+    m0.def("importFile", &importFilePy,
+           py::arg("filename"), py::arg("mode")=AUTO, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0, py::arg("extraData")="",
+           cloudComPy_importFile_doc);
 
-    def("loadPointCloud", loadPointCloudPy,
-        loadPointCloudPy_overloads((arg("filename"),
-                arg("mode")=AUTO, arg("skip")=0, arg("x")=0, arg("y")=0, arg("z")=0, arg("extraData")=""),
-                cloudComPy_loadPointCloud_doc)[return_value_policy<reference_existing_object>()]);
+    m0.def("loadPointCloud", &loadPointCloudPy,
+           py::arg("filename"),
+           py::arg("mode")=AUTO, py::arg("skip")=0, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0, py::arg("extraData")="",
+           cloudComPy_loadPointCloud_doc, py::return_value_policy::reference);
 
-    def("loadMesh", loadMeshPy,
-        loadMeshPy_overloads((arg("filename"),
-                arg("mode")=AUTO, arg("skip")=0, arg("x")=0, arg("y")=0, arg("z")=0, arg("extraData")=""),
-                cloudComPy_loadMesh_doc)[return_value_policy<reference_existing_object>()]);
+    m0.def("loadMesh", &loadMeshPy,
+           py::arg("filename"),py::arg("mode")=AUTO, py::arg("skip")=0, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0, py::arg("extraData")="",
+           cloudComPy_loadMesh_doc, py::return_value_policy::reference);
 
-    def("loadPolyline", loadPolyline,
-        loadPolyline_overloads((arg("filename"), arg("mode")=AUTO, arg("skip")=0, arg("x")=0, arg("y")=0, arg("z")=0),
-                               cloudComPy_loadPolyline_doc)
-        [return_value_policy<reference_existing_object>()]);
+    m0.def("loadPolyline", &loadPolyline,
+           py::arg("filename"), py::arg("mode")=AUTO, py::arg("skip")=0, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0,
+           cloudComPy_loadPolyline_doc, py::return_value_policy::reference);
 
-    def("deleteEntity", deleteEntity, cloudComPy_deleteEntity_doc);
+    m0.def("deleteEntity", &deleteEntity, cloudComPy_deleteEntity_doc);
 
-    def("SaveMesh", SaveMesh, cloudComPy_SaveMesh_doc);
+    m0.def("SaveMesh", &SaveMesh, cloudComPy_SaveMesh_doc);
 
-    def("SavePointCloud", SavePointCloud, SavePointCloud_overloads(
-         (arg("cloud"), arg("filename"), arg("version")=QString("")),
-         cloudComPy_SavePointCloud_doc));
+    m0.def("SavePointCloud", &SavePointCloud,
+           py::arg("cloud"), py::arg("filename"), py::arg("version")=QString(""),
+           cloudComPy_SavePointCloud_doc);
 
-    def("SaveEntities", SaveEntities, cloudComPy_SaveEntities_doc);
+    m0.def("SaveEntities", &SaveEntities, cloudComPy_SaveEntities_doc);
 
-    def("initCC", &initCC_py, cloudComPy_initCC_doc);
+    m0.def("initCC", &initCC_py, cloudComPy_initCC_doc);
 
-    def("initCloudCompare", &initCloudCompare_py, cloudComPy_initCloudCompare_doc);
+    m0.def("initCloudCompare", &initCloudCompare_py, cloudComPy_initCloudCompare_doc);
 
-    def("isPluginDraco", &pyccPlugins::isPluginDraco, cloudComPy_isPluginDraco_doc);
+    m0.def("isPluginDraco", &pyccPlugins::isPluginDraco, cloudComPy_isPluginDraco_doc);
 
-    def("isPluginFbx", &pyccPlugins::isPluginFbx, cloudComPy_isPluginFbx_doc);
+    m0.def("isPluginFbx", &pyccPlugins::isPluginFbx, cloudComPy_isPluginFbx_doc);
 
-    def("isPluginHPR", &pyccPlugins::isPluginHPR, cloudComPy_isPluginHPR_doc);
+    m0.def("isPluginHPR", &pyccPlugins::isPluginHPR, cloudComPy_isPluginHPR_doc);
 
-    def("isPluginM3C2", &pyccPlugins::isPluginM3C2, cloudComPy_isPluginM3C2_doc);
+    m0.def("isPluginM3C2", &pyccPlugins::isPluginM3C2, cloudComPy_isPluginM3C2_doc);
 
-    def("isPluginMeshBoolean", &pyccPlugins::isPluginMeshBoolean, cloudComPy_isPluginMeshBoolean_doc);
+    m0.def("isPluginMeshBoolean", &pyccPlugins::isPluginMeshBoolean, cloudComPy_isPluginMeshBoolean_doc);
 
-    def("isPluginPCL", &pyccPlugins::isPluginPCL, cloudComPy_isPluginPCL_doc);
+    m0.def("isPluginPCL", &pyccPlugins::isPluginPCL, cloudComPy_isPluginPCL_doc);
 
-    def("isPluginPCV", &pyccPlugins::isPluginPCV, cloudComPy_isPluginPCV_doc);
+    m0.def("isPluginPCV", &pyccPlugins::isPluginPCV, cloudComPy_isPluginPCV_doc);
 
-    def("isPluginCSF", &pyccPlugins::isPluginCSF, cloudComPy_isPluginCSF_doc);
+    m0.def("isPluginCSF", &pyccPlugins::isPluginCSF, cloudComPy_isPluginCSF_doc);
 
-    def("isPluginRANSAC_SD", &pyccPlugins::isPluginRANSAC_SD, cloudComPy_isPluginRANSAC_SD_doc);
+    m0.def("isPluginRANSAC_SD", &pyccPlugins::isPluginRANSAC_SD, cloudComPy_isPluginRANSAC_SD_doc);
 
-    def("computeCurvature", computeCurvature, cloudComPy_computeCurvature_doc);
+    m0.def("computeCurvature", &computeCurvature, cloudComPy_computeCurvature_doc);
 
-    def("computeFeature", computeFeature, cloudComPy_computeFeature_doc);
+    m0.def("computeFeature", &computeFeature, cloudComPy_computeFeature_doc);
 
-    def("computeLocalDensity", computeLocalDensity, cloudComPy_computeLocalDensity_doc);
+    m0.def("computeLocalDensity", &computeLocalDensity, cloudComPy_computeLocalDensity_doc);
 
-    def("computeApproxLocalDensity", computeApproxLocalDensity, cloudComPy_computeApproxLocalDensity_doc);
+    m0.def("computeApproxLocalDensity", &computeApproxLocalDensity, cloudComPy_computeApproxLocalDensity_doc);
 
-    def("computeRoughness", computeRoughness, cloudComPy_computeRoughness_doc);
+    m0.def("computeRoughness", &computeRoughness, cloudComPy_computeRoughness_doc);
 
-    def("computeMomentOrder1", computeMomentOrder1, cloudComPy_computeMomentOrder1_doc);
+    m0.def("computeMomentOrder1", &computeMomentOrder1, cloudComPy_computeMomentOrder1_doc);
 
 #ifdef WRAP_PLUGIN_QM3C2
-    def("computeM3C2", computeM3C2, return_value_policy<reference_existing_object>(), cloudComPy_computeM3C2_doc);
+    m0.def("computeM3C2", &computeM3C2, py::return_value_policy::reference, cloudComPy_computeM3C2_doc);
 #endif
 
-    def("filterBySFValue", filterBySFValue, return_value_policy<reference_existing_object>(), cloudComPy_filterBySFValue_doc);
+    m0.def("filterBySFValue", &filterBySFValue, py::return_value_policy::reference, cloudComPy_filterBySFValue_doc);
 
-    def("GetPointCloudRadius", GetPointCloudRadius,
-        GetPointCloudRadius_overloads((arg("clouds"), arg("nodes")=12), cloudComPy_GetPointCloudRadius_doc));
+    m0.def("GetPointCloudRadius", &GetPointCloudRadius,
+           py::arg("clouds"), py::arg("nodes")=12, cloudComPy_GetPointCloudRadius_doc);
 
-    def("getScalarType", getScalarType, cloudComPy_getScalarType_doc);
+    m0.def("getScalarType", &getScalarType, cloudComPy_getScalarType_doc);
 
-    class_<ICPres>("ICPres", cloudComPy_ICPres_doc)
-       .add_property("aligned", bp::make_getter(&ICPres::aligned, return_value_policy<return_by_value>()))
+    py::class_<ICPres>(m0, "ICPres", cloudComPy_ICPres_doc)
+       //TODO.def_property_readonly("aligned", &ICPres::aligned, py::return_value_policy::reference_internal)
        .def_readwrite("transMat", &ICPres::transMat,
                        cloudComPy_ICPres_doc)
        .def_readwrite("finalScale", &ICPres::finalScale,
@@ -760,23 +729,23 @@ BOOST_PYTHON_MODULE(_cloudComPy)
                       cloudComPy_ICPres_doc)
     ;
 
-    def("ICP", ICP_py, ICP_py_overloads(
-            (arg("data"), arg("model"), arg("minRMSDecrease"), arg("maxIterationCount"), arg("randomSamplingLimit"),
-             arg("removeFarthestPoints"), arg("method"), arg("adjustScale"), arg("finalOverlapRatio")=1.0,
-             arg("useDataSFAsWeights")=false, arg("useModelSFAsWeights")=false,
-             arg("transformationFilters")=CCCoreLib::RegistrationTools::SKIP_NONE,
-             arg("maxThreadCount")=0),
-            cloudComPy_ICP_doc));
+    m0.def("ICP", &ICP_py,
+           py::arg("data"), py::arg("model"), py::arg("minRMSDecrease"), py::arg("maxIterationCount"), py::arg("randomSamplingLimit"),
+           py::arg("removeFarthestPoints"), py::arg("method"), py::arg("adjustScale"), py::arg("finalOverlapRatio")=1.0,
+           py::arg("useDataSFAsWeights")=false, py::arg("useModelSFAsWeights")=false,
+           py::arg("transformationFilters")=CCCoreLib::RegistrationTools::SKIP_NONE,
+           py::arg("maxThreadCount")=0,
+           cloudComPy_ICP_doc);
 
-    def("computeNormals", computeNormals, computeNormals_overloads(
-        (arg("selectedEntities"), arg("model")=CCCoreLib::LS,
-         arg("useScanGridsForComputation")=true, arg("defaultRadius")=0.0, arg("minGridAngle_deg")=1.0,
-         arg("orientNormals")=true, arg("useScanGridsForOrientation")=true,
-         arg("useSensorsForOrientation")=true, arg("preferredOrientation")=ccNormalVectors::UNDEFINED,
-         arg("orientNormalsMST")=true, arg("mstNeighbors")=6, arg("computePerVertexNormals")=true),
-         cloudComPy_computeNormals_doc));
+    m0.def("computeNormals", &computeNormals,
+           py::arg("selectedEntities"), py::arg("model")=CCCoreLib::LS,
+           py::arg("useScanGridsForComputation")=true, py::arg("defaultRadius")=0.0, py::arg("minGridAngle_deg")=1.0,
+           py::arg("orientNormals")=true, py::arg("useScanGridsForOrientation")=true,
+           py::arg("useSensorsForOrientation")=true, py::arg("preferredOrientation")=ccNormalVectors::UNDEFINED,
+           py::arg("orientNormalsMST")=true, py::arg("mstNeighbors")=6, py::arg("computePerVertexNormals")=true,
+           cloudComPy_computeNormals_doc);
 
-    class_<ReportInfoVol>("ReportInfoVol", cloudComPy_ReportInfoVol_doc)
+    py::class_<ReportInfoVol>(m0, "ReportInfoVol", cloudComPy_ReportInfoVol_doc)
 		.def_readonly("volume", &ReportInfoVol::volume)
 		.def_readonly("addedVolume", &ReportInfoVol::addedVolume)
 		.def_readonly("removedVolume", &ReportInfoVol::removedVolume)
@@ -787,111 +756,109 @@ BOOST_PYTHON_MODULE(_cloudComPy)
 		.def_readonly("averageNeighborsPerCell", &ReportInfoVol::averageNeighborsPerCell)
 		;
 
-    def("ComputeVolume25D", ComputeVolume25D,
-            (arg("reportInfo"), arg("ground"), arg("ceil"), arg("vertDim"),
-             arg("gridStep"), arg("groundHeight"), arg("ceilHeight")),
-            cloudComPy_ComputeVolume25D_doc);
+    m0.def("ComputeVolume25D", &ComputeVolume25D,
+           py::arg("reportInfo"), py::arg("ground"), py::arg("ceil"), py::arg("vertDim"),
+           py::arg("gridStep"), py::arg("groundHeight"), py::arg("ceilHeight"),
+           cloudComPy_ComputeVolume25D_doc);
 
-    def("invertNormals", invertNormals, cloudComPy_invertNormals_doc);
+    m0.def("invertNormals", &invertNormals, cloudComPy_invertNormals_doc);
 
-    def("ExtractConnectedComponents", ExtractConnectedComponents_py,
-        ExtractConnectedComponents_py_overloads(
-            (arg("clouds"),
-             arg("octreeLevel")=8,
-             arg("minComponentSize")=100,
-             arg("maxNumberComponents")=100,
-             arg("randomColors")=false),
-            cloudComPy_ExtractConnectedComponents_doc));
+    m0.def("ExtractConnectedComponents", &ExtractConnectedComponents_py,
+           py::arg("clouds"),
+           py::arg("octreeLevel")=8,
+           py::arg("minComponentSize")=100,
+           py::arg("maxNumberComponents")=100,
+           py::arg("randomColors")=false,
+           cloudComPy_ExtractConnectedComponents_doc);
 
-    def("ExtractSlicesAndContours", ExtractSlicesAndContours_py,
-        ExtractSlicesAndContours_py_overloads(
-            (arg("entities"),
-             arg("bbox"),
-             arg("bboxTrans")=ccGLMatrix(),
-             arg("singleSliceMode")=true,
-             arg("processRepeatX")=false,
-             arg("processRepeatY")=false,
-             arg("processRepeatZ")=true,
-             arg("extractEnvelopes")=false,
-             arg("maxEdgeLength")=0,
-             arg("envelopeType")=0,
-             arg("extractLevelSet")=false,
-             arg("levelSetGridStep")=0,
-             arg("levelSetMinVertCount")=0,
-             arg("gap")=0,
-             arg("multiPass")=false,
-             arg("splitEnvelopes")=false,
-             arg("projectOnBestFitPlane")=false,
-             arg("generateRandomColors")=false),
-            cloudComPy_ExtractSlicesAndContours_doc));
+//    m0.def("ExtractSlicesAndContours", &ExtractSlicesAndContours_py,
+//            py::arg("entities"),
+//            py::arg("bbox"),
+//            py::arg("bboxTrans")=ccGLMatrix(),
+//            py::arg("singleSliceMode")=true,
+//            py::arg("processRepeatX")=false,
+//            py::arg("processRepeatY")=false,
+//            py::arg("processRepeatZ")=true,
+//            py::arg("extractEnvelopes")=false,
+//            py::arg("maxEdgeLength")=0,
+//            py::arg("envelopeType")=0,
+//            py::arg("extractLevelSet")=false,
+//            py::arg("levelSetGridStep")=0,
+//            py::arg("levelSetMinVertCount")=0,
+//            py::arg("gap")=0,
+//            py::arg("multiPass")=false,
+//            py::arg("splitEnvelopes")=false,
+//            py::arg("projectOnBestFitPlane")=false,
+//            py::arg("generateRandomColors")=false,
+//            cloudComPy_ExtractSlicesAndContours_doc);
 
-    def("RasterizeToCloud", RasterizeToCloud,
-		RasterizeToCloud_overloads(
-    		(arg("cloud"),
-    		 arg("gridStep"),
-    		 arg("vertDir") = CC_DIRECTION::Z,
-    		 arg("outputRasterZ")=false,
-    		 arg("outputRasterSFs")=false,
-    		 arg("outputRasterRGB")=false,
-    		 arg("pathToImages")=".",
-    		 arg("resample")=false,
-    		 arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
-    		 arg("sfProjectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
-    		 arg("emptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
-    		 arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
-    		 arg("gridBBox")=ccBBox(),
-    		 arg("export_perCellCount")=false,
-    		 arg("export_perCellMinHeight")=false,
-    		 arg("export_perCellMaxHeight")=false,
-    		 arg("export_perCellAvgHeight")=false,
-    		 arg("export_perCellHeightStdDev")=false,
-    		 arg("export_perCellHeightRange")=false),
-    		cloudComPy_RasterizeToCloud_doc)[return_value_policy<reference_existing_object>()]);
+//    m0.def("RasterizeToCloud", &RasterizeToCloud,
+//           py::arg("cloud"),
+//           py::arg("gridStep"),
+//           py::arg("vertDir") = CC_DIRECTION::Z,
+//           py::arg("outputRasterZ")=false,
+//           py::arg("outputRasterSFs")=false,
+//           py::arg("outputRasterRGB")=false,
+//           py::arg("pathToImages")=".",
+//           py::arg("resample")=false,
+//           py::arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+//           py::arg("sfProjectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+//           py::arg("emptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+//           py::arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
+//           py::arg("gridBBox")=ccBBox(),
+//           py::arg("export_perCellCount")=false,
+//           py::arg("export_perCellMinHeight")=false,
+//           py::arg("export_perCellMaxHeight")=false,
+//           py::arg("export_perCellAvgHeight")=false,
+//           py::arg("export_perCellHeightStdDev")=false,
+//           py::arg("export_perCellHeightRange")=false,
+//           cloudComPy_RasterizeToCloud_doc,
+//           py::return_value_policy::reference);
 
-    def("RasterizeToMesh", RasterizeToMesh,
-    		RasterizeToMesh_overloads(
-            (arg("cloud"),
-             arg("gridStep"),
-             arg("vertDir") = CC_DIRECTION::Z,
-             arg("outputRasterZ")=false,
-             arg("outputRasterSFs")=false,
-             arg("outputRasterRGB")=false,
-             arg("pathToImages")=".",
-             arg("resample")=false,
-             arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
-             arg("sfProjectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
-             arg("emptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
-             arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
-             arg("gridBBox")=ccBBox(),
-             arg("export_perCellCount")=false,
-             arg("export_perCellMinHeight")=false,
-             arg("export_perCellMaxHeight")=false,
-             arg("export_perCellAvgHeight")=false,
-             arg("export_perCellHeightStdDev")=false,
-             arg("export_perCellHeightRange")=false),
-            cloudComPy_RasterizeToMesh_doc)[return_value_policy<reference_existing_object>()]);
+//    m0.def("RasterizeToMesh", &RasterizeToMesh,
+//           py::arg("cloud"),
+//           py::arg("gridStep"),
+//           py::arg("vertDir") = CC_DIRECTION::Z,
+//           py::arg("outputRasterZ")=false,
+//           py::arg("outputRasterSFs")=false,
+//           py::arg("outputRasterRGB")=false,
+//           py::arg("pathToImages")=".",
+//           py::arg("resample")=false,
+//           py::arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+//           py::arg("sfProjectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+//           py::arg("emptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+//           py::arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
+//           py::arg("gridBBox")=ccBBox(),
+//           py::arg("export_perCellCount")=false,
+//           py::arg("export_perCellMinHeight")=false,
+//           py::arg("export_perCellMaxHeight")=false,
+//           py::arg("export_perCellAvgHeight")=false,
+//           py::arg("export_perCellHeightStdDev")=false,
+//           py::arg("export_perCellHeightRange")=false,
+//           cloudComPy_RasterizeToMesh_doc,
+//           py::return_value_policy::reference);
 
-    def("RasterizeGeoTiffOnly", RasterizeGeoTiffOnly,
-    		RasterizeGeoTiffOnly_overloads(
-            (arg("cloud"),
-             arg("gridStep"),
-             arg("vertDir") = CC_DIRECTION::Z,
-             arg("outputRasterZ")=false,
-             arg("outputRasterSFs")=false,
-             arg("outputRasterRGB")=false,
-             arg("pathToImages")=".",
-             arg("resample")=false,
-             arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
-             arg("sfProjectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
-             arg("emptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
-             arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
-             arg("gridBBox")=ccBBox(),
-             arg("export_perCellCount")=false,
-             arg("export_perCellMinHeight")=false,
-             arg("export_perCellMaxHeight")=false,
-             arg("export_perCellAvgHeight")=false,
-             arg("export_perCellHeightStdDev")=false,
-             arg("export_perCellHeightRange")=false),
-            cloudComPy_RasterizeGeoTiffOnly_doc)[return_value_policy<reference_existing_object>()]);
+//    m0.def("RasterizeGeoTiffOnly", &RasterizeGeoTiffOnly,
+//           py::arg("cloud"),
+//           py::arg("gridStep"),
+//           py::arg("vertDir") = CC_DIRECTION::Z,
+//           py::arg("outputRasterZ")=false,
+//           py::arg("outputRasterSFs")=false,
+//           py::arg("outputRasterRGB")=false,
+//           py::arg("pathToImages")=".",
+//           py::arg("resample")=false,
+//           py::arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+//           py::arg("sfProjectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+//           py::arg("emptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+//           py::arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
+//           py::arg("gridBBox")=ccBBox(),
+//           py::arg("export_perCellCount")=false,
+//           py::arg("export_perCellMinHeight")=false,
+//           py::arg("export_perCellMaxHeight")=false,
+//           py::arg("export_perCellAvgHeight")=false,
+//           py::arg("export_perCellHeightStdDev")=false,
+//           py::arg("export_perCellHeightRange")=false,
+//           cloudComPy_RasterizeGeoTiffOnly_doc,
+//           py::return_value_policy::reference);
 
 }

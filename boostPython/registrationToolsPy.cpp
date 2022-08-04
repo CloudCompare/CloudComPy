@@ -20,25 +20,20 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "registrationToolsPy.hpp"
 
 #include <RegistrationTools.h>
 
 #include "PyScalarType.h"
 #include "pyccTrace.h"
 
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
 
-using namespace boost::python;
-
-void export_registrationTools()
+void export_registrationTools(py::module &m0)
 {
 
-    class_<CCCoreLib::RegistrationTools, boost::noncopyable>("RegistrationTools", no_init)
+    py::class_<CCCoreLib::RegistrationTools>(m0, "RegistrationTools")
         ;
 
-    enum_<CCCoreLib::RegistrationTools::TRANSFORMATION_FILTERS>("TRANSFORMATION_FILTERS")
+    py::enum_<CCCoreLib::RegistrationTools::TRANSFORMATION_FILTERS>(m0, "TRANSFORMATION_FILTERS")
         .value("SKIP_NONE", CCCoreLib::RegistrationTools::SKIP_NONE)
         .value("SKIP_RXY", CCCoreLib::RegistrationTools::SKIP_RXY)
         .value("SKIP_RYZ", CCCoreLib::RegistrationTools::SKIP_RYZ)
@@ -48,14 +43,14 @@ void export_registrationTools()
         .value("SKIP_TY", CCCoreLib::RegistrationTools::SKIP_TY)
         .value("SKIP_TZ", CCCoreLib::RegistrationTools::SKIP_TZ)
         .value("SKIP_TRANSLATION", CCCoreLib::RegistrationTools::SKIP_TRANSLATION)
+        .export_values();
+
+    py::class_<CCCoreLib::ICPRegistrationTools, CCCoreLib::RegistrationTools>(m0, "ICPRegistrationTools")
         ;
 
-    class_<CCCoreLib::ICPRegistrationTools, bases<CCCoreLib::RegistrationTools>, boost::noncopyable>("ICPRegistrationTools", no_init)
-        ;
-
-    enum_<CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE>("CONVERGENCE_TYPE")
+    py::enum_<CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE>(m0, "CONVERGENCE_TYPE")
         .value("MAX_ERROR_CONVERGENCE", CCCoreLib::ICPRegistrationTools::MAX_ERROR_CONVERGENCE)
         .value("MAX_ITER_CONVERGENCE", CCCoreLib::ICPRegistrationTools::MAX_ITER_CONVERGENCE)
-        ;
+        .export_values();
 
 }

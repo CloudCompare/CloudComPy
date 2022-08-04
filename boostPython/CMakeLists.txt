@@ -40,12 +40,20 @@ else()
 endif()
 
 # --- Boost detection
-message( STATUS "Python3_VERSION_MAJOR: " ${Python3_VERSION_MAJOR} )
-message( STATUS "Python3_VERSION_MINOR: " ${Python3_VERSION_MINOR} )
+#message( STATUS "Python3_VERSION_MAJOR: " ${Python3_VERSION_MAJOR} )
+#message( STATUS "Python3_VERSION_MINOR: " ${Python3_VERSION_MINOR} )
 #find_package(Boost COMPONENTS python numpy)
-find_package(Boost COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}  numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} REQUIRED)
+#find_package(Boost COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}  numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} REQUIRED)
 
-message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
+#message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
+
+# --- pybind11 detection
+find_package(pybind11 REQUIRED)
+message( STATUS "pybind11_VERSION: ${pybind11_VERSION}")
+message( STATUS "pybind11_LIBRARIES: ${pybind11_LIBRARIES}")
+message( STATUS "pybind11_DEFINITIONS: ${pybind11_DEFINITIONS}")
+message( STATUS "pybind11_INCLUDE_DIR: ${pybind11_INCLUDE_DIR}")
+message( STATUS "pybind11_INCLUDE_DIRS: ${pybind11_INCLUDE_DIRS}")
 
 # --- ----------------------------------------------------------
 # --- target boost.Python library: Python module cloudComPy
@@ -60,24 +68,25 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/cloudComPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/colorsPy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ScalarFieldPy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ccGenericCloudPy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ccOctreePy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ccPointCloudPy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ccMeshPy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ccPrimitivesPy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ccPolylinePy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/distanceComputationToolsPy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/geometricalAnalysisToolsPy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/ScalarFieldPy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/ccGenericCloudPy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/ccOctreePy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/ccPointCloudPy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/ccMeshPy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/ccPrimitivesPy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/ccPolylinePy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/distanceComputationToolsPy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/geometricalAnalysisToolsPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/registrationToolsPy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/cloudSamplingToolsPy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ccFacetPy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ccSensorPy.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/NeighbourhoodPy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/cloudSamplingToolsPy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/ccFacetPy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/ccSensorPy.cpp
+#    ${CMAKE_CURRENT_LIST_DIR}/NeighbourhoodPy.cpp
     )
 
 target_include_directories( ${PROJECT_NAME} PRIVATE
-    ${Boost_INCLUDE_DIRS}
+#    ${Boost_INCLUDE_DIRS}
+    ${pybind11_INCLUDE_DIR}
     ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../pyAPI
@@ -88,7 +97,7 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
 target_link_libraries( ${PROJECT_NAME}
     PYCC_LIB
     CCAppCommon
-    ${Boost_LIBRARIES}
+#    ${Boost_LIBRARIES}
     ${Python3_LIBRARIES}
     )
 
@@ -192,25 +201,25 @@ endif()
 # --- plugins
 
 if ( PLUGIN_STANDARD_QM3C2 )
-    add_subdirectory( M3C2 )
+#    add_subdirectory( M3C2 )
 endif()
 if ( PLUGIN_STANDARD_QPCV )
-    add_subdirectory( PCV )
+#    add_subdirectory( PCV )
 endif()
 if ( PLUGIN_STANDARD_QHPR )
-    add_subdirectory( HPR )
+#    add_subdirectory( HPR )
 endif()
 if ( PLUGIN_STANDARD_QMESH_BOOLEAN )
-    add_subdirectory( MeshBoolean )
+#    add_subdirectory( MeshBoolean )
 endif()
 if ( PLUGIN_STANDARD_QRANSAC_SD )
-    add_subdirectory( RANSAC_SD )
+#    add_subdirectory( RANSAC_SD )
 endif()
 if ( PLUGIN_STANDARD_QPCL )
-    add_subdirectory( PCL )
+#    add_subdirectory( PCL )
 endif()
 if ( PLUGIN_STANDARD_QCSF )
-    add_subdirectory( CSF )
+#    add_subdirectory( CSF )
 endif()
 
 

@@ -23,9 +23,34 @@
 #define CLOUDCOMPY_HPP_
 
 // adjust to cover max overload values
-#define BOOST_PYTHON_MAX_ARITY 20
+//#define BOOST_PYTHON_MAX_ARITY 20
 
-#include <boost/python/numpy.hpp>
-#include <boost/python.hpp>
+//#include <boost/python/numpy.hpp>
+//#include <boost/python.hpp>
+#define PYBIND11_DETAILED_ERROR_MESSAGES
+#include <pybind11/pybind11.h>
+#include <pybind11/operators.h>
+#include <pybind11/stl.h>
+#include <pybind11/stl_bind.h>
+
+namespace py = pybind11;
+
+//void initializeConverters(py::module &);
+
+void export_colors(py::module &);
+//void export_ScalarField(py::module &);
+//void export_ccGenericCloud(py::module &);
+//void export_ccPolyline(py::module &);
+//void export_ccOctree(py::module &);
+//void export_ccPointCloud(py::module &);
+//void export_ccMesh(py::module &);
+//void export_ccPrimitives(py::module &);
+//void export_distanceComputationTools(py::module &);
+//void export_geometricalAnalysisTools(py::module &);
+void export_registrationTools(py::module &);
+//void export_cloudSamplingTools(py::module &);
+//void export_ccFacet(py::module &);
+//void export_ccSensor(py::module &);
+//void export_Neighbourhood(py::module &);
 
 #endif

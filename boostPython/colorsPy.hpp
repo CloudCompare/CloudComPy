@@ -22,6 +22,9 @@
 #ifndef COLORSPY_HPP_
 #define COLORSPY_HPP_
 
-void export_colors();
+#include <pybind11/pybind11.h>
+namespace py = pybind11;
+
+void export_colors(py::module_ &);
 
 #endif
