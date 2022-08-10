@@ -44,7 +44,6 @@
 
 #include "pyccTrace.h"
 #include "cloudComPy_DocStrings.hpp"
-#include "conversions.hpp"
 
 QString greet()
 {
@@ -512,22 +511,6 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
     return res;
 }
 
-
-
-//BOOST_PYTHON_FUNCTION_OVERLOADS(importFilePy_overloads, importFilePy, 1, 6);
-//BOOST_PYTHON_FUNCTION_OVERLOADS(loadPointCloudPy_overloads, loadPointCloudPy, 1, 7);
-//BOOST_PYTHON_FUNCTION_OVERLOADS(loadMeshPy_overloads, loadMeshPy, 1, 7);
-//BOOST_PYTHON_FUNCTION_OVERLOADS(loadPolyline_overloads, loadPolyline, 1, 6);
-//BOOST_PYTHON_FUNCTION_OVERLOADS(GetPointCloudRadius_overloads, GetPointCloudRadius, 1, 2);
-//BOOST_PYTHON_FUNCTION_OVERLOADS(ICP_py_overloads, ICP_py, 8, 13);
-//BOOST_PYTHON_FUNCTION_OVERLOADS(computeNormals_overloads, computeNormals, 1, 12);
-//BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToCloud_overloads, RasterizeToCloud, 2, 19);
-//BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeToMesh_overloads, RasterizeToMesh, 2, 19);
-//BOOST_PYTHON_FUNCTION_OVERLOADS(RasterizeGeoTiffOnly_overloads, RasterizeGeoTiffOnly, 2, 19);
-//BOOST_PYTHON_FUNCTION_OVERLOADS(ExtractSlicesAndContours_py_overloads, ExtractSlicesAndContours_py, 2, 18);
-//BOOST_PYTHON_FUNCTION_OVERLOADS(ExtractConnectedComponents_py_overloads, ExtractConnectedComponents_py, 1, 5);
-//BOOST_PYTHON_FUNCTION_OVERLOADS(SavePointCloud_overloads, SavePointCloud, 2, 3);
-
 PYBIND11_MODULE(_cloudComPy, m0)
 {
 
@@ -536,10 +519,10 @@ PYBIND11_MODULE(_cloudComPy, m0)
 
     export_colors(m0);
 //    export_ScalarField(m0);
-//    export_ccGenericCloud(m0);
+    export_ccGenericCloud(m0);
 //    export_ccPolyline(m0);
 //    export_ccOctree(m0);
-//    export_ccPointCloud(m0);
+    export_ccPointCloud(m0);
 //    export_ccMesh(m0);
 //    export_ccPrimitives(m0);
 //    export_distanceComputationTools(m0);
@@ -771,6 +754,7 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::arg("randomColors")=false,
            cloudComPy_ExtractConnectedComponents_doc);
 
+    //TODO
 //    m0.def("ExtractSlicesAndContours", &ExtractSlicesAndContours_py,
 //            py::arg("entities"),
 //            py::arg("bbox"),

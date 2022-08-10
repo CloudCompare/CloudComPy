@@ -48,12 +48,6 @@
 #include <QColor>
 #include <QString>
 
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
-using namespace boost::python;
-
-
 struct color_exception : std::exception
 {
   const char* what() const noexcept { return "this point cloud has no color table!"; }
@@ -84,27 +78,23 @@ bool exportNormalToSF_py(ccPointCloud &self, bool x, bool y, bool z)
     return self.exportNormalToSF(b);
 }
 
-void coordsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
+void coordsFromNPArray_copy(ccPointCloud &self, py::array_t<PointCoordinateType, py::array::c_style | py::array::forcecast> array)
 {
-    if (array.get_dtype() != bnp::dtype::get_builtin<PointCoordinateType>())
+//    if (array.get_dtype() != bnp::dtype::get_builtin<PointCoordinateType>())
+//    {
+//        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
+//        bp::throw_error_already_set();
+//    }
+    if (array.ndim() != 2)
     {
-        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
-        bp::throw_error_already_set();
+        throw std::runtime_error("Incorrect array dimension");
     }
-    if (array.get_nd() != 2)
-    {
-        PyErr_SetString(PyExc_TypeError, "Incorrect array dimension");
-        bp::throw_error_already_set();
-    }
-    if (array.shape(1) != 3)
-    {
-        PyErr_SetString(PyExc_TypeError, "Incorrect array, 3 coordinates required");
-        bp::throw_error_already_set();
-    }
+    if ( array.shape(1) != 3 )
+      throw std::runtime_error("Input should have size [N,2]");
     size_t nRows = array.shape(0);
     self.reserve(nRows);
     self.resize(nRows);
-    PointCoordinateType *s = reinterpret_cast<PointCoordinateType*>(array.get_data());
+    const PointCoordinateType *s = reinterpret_cast<const PointCoordinateType*>(array.data());
     PointCoordinateType *d = (PointCoordinateType*)self.getPoint(0);
     memcpy(d, s, 3*nRows*sizeof(PointCoordinateType));
     CCTRACE("copied " << 3*nRows*sizeof(PointCoordinateType) << " bytes");
@@ -118,22 +108,20 @@ bool colorize_py(ccPointCloud &self, float r, float g, float b, float a=1.0f)
     return success;
 }
 
-void colorsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
+void colorsFromNPArray_copy(ccPointCloud &self, py::array_t<ColorCompType, py::array::c_style | py::array::forcecast> array)
 {
-    if (array.get_dtype() != bnp::dtype::get_builtin<ColorCompType>())
+//    if (array.get_dtype() != bnp::dtype::get_builtin<ColorCompType>())
+//    {
+//        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
+//        bp::throw_error_already_set();
+//    }
+    if (array.ndim() != 2)
     {
-        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
-        bp::throw_error_already_set();
-    }
-    if (array.get_nd() != 2)
-    {
-        PyErr_SetString(PyExc_TypeError, "Incorrect array dimension");
-        bp::throw_error_already_set();
+        throw std::runtime_error("Incorrect array dimension");
     }
     if (array.shape(1) != 4)
     {
-        PyErr_SetString(PyExc_TypeError, "Incorrect array, 4 components required");
-        bp::throw_error_already_set();
+        throw std::runtime_error("Incorrect array, 4 components required");
     }
     size_t nRows = array.shape(0);
     if (nRows != self.size())
@@ -147,7 +135,7 @@ void colorsFromNPArray_copy(ccPointCloud &self, bnp::ndarray const & array)
     	CCTRACE("no color table in this point cloud!")
 		throw color_exception();
     }
-    ColorCompType* s = reinterpret_cast<ColorCompType*>(array.get_data());
+    const ColorCompType* s = reinterpret_cast<const ColorCompType*>(array.data());
     ColorCompType* d = (ColorCompType*)(self.rgbaColors()->data());
     memcpy(d, s, 4*nRows*sizeof(ColorCompType));
     CCTRACE("copied " << 4*nRows*sizeof(ColorCompType) << " bytes");
@@ -180,32 +168,45 @@ CCCoreLib::ScalarField* getScalarFieldByName_py(ccPointCloud &self, const QStrin
     return nullptr;
 }
 
-bnp::ndarray CoordsToNpArray_copy(ccPointCloud &self)
+py::array CoordsToNpArray_copy(ccPointCloud &self)
 {
     CCTRACE("CoordsToNpArray with copy, ownership transfered to Python");
-    bnp::dtype dt = bnp::dtype::get_builtin<PointCoordinateType>(); // coordinates always in simple precision
     size_t nRows = self.size();
-    bp::tuple shape = bp::make_tuple(nRows, 3);
-    bp::tuple stride = bp::make_tuple(3*sizeof(PointCoordinateType), sizeof(PointCoordinateType));
-    PointCoordinateType *s = (PointCoordinateType*)self.getPoint(0);
-    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
-    return result.copy();
+    PointCoordinateType* s = (PointCoordinateType*) self.getPoint(0);
+    PointCoordinateType* d = new PointCoordinateType[3 * nRows];
+    memcpy(d, s, 3 * nRows * sizeof(PointCoordinateType));
+    ssize_t ndim = 2;
+    std::vector<ssize_t> shape =
+    { nRows, 3 };
+    std::vector<ssize_t> strides =
+    { 3 * sizeof(PointCoordinateType), sizeof(PointCoordinateType) };
+    return py::array(py::buffer_info(d,                                                    // data as contiguous array
+                                     sizeof(PointCoordinateType),                          // size of one scalar
+                                     py::format_descriptor<PointCoordinateType>::format(), // data type
+                                     ndim,                                                 // number of dimensions
+                                     shape,                                                // shape of the matrix
+                                     strides                                               // strides for each axis
+                                     ));
 }
 
-bnp::ndarray CoordsToNpArray_py(ccPointCloud &self)
+py::array CoordsToNpArray_py(ccPointCloud &self)
 {
     CCTRACE("CoordsToNpArray without copy, ownership stays in C++");
-    bnp::dtype dt = bnp::dtype::get_builtin<PointCoordinateType>(); // coordinates always in simple precision
     size_t nRows = self.size();
-    CCTRACE("nrows: " << nRows);
-    bp::tuple shape = bp::make_tuple(nRows, 3);
-    bp::tuple stride = bp::make_tuple(3*sizeof(PointCoordinateType), sizeof(PointCoordinateType));
-    PointCoordinateType *s = (PointCoordinateType*)self.getPoint(0);
-    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
-    return result;
+    PointCoordinateType* s = (PointCoordinateType*) self.getPoint(0);
+    ssize_t ndim = 2;
+    std::vector<ssize_t> shape = { nRows, 3 };
+    std::vector<ssize_t> strides = { 3 * sizeof(PointCoordinateType), sizeof(PointCoordinateType) };
+    return py::array(py::buffer_info(s,                                                    // data as contiguous array
+                                     sizeof(PointCoordinateType),                          // size of one scalar
+                                     py::format_descriptor<PointCoordinateType>::format(), // data type
+                                     ndim,                                                 // number of dimensions
+                                     shape,                                                // shape of the matrix
+                                     strides                                               // strides for each axis
+                                     ));
 }
 
-bnp::ndarray ColorsToNpArray_copy(ccPointCloud &self)
+py::array ColorsToNpArray_copy(ccPointCloud &self)
 {
     CCTRACE("ColorsToNpArray with copy, ownership transfered to Python");
     if (self.rgbaColors() == nullptr)
@@ -213,17 +214,23 @@ bnp::ndarray ColorsToNpArray_copy(ccPointCloud &self)
     	CCTRACE("no color in this point cloud!")
 		throw color_exception();
     }
-    bnp::dtype dt = bnp::dtype::get_builtin<ColorCompType>(); // colors components (unsigned char)
     size_t nRows = self.size();
-    CCTRACE("nrows: " << nRows);
-    bp::tuple shape = bp::make_tuple(nRows, 4); // r, g, b a
-    bp::tuple stride = bp::make_tuple(4*sizeof(ColorCompType), sizeof(ColorCompType));
-    ColorCompType *s = (ColorCompType*)(self.rgbaColors()->data());
-    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
-    return result.copy();
+    ColorCompType* s = (ColorCompType*) (self.rgbaColors()->data());
+    ColorCompType* d = new ColorCompType[4 * nRows];
+    memcpy(d, s, 4 * nRows * sizeof(ColorCompType));
+    ssize_t ndim = 2;
+    std::vector<ssize_t> shape = { nRows, 4 };
+    std::vector<ssize_t> strides = { 4 * sizeof(ColorCompType), sizeof(ColorCompType) };
+    return py::array(py::buffer_info(d,                                              // data as contiguous array
+                                     sizeof(ColorCompType),                          // size of one scalar
+                                     py::format_descriptor<ColorCompType>::format(), // data type
+                                     ndim,                                           // number of dimensions
+                                     shape,                                          // shape of the matrix
+                                     strides                                         // strides for each axis
+                                     ));
 }
 
-bnp::ndarray ColorsToNpArray_py(ccPointCloud &self)
+py::array ColorsToNpArray_py(ccPointCloud &self)
 {
     CCTRACE("ColorsToNpArray without copy, ownership stays in C++");
     if (self.rgbaColors() == nullptr)
@@ -231,14 +238,18 @@ bnp::ndarray ColorsToNpArray_py(ccPointCloud &self)
         CCTRACE("no color in this point cloud!")
         throw color_exception();
     }
-    bnp::dtype dt = bnp::dtype::get_builtin<ColorCompType>(); // colors components (unsigned char)
     size_t nRows = self.size();
-    CCTRACE("nrows: " << nRows);
-    bp::tuple shape = bp::make_tuple(nRows, 4); // r, g, b a
-    bp::tuple stride = bp::make_tuple(4*sizeof(ColorCompType), sizeof(ColorCompType));
-    ColorCompType *s = (ColorCompType*)(self.rgbaColors()->data());
-    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
-    return result;
+    ColorCompType* s = (ColorCompType*) (self.rgbaColors()->data());
+    ssize_t ndim = 2;
+    std::vector<ssize_t> shape = { nRows, 4 };
+    std::vector<ssize_t> strides = { 4 * sizeof(ColorCompType), sizeof(ColorCompType) };
+    return py::array(py::buffer_info(s,                                              // data as contiguous array
+                                     sizeof(ColorCompType),                          // size of one scalar
+                                     py::format_descriptor<ColorCompType>::format(), // data type
+                                     ndim,                                           // number of dimensions
+                                     shape,                                          // shape of the matrix
+                                     strides                                         // strides for each axis
+                                     ));
 }
 
 bool changeColorLevels_py(ccPointCloud &self, unsigned char sin0,
@@ -413,12 +424,12 @@ bool orientNormalsWithMST_py(ccPointCloud &self, unsigned char octreeLevel = 6)
     return self.orientNormalsWithMST(octreeLevel);
 }
 
-bp::tuple partialClone_py(ccPointCloud &self,
+py::tuple partialClone_py(ccPointCloud &self,
                           const CCCoreLib::ReferenceCloud* selection)
 {
     int warnings;
     ccPointCloud* cloud = self.partialClone(selection, &warnings);
-    bp::tuple res = bp::make_tuple(cloud, warnings);
+    py::tuple res = py::make_tuple(cloud, warnings);
     return res;
 }
 
@@ -560,81 +571,62 @@ std::vector<ccSensor*> getSensors(ccPointCloud &self)
 
 int (ccPointCloud::*addScalarFieldt)(const char*) = &ccPointCloud::addScalarField;
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_scale_overloads, scale, 3, 4)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccPointCloud_cloneThis_overloads, cloneThis, 0, 2)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(filterPointsByScalarValue_overloads, ccPointCloud::filterPointsByScalarValue, 2, 3)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(enhanceRGBWithIntensitySF_overloads, ccPointCloud::enhanceRGBWithIntensitySF, 1, 4)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(convertCurrentScalarFieldToColors_overloads, ccPointCloud::convertCurrentScalarFieldToColors, 0, 1)
-BOOST_PYTHON_FUNCTION_OVERLOADS(colorize_py_overloads, colorize_py, 4, 5)
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeScalarFieldGradient_py_overloads, computeScalarFieldGradient_py, 4, 5)
-BOOST_PYTHON_FUNCTION_OVERLOADS(interpolateColorsFrom_py_overloads, interpolateColorsFrom_py, 2, 3)
-BOOST_PYTHON_FUNCTION_OVERLOADS(orientNormalsWithFM_py_overloads, orientNormalsWithFM_py, 1, 2)
-BOOST_PYTHON_FUNCTION_OVERLOADS(orientNormalsWithMST_py_overloads, orientNormalsWithMST_py, 1, 2)
-
-void export_ccPointCloud()
+void export_ccPointCloud(py::module &m0)
 {
-    enum_<ccPointCloud::CLONE_WARNINGS>("CLONE_WARNINGS")
+    py::enum_<ccPointCloud::CLONE_WARNINGS>(m0, "CLONE_WARNINGS")
         .value("WRN_OUT_OF_MEM_FOR_COLORS", ccPointCloud::CLONE_WARNINGS::WRN_OUT_OF_MEM_FOR_COLORS)
         .value("WRN_OUT_OF_MEM_FOR_NORMALS", ccPointCloud::CLONE_WARNINGS::WRN_OUT_OF_MEM_FOR_NORMALS)
         .value("WRN_OUT_OF_MEM_FOR_SFS", ccPointCloud::CLONE_WARNINGS::WRN_OUT_OF_MEM_FOR_SFS)
         .value("WRN_OUT_OF_MEM_FOR_FWF", ccPointCloud::CLONE_WARNINGS::WRN_OUT_OF_MEM_FOR_FWF)
-        ;
+        .export_values();
 
-    class_<ccPointCloud, bases<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString> > >("ccPointCloud",
-                                                                                          ccPointCloudPy_ccPointCloud_doc,
-                                                                                          init< optional<QString, unsigned> >())
+    py::class_<ccPointCloud, CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString> >(m0, "ccPointCloud", ccPointCloudPy_ccPointCloud_doc)
+        .def(py::init<QString, unsigned>(), py::arg("name")=QString(), py::arg("uniqueID")=ccUniqueIDGenerator::InvalidUniqueID) // optional<QString, unsigned> >())
         .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)
         .def("cloneThis", &ccPointCloud::cloneThis,
-             ccPointCloud_cloneThis_overloads(
-             (arg("destCloud")=0, arg("ignoreChildren")=false),
-             ccPointCloudPy_cloneThis_doc)[return_value_policy<reference_existing_object>()])
+             py::arg("destCloud")=0, py::arg("ignoreChildren")=false,
+             ccPointCloudPy_cloneThis_doc, py::return_value_policy::reference)
         .def("changeColorLevels", &changeColorLevels_py, ccPointCloudPy_changeColorLevels_doc)
-        .def("colorize", &colorize_py, colorize_py_overloads(
-         (arg("self"), arg("r"), arg("g"), arg("b"), arg("a")=1.0f),
-         ccPointCloudPy_colorize_doc))
+        .def("colorize", &colorize_py, py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=1.0f,
+         ccPointCloudPy_colorize_doc)
         .def("computeGravityCenter", &ccPointCloud::computeGravityCenter, ccPointCloudPy_computeGravityCenter_doc)
         .def("computeScalarFieldGradient", &computeScalarFieldGradient_py,
-             computeScalarFieldGradient_py_overloads(
-             (arg("self"), arg("SFindex"), arg("radius"), arg("euclideanDistances"),
-              arg("theOctree")=0), ccPointCloudPy_computeScalarFieldGradient_doc))
+             py::arg("SFindex"), py::arg("radius"), py::arg("euclideanDistances"),
+             py::arg("theOctree")=0, ccPointCloudPy_computeScalarFieldGradient_doc)
         .def("colorsFromNPArray_copy", &colorsFromNPArray_copy, ccPointCloudPy_colorsFromNPArray_copy_doc)
         .def("coordsFromNPArray_copy", &coordsFromNPArray_copy, ccPointCloudPy_coordsFromNPArray_copy_doc)
         .def("convertCurrentScalarFieldToColors", &ccPointCloud::convertCurrentScalarFieldToColors,
-             convertCurrentScalarFieldToColors_overloads(
-             (arg("mixWithExistingColor")=false),
-             ccPointCloudPy_convertCurrentScalarFieldToColors_doc))
+             py::arg("mixWithExistingColor")=false,
+             ccPointCloudPy_convertCurrentScalarFieldToColors_doc)
         .def("convertNormalToRGB", &ccPointCloud::convertNormalToRGB, ccPointCloudPy_convertNormalToRGB_doc)
         .def("convertNormalToDipDirSFs", convertNormalToDipDirSFs_py, ccPointCloudPy_convertNormalToDipDirSFs_doc)
         .def("convertRGBToGreyScale", &ccPointCloud::convertRGBToGreyScale, ccPointCloudPy_convertRGBToGreyScale_doc)
-        .def("crop2D", &crop2D_py, return_value_policy<reference_existing_object>(), ccPointCloudPy_crop2D_doc)
+        .def("crop2D", &crop2D_py, py::return_value_policy::reference, ccPointCloudPy_crop2D_doc)
         .def("deleteAllScalarFields", &ccPointCloud::deleteAllScalarFields, ccPointCloudPy_deleteAllScalarFields_doc)
         .def("deleteScalarField", &ccPointCloud::deleteScalarField, ccPointCloudPy_deleteScalarField_doc)
         .def("enhanceRGBWithIntensitySF", &ccPointCloud::enhanceRGBWithIntensitySF,
-             enhanceRGBWithIntensitySF_overloads(
-             (arg("sfIdx"), arg("useCustomIntensityRange")=false, arg("minI")=0.0, arg("maxI")=1.0),
-             ccPointCloudPy_enhanceRGBWithIntensitySF_doc))
+             py::arg("sfIdx"), py::arg("useCustomIntensityRange")=false, py::arg("minI")=0.0, py::arg("maxI")=1.0,
+             ccPointCloudPy_enhanceRGBWithIntensitySF_doc)
         .def("exportCoordToSF", &exportCoordToSF_py, ccPointCloudPy_exportCoordToSF_doc)
         .def("exportNormalToSF", &exportNormalToSF_py, ccPointCloudPy_exportNormalToSF_doc)
         .def("filterPointsByScalarValue", &ccPointCloud::filterPointsByScalarValue,
-             filterPointsByScalarValue_overloads(
-             (arg("minVal"), arg("maxVal"), arg("outside")=false),
-             ccPointCloudPy_filterPointsByScalarValue_doc)
-             [return_value_policy<reference_existing_object>()])
+             py::arg("minVal"), py::arg("maxVal"), py::arg("outside")=false,
+             ccPointCloudPy_filterPointsByScalarValue_doc, py::return_value_policy::reference)
         .def("fuse", &fuse_py, ccPointCloudPy_fuse_doc)
         .def("getCurrentDisplayedScalarField", &ccPointCloud::getCurrentDisplayedScalarField,
-             return_value_policy<reference_existing_object>(), ccPointCloudPy_getCurrentDisplayedScalarField_doc)
+             py::return_value_policy::reference, ccPointCloudPy_getCurrentDisplayedScalarField_doc)
         .def("getCurrentDisplayedScalarFieldIndex", &ccPointCloud::getCurrentDisplayedScalarFieldIndex,
              ccPointCloudPy_getCurrentDisplayedScalarFieldIndex_doc)
         .def("getCurrentInScalarField", &ccPointCloud::getCurrentInScalarField,
-             return_value_policy<reference_existing_object>(), ccPointCloudPy_getCurrentInScalarField_doc)
+             py::return_value_policy::reference, ccPointCloudPy_getCurrentInScalarField_doc)
         .def("getCurrentOutScalarField", &ccPointCloud::getCurrentOutScalarField,
-             return_value_policy<reference_existing_object>(), ccPointCloudPy_getCurrentOutScalarField_doc)
+             py::return_value_policy::reference, ccPointCloudPy_getCurrentOutScalarField_doc)
         .def("getNumberOfScalarFields", &ccPointCloud::getNumberOfScalarFields, ccPointCloudPy_getNumberOfScalarFields_doc)
         .def("getScalarField", &ccPointCloud::getScalarField,
-             return_value_policy<reference_existing_object>(), ccPointCloudPy_getScalarField_doc)
+             py::return_value_policy::reference, ccPointCloudPy_getScalarField_doc)
         .def("getScalarField", &getScalarFieldByName_py,
-             return_value_policy<reference_existing_object>(), ccPointCloudPy_getScalarFieldByName_doc)
+             py::return_value_policy::reference, ccPointCloudPy_getScalarFieldByName_doc)
         .def("getScalarFieldDic", &getScalarFieldDic_py, ccPointCloudPy_getScalarFieldDic_doc)
         .def("getScalarFieldName", &ccPointCloud::getScalarFieldName, ccPointCloudPy_getScalarFieldName_doc)
         .def("getSensors", getSensors, ccPointCloudPy_getSensors_doc)
@@ -642,24 +634,29 @@ void export_ccPointCloud()
         .def("hasNormals", &ccPointCloud::hasNormals, ccPointCloudPy_hasNormals_doc)
         .def("hasScalarFields", &ccPointCloud::hasScalarFields, ccPointCloudPy_hasScalarFields_doc)
         .def("interpolateColorsFrom", &interpolateColorsFrom_py,
-             interpolateColorsFrom_py_overloads(
-             (arg("self"), arg("otherCloud"), arg("octreeLevel")=0),
-             ccPointCloudPy_interpolateColorsFrom_doc))
+             py::arg("otherCloud"), py::arg("octreeLevel")=0,
+             ccPointCloudPy_interpolateColorsFrom_doc)
         .def("orientNormalsWithFM", orientNormalsWithFM_py,
-             orientNormalsWithFM_py_overloads(
-             (arg("self"), arg("octreeLevel")=6),
-             ccPointCloudPy_orientNormalsWithFM_doc))
-        .def("orientNormalsWithMST", orientNormalsWithMST_py,
-             orientNormalsWithMST_py_overloads(
-             (arg("self"), arg("octreeLevel")=6),
-             ccPointCloudPy_orientNormalsWithMST_doc))
+             py::arg("octreeLevel")=6,
+             ccPointCloudPy_orientNormalsWithFM_doc)
+        .def("orientNormalsWithMST", &orientNormalsWithMST_py,
+             py::arg("octreeLevel")=6,
+             ccPointCloudPy_orientNormalsWithMST_doc)
         .def("partialClone", &partialClone_py, ccPointCloudPy_partialClone_doc)
         .def("renameScalarField", &ccPointCloud::renameScalarField, ccPointCloudPy_renameScalarField_doc)
         .def("reserve", &ccPointCloud::reserve, ccPointCloudPy_reserve_doc)
         .def("resize", &ccPointCloud::resize, ccPointCloudPy_resize_doc)
-        .def("scale", &ccPointCloud::scale, ccPointCloud_scale_overloads(
-             (arg("fx"), arg("fy"), arg("fz"), arg("center")=CCVector3(0,0,0) ),
-             ccPointCloudPy_scale_doc))
+//        .def("scale",
+//             [](ccPointCloud& self, PointCoordinateType fx, PointCoordinateType fy, PointCoordinateType fz, CCVector3 center=CCVector3(0,0,0))
+//             {
+//                return self.scale(fx, fy, fz, center);
+//             },
+//             py::arg("fx"), py::arg("fy"), py::arg("fz"), py::arg("center"), //=CCVector3(0,0,0),
+//             ccPointCloudPy_scale_doc)
+        .def("scale",
+             &ccPointCloud::scale,
+             py::arg("fx"), py::arg("fy"), py::arg("fz"), py::arg("center"), //=CCVector3(0,0,0), <== TODO
+             ccPointCloudPy_scale_doc)
         .def("setColor", &setColor_py, ccPointCloudPy_setColor_doc)
         .def("setColorGradient", &setColorGradient_py, ccPointCloudPy_setColorGradient_doc)
         .def("setColorGradientBanded", &setColorGradientBanded_py, ccPointCloudPy_setColorGradientBanded_doc)

@@ -32,6 +32,8 @@
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
 #include <pybind11/stl_bind.h>
+#include <pybind11/numpy.h>
+#include "conversions.hpp"
 
 namespace py = pybind11;
 
@@ -39,10 +41,10 @@ namespace py = pybind11;
 
 void export_colors(py::module &);
 //void export_ScalarField(py::module &);
-//void export_ccGenericCloud(py::module &);
+void export_ccGenericCloud(py::module &);
 //void export_ccPolyline(py::module &);
 //void export_ccOctree(py::module &);
-//void export_ccPointCloud(py::module &);
+void export_ccPointCloud(py::module &);
 //void export_ccMesh(py::module &);
 //void export_ccPrimitives(py::module &);
 //void export_distanceComputationTools(py::module &);

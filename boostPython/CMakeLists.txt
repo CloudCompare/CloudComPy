@@ -69,9 +69,9 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     ${CMAKE_CURRENT_LIST_DIR}/cloudComPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/colorsPy.cpp
 #    ${CMAKE_CURRENT_LIST_DIR}/ScalarFieldPy.cpp
-#    ${CMAKE_CURRENT_LIST_DIR}/ccGenericCloudPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ccGenericCloudPy.cpp
 #    ${CMAKE_CURRENT_LIST_DIR}/ccOctreePy.cpp
-#    ${CMAKE_CURRENT_LIST_DIR}/ccPointCloudPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ccPointCloudPy.cpp
 #    ${CMAKE_CURRENT_LIST_DIR}/ccMeshPy.cpp
 #    ${CMAKE_CURRENT_LIST_DIR}/ccPrimitivesPy.cpp
 #    ${CMAKE_CURRENT_LIST_DIR}/ccPolylinePy.cpp

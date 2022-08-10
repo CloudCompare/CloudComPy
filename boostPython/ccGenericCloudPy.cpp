@@ -34,10 +34,6 @@
 #include "pyccTrace.h"
 #include "ccGenericCloudPy_DocStrings.hpp"
 
-namespace bp = boost::python;
-
-using namespace boost::python;
-
 CCVector3 PointCloudTpl_ccGenericPointCloud_QString_getPoint_py(CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>& self, unsigned index)
 {
     const CCVector3* vec = self.getPoint(index);
@@ -135,12 +131,9 @@ void showNormalsPy(ccHObject& self, bool isShown)
     else self.showNormals(false);
 }
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(ccGenericPointCloud_computeOctree_overloads, computeOctree, 0, 2)
-BOOST_PYTHON_FUNCTION_OVERLOADS(addChild_py_overloads, addChild_py, 2, 4)
-
-void export_ccGenericCloud()
+void export_ccGenericCloud(py::module &m0)
 {
-    enum_<CC_CLASS_ENUM>("CC_TYPES")
+    py::enum_<CC_TYPES::CCTYPES>(m0, "CC_TYPES")
        .value("OBJECT", CC_TYPES::OBJECT)
        .value("HIERARCHY_OBJECT", CC_TYPES::HIERARCHY_OBJECT)
        .value("POINT_CLOUD", CC_TYPES::POINT_CLOUD)
@@ -182,27 +175,27 @@ void export_ccGenericCloud()
        .value("COORDINATESYSTEM", CC_TYPES::COORDINATESYSTEM)
        .value("CUSTOM_H_OBJECT", CC_TYPES::CUSTOM_H_OBJECT)
        .value("CUSTOM_LEAF_OBJECT", CC_TYPES::CUSTOM_LEAF_OBJECT)
-       ;
+       .export_values();
 
-    enum_<ccHObject::DEPENDENCY_FLAGS>("DEPENDENCY_FLAGS")
+    py::enum_<ccHObject::DEPENDENCY_FLAGS>(m0, "DEPENDENCY_FLAGS")
 		.value("DP_NONE", ccHObject::DEPENDENCY_FLAGS::DP_NONE)
 		.value("DP_NOTIFY_OTHER_ON_DELETE", ccHObject::DEPENDENCY_FLAGS::DP_NOTIFY_OTHER_ON_DELETE)
 		.value("DP_NOTIFY_OTHER_ON_UPDATE", ccHObject::DEPENDENCY_FLAGS::DP_NOTIFY_OTHER_ON_UPDATE)
 		.value("DP_DELETE_OTHER", ccHObject::DEPENDENCY_FLAGS::DP_DELETE_OTHER)
 		.value("DP_PARENT_OF_OTHER", ccHObject::DEPENDENCY_FLAGS::DP_PARENT_OF_OTHER)
-		;
+		.export_values();
 
-    class_<ccHObject>("ccHObject", no_init)
+    py::class_<ccHObject>(m0, "ccHObject")
         .def("setName", &ccHObject::setName, ccHObject_setName_doc)
         .def("getName", &ccHObject::getName, ccHObject_getName_doc)
-		.def("addChild", &addChild_py, addChild_py_overloads(
-		     (arg("self"), arg("child"), arg("dependencyFlags")= ccHObject::DEPENDENCY_FLAGS::DP_NONE, arg("insertIndex") = -1),
-		     ccHObject_addChild_doc))
-        .def("getChild", &ccHObject::getChild, return_value_policy<reference_existing_object>(), ccHObject_getChild_doc)
+		.def("addChild", &addChild_py,
+		     py::arg("child"), py::arg("dependencyFlags")= ccHObject::DEPENDENCY_FLAGS::DP_NONE, py::arg("insertIndex") = -1,
+		     ccHObject_addChild_doc)
+        .def("getChild", &ccHObject::getChild, py::return_value_policy::reference, ccHObject_getChild_doc)
 		.def("getChildrenNumber", &ccHObject::getChildrenNumber, ccHObject_getChildrenNumber_doc)
 		.def("getChildCountRecursive", &ccHObject::getChildCountRecursive, ccHObject_getChildCountRecursive_doc)
         .def("getClassID", &ccHObject::getClassID, ccHObject_getClassID_doc)
-        .def("getParent", &ccHObject::getParent, return_value_policy<reference_existing_object>(), ccHObject_getParent_doc)
+        .def("getParent", &ccHObject::getParent, py::return_value_policy::reference, ccHObject_getParent_doc)
         .def("hasColors", &ccHObject::hasColors, ccHObject_hasColors_doc)
         .def("hasNormals", &ccHObject::hasNormals, ccHObject_hasNormals_doc)
         .def("colorsShown", &ccHObject::colorsShown, ccHObject_colorsShown_doc)
@@ -216,42 +209,41 @@ void export_ccGenericCloud()
         .def("showSF", & showSFPy, ccHObject_showSF_doc)
         ;
 
-    class_<ccShiftedObject, bases<ccHObject>, boost::noncopyable>("ccShiftedObject", no_init)
+    py::class_<ccShiftedObject, ccHObject>(m0, "ccShiftedObject")
         ;
 
-    class_<CCCoreLib::GenericIndexedCloudPersist, boost::noncopyable>("GenericIndexedCloudPersist", no_init)
+    py::class_<CCCoreLib::GenericIndexedCloudPersist>(m0, "GenericIndexedCloudPersist")
         ;
 
-    class_<ccBBox>("ccBBox", ccBBox_doc)
-    		.def(init<const CCVector3&, const CCVector3&, bool>())
+    py::class_<ccBBox>(m0, "ccBBox", ccBBox_doc)
+    		.def(py::init<const CCVector3&, const CCVector3&, bool>())
 			.def("minCorner", &ccBBox_minCorner, ccBBox_minCorner_doc)
 			.def("maxCorner", &ccBBox_maxCorner, ccBBox_maxCorner_doc)
 		;
 
-    class_<ccGenericPointCloud, bases<CCCoreLib::GenericIndexedCloudPersist, ccShiftedObject>, boost::noncopyable>("ccGenericPointCloud", no_init)
+    py::class_<ccGenericPointCloud, CCCoreLib::GenericIndexedCloudPersist, ccShiftedObject>(m0, "ccGenericPointCloud")
         .def("computeOctree", &ccGenericPointCloud::computeOctree,
-             ccGenericPointCloud_computeOctree_overloads(
-             (arg("progressCb")=0, arg("autoAddChild")=true),
-             ccGenericPointCloud_computeOctree_doc ))
+             py::arg("progressCb")=0, py::arg("autoAddChild")=true,
+             ccGenericPointCloud_computeOctree_doc )
         .def("getOctree", &ccGenericPointCloud::getOctree, ccGenericPointCloud_getOctree_doc)
         .def("deleteOctree", &ccGenericPointCloud::deleteOctree, ccGenericPointCloud_deleteOctree_doc)
 		.def("getOwnBB", &ccGenericPointCloud_getOwnBB, ccGenericPointCloud_getOwnBB_doc)
         ;
 
-    class_<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>, bases<ccGenericPointCloud>, boost::noncopyable>("PointCloudTpl_ccGenericPointCloud_QString", no_init)
+    py::class_<CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>, ccGenericPointCloud>(m0, "PointCloudTpl_ccGenericPointCloud_QString")
         .def("getPoint", &PointCloudTpl_ccGenericPointCloud_QString_getPoint_py, PointCloudTpl_ccGenericPointCloud_QString_getPoint_doc)
         .def("reserve", &CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>::reserve, PointCloudTpl_reserve_doc)
         .def("resize", &CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>::resize, PointCloudTpl_resize_doc)
         .def("addPoint", &CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>::addPoint, PointCloudTpl_addPoint_doc)
 		;
 
-    class_<CCCoreLib::ReferenceCloud, bases<CCCoreLib::GenericIndexedCloudPersist> >("ReferenceCloud", ReferenceCloud_Doc,
-                                                                                     init<CCCoreLib::GenericIndexedCloudPersist*>())
+    py::class_<CCCoreLib::ReferenceCloud, CCCoreLib::GenericIndexedCloudPersist>(m0, "ReferenceCloud", ReferenceCloud_Doc)
+        .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>())
         .def("addPointIndexGlobal", addPointIndex1_py, ReferenceCloud_addPointIndexGlobal_doc)
         .def("addPointIndex", addPointIndex2_py, ReferenceCloud_addPointIndex_doc)
         .def("enableScalarField", &CCCoreLib::ReferenceCloud::enableScalarField, ReferenceCloud_enableScalarField_doc)
         .def("forwardIterator", &CCCoreLib::ReferenceCloud::forwardIterator, ReferenceCloud_forwardIterator_doc)
-        .def("getAssociatedCloud", getAssCloud1, return_value_policy<reference_existing_object>(), ReferenceCloud_getAssociatedCloud_doc)
+        .def("getAssociatedCloud", getAssCloud1, py::return_value_policy::reference, ReferenceCloud_getAssociatedCloud_doc)
         .def("getBoundingBox", &ReferenceCloud_getBoundingBox_py, ReferenceCloud_getBoundingBox_doc)
         .def("getCurrentPointCoordinates", &ReferenceCloud_getCurrentPointCoordinates,
              ReferenceCloud_getCurrentPointCoordinates_doc)
