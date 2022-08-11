@@ -108,10 +108,10 @@ PYBIND11_TYPE_CASTER(QString, _("QString"));
     }
 };
 
-template<> struct type_caster<Vector3Tpl<PointCoordinateType> >
+template<> struct type_caster<CCVector3 >
 {
 public:
-PYBIND11_TYPE_CASTER(Vector3Tpl<PointCoordinateType>, _("CCVector3"));
+PYBIND11_TYPE_CASTER(CCVector3, _("CCVector3"));
 
     bool load(handle src, bool)
     {
@@ -140,10 +140,12 @@ PYBIND11_TYPE_CASTER(Vector3Tpl<PointCoordinateType>, _("CCVector3"));
         return true;
     }
 
-    static handle cast(const Vector3Tpl<PointCoordinateType>& src, return_value_policy /* policy */, handle /* parent */)
+    static handle cast(const CCVector3& src, return_value_policy /* policy */, handle /* parent */)
     {
         CCTRACE("CCVector3 cast");
-        return make_tuple(src.x, src.y, src.z);
+        tuple tup = make_tuple(src.x, src.y, src.z);
+        CCTRACE("---");
+        return tup.inc_ref();
     }
 };
 

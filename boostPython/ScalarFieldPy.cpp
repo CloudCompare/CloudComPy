@@ -20,7 +20,6 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "ScalarFieldPy.hpp"
 
 #include <ccScalarField.h>
 #include <ScalarField.h>
@@ -31,62 +30,47 @@
 
 #include <vector>
 
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
-using namespace boost::python;
-
-
-bnp::ndarray ToNpArray_copy(CCCoreLib::ScalarField &self)
+py::array ToNpArray_copy(CCCoreLib::ScalarField &self)
 {
     CCTRACE("ScalarField ToNpArray with copy, ownership transfered to Python");
-    bnp::dtype dt = bnp::dtype::get_builtin<PyScalarType>();
     size_t nRows = self.size();
-    bp::tuple shape = bp::make_tuple(nRows);
-    bp::tuple stride = bp::make_tuple(sizeof(PyScalarType));
-    PyScalarType *s = (PyScalarType*)self.data();
-    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
-    return result.copy();
-}
-
-bnp::ndarray ToNpArray_py(CCCoreLib::ScalarField &self)
-{
-    CCTRACE("ScalarField ToNpArray without copy, ownership stays in C++");
-    bnp::dtype dt = bnp::dtype::get_builtin<PyScalarType>();
-    size_t nRows = self.size();
-    CCTRACE("nrows: " << nRows);
-    bp::tuple shape = bp::make_tuple(nRows);
-    bp::tuple stride = bp::make_tuple( sizeof(PyScalarType));
-    PyScalarType *s = (PyScalarType*)self.data();
-    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
+    // allocate py::array
+    auto result        = py::array_t<PyScalarType>(nRows);
+    auto result_buffer = result.request();
+    PyScalarType *result_ptr    = (PyScalarType*) result_buffer.ptr;
+    // copy std::vector to py::array
+    memcpy(result_ptr, (PyScalarType*)self.data(), nRows*sizeof(PyScalarType));
     return result;
 }
 
-void fromNPArray_copy(CCCoreLib::ScalarField &self, bnp::ndarray const & array)
+py::array ToNpArray_py(CCCoreLib::ScalarField &self)
 {
-    if (array.get_dtype() != bnp::dtype::get_builtin<PyScalarType>())
-    {
-        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
-        bp::throw_error_already_set();
-    }
+    CCTRACE("ScalarField ToNpArray without copy, ownership stays in C++");
     size_t nRows = self.size();
-    if (array.get_nd() != 1 && array.shape(0) != nRows)
+    return py::array_t<PyScalarType>({nRows}, {sizeof(PyScalarType)}, (PyScalarType*)self.data());
+}
+
+void fromNPArray_copy(CCCoreLib::ScalarField &self, py::array_t<PointCoordinateType, py::array::c_style | py::array::forcecast> array)
+{
+    size_t nRows = self.size();
+    if (array.ndim() != 1 && array.shape(0) != nRows)
     {
-        PyErr_SetString(PyExc_TypeError, "Incorrect array dimension or size");
-        bp::throw_error_already_set();
+        throw std::runtime_error("Incorrect array dimension");
     }
-    PyScalarType *s = reinterpret_cast<PyScalarType*>(array.get_data());
-    PyScalarType *d = self.data();
+    self.reserve(nRows);
+    self.resize(nRows);
+    const PyScalarType *s = reinterpret_cast<const PyScalarType*>(array.data());
+    PyScalarType *d = (PyScalarType*)self.data();
     memcpy(d, s, nRows*sizeof(PyScalarType));
     CCTRACE("copied " << nRows*sizeof(PyScalarType) << " bytes");
     self.computeMinAndMax();
 }
 
-bp::tuple computeMeanAndVariance_py(CCCoreLib::ScalarField &self)
+py::tuple computeMeanAndVariance_py(CCCoreLib::ScalarField &self)
 {
     ScalarType mean, variance;
     self.computeMeanAndVariance(mean, &variance);
-    bp::tuple res = bp::make_tuple(mean, variance);
+    py::tuple res = py::make_tuple(mean, variance);
     return res;
 }
 
@@ -95,9 +79,9 @@ const ScalarType& (CCCoreLib::ScalarField::* getValue2)(std::size_t) const = &CC
 //typedef const ScalarType& (CCCoreLib::ScalarField::*gvftype)(std::size_t) const; // the same using a typedef
 //gvftype getValue2 = &CCCoreLib::ScalarField::getValue;
 
-void export_ScalarField()
+void export_ScalarField(py::module &m0)
 {
-    class_<CCCoreLib::ScalarField, boost::noncopyable>("ScalarField", ScalarFieldPy_ScalarField_doc, no_init) // boost::noncopyable required to avoid issue with protected destructor
+    py::class_<CCCoreLib::ScalarField, std::unique_ptr<CCCoreLib::ScalarField, py::nodelete>>(m0, "ScalarField", ScalarFieldPy_ScalarField_doc)
         .def("addElement", &CCCoreLib::ScalarField::addElement, ScalarFieldPy_addElement_doc)
         .def("computeMeanAndVariance", &computeMeanAndVariance_py, ScalarFieldPy_computeMeanAndVariance_doc)
         .def("computeMinAndMax", &CCCoreLib::ScalarField::computeMinAndMax, ScalarFieldPy_computeMinAndMax_doc)
@@ -108,8 +92,8 @@ void export_ScalarField()
         .def("getMax", &CCCoreLib::ScalarField::getMax, ScalarFieldPy_getMax_doc)
         .def("getMin", &CCCoreLib::ScalarField::getMin, ScalarFieldPy_getMin_doc)
         .def("getName", &CCCoreLib::ScalarField::getName, ScalarFieldPy_getName_doc)
-        .def("getValue", getValue1, ScalarFieldPy_getValue_doc, return_value_policy<copy_non_const_reference>())
-        .def("getValue", getValue2, ScalarFieldPy_getValue_doc, return_value_policy<copy_const_reference>())
+        .def("getValue", getValue1, ScalarFieldPy_getValue_doc, py::return_value_policy::reference)
+        .def("getValue", getValue2, ScalarFieldPy_getValue_doc, py::return_value_policy::reference)
         .def("reserveSafe", &CCCoreLib::ScalarField::reserveSafe, ScalarFieldPy_reserveSafe_doc)
         .def("resizeSafe", &CCCoreLib::ScalarField::resizeSafe, ScalarFieldPy_resizeSafe_doc)
         .def("setName", &CCCoreLib::ScalarField::setName, ScalarFieldPy_setName_doc)
@@ -120,7 +104,7 @@ void export_ScalarField()
         ;
     //TODO optional parameters on resizeSafe
 
-    class_<ccScalarField, bases<CCCoreLib::ScalarField>, boost::noncopyable >("ccScalarField", ccScalarFieldPy_ccScalarField_doc, no_init)
+    py::class_<ccScalarField, CCCoreLib::ScalarField , std::unique_ptr<ccScalarField, py::nodelete>>(m0, "ccScalarField", ccScalarFieldPy_ccScalarField_doc)
         .def("isSerializable", &ccScalarField::isSerializable)
         ;
     //TODO add serialization functions

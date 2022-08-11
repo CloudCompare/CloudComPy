@@ -19,11 +19,9 @@
 //#                                                                        #
 //##########################################################################
 
+#include "pyccTrace.h"
 #include "cloudComPy.hpp"
-#include "ccPointCloudPy.hpp"
 
-#include <boost/python/suite/indexing/map_indexing_suite.hpp>
-#include <boost/python/exception_translator.hpp>
 #include <exception>
 #include <Python.h>
 
@@ -41,7 +39,6 @@
 #include <ccHObjectCaster.h>
 
 #include "PyScalarType.h"
-#include "pyccTrace.h"
 #include "ccPointCloudPy_DocStrings.hpp"
 
 #include <map>
@@ -80,11 +77,6 @@ bool exportNormalToSF_py(ccPointCloud &self, bool x, bool y, bool z)
 
 void coordsFromNPArray_copy(ccPointCloud &self, py::array_t<PointCoordinateType, py::array::c_style | py::array::forcecast> array)
 {
-//    if (array.get_dtype() != bnp::dtype::get_builtin<PointCoordinateType>())
-//    {
-//        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
-//        bp::throw_error_already_set();
-//    }
     if (array.ndim() != 2)
     {
         throw std::runtime_error("Incorrect array dimension");
@@ -110,11 +102,6 @@ bool colorize_py(ccPointCloud &self, float r, float g, float b, float a=1.0f)
 
 void colorsFromNPArray_copy(ccPointCloud &self, py::array_t<ColorCompType, py::array::c_style | py::array::forcecast> array)
 {
-//    if (array.get_dtype() != bnp::dtype::get_builtin<ColorCompType>())
-//    {
-//        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
-//        bp::throw_error_already_set();
-//    }
     if (array.ndim() != 2)
     {
         throw std::runtime_error("Incorrect array dimension");
@@ -581,7 +568,7 @@ void export_ccPointCloud(py::module &m0)
         .export_values();
 
     py::class_<ccPointCloud, CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString> >(m0, "ccPointCloud", ccPointCloudPy_ccPointCloud_doc)
-        .def(py::init<QString, unsigned>(), py::arg("name")=QString(), py::arg("uniqueID")=ccUniqueIDGenerator::InvalidUniqueID) // optional<QString, unsigned> >())
+        .def(py::init<QString, unsigned>(), py::arg("name")=QString(), py::arg("uniqueID")=ccUniqueIDGenerator::InvalidUniqueID) // TODO optional<QString, unsigned> >())
         .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)
         .def("cloneThis", &ccPointCloud::cloneThis,
@@ -655,7 +642,7 @@ void export_ccPointCloud(py::module &m0)
 //             ccPointCloudPy_scale_doc)
         .def("scale",
              &ccPointCloud::scale,
-             py::arg("fx"), py::arg("fy"), py::arg("fz"), py::arg("center"), //=CCVector3(0,0,0), <== TODO
+             py::arg("fx"), py::arg("fy"), py::arg("fz"), py::arg("center") = CCVector3(0,0,0),
              ccPointCloudPy_scale_doc)
         .def("setColor", &setColor_py, ccPointCloudPy_setColor_doc)
         .def("setColorGradient", &setColorGradient_py, ccPointCloudPy_setColorGradient_doc)

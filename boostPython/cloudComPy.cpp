@@ -513,12 +513,8 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
 
 PYBIND11_MODULE(_cloudComPy, m0)
 {
-
-    //bnp::initialize();
-    //initializeConverters(m0);
-
     export_colors(m0);
-//    export_ScalarField(m0);
+    export_ScalarField(m0);
     export_ccGenericCloud(m0);
 //    export_ccPolyline(m0);
 //    export_ccOctree(m0);
