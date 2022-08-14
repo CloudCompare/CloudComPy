@@ -31,11 +31,6 @@
 
 #include "ccMeshPy_DocStrings.hpp"
 
-
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-using namespace boost::python;
-
 ccMesh* cloneMesh_py(ccMesh &self)
 {
     return self.cloneMesh(nullptr, nullptr, nullptr, nullptr);
@@ -64,75 +59,84 @@ Tuple3Tpl<unsigned int> getTriangleVertIndexes_py(ccMesh &self, unsigned triangl
     return ret;
 };
 
-bnp::ndarray IndexesToNpArray_copy(ccMesh &self)
+py::array IndexesToNpArray_copy(ccMesh &self)
 {
     CCTRACE("IndexesToNpArray with copy, ownership transfered to Python");
-    bnp::dtype dt = bnp::dtype::get_builtin<unsigned>(); // nodes indexes
     size_t nRows = self.size();
     CCTRACE("nrows: " << nRows);
-    bp::tuple shape = bp::make_tuple(nRows, 3); // 3 indexes per triangle
-    bp::tuple stride = bp::make_tuple(3*sizeof(unsigned), sizeof(unsigned));
     unsigned *s = (unsigned*)self.getTriangleVertIndexes(0);
-    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
-    return result.copy();
+    unsigned *d = new unsigned[3 * nRows];
+    memcpy(d, s, 3 * nRows * sizeof(unsigned));
+    ssize_t ndim = 2;
+    std::vector<ssize_t> shape =
+    { nRows, 3 };
+    std::vector<ssize_t> strides =
+    { 3 * sizeof(unsigned), sizeof(unsigned) };
+    return py::array(py::buffer_info(d,                                         // data as contiguous array
+                                     sizeof(unsigned),                          // size of one scalar
+                                     py::format_descriptor<unsigned>::format(), // data type
+                                     ndim,                                      // number of dimensions
+                                     shape,                                     // shape of the matrix
+                                     strides                                    // strides for each axis
+                                     ));
 }
 
-bnp::ndarray IndexesToNpArray_py(ccMesh &self)
+py::array IndexesToNpArray_py(ccMesh &self)
 {
     CCTRACE("IndexesToNpArray without copy, ownership stays in C++");
-    bnp::dtype dt = bnp::dtype::get_builtin<unsigned>(); // nodes indexes
     size_t nRows = self.size();
     CCTRACE("nrows: " << nRows);
-    bp::tuple shape = bp::make_tuple(nRows, 3); // 3 indexes per triangle
-    bp::tuple stride = bp::make_tuple(3*sizeof(unsigned), sizeof(unsigned));
     unsigned *s = (unsigned*)self.getTriangleVertIndexes(0);
-    bnp::ndarray result = bnp::from_data(s, dt, shape, stride, bp::object());
-    return result;
+    ssize_t ndim = 2;
+    std::vector<ssize_t> shape =
+    { nRows, 3 };
+    std::vector<ssize_t> strides =
+    { 3 * sizeof(unsigned), sizeof(unsigned) };
+    return py::array(py::buffer_info(s,                                         // data as contiguous array
+                                     sizeof(unsigned),                          // size of one scalar
+                                     py::format_descriptor<unsigned>::format(), // data type
+                                     ndim,                                      // number of dimensions
+                                     shape,                                     // shape of the matrix
+                                     strides                                    // strides for each axis
+                                     ));
 }
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(ccMesh_triangulate_overloads, ccMesh::Triangulate, 2, 5)
-BOOST_PYTHON_FUNCTION_OVERLOADS(laplacianSmooth_py_overloads, laplacianSmooth_py, 1, 3)
-BOOST_PYTHON_FUNCTION_OVERLOADS(mesh_samplePoints_py_overloads, mesh_samplePoints_py, 3, 7)
-
-void export_ccMesh()
+void export_ccMesh(py::module &m0)
 {
-    enum_<CCCoreLib::TRIANGULATION_TYPES>("TRIANGULATION_TYPES", ccMeshPy_TRIANGULATION_TYPES_doc)
+    py::enum_<CCCoreLib::TRIANGULATION_TYPES>(m0, "TRIANGULATION_TYPES", ccMeshPy_TRIANGULATION_TYPES_doc)
         .value("DELAUNAY_2D_AXIS_ALIGNED", CCCoreLib::TRIANGULATION_TYPES::DELAUNAY_2D_AXIS_ALIGNED)
         .value("DELAUNAY_2D_BEST_LS_PLANE", CCCoreLib::TRIANGULATION_TYPES::DELAUNAY_2D_BEST_LS_PLANE)
         ;
 
-    class_<CCCoreLib::GenericIndexedMesh, boost::noncopyable>("GenericIndexedMesh", no_init)
+    py::class_<CCCoreLib::GenericIndexedMesh>(m0, "GenericIndexedMesh") //, no_init, boost::noncopyable
         ;
 
-    class_<ccGenericMesh, bases<CCCoreLib::GenericIndexedMesh, ccShiftedObject>, boost::noncopyable>("ccGenericMesh", no_init)
+    py::class_<ccGenericMesh, CCCoreLib::GenericIndexedMesh, ccShiftedObject>(m0, "ccGenericMesh") //, no_init, boost::noncopyable
         .def("samplePoints",
              &mesh_samplePoints_py,
-             mesh_samplePoints_py_overloads(
-             (arg("self"), arg("densityBased"), arg("samplingParameter"),
-              arg("withNormals")=true, arg("withRGB")=true, arg("withTexture")=true,
-              arg("pDLg")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr)),
-             ccGenericMeshPy_samplePoints_doc)[return_value_policy<reference_existing_object>()])
+              py::arg("densityBased"), py::arg("samplingParameter"),
+              py::arg("withNormals")=true, py::arg("withRGB")=true, py::arg("withTexture")=true,
+              py::arg("pDLg")=nullptr,
+             ccGenericMeshPy_samplePoints_doc, py::return_value_policy::reference)
         ;
 
-    class_<ccMesh, bases<ccGenericMesh>, boost::noncopyable>("ccMesh", ccMeshPy_ccMesh_doc, no_init)
+    py::class_<ccMesh, ccGenericMesh>(m0, "ccMesh", ccMeshPy_ccMesh_doc)
         .def("clearTriNormals", &ccMesh::clearTriNormals, ccMeshPy_clearTriNormals_doc)
-        .def("cloneMesh", &cloneMesh_py, return_value_policy<reference_existing_object>(), ccMeshPy_cloneMesh_doc)
-        .def("crop2D", &ccMesh::crop2D, return_value_policy<reference_existing_object>(), ccMeshPy_crop2D_doc)
+        .def("cloneMesh", &cloneMesh_py, py::return_value_policy::reference, ccMeshPy_cloneMesh_doc)
+        .def("crop2D", &ccMesh::crop2D, py::return_value_policy::reference, ccMeshPy_crop2D_doc)
         .def("size", &ccMesh::size, ccMeshPy_size_doc)
         .def("getAssociatedCloud", &ccMesh::getAssociatedCloud,
-             return_value_policy<reference_existing_object>(), ccMeshPy_getAssociatedCloud_doc)
+             py::return_value_policy::reference, ccMeshPy_getAssociatedCloud_doc)
         .def("getTriangleVertIndexes", &getTriangleVertIndexes_py, ccMeshPy_getTriangleVertIndexes_doc)
         .def("IndexesToNpArray", &IndexesToNpArray_py, ccMeshPy_IndexesToNpArray_doc)
         .def("IndexesToNpArray_copy", &IndexesToNpArray_copy, ccMeshPy_IndexesToNpArray_copy_doc)
-        .def("laplacianSmooth", &laplacianSmooth_py, laplacianSmooth_py_overloads(
-             (arg("self"), arg("nbIteration")=20, arg("factor")=0.2 ),
-              ccMeshPy_laplacianSmooth_doc))
-        .def("subdivide", &ccMesh::subdivide, return_value_policy<reference_existing_object>(), ccMeshPy_subdivide_doc)
-        .def("triangulate",
+        .def("laplacianSmooth", &laplacianSmooth_py,
+             py::arg("nbIteration")=20, py::arg("factor")=0.2,
+              ccMeshPy_laplacianSmooth_doc)
+        .def("subdivide", &ccMesh::subdivide, py::return_value_policy::reference, ccMeshPy_subdivide_doc)
+        .def_static("triangulate",
              &ccMesh::Triangulate,
-             ccMesh_triangulate_overloads(
-                     (arg("cloud"), arg("type"), arg("updateNormals")=false, arg("maxEdgeLength")=0, arg("dim")=2),
-                     ccMeshPy_triangulate_doc)[return_value_policy<reference_existing_object>()])
-            .staticmethod("triangulate")
+             py::arg("cloud"), py::arg("type"), py::arg("updateNormals")=false, py::arg("maxEdgeLength")=0, py::arg("dim")=2,
+                     ccMeshPy_triangulate_doc, py::return_value_policy::reference)
         ;
 }

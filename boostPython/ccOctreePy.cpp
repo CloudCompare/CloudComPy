@@ -35,26 +35,22 @@
 #include <QObject>
 
 
-namespace bp = boost::python;
-
-using namespace boost::python;
-
 template <typename T>
 T* get_pointer(QSharedPointer<T> const& p)
 {
     return p.data();
 }
 
-namespace boost
-{
-    namespace python
-    {
-        template <typename T> struct pointee<QSharedPointer<T> >
-        {
-            typedef T type;
-        };
-    }
-}
+//namespace boost
+//{
+//    namespace python
+//    {
+//        template <typename T> struct pointee<QSharedPointer<T> >
+//        {
+//            typedef T type;
+//        };
+//    }
+//}
 
 PointDescriptor_persistent_py::PointDescriptor_persistent_py() :
         point(0, 0, 0), pointIndex(0), squareDistd(-1.0)
@@ -64,11 +60,13 @@ PointDescriptor_persistent_py::PointDescriptor_persistent_py(const CCCoreLib::Dg
         point(pt.point->x, pt.point->y, pt.point->z), pointIndex(pt.pointIndex), squareDistd(pt.squareDistd)
 {};
 
-bp::tuple DgmOctree_BoxNeighbourhood_getAxes_py(CCCoreLib::DgmOctree::BoxNeighbourhood& self)
+py::tuple DgmOctree_BoxNeighbourhood_getAxes_py(CCCoreLib::DgmOctree::BoxNeighbourhood& self)
 {
+    py::tuple res;
     if (self.axes == nullptr)
-        return bp::make_tuple(CCVector3(1.,0.,0.), CCVector3(0.,1.,0.), CCVector3(0.,0.,1.));
-    bp::tuple res = bp::make_tuple(self.axes[0], self.axes[1], self.axes[2]);
+        res = py::make_tuple(CCVector3(1.,0.,0.), CCVector3(0.,1.,0.), CCVector3(0.,0.,1.));
+    else
+        res = py::make_tuple(self.axes[0], self.axes[1], self.axes[2]);
     return res;
 }
 
@@ -97,7 +95,7 @@ CCVector3 DgmOctree_computeCellCenter2_py(CCCoreLib::DgmOctree& self, Tuple3i ce
     return center;
 }
 
-bp::tuple DgmOctree_findPointNeighbourhood_py(CCCoreLib::DgmOctree& self,
+py::tuple DgmOctree_findPointNeighbourhood_py(CCCoreLib::DgmOctree& self,
                                               CCVector3 _queryPoint,
                                               CCCoreLib::ReferenceCloud* Yk,
                                               unsigned maxNumberOfNeighbors,
@@ -109,7 +107,7 @@ bp::tuple DgmOctree_findPointNeighbourhood_py(CCCoreLib::DgmOctree& self,
     int finalNeighbourhoodSize;
     nbFound = self.findPointNeighbourhood(&_queryPoint, Yk, maxNumberOfNeighbors, level, maxSquareDist,
                                           maxSearchDist, &finalNeighbourhoodSize);
-    bp::tuple res = bp::make_tuple(nbFound, finalNeighbourhoodSize, maxSquareDist);
+    py::tuple res = py::make_tuple(nbFound, finalNeighbourhoodSize, maxSquareDist);
     return res;
 }
 
@@ -303,67 +301,47 @@ Tuple3i DgmOctree_getTheCellPosWhichIncludesThePointL_py(CCCoreLib::DgmOctree& s
     return cellPos;
 }
 
-bp::tuple DgmOctree_getTheCellPosWhichIncludesThePointLI_py(CCCoreLib::DgmOctree& self, CCVector3 thePoint, unsigned char level)
+py::tuple DgmOctree_getTheCellPosWhichIncludesThePointLI_py(CCCoreLib::DgmOctree& self, CCVector3 thePoint, unsigned char level)
 {
     Tuple3i cellPos;
     bool inBounds;
     self.getTheCellPosWhichIncludesThePoint(&thePoint, cellPos, level, inBounds);
-    return bp::make_tuple(cellPos, inBounds);
+    return py::make_tuple(cellPos, inBounds);
 }
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(DgmOctree_computeCellCenter_py_overloads, DgmOctree_computeCellCenter_py, 3, 4)
-BOOST_PYTHON_FUNCTION_OVERLOADS(DgmOctree_findPointNeighbourhood_py_overloads, DgmOctree_findPointNeighbourhood_py, 5, 6)
-BOOST_PYTHON_FUNCTION_OVERLOADS(DgmOctree_getCellCodes_py_overloads, DgmOctree_getCellCodes_py, 2, 3)
-BOOST_PYTHON_FUNCTION_OVERLOADS(DgmOctree_getCellCodesAndIndexes_py_overloads, DgmOctree_getCellCodesAndIndexes_py, 2, 3)
-
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getPointsInCellsWithSortedCellCodes_overloads,
-                                       CCCoreLib::DgmOctree::getPointsInCellsWithSortedCellCodes, 3, 4)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getPointsInCell_overloads,
-                                       CCCoreLib::DgmOctree::getPointsInCell, 3, 5)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getPointsInCellByCellIndex_overloads,
-                                       CCCoreLib::DgmOctree::getPointsInCellByCellIndex, 3, 4)
-void export_ccOctree()
+void export_ccOctree(py::module &m0)
 {
-    class_<PointDescriptor_persistent_py>("PointDescriptor", DgmOctree_PointDescriptor_doc)
-        .add_property("point", make_getter(&PointDescriptor_persistent_py::point,
-                      return_value_policy<return_by_value>()))
+    py::class_<PointDescriptor_persistent_py>(m0, "PointDescriptor", DgmOctree_PointDescriptor_doc)
+        .def_readonly("point", &PointDescriptor_persistent_py::point)
         .def_readonly("pointIndex", &PointDescriptor_persistent_py::pointIndex)
         .def_readonly("squareDistd", &PointDescriptor_persistent_py::squareDistd)
         ;
 
-    class_<CCCoreLib::DgmOctree::CellDescriptor>("CellDescriptor", DgmOctree_CellDescriptor_doc)
+    py::class_<CCCoreLib::DgmOctree::CellDescriptor>(m0, "CellDescriptor", DgmOctree_CellDescriptor_doc)
         .def_readonly("center", &CCCoreLib::DgmOctree::CellDescriptor::center)
         .def_readonly("index", &CCCoreLib::DgmOctree::CellDescriptor::index)
         ;
 
-    class_<CCCoreLib::DgmOctree::IndexAndCode>("IndexAndCode", DgmOctree_IndexAndCode_doc)
+    py::class_<CCCoreLib::DgmOctree::IndexAndCode>(m0, "IndexAndCode", DgmOctree_IndexAndCode_doc)
         .def_readonly("theIndex", &CCCoreLib::DgmOctree::IndexAndCode::theIndex)
         .def_readonly("theCode", &CCCoreLib::DgmOctree::IndexAndCode::theCode)
-        .def("codeComp", &CCCoreLib::DgmOctree::IndexAndCode::codeComp, DgmOctree_codeComp_doc)
-            .staticmethod("codeComp")
-        .def("indexComp", &CCCoreLib::DgmOctree::IndexAndCode::indexComp, DgmOctree_indexComp_doc)
-            .staticmethod("indexComp")
-        .def(self < self)
-        .def(self > self)
+        .def_static("codeComp", &CCCoreLib::DgmOctree::IndexAndCode::codeComp, DgmOctree_codeComp_doc)
+        .def_static("indexComp", &CCCoreLib::DgmOctree::IndexAndCode::indexComp, DgmOctree_indexComp_doc)
+        .def(py::self < py::self)
+        .def(py::self > py::self)
         ;
 
-    class_<CCCoreLib::DgmOctree::CylindricalNeighbourhood>("CylindricalNeighbourhood", DgmOctree_CylindricalNeighbourhood_doc)
-        .add_property("center",
-                      make_getter(&CCCoreLib::DgmOctree::CylindricalNeighbourhood::center,
-                      return_value_policy<return_by_value>()),
-                      make_setter(&CCCoreLib::DgmOctree::CylindricalNeighbourhood::center))
-        .add_property("dir",
-                      make_getter(&CCCoreLib::DgmOctree::CylindricalNeighbourhood::dir,
-                      return_value_policy<return_by_value>()),
-                      make_setter(&CCCoreLib::DgmOctree::CylindricalNeighbourhood::dir))
+    py::class_<CCCoreLib::DgmOctree::CylindricalNeighbourhood>(m0, "CylindricalNeighbourhood", DgmOctree_CylindricalNeighbourhood_doc)
+        .def_readwrite("center",&CCCoreLib::DgmOctree::CylindricalNeighbourhood::center)
+        .def_readwrite("dir", &CCCoreLib::DgmOctree::CylindricalNeighbourhood::dir)
         .def_readwrite("radius", &CCCoreLib::DgmOctree::CylindricalNeighbourhood::radius)
         .def_readwrite("maxHalfLength", &CCCoreLib::DgmOctree::CylindricalNeighbourhood::maxHalfLength)
         .def_readwrite("level", &CCCoreLib::DgmOctree::CylindricalNeighbourhood::level)
         .def_readwrite("onlyPositiveDir", &CCCoreLib::DgmOctree::CylindricalNeighbourhood::onlyPositiveDir)
         ;
 
-    class_<CCCoreLib::DgmOctree::ProgressiveCylindricalNeighbourhood,
-           bases<CCCoreLib::DgmOctree::CylindricalNeighbourhood> >("ProgressiveCylindricalNeighbourhood",
+    py::class_<CCCoreLib::DgmOctree::ProgressiveCylindricalNeighbourhood,
+                CCCoreLib::DgmOctree::CylindricalNeighbourhood >(m0, "ProgressiveCylindricalNeighbourhood",
                                                                    DgmOctree_ProgressiveCylindricalNeighbourhood_doc)
         .def_readwrite("currentHalfLength", &CCCoreLib::DgmOctree::ProgressiveCylindricalNeighbourhood::currentHalfLength)
         .def_readwrite("potentialCandidates", &CCCoreLib::DgmOctree::ProgressiveCylindricalNeighbourhood::potentialCandidates)
@@ -371,54 +349,32 @@ void export_ccOctree()
         .def_readwrite("prevMaxCornerPos", &CCCoreLib::DgmOctree::ProgressiveCylindricalNeighbourhood::prevMaxCornerPos)
         ;
 
-    class_<CCCoreLib::DgmOctree::BoxNeighbourhood>("BoxNeighbourhood", DgmOctree_BoxNeighbourhood_doc)
-        .add_property("center",
-                      make_getter(&CCCoreLib::DgmOctree::BoxNeighbourhood::center,
-                                  return_value_policy<return_by_value>()),
-                      make_setter(&CCCoreLib::DgmOctree::BoxNeighbourhood::center))
-        .add_property("axes", &DgmOctree_BoxNeighbourhood_getAxes_py, &DgmOctree_BoxNeighbourhood_setAxes_py)
-        .add_property("dimensions",
-                      make_getter(&CCCoreLib::DgmOctree::BoxNeighbourhood::dimensions,
-                                  return_value_policy<return_by_value>()),
-                      make_setter(&CCCoreLib::DgmOctree::BoxNeighbourhood::dimensions))
+    py::class_<CCCoreLib::DgmOctree::BoxNeighbourhood>(m0, "BoxNeighbourhood", DgmOctree_BoxNeighbourhood_doc)
+        .def_readwrite("center", &CCCoreLib::DgmOctree::BoxNeighbourhood::center)
+        .def_property("axes", &DgmOctree_BoxNeighbourhood_getAxes_py, &DgmOctree_BoxNeighbourhood_setAxes_py)
+        .def_readwrite("dimensions", &CCCoreLib::DgmOctree::BoxNeighbourhood::dimensions)
         .def_readwrite("level", &CCCoreLib::DgmOctree::BoxNeighbourhood::level)
         ;
 
-    class_<CCCoreLib::DgmOctree::NearestNeighboursSearchStruct>("NearestNeighboursSearchStruct",
+    py::class_<CCCoreLib::DgmOctree::NearestNeighboursSearchStruct>(m0, "NearestNeighboursSearchStruct",
                                                                 DgmOctree_NearestNeighboursSearchStruct_doc)
-        .add_property("queryPoint",
-                      make_getter(&CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::queryPoint,
-                                  return_value_policy<return_by_value>()),
-                      make_setter(&CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::queryPoint))
+        .def_readwrite("queryPoint", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::queryPoint)
         .def_readwrite("level", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::level)
         .def_readwrite("minNumberOfNeighbors", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::minNumberOfNeighbors)
-        .add_property("cellPos",
-                      make_getter(&CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::cellPos,
-                                  return_value_policy<return_by_value>()),
-                      make_setter(&CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::cellPos))
-        .add_property("cellCenter",
-                      make_getter(&CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::cellCenter,
-                                  return_value_policy<return_by_value>()),
-                      make_setter(&CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::cellCenter))
+        .def_readwrite("cellPos", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::cellPos)
+        .def_readwrite("cellCenter", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::cellCenter)
         .def_readwrite("maxSearchSquareDistd", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::maxSearchSquareDistd)
-        .add_property("minimalCellsSetToVisit",
-                      make_getter(&CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::minimalCellsSetToVisit,
-                                  return_value_policy<return_by_value>()),
-                      make_setter(&CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::minimalCellsSetToVisit))
-        .add_property("pointsInNeighbourhood",
-                      make_getter(&CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::pointsInNeighbourhood,
-                                  return_value_policy<return_by_value>()),
-                      make_setter(&CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::pointsInNeighbourhood))
+        .def_readwrite("minimalCellsSetToVisit", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::minimalCellsSetToVisit)
+        .def_readwrite("pointsInNeighbourhood", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::pointsInNeighbourhood)
         .def_readwrite("alreadyVisitedNeighbourhoodSize",
                        &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::alreadyVisitedNeighbourhoodSize)
         .def_readwrite("theNearestPointIndex", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::theNearestPointIndex)
         ;
 
-    class_<CCCoreLib::DgmOctree>("DgmOctree", no_init)
+    py::class_<CCCoreLib::DgmOctree>(m0, "DgmOctree") //, no_init)
         .def("computeCellCenter", &DgmOctree_computeCellCenter_py,
-             DgmOctree_computeCellCenter_py_overloads(
-             (arg("self"), arg("code"), arg("level"), arg("isCodeTruncated")=false),
-             DgmOctree_computeCellCenter_py_doc))
+             py::arg("code"), py::arg("level"), py::arg("isCodeTruncated")=false,
+             DgmOctree_computeCellCenter_py_doc)
         .def("computeCellCenter", &DgmOctree_computeCellCenter2_py,DgmOctree_computeCellCenter2_py_doc)
         .def("findBestLevelForAGivenCellNumber",
              &CCCoreLib::DgmOctree::findBestLevelForAGivenCellNumber,
@@ -434,22 +390,19 @@ void export_ccOctree()
         .def("findNeighborsInASphereStartingFromCell",
              &CCCoreLib::DgmOctree::findNeighborsInASphereStartingFromCell, DgmOctree_findNeighborsInASphereStartingFromCell_doc)
         .def("findPointNeighbourhood", &DgmOctree_findPointNeighbourhood_py,
-             DgmOctree_findPointNeighbourhood_py_overloads(
-             (arg("self"), arg("_queryPoint"), arg("Yk"), arg("maxNumberOfNeighbors"), arg("level"), arg("maxSearchDist")=0),
-             DgmOctree_findPointNeighbourhood_doc))
+             py::arg("_queryPoint"), py::arg("Yk"), py::arg("maxNumberOfNeighbors"), py::arg("level"), py::arg("maxSearchDist")=0,
+             DgmOctree_findPointNeighbourhood_doc)
         .def("findTheNearestNeighborStartingFromCell",
              &CCCoreLib::DgmOctree::findTheNearestNeighborStartingFromCell, DgmOctree_findTheNearestNeighborStartingFromCell_doc)
         .def("GenerateTruncatedCellCode", &DgmOctree_GenerateTruncatedCellCode_py, DgmOctree_GenerateTruncatedCellCode_doc)
         .def("getBoundingBox", &DgmOctree_getBoundingBox_py, DgmOctree_getBoundingBox_doc)
         .def("getCellCode", &DgmOctree_getCellCode_py, DgmOctree_getCellCode_doc)
         .def("getCellCodes", &DgmOctree_getCellCodes_py,
-              DgmOctree_getCellCodes_py_overloads(
-              (arg("self"), arg("level"), arg("truncatedCodes")=false),
-              DgmOctree_getCellCodes_doc))
+              py::arg("level"), py::arg("truncatedCodes")=false,
+              DgmOctree_getCellCodes_doc)
         .def("getCellCodesAndIndexes", &DgmOctree_getCellCodesAndIndexes_py,
-             DgmOctree_getCellCodesAndIndexes_py_overloads(
-             (arg("self"), arg("level"), arg("truncatedCodes")=false),
-             DgmOctree_getCellCodesAndIndexes_doc))
+             py::arg("level"), py::arg("truncatedCodes")=false,
+             DgmOctree_getCellCodesAndIndexes_doc)
         .def("getCellDistanceFromBorders", &DgmOctree_getCellDistanceFromBorders_py, DgmOctree_getCellDistanceFromBorders_doc)
         .def("getCellDistanceFromBorders", &DgmOctree_getCellDistanceFromBordersN_py, DgmOctree_getCellDistanceFromBordersN_doc)
         .def("getCellIndexes", &DgmOctree_getCellIndexes_py, DgmOctree_getCellIndexes_doc)
@@ -467,18 +420,14 @@ void export_ccOctree()
              &DgmOctree_getPointsInBoxNeighbourhood_py,
              DgmOctree_getPointsInBoxNeighbourhood_doc)
         .def("getPointsInCell", &CCCoreLib::DgmOctree::getPointsInCell,
-             getPointsInCell_overloads(
-             (arg("cellCode"), arg("level"), arg("subset"), arg("isCodeTruncated")=false, arg("clearOutputCloud")=true),
-             DgmOctree_getPointsInCell_doc))
+             py::arg("cellCode"), py::arg("level"), py::arg("subset"), py::arg("isCodeTruncated")=false, py::arg("clearOutputCloud")=true,
+             DgmOctree_getPointsInCell_doc)
         .def("getPointsInCellByCellIndex", &CCCoreLib::DgmOctree::getPointsInCellByCellIndex,
-             getPointsInCellByCellIndex_overloads(
-             (arg("cloud"), arg("cellIndex"), arg("level"), arg("clearOutputCloud")=true),
-             DgmOctree_getPointsInCellByCellIndex_doc))
+             py::arg("cloud"), py::arg("cellIndex"), py::arg("level"), py::arg("clearOutputCloud")=true,
+             DgmOctree_getPointsInCellByCellIndex_doc)
         .def("getPointsInCellsWithSortedCellCodes", &CCCoreLib::DgmOctree::getPointsInCellsWithSortedCellCodes,
-             getPointsInCellsWithSortedCellCodes_overloads(
-             (arg("cellCodes"), arg("level"), arg("subset"), arg("areCodesTruncated")=false),
-             DgmOctree_getPointsInCellsWithSortedCellCodes_doc)
-             [return_value_policy<reference_existing_object>()])
+             py::arg("cellCodes"), py::arg("level"), py::arg("subset"), py::arg("areCodesTruncated")=false,
+             DgmOctree_getPointsInCellsWithSortedCellCodes_doc, py::return_value_policy::reference)
         .def("getPointsInCylindricalNeighbourhood",
              &DgmOctree_getPointsInCylindricalNeighbourhood_py,
              DgmOctree_getPointsInCylindricalNeighbourhood_doc)
@@ -508,6 +457,5 @@ void export_ccOctree()
     // pointsAndTheirCellCodes
     // rayCast
 
-    class_<ccOctree, QSharedPointer<ccOctree>, bases<CCCoreLib::DgmOctree>, boost::noncopyable>("ccOctree", ccOctree_ccOctree_doc, no_init)
-        ;
+    py::class_<ccOctree, QObject, CCCoreLib::DgmOctree>(m0, "ccOctree", ccOctree_ccOctree_doc); //        ;, boost::noncopyable>
 }

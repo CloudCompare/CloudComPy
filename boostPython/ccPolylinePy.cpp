@@ -28,25 +28,19 @@
 #include <GenericIndexedCloudPersist.h>
 #include "ccPolylinePy_DocStrings.hpp"
 
-//#include "PyScalarType.h"
-//#include "pyccTrace.h"
-//
-//namespace bp = boost::python;
-//namespace bnp = boost::python::numpy;
-
-using namespace boost::python;
-
-void export_ccPolyline()
+void export_ccPolyline(py::module &m0)
 {
 
-	class_<CCCoreLib::Polyline, bases<CCCoreLib::ReferenceCloud> >("Polyline",
-			ccPolylinePy_Polyline_doc, init<CCCoreLib::GenericIndexedCloudPersist*>())
+	py::class_<CCCoreLib::Polyline, CCCoreLib::ReferenceCloud> (m0, "Polyline",
+			ccPolylinePy_Polyline_doc)
+		 .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>())
          .def("isClosed", &ccPolyline::isClosed, ccPolylinePy_isClosed_doc)
 	     .def("setClosed", &ccPolyline::setClosed, ccPolylinePy_setClosed_doc)
 		 ;
 
-    class_<ccPolyline, bases<CCCoreLib::Polyline, ccShiftedObject> >("ccPolyline",
-    		ccPolylinePy_ccPolyline_doc, init<CCCoreLib::GenericIndexedCloudPersist*>())
+    py::class_<ccPolyline,CCCoreLib::Polyline, ccShiftedObject >(m0, "ccPolyline",
+    		ccPolylinePy_ccPolyline_doc)
+        .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>())
         .def("computeLength", &ccPolyline::computeLength, ccPolylinePy_computeLength_doc)
         .def("getName", &ccPolyline::getName, ccPolylinePy_getName_doc)
         .def("is2DMode", &ccPolyline::is2DMode, ccPolylinePy_is2DMode_doc)
@@ -55,6 +49,6 @@ void export_ccPolyline()
         .def("setName", &ccPolyline::setName, ccPolylinePy_setName_doc)
         .def("size", &ccPolyline::size, ccPolylinePy_size_doc)
         .def("smoothChaikin", &ccPolyline::smoothChaikin,
-             ccPolylinePy_smoothChaikin_doc, return_value_policy<reference_existing_object>())
+             ccPolylinePy_smoothChaikin_doc, py::return_value_policy::reference)
         ;
 }

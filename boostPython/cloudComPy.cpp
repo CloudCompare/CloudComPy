@@ -516,10 +516,10 @@ PYBIND11_MODULE(_cloudComPy, m0)
     export_colors(m0);
     export_ScalarField(m0);
     export_ccGenericCloud(m0);
-//    export_ccPolyline(m0);
-//    export_ccOctree(m0);
+    export_ccPolyline(m0);
+    export_ccOctree(m0);
     export_ccPointCloud(m0);
-//    export_ccMesh(m0);
+    export_ccMesh(m0);
 //    export_ccPrimitives(m0);
 //    export_distanceComputationTools(m0);
 //    export_geometricalAnalysisTools(m0);
