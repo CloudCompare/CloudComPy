@@ -65,14 +65,12 @@ py::array IndexesToNpArray_copy(ccMesh &self)
     size_t nRows = self.size();
     CCTRACE("nrows: " << nRows);
     unsigned *s = (unsigned*)self.getTriangleVertIndexes(0);
-    unsigned *d = new unsigned[3 * nRows];
-    memcpy(d, s, 3 * nRows * sizeof(unsigned));
     ssize_t ndim = 2;
     std::vector<ssize_t> shape =
     { nRows, 3 };
     std::vector<ssize_t> strides =
     { 3 * sizeof(unsigned), sizeof(unsigned) };
-    return py::array(py::buffer_info(d,                                         // data as contiguous array
+    return py::array(py::buffer_info(s,                                         // data as contiguous array
                                      sizeof(unsigned),                          // size of one scalar
                                      py::format_descriptor<unsigned>::format(), // data type
                                      ndim,                                      // number of dimensions
@@ -92,13 +90,15 @@ py::array IndexesToNpArray_py(ccMesh &self)
     { nRows, 3 };
     std::vector<ssize_t> strides =
     { 3 * sizeof(unsigned), sizeof(unsigned) };
+    auto capsule = py::capsule(s, [](void *v) { CCTRACE("C++ indexes not deleted"); });
     return py::array(py::buffer_info(s,                                         // data as contiguous array
                                      sizeof(unsigned),                          // size of one scalar
                                      py::format_descriptor<unsigned>::format(), // data type
                                      ndim,                                      // number of dimensions
                                      shape,                                     // shape of the matrix
                                      strides                                    // strides for each axis
-                                     ));
+                                     ),
+                     capsule);
 }
 
 void export_ccMesh(py::module &m0)

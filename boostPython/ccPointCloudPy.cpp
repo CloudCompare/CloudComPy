@@ -160,14 +160,12 @@ py::array CoordsToNpArray_copy(ccPointCloud &self)
     CCTRACE("CoordsToNpArray with copy, ownership transfered to Python");
     size_t nRows = self.size();
     PointCoordinateType* s = (PointCoordinateType*) self.getPoint(0);
-    PointCoordinateType* d = new PointCoordinateType[3 * nRows];
-    memcpy(d, s, 3 * nRows * sizeof(PointCoordinateType));
     ssize_t ndim = 2;
     std::vector<ssize_t> shape =
     { nRows, 3 };
     std::vector<ssize_t> strides =
     { 3 * sizeof(PointCoordinateType), sizeof(PointCoordinateType) };
-    return py::array(py::buffer_info(d,                                                    // data as contiguous array
+    return py::array(py::buffer_info(s,                                                    // data as contiguous array
                                      sizeof(PointCoordinateType),                          // size of one scalar
                                      py::format_descriptor<PointCoordinateType>::format(), // data type
                                      ndim,                                                 // number of dimensions
@@ -184,13 +182,14 @@ py::array CoordsToNpArray_py(ccPointCloud &self)
     ssize_t ndim = 2;
     std::vector<ssize_t> shape = { nRows, 3 };
     std::vector<ssize_t> strides = { 3 * sizeof(PointCoordinateType), sizeof(PointCoordinateType) };
+    auto capsule = py::capsule(s, [](void *v) { CCTRACE("C++ coords not deleted"); });
     return py::array(py::buffer_info(s,                                                    // data as contiguous array
                                      sizeof(PointCoordinateType),                          // size of one scalar
                                      py::format_descriptor<PointCoordinateType>::format(), // data type
                                      ndim,                                                 // number of dimensions
                                      shape,                                                // shape of the matrix
-                                     strides                                               // strides for each axis
-                                     ));
+                                     strides),                                               // strides for each axis
+                     capsule);
 }
 
 py::array ColorsToNpArray_copy(ccPointCloud &self)
@@ -203,12 +202,10 @@ py::array ColorsToNpArray_copy(ccPointCloud &self)
     }
     size_t nRows = self.size();
     ColorCompType* s = (ColorCompType*) (self.rgbaColors()->data());
-    ColorCompType* d = new ColorCompType[4 * nRows];
-    memcpy(d, s, 4 * nRows * sizeof(ColorCompType));
     ssize_t ndim = 2;
     std::vector<ssize_t> shape = { nRows, 4 };
     std::vector<ssize_t> strides = { 4 * sizeof(ColorCompType), sizeof(ColorCompType) };
-    return py::array(py::buffer_info(d,                                              // data as contiguous array
+    return py::array(py::buffer_info(s,                                              // data as contiguous array
                                      sizeof(ColorCompType),                          // size of one scalar
                                      py::format_descriptor<ColorCompType>::format(), // data type
                                      ndim,                                           // number of dimensions
@@ -230,13 +227,15 @@ py::array ColorsToNpArray_py(ccPointCloud &self)
     ssize_t ndim = 2;
     std::vector<ssize_t> shape = { nRows, 4 };
     std::vector<ssize_t> strides = { 4 * sizeof(ColorCompType), sizeof(ColorCompType) };
+    auto capsule = py::capsule(s, [](void *v) { CCTRACE("C++ colors not deleted"); });
     return py::array(py::buffer_info(s,                                              // data as contiguous array
                                      sizeof(ColorCompType),                          // size of one scalar
                                      py::format_descriptor<ColorCompType>::format(), // data type
                                      ndim,                                           // number of dimensions
                                      shape,                                          // shape of the matrix
                                      strides                                         // strides for each axis
-                                     ));
+                                     ),
+                     capsule);
 }
 
 bool changeColorLevels_py(ccPointCloud &self, unsigned char sin0,
@@ -572,7 +571,7 @@ void export_ccPointCloud(py::module &m0)
         .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)
         .def("cloneThis", &ccPointCloud::cloneThis,
-             py::arg("destCloud")=0, py::arg("ignoreChildren")=false,
+             py::arg("destCloud")=nullptr, py::arg("ignoreChildren")=false,
              ccPointCloudPy_cloneThis_doc, py::return_value_policy::reference)
         .def("changeColorLevels", &changeColorLevels_py, ccPointCloudPy_changeColorLevels_doc)
         .def("colorize", &colorize_py, py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=1.0f,
@@ -580,7 +579,7 @@ void export_ccPointCloud(py::module &m0)
         .def("computeGravityCenter", &ccPointCloud::computeGravityCenter, ccPointCloudPy_computeGravityCenter_doc)
         .def("computeScalarFieldGradient", &computeScalarFieldGradient_py,
              py::arg("SFindex"), py::arg("radius"), py::arg("euclideanDistances"),
-             py::arg("theOctree")=0, ccPointCloudPy_computeScalarFieldGradient_doc)
+             py::arg("theOctree")=nullptr, ccPointCloudPy_computeScalarFieldGradient_doc)
         .def("colorsFromNPArray_copy", &colorsFromNPArray_copy, ccPointCloudPy_colorsFromNPArray_copy_doc)
         .def("coordsFromNPArray_copy", &coordsFromNPArray_copy, ccPointCloudPy_coordsFromNPArray_copy_doc)
         .def("convertCurrentScalarFieldToColors", &ccPointCloud::convertCurrentScalarFieldToColors,

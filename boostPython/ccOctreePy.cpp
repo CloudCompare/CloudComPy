@@ -457,5 +457,5 @@ void export_ccOctree(py::module &m0)
     // pointsAndTheirCellCodes
     // rayCast
 
-    py::class_<ccOctree, QObject, CCCoreLib::DgmOctree>(m0, "ccOctree", ccOctree_ccOctree_doc); //        ;, boost::noncopyable>
+    py::class_<ccOctree, CCCoreLib::DgmOctree>(m0, "ccOctree", ccOctree_ccOctree_doc); //        ;, boost::noncopyable>
 }

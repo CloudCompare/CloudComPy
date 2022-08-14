@@ -223,7 +223,7 @@ void export_ccGenericCloud(py::module &m0)
 
     py::class_<ccGenericPointCloud, CCCoreLib::GenericIndexedCloudPersist, ccShiftedObject>(m0, "ccGenericPointCloud")
         .def("computeOctree", &ccGenericPointCloud::computeOctree,
-             py::arg("progressCb")=0, py::arg("autoAddChild")=true,
+             py::arg("progressCb")=nullptr, py::arg("autoAddChild")=true,
              ccGenericPointCloud_computeOctree_doc )
         .def("getOctree", &ccGenericPointCloud::getOctree, ccGenericPointCloud_getOctree_doc)
         .def("deleteOctree", &ccGenericPointCloud::deleteOctree, ccGenericPointCloud_deleteOctree_doc)

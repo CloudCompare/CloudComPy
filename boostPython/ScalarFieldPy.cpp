@@ -34,20 +34,14 @@ py::array ToNpArray_copy(CCCoreLib::ScalarField &self)
 {
     CCTRACE("ScalarField ToNpArray with copy, ownership transfered to Python");
     size_t nRows = self.size();
-    // allocate py::array
-    auto result        = py::array_t<PyScalarType>(nRows);
-    auto result_buffer = result.request();
-    PyScalarType *result_ptr    = (PyScalarType*) result_buffer.ptr;
-    // copy std::vector to py::array
-    memcpy(result_ptr, (PyScalarType*)self.data(), nRows*sizeof(PyScalarType));
-    return result;
+    return py::array_t<PyScalarType>({nRows}, {sizeof(PyScalarType)}, (PyScalarType*)self.data());
 }
 
 py::array ToNpArray_py(CCCoreLib::ScalarField &self)
 {
     CCTRACE("ScalarField ToNpArray without copy, ownership stays in C++");
-    size_t nRows = self.size();
-    return py::array_t<PyScalarType>({nRows}, {sizeof(PyScalarType)}, (PyScalarType*)self.data());
+    auto capsule = py::capsule(self.data(), [](void *v) { CCTRACE("C++ ScalarField not deleted"); });
+    return py::array(self.size(), self.data(), capsule);
 }
 
 void fromNPArray_copy(CCCoreLib::ScalarField &self, py::array_t<PointCoordinateType, py::array::c_style | py::array::forcecast> array)

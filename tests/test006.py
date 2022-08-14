@@ -33,7 +33,7 @@ import cloudComPy as cc
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 cloud.translate((1000, 2000, 3000))
 res = cc.SavePointCloud(cloud, os.path.join(dataDir, "res1.xyz"))
-if res:
+if res != cc.CC_FERR_NO_ERROR:
     raise RuntimeError
 
 cloud = cc.loadPointCloud(os.path.join(dataDir, "res1.xyz"))
