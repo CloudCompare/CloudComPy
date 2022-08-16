@@ -295,6 +295,13 @@ A box is in fact composed of 6 planes (ccPlane).
 :param str,optional name: name, default 'Box'
 )";
 
+const char* ccPrimitivesPy_ccBox_getDimensions_doc= R"(
+Get the box dimensions.
+
+:return: the box dimensions
+:rtype: tuple dimensions
+)";
+
 const char* ccPrimitivesPy_ccCone_doc= R"(
 Cone axis corresponds to the 'Z' dimension by default.
 

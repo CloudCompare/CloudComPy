@@ -73,7 +73,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     ${CMAKE_CURRENT_LIST_DIR}/ccOctreePy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ccPointCloudPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ccMeshPy.cpp
-#    ${CMAKE_CURRENT_LIST_DIR}/ccPrimitivesPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ccPrimitivesPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ccPolylinePy.cpp
 #    ${CMAKE_CURRENT_LIST_DIR}/distanceComputationToolsPy.cpp
 #    ${CMAKE_CURRENT_LIST_DIR}/geometricalAnalysisToolsPy.cpp

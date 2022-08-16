@@ -23,6 +23,7 @@
 #include "ccPrimitivesPy.hpp"
 
 #include <CCGeom.h>
+#include <ccObject.h>
 #include <ccGLMatrixTpl.h>
 #include <ccGLMatrix.h>
 #include <ccMesh.h>
@@ -41,7 +42,6 @@
 #include <QString>
 #include <exception>
 
-using namespace boost::python;
 
 // templates for function pointer requires C++14
 template<typename T> void (ccGLMatrixTpl<T>::*initFromParameters1)(T, const Vector3Tpl<T>&, const Vector3Tpl<T>&) = &ccGLMatrixTpl<T>::initFromParameters;
@@ -220,11 +220,37 @@ std::vector<double> plane_getEquation_py(ccPlane& self)
     return vec;
 }
 
-struct ccGenericPrimitiveWrap : ccGenericPrimitive, wrapper<ccGenericPrimitive>
-{
-    virtual QString getTypeName()
-    {
-        return this->get_override("getTypeName")();
+class PyccGenericPrimitive : public ccGenericPrimitive {
+public:
+    /* Inherit the constructors */
+    using ccGenericPrimitive::ccGenericPrimitive;
+
+    /* Trampoline (need one for each virtual function) */
+    QString getTypeName() const override {
+        PYBIND11_OVERRIDE_PURE(
+            QString,                 /* Return type */
+            ccGenericPrimitive,      /* Parent class */
+            getTypeName              /* Name of function in C++ (must match Python name) */
+                                     /* Argument(s) */
+        );
+    }
+
+    ccGenericPrimitive* clone() const override {
+        PYBIND11_OVERRIDE_PURE(
+            ccGenericPrimitive*,      /* Return type */
+            ccGenericPrimitive,      /* Parent class */
+            clone                    /* Name of function in C++ (must match Python name) */
+                                     /* Argument(s) */
+        );
+    }
+
+    bool buildUp() override {
+        PYBIND11_OVERRIDE_PURE(
+            bool,                    /* Return type */
+            ccGenericPrimitive,      /* Parent class */
+            buildUp                  /* Name of function in C++ (must match Python name) */
+                                     /* Argument(s) */
+        );
     }
 };
 
@@ -237,148 +263,128 @@ ccGLMatrix getTransformation_py(ccGenericPrimitive& self)
 class ccGLMatrixWrap
 {
 public:
-    static boost::shared_ptr<ccGLMatrix> initWrapper1(std::vector<double> vec)
+    static ccGLMatrix* initWrapper1(std::vector<double> vec)
     {
         CCTRACE("vector size: " << vec.size());
         if (vec.size() != 16)
              throw std::range_error("ccGLMatrix constructor takes an array with 16 elements (column major order)");
-        return boost::shared_ptr<ccGLMatrix>(new ccGLMatrix(vec.data()));
+        return new ccGLMatrix(vec.data());
     }
 };
 
 class ccGLMatrixdWrap
 {
 public:
-    static boost::shared_ptr<ccGLMatrixd> initWrapper1(std::vector<double> vec)
+    static ccGLMatrixd* initWrapper1(std::vector<double> vec)
     {
         CCTRACE("vector size: " << vec.size());
         if (vec.size() != 16)
              throw std::range_error("ccGLMatrixd constructor takes an array with 16 elements (column major order)");
-        return boost::shared_ptr<ccGLMatrixd>(new ccGLMatrixd(vec.data()));
+        return new ccGLMatrixd(vec.data());
     }
 };
 
 class ccQuadricWrap
 {
 public:
-    static boost::shared_ptr<ccQuadric> initWrapper1(CCVector2 minCorner,
-                                                    CCVector2 maxCorner,
-                                                    std::vector<PointCoordinateType> eqv)
+    static ccQuadric* initWrapper1( CCVector2 minCorner,
+                                    CCVector2 maxCorner,
+                                    std::vector<PointCoordinateType> eqv)
     {
         if (eqv.size() != 6)
             throw std::range_error("equation parameters: vector of 6 float/double required");
         PointCoordinateType* eq = eqv.data();
-        return boost::shared_ptr<ccQuadric>( new ccQuadric(minCorner, maxCorner, eq, 0, 0, "Quadric", ccQuadric::DEFAULT_DRAWING_PRECISION));
+        return new ccQuadric(minCorner, maxCorner, eq, 0, 0, "Quadric", ccQuadric::DEFAULT_DRAWING_PRECISION);
     }
 
-    static boost::shared_ptr<ccQuadric> initWrapper2(CCVector2 minCorner,
-                                                    CCVector2 maxCorner,
-                                                    std::vector<PointCoordinateType> eqv,
-                                                    const Tuple3ub* dims = 0)
+    static ccQuadric* initWrapper2( CCVector2 minCorner,
+                                    CCVector2 maxCorner,
+                                    std::vector<PointCoordinateType> eqv,
+                                    const Tuple3ub* dims = 0)
     {
         if (eqv.size() != 6)
             throw std::range_error("equation parameters: vector of 6 float/double required");
         PointCoordinateType* eq = eqv.data();
-        return boost::shared_ptr<ccQuadric>( new ccQuadric(minCorner, maxCorner, eq, dims, 0, "Quadric",  ccQuadric::DEFAULT_DRAWING_PRECISION));
+        return new ccQuadric(minCorner, maxCorner, eq, dims, 0, "Quadric",  ccQuadric::DEFAULT_DRAWING_PRECISION);
     }
 
-    static boost::shared_ptr<ccQuadric> initWrapper3(CCVector2 minCorner,
-                                                    CCVector2 maxCorner,
-                                                    std::vector<PointCoordinateType> eqv,
-                                                    const Tuple3ub* dims = 0,
-                                                    const ccGLMatrix* transMat = 0)
+    static ccQuadric* initWrapper3( CCVector2 minCorner,
+                                    CCVector2 maxCorner,
+                                    std::vector<PointCoordinateType> eqv,
+                                    const Tuple3ub* dims = 0,
+                                    const ccGLMatrix* transMat = 0)
     {
         if (eqv.size() != 6)
             throw std::range_error("equation parameters: vector of 6 float/double required");
         PointCoordinateType* eq = eqv.data();
-        return boost::shared_ptr<ccQuadric>( new ccQuadric(minCorner, maxCorner, eq, dims, transMat, "Quadric",  ccQuadric::DEFAULT_DRAWING_PRECISION));
+        return new ccQuadric(minCorner, maxCorner, eq, dims, transMat, "Quadric",  ccQuadric::DEFAULT_DRAWING_PRECISION);
     }
 
-    static boost::shared_ptr<ccQuadric> initWrapper4(CCVector2 minCorner,
-                                                    CCVector2 maxCorner,
-                                                    std::vector<PointCoordinateType> eqv,
-                                                    const Tuple3ub* dims = 0,
-                                                    const ccGLMatrix* transMat = 0,
-                                                    QString name = QString("Quadric"))
+    static ccQuadric* initWrapper4( CCVector2 minCorner,
+                                    CCVector2 maxCorner,
+                                    std::vector<PointCoordinateType> eqv,
+                                    const Tuple3ub* dims = 0,
+                                    const ccGLMatrix* transMat = 0,
+                                    QString name = QString("Quadric"))
     {
         if (eqv.size() != 6)
             throw std::range_error("equation parameters: vector of 6 float/double required");
         PointCoordinateType* eq = eqv.data();
-        return boost::shared_ptr<ccQuadric>( new ccQuadric(minCorner, maxCorner, eq, dims, transMat, name,  ccQuadric::DEFAULT_DRAWING_PRECISION));
+        return new ccQuadric(minCorner, maxCorner, eq, dims, transMat, name,  ccQuadric::DEFAULT_DRAWING_PRECISION);
     }
 
-    static boost::shared_ptr<ccQuadric> initWrapper5(CCVector2 minCorner,
-                                                    CCVector2 maxCorner,
-                                                    std::vector<PointCoordinateType> eqv,
-                                                    const Tuple3ub* dims = 0,
-                                                    const ccGLMatrix* transMat = 0,
-                                                    QString name = QString("Quadric"),
-                                                    unsigned precision = ccQuadric::DEFAULT_DRAWING_PRECISION)
+    static ccQuadric* initWrapper5( CCVector2 minCorner,
+                                    CCVector2 maxCorner,
+                                    std::vector<PointCoordinateType> eqv,
+                                    const Tuple3ub* dims = 0,
+                                    const ccGLMatrix* transMat = 0,
+                                    QString name = QString("Quadric"),
+                                    unsigned precision = ccQuadric::DEFAULT_DRAWING_PRECISION)
     {
         if (eqv.size() != 6)
             throw std::range_error("equation parameters: vector of 6 float/double required");
         PointCoordinateType* eq = eqv.data();
-        return boost::shared_ptr<ccQuadric>( new ccQuadric(minCorner, maxCorner, eq, dims, transMat, name, precision));
+        return new ccQuadric(minCorner, maxCorner, eq, dims, transMat, name, precision);
     }
 };
 
-void export_ccPrimitives()
+void export_ccPrimitives(py::module &m0)
 {
     // TODO: expose more construtors
 
-    class_<ccGLMatrixParams1<float> >("ccGLMatrixParams1_float", ccPrimitivesPy_ccGLMatrixParams1_doc)
+    py::class_<ccGLMatrixParams1<float> >(m0, "ccGLMatrixParams1_float", ccPrimitivesPy_ccGLMatrixParams1_doc)
         .def_readwrite("alpha_rad", &ccGLMatrixParams1<float>::alpha_rad)
-        .add_property("axis3D",
-                      make_getter(&ccGLMatrixParams1<float>::axis3D,
-                      return_value_policy<return_by_value>()),
-                      make_setter(&ccGLMatrixParams1<float>::axis3D))
-        .add_property("t3D",
-                      make_getter(&ccGLMatrixParams1<float>::t3D,
-                      return_value_policy<return_by_value>()),
-                      make_setter(&ccGLMatrixParams1<float>::t3D))
+        .def_readwrite("axis3D",&ccGLMatrixParams1<float>::axis3D)
+        .def_readwrite("t3D", &ccGLMatrixParams1<float>::t3D)
         ;
 
-    class_<ccGLMatrixParams1<double> >("ccGLMatrixParams1_double", ccPrimitivesPy_ccGLMatrixParams1_doc)
+    py::class_<ccGLMatrixParams1<double> >(m0, "ccGLMatrixParams1_double", ccPrimitivesPy_ccGLMatrixParams1_doc)
         .def_readwrite("alpha_rad", &ccGLMatrixParams1<double>::alpha_rad)
-        .add_property("axis3D",
-                      make_getter(&ccGLMatrixParams1<double>::axis3D,
-                      return_value_policy<return_by_value>()),
-                      make_setter(&ccGLMatrixParams1<double>::axis3D))
-        .add_property("t3D",
-                      make_getter(&ccGLMatrixParams1<double>::t3D,
-                      return_value_policy<return_by_value>()),
-                      make_setter(&ccGLMatrixParams1<double>::t3D))
+        .def_readwrite("axis3D", &ccGLMatrixParams1<double>::axis3D)
+        .def_readwrite("t3D", &ccGLMatrixParams1<double>::t3D)
         ;
 
-    class_<ccGLMatrixParams2<float> >("ccGLMatrixParams2_float", ccPrimitivesPy_ccGLMatrixParams2_doc)
+    py::class_<ccGLMatrixParams2<float> >(m0, "ccGLMatrixParams2_float", ccPrimitivesPy_ccGLMatrixParams2_doc)
         .def_readwrite("phi_rad", &ccGLMatrixParams2<float>::phi_rad)
         .def_readwrite("theta_rad", &ccGLMatrixParams2<float>::theta_rad)
         .def_readwrite("psi_rad", &ccGLMatrixParams2<float>::psi_rad)
-        .add_property("t3D",
-                      make_getter(&ccGLMatrixParams2<float>::t3D,
-                      return_value_policy<return_by_value>()),
-                      make_setter(&ccGLMatrixParams2<float>::t3D))
+        .def_readwrite("t3D", &ccGLMatrixParams2<float>::t3D)
         ;
 
-    class_<ccGLMatrixParams2<double> >("ccGLMatrixParams2_double", ccPrimitivesPy_ccGLMatrixParams2_doc)
+    py::class_<ccGLMatrixParams2<double> >(m0, "ccGLMatrixParams2_double", ccPrimitivesPy_ccGLMatrixParams2_doc)
         .def_readwrite("phi_rad", &ccGLMatrixParams2<double>::phi_rad)
         .def_readwrite("theta_rad", &ccGLMatrixParams2<double>::theta_rad)
         .def_readwrite("psi_rad", &ccGLMatrixParams2<double>::psi_rad)
-        .add_property("t3D",
-                      make_getter(&ccGLMatrixParams2<double>::t3D,
-                      return_value_policy<return_by_value>()),
-                      make_setter(&ccGLMatrixParams2<double>::t3D))
+        .def_readwrite("t3D", &ccGLMatrixParams2<double>::t3D)
         ;
 
-    class_<ccGLMatrixTpl<float> >("ccGLMatrixTpl_float")
-    	.def(init<const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&>())
-        .def("fromDouble", &fromDouble_py, ccPrimitivesPy_fromDouble_doc)
-            .staticmethod("fromDouble")
+    py::class_<ccGLMatrixTpl<float> >(m0, "ccGLMatrixTpl_float")
+    	.def(py::init<const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&>())
+        .def_static("fromDouble", &fromDouble_py, ccPrimitivesPy_fromDouble_doc)
         .def("initFromParameters", initFromParameters1<float>, ccPrimitivesPy_initFromParameters1_doc)
         .def("initFromParameters", initFromParameters2<float>, ccPrimitivesPy_initFromParameters2_doc)
         .def("toString", &toString_def_py<float>, ccPrimitivesPy_toString_doc)
-        .def("fromString", &fromString_def_py<float>, ccPrimitivesPy_fromString_doc)
-        .staticmethod("fromString")
+        .def_static("fromString", &fromString_def_py<float>, ccPrimitivesPy_fromString_doc)
 		.def("getColumn", &getColumn_py<float>, ccPrimitivesPy_getColumn_doc)
         .def("getParameters1", &getParameters1_py<float>, ccPrimitivesPy_getParameters1_py_doc)
         .def("getParameters2", &getParameters2_py<float>, ccPrimitivesPy_getParameters2_py_doc)
@@ -394,19 +400,18 @@ void export_ccPrimitives()
 		.def("inverse", &ccGLMatrixTpl<float>::inverse, ccPrimitivesPy_inverse_doc)
 		.def("transpose", &ccGLMatrixTpl<float>::transpose, ccPrimitivesPy_transpose_doc)
 		.def("transposed", &ccGLMatrixTpl<float>::transposed, ccPrimitivesPy_transposed_doc)
-        .def(self += self)
-        .def(self -= self)
-        .def(self *= self)
-        .def(self * self)
+        .def(py::self += py::self)
+        .def(py::self -= py::self)
+        .def(py::self *= py::self)
+        .def(py::self * py::self)
       ;
 
-    class_<ccGLMatrixTpl<double> >("ccGLMatrixTpl_double")
-    	.def(init<const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&>())
+    py::class_<ccGLMatrixTpl<double> >(m0, "ccGLMatrixTpl_double")
+    	.def(py::init<const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&>())
         .def("initFromParameters", initFromParameters1<double>, ccPrimitivesPy_initFromParameters1_doc)
         .def("initFromParameters", initFromParameters2<double>, ccPrimitivesPy_initFromParameters2_doc)
         .def("toString", &toString_def_py<double>, ccPrimitivesPy_toString_doc)
-        .def("fromString", &fromString_def_py<double>, ccPrimitivesPy_fromString_doc)
-        .staticmethod("fromString")
+        .def_static("fromString", &fromString_def_py<double>, ccPrimitivesPy_fromString_doc)
 		.def("getColumn", &getColumn_py<double>, ccPrimitivesPy_getColumn_doc)
         .def("getParameters1", &getParameters1_py<double>, ccPrimitivesPy_getParameters1_py_doc)
         .def("getParameters2", &getParameters2_py<double>, ccPrimitivesPy_getParameters2_py_doc)
@@ -422,16 +427,16 @@ void export_ccPrimitives()
 		.def("inverse", &ccGLMatrixTpl<double>::inverse, ccPrimitivesPy_inverse_doc)
 		.def("transpose", &ccGLMatrixTpl<double>::transpose, ccPrimitivesPy_transpose_doc)
 		.def("transposed", &ccGLMatrixTpl<double>::transposed, ccPrimitivesPy_transposed_doc)
-        .def(self += self)
-        .def(self -= self)
-        .def(self *= self)
-        .def(self * self)
+        .def(py::self += py::self)
+        .def(py::self -= py::self)
+        .def(py::self *= py::self)
+        .def(py::self * py::self)
         ;
 
-    class_<ccGLMatrix, bases<ccGLMatrixTpl<float> > >("ccGLMatrix", ccPrimitivesPy_ccGLMatrix_doc)
-        .def(init<const ccGLMatrixTpl<float>&>())
-        .def(init<const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&>())
-        .def("__init__", make_constructor(&ccGLMatrixWrap::initWrapper1 ))
+    py::class_<ccGLMatrix, ccGLMatrixTpl<float> >(m0, "ccGLMatrix", ccPrimitivesPy_ccGLMatrix_doc)
+        .def(py::init<const ccGLMatrixTpl<float>&>())
+        .def(py::init<const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&>())
+        .def(py::init( &ccGLMatrixWrap::initWrapper1 ))
         .def("FromToRotation", &FromToRotation_float, ccPrimitivesPy_FromToRotation_doc)
         .def("Interpolate", &Interpolate_float, ccPrimitivesPy_Interpolate_doc)
         .def("FromViewDirAndUpDir", &FromViewDirAndUpDir_float, ccPrimitivesPy_FromViewDirAndUpDir_doc)
@@ -442,10 +447,10 @@ void export_ccPrimitives()
         .def("transposed", &transposed_float, ccPrimitivesPy_transposed_doc)
         ;
 
-    class_<ccGLMatrixd, bases<ccGLMatrixTpl<double> > >("ccGLMatrixd", ccPrimitivesPy_ccGLMatrixd_doc)
-        .def(init<const ccGLMatrixTpl<double>&>())
-        .def(init<const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&>())
-        .def("__init__", make_constructor(&ccGLMatrixdWrap::initWrapper1 ))
+    py::class_<ccGLMatrixd, ccGLMatrixTpl<double> >(m0, "ccGLMatrixd", ccPrimitivesPy_ccGLMatrixd_doc)
+        .def(py::init<const ccGLMatrixTpl<double>&>())
+        .def(py::init<const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&>())
+        .def(py::init(&ccGLMatrixdWrap::initWrapper1 ))
         .def("FromToRotation", &FromToRotation_double, ccPrimitivesPy_FromToRotation_doc)
         .def("Interpolate", &Interpolate_double, ccPrimitivesPy_Interpolate_doc)
         .def("FromViewDirAndUpDir", &FromViewDirAndUpDir_double, ccPrimitivesPy_FromViewDirAndUpDir_doc)
@@ -456,18 +461,28 @@ void export_ccPrimitives()
         .def("transposed", &transposed_double, ccPrimitivesPy_transposed_doc)
         ;
 
-    class_<ccGenericPrimitiveWrap, bases<ccMesh>, boost::noncopyable>("ccGenericPrimitive", no_init)
-        .def("getTypeName", pure_virtual(&ccGenericPrimitive::getTypeName), ccPrimitivesPy_getTypeName_doc)
+    py::class_<ccGenericPrimitive, PyccGenericPrimitive>(m0, "ccGenericPrimitive") //boost::noncopyable, no_init
+        .def(py::init<QString, const ccGLMatrix*, unsigned>(),
+             py::arg("name")=QString(), py::arg("transMat")=nullptr, py::arg("uniqueID")= 0xFFFFFFFF)
+        .def("getTypeName", (&ccGenericPrimitive::getTypeName), ccPrimitivesPy_getTypeName_doc)
         .def("getTransformation", &getTransformation_py, ccPrimitivesPy_getTransformation_doc)
         ;
 
-    class_<ccBox, bases<ccGenericPrimitive>, boost::noncopyable>("ccBox", ccPrimitivesPy_ccBox_doc, init<QString>())
-        .def(init<const CCVector3&, optional<const ccGLMatrix*, QString> >())
+    py::class_<ccBox, ccGenericPrimitive, ccMesh>(m0, "ccBox", ccPrimitivesPy_ccBox_doc)
+        .def(py::init<QString>())
+        .def(py::init<const CCVector3&, const ccGLMatrix*, QString >(),
+             py::arg("dims"), py::arg("transMat")=nullptr, py::arg("name")=QString("Box"))
+        .def("getDimensions", &ccBox::getDimensions, ccPrimitivesPy_ccBox_getDimensions_doc)
         ;
 
-    class_<ccCone, bases<ccGenericPrimitive>, boost::noncopyable>("ccCone", ccPrimitivesPy_ccCone_doc, init<QString>())
-        .def(init<PointCoordinateType, PointCoordinateType, PointCoordinateType,
-             optional<PointCoordinateType, PointCoordinateType,const ccGLMatrix*, QString, unsigned, unsigned> >())
+    py::class_<ccCone, ccGenericPrimitive, ccMesh>(m0, "ccCone", ccPrimitivesPy_ccCone_doc)
+        .def(py::init<QString>())
+        .def(py::init<PointCoordinateType, PointCoordinateType, PointCoordinateType,
+                      PointCoordinateType, PointCoordinateType, const ccGLMatrix*, QString, unsigned, unsigned>(),
+                      py::arg("bottomRadius"), py::arg("topRadius"), py::arg("height"),
+                      py::arg("xOff")=0, py::arg("xOff")=0,
+                      py::arg("transMat")=nullptr, py::arg("name")=QString("Cone"),
+                      py::arg("precision")= 24, py::arg("uniqueID")= 0xFFFFFFFF)
         .def("getHeight", &ccCone::getHeight, ccPrimitivesPy_getHeight_doc)
         .def("getBottomRadius", &ccCone::getBottomRadius, ccPrimitivesPy_getBottomRadius_doc)
         .def("getTopRadius", &ccCone::getTopRadius, ccPrimitivesPy_getTopRadius_doc)
@@ -479,43 +494,63 @@ void export_ccPrimitives()
         .def("getLargeRadius", &ccCone::getLargeRadius, ccPrimitivesPy_getLargeRadius_doc)
         ;
 
-    class_<ccCylinder, bases<ccCone>, boost::noncopyable>("ccCylinder", ccPrimitivesPy_ccCylinder_doc, init<QString>())
-        .def(init<PointCoordinateType, PointCoordinateType,
-             optional<const ccGLMatrix*, QString, unsigned, unsigned> >())
+    py::class_<ccCylinder, ccCone>(m0,"ccCylinder", ccPrimitivesPy_ccCylinder_doc)
+        .def(py::init<QString>())
+        .def(py::init<PointCoordinateType, PointCoordinateType,
+                      const ccGLMatrix*, QString, unsigned, unsigned>(),
+                      py::arg("radius"), py::arg("height"),
+                      py::arg("transMat")=nullptr, py::arg("name")=QString("Cylinder"),
+                      py::arg("precision")=24, py::arg("uniqueID")=0xFFFFFFFF)
         ;
 
-    class_<ccPlane, bases<ccGenericPrimitive>, boost::noncopyable>("ccPlane", ccPrimitivesPy_ccPlane_doc, init<QString>())
-        .def(init<PointCoordinateType, PointCoordinateType,
-             optional<const ccGLMatrix*, QString> >())
-        .def("Fit", &plane_Fit_py, ccPrimitivesPy_ccPlane_Fit_doc, return_value_policy<reference_existing_object>())
-            .staticmethod("Fit")
+    py::class_<ccPlane, ccGenericPrimitive, ccMesh>(m0, "ccPlane", ccPrimitivesPy_ccPlane_doc)
+        .def(py::init<QString>())
+        .def(py::init<PointCoordinateType, PointCoordinateType,
+             const ccGLMatrix*, QString>(),
+             py::arg("xWidth"), py::arg("yWidth"),
+             py::arg("transMat")=nullptr, py::arg("name")=QString("Plane"))
+        .def_static("Fit", &plane_Fit_py, ccPrimitivesPy_ccPlane_Fit_doc, py::return_value_policy::reference)
         .def("getEquation", &plane_getEquation_py, ccPrimitivesPy_ccPlane_getEquation_doc)
         .def("getCenter", &ccPlane::getCenter, ccPrimitivesPy_ccPlane_getCenter_doc)
         .def("getNormal", &ccPlane::getNormal, ccPrimitivesPy_ccPlane_getNormal_doc)
         ;
 
-    class_<ccQuadric, boost::shared_ptr<ccQuadric>, bases<ccGenericPrimitive>, boost::noncopyable >("ccQuadric", ccPrimitivesPy_ccQuadric_doc, no_init)
-        .def("__init__", make_constructor(&ccQuadricWrap::initWrapper1 ))
-        .def("__init__", make_constructor(&ccQuadricWrap::initWrapper2 ))
-        .def("__init__", make_constructor(&ccQuadricWrap::initWrapper3 ))
-        .def("__init__", make_constructor(&ccQuadricWrap::initWrapper4 ))
-        .def("__init__", make_constructor(&ccQuadricWrap::initWrapper5 ))
+    py::class_<ccQuadric, ccGenericPrimitive, ccMesh>(m0, "ccQuadric", ccPrimitivesPy_ccQuadric_doc)
+        .def(py::init(&ccQuadricWrap::initWrapper1 ))
+        .def(py::init(&ccQuadricWrap::initWrapper2 ))
+        .def(py::init(&ccQuadricWrap::initWrapper3 ))
+        .def(py::init(&ccQuadricWrap::initWrapper4 ))
+        .def(py::init(&ccQuadricWrap::initWrapper5 ))
         ;
 
-    class_<ccSphere, bases<ccGenericPrimitive>, boost::noncopyable >("ccSphere", ccPrimitivesPy_ccSphere_doc, init<QString>())
-        .def(init<PointCoordinateType,
-             optional<const ccGLMatrix*, QString, unsigned, unsigned> >())
+    py::class_<ccSphere, ccGenericPrimitive, ccMesh>(m0, "ccSphere", ccPrimitivesPy_ccSphere_doc)
+        .def(py::init<QString>())
+        .def(py::init<PointCoordinateType,
+                      const ccGLMatrix*, QString, unsigned, unsigned>(),
+                      py::arg("radius"),
+                      py::arg("transMat")=nullptr, py::arg("name")=QString("Sphere"),
+                      py::arg("precision")=24, py::arg("uniqueID")=0xFFFFFFFF)
         .def("getRadius", &ccSphere::getRadius, ccPrimitivesPy_ccSphere_getRadius_doc)
         ;
 
-    class_<ccTorus, bases<ccGenericPrimitive>, boost::noncopyable >("ccTorus", ccPrimitivesPy_ccTorus_doc, init<QString>())
-        .def(init<PointCoordinateType, PointCoordinateType,
-             optional<double, bool, PointCoordinateType, const ccGLMatrix*, QString, unsigned, unsigned> >())
+    py::class_<ccTorus, ccGenericPrimitive, ccMesh>(m0, "ccTorus", ccPrimitivesPy_ccTorus_doc)
+        .def(py::init<QString>())
+        .def(py::init<PointCoordinateType, PointCoordinateType,
+             double, bool, PointCoordinateType, const ccGLMatrix*, QString, unsigned, unsigned>(),
+             py::arg("insideRadius"), py::arg("outsideRadius"),
+             py::arg("angle_rad")=2.0*M_PI, py::arg("rectangularSection")=false, py::arg("rectSectionHeight")=0,
+             py::arg("transMat")=nullptr, py::arg("name")=QString("Torus"),
+             py::arg("precision")=24, py::arg("uniqueID")=0xFFFFFFFF)
         ;
 
-    class_<ccDish, bases<ccGenericPrimitive>, boost::noncopyable >("ccDish", ccPrimitivesPy_ccDish_doc, init<QString>())
-        .def(init<PointCoordinateType, PointCoordinateType,
-             optional<PointCoordinateType, const ccGLMatrix*, QString, unsigned> >())
+    py::class_<ccDish, ccGenericPrimitive, ccMesh>(m0, "ccDish", ccPrimitivesPy_ccDish_doc)
+        .def(py::init<QString>())
+        .def(py::init<PointCoordinateType, PointCoordinateType,
+             PointCoordinateType, const ccGLMatrix*, QString, unsigned>(),
+             py::arg("radius"), py::arg("height"),
+             py::arg("radius2")=0,
+             py::arg("transMat")=nullptr, py::arg("name")=QString("Dish"),
+             py::arg("precision")=24)
         ;
 
 }

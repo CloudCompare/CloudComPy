@@ -144,11 +144,50 @@ PYBIND11_TYPE_CASTER(CCVector3, _("CCVector3"));
     {
         CCTRACE("CCVector3 cast");
         tuple tup = make_tuple(src.x, src.y, src.z);
-        CCTRACE("---");
         return tup.inc_ref();
     }
 };
 
+
+template<> struct type_caster<CCVector2 >
+{
+public:
+PYBIND11_TYPE_CASTER(CCVector2, _("CCVector2"));
+
+    bool load(handle src, bool)
+    {
+        CCTRACE("CCVector2 load");
+        if(!src)
+        {
+            return false;
+        }
+        object temp;
+        handle load_src = src;
+
+        if (!PyTuple_Check(load_src.ptr()))
+            return false;
+        if (PyTuple_GET_SIZE(load_src.ptr()) != 2)
+            return false;
+        for (int i=0; i<2; i++)
+        {
+            PyObject* iptr = PyTuple_GET_ITEM(load_src.ptr(), i);
+            if (PyFloat_Check(iptr))
+                value.u[i] = PyFloat_AS_DOUBLE(iptr);
+            else if (PyLong_Check(iptr))
+                value.u[i] = PyLong_AsDouble(iptr);
+            else
+                return false;
+        }
+        return true;
+    }
+
+    static handle cast(const CCVector2& src, return_value_policy /* policy */, handle /* parent */)
+    {
+        CCTRACE("CCVector2 cast");
+        tuple tup = make_tuple(src.x, src.y);
+        return tup.inc_ref();
+    }
+};
 
 }
 }

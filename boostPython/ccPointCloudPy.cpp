@@ -567,7 +567,7 @@ void export_ccPointCloud(py::module &m0)
         .export_values();
 
     py::class_<ccPointCloud, CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString> >(m0, "ccPointCloud", ccPointCloudPy_ccPointCloud_doc)
-        .def(py::init<QString, unsigned>(), py::arg("name")=QString(), py::arg("uniqueID")=ccUniqueIDGenerator::InvalidUniqueID) // TODO optional<QString, unsigned> >())
+        .def(py::init<QString, unsigned>(), py::arg("name")=QString(), py::arg("uniqueID")=0xFFFFFFFF) // TODO optional<QString, unsigned> >())
         .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)
         .def("cloneThis", &ccPointCloud::cloneThis,
