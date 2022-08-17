@@ -44,8 +44,8 @@ void export_distanceComputationTools(py::module &);
 void export_geometricalAnalysisTools(py::module &);
 void export_registrationTools(py::module &);
 void export_cloudSamplingTools(py::module &);
-//void export_ccFacet(py::module &);
-//void export_ccSensor(py::module &);
-//void export_Neighbourhood(py::module &);
+void export_ccFacet(py::module &);
+void export_ccSensor(py::module &);
+void export_Neighbourhood(py::module &);
 
 #endif

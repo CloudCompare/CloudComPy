@@ -39,14 +39,6 @@ else()
     message(STATUS "  Python3_INCLUDE_DIRS" ${Python3_INCLUDE_DIRS})
 endif()
 
-# --- Boost detection
-#message( STATUS "Python3_VERSION_MAJOR: " ${Python3_VERSION_MAJOR} )
-#message( STATUS "Python3_VERSION_MINOR: " ${Python3_VERSION_MINOR} )
-#find_package(Boost COMPONENTS python numpy)
-#find_package(Boost COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}  numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} REQUIRED)
-
-#message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
-
 # --- pybind11 detection
 find_package(pybind11 REQUIRED)
 message( STATUS "pybind11_VERSION: ${pybind11_VERSION}")
@@ -79,13 +71,12 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     ${CMAKE_CURRENT_LIST_DIR}/geometricalAnalysisToolsPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/registrationToolsPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/cloudSamplingToolsPy.cpp
-#    ${CMAKE_CURRENT_LIST_DIR}/ccFacetPy.cpp
-#    ${CMAKE_CURRENT_LIST_DIR}/ccSensorPy.cpp
-#    ${CMAKE_CURRENT_LIST_DIR}/NeighbourhoodPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ccFacetPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ccSensorPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/NeighbourhoodPy.cpp
     )
 
 target_include_directories( ${PROJECT_NAME} PRIVATE
-#    ${Boost_INCLUDE_DIRS}
     ${pybind11_INCLUDE_DIR}
     ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -97,7 +88,6 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
 target_link_libraries( ${PROJECT_NAME}
     PYCC_LIB
     CCAppCommon
-#    ${Boost_LIBRARIES}
     ${Python3_LIBRARIES}
     )
 

@@ -33,8 +33,6 @@
 #include <vector>
 #include "pyccTrace.h"
 
-using namespace boost::python;
-
 ccFacet* CreatePy(CCCoreLib::GenericIndexedCloudPersist* cloud,
                   PointCoordinateType maxEdgeLength = 0,
                   bool transferOwnership = false,
@@ -84,34 +82,29 @@ ccMesh* getPolygonPy(ccFacet& self)
     return self.getPolygon();
 }
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(ccFacet_Create_overloads, CreatePy, 1, 4)
-
-
-void export_ccFacet()
+void export_ccFacet(py::module &m0)
 {
-    class_<ccFacet, bases<ccHObject> >("ccFacet", ccFacetPy_ccFacet_doc, no_init)
-        .def("Create",
+    py::class_<ccFacet, ccHObject >(m0, "ccFacet", ccFacetPy_ccFacet_doc) // no_init
+        .def_static("Create",
              &CreatePy,
-             ccFacet_Create_overloads((arg("cloud"), arg("maxEdgeLength")=0,
-                     arg("transferOwnership")=false, arg("planeEquation")=std::vector<double>{}),
-                     ccFacetPy_Create_doc)[return_value_policy<reference_existing_object>()])
-            .staticmethod("Create")
+             py::arg("cloud"), py::arg("maxEdgeLength")=0,
+             py::arg("transferOwnership")=false, py::arg("planeEquation")=std::vector<double>{},
+                     ccFacetPy_Create_doc,  py::return_value_policy::reference)
         .def("getNormal", &ccFacet::getNormal, ccFacetPy_getNormal_doc)
         .def("getRMS", &ccFacet::getRMS, ccFacetPy_getRMS_doc)
         .def("getSurface", &ccFacet::getSurface, ccFacetPy_getSurface_doc)
         .def("getPlaneEquation", &getPlaneEquationPy, ccFacetPy_getPlaneEquation_doc)
         .def("invertNormal", &ccFacet::invertNormal, ccFacetPy_invertNormal_doc)
         .def("getCenter", &getCenterPy, ccFacetPy_getCenter_doc)
-        .def("getPolygon", &getPolygonPy, return_value_policy<reference_existing_object>(), ccFacetPy_getPolygon_doc)
-        .def("getContour", &getContourPy, return_value_policy<reference_existing_object>(), ccFacetPy_getContour_doc)
-        .def("getContourVertices", &getContourVerticesPy, return_value_policy<reference_existing_object>(), ccFacetPy_getContourVertices_doc)
-        .def("getOriginPoints", &getOriginPointsPy, return_value_policy<reference_existing_object>(), ccFacetPy_getOriginPoints_doc)
+        .def("getPolygon", &getPolygonPy, py::return_value_policy::reference, ccFacetPy_getPolygon_doc)
+        .def("getContour", &getContourPy, py::return_value_policy::reference, ccFacetPy_getContour_doc)
+        .def("getContourVertices", &getContourVerticesPy, py::return_value_policy::reference, ccFacetPy_getContourVertices_doc)
+        .def("getOriginPoints", &getOriginPointsPy, py::return_value_policy::reference, ccFacetPy_getOriginPoints_doc)
         .def("setPolygon", &ccFacet::setPolygon, ccFacetPy_setPolygon_doc)
         .def("setContour", &ccFacet::setContour, ccFacetPy_setContour_doc)
         .def("setContourVertices", &ccFacet::setContourVertices, ccFacetPy_setContourVertices_doc)
         .def("setOriginPoints", &ccFacet::setOriginPoints, ccFacetPy_setOriginPoints_doc)
-        .def("clone", &ccFacet::clone, return_value_policy<reference_existing_object>(), ccFacetPy_clone_doc)
-
+        .def("clone", &ccFacet::clone, py::return_value_policy::reference, ccFacetPy_clone_doc)
         ;
 }
 

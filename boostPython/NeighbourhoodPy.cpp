@@ -25,14 +25,9 @@
 #include <Neighbourhood.h>
 #include "NeighbourhoodPy_DocStrings.hpp"
 
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
-using namespace boost::python;
-
-void export_Neighbourhood()
+void export_Neighbourhood(py::module &m0)
 {
-	enum_<CCCoreLib::Neighbourhood::GeomFeature>("GeomFeature")
+	py::enum_<CCCoreLib::Neighbourhood::GeomFeature>(m0, "GeomFeature")
 		.value("EigenValuesSum", CCCoreLib::Neighbourhood::EigenValuesSum)
 		.value("Omnivariance", CCCoreLib::Neighbourhood::Omnivariance)
 		.value("EigenEntropy", CCCoreLib::Neighbourhood::EigenEntropy)
@@ -47,6 +42,6 @@ void export_Neighbourhood()
 		.value("EigenValue1", CCCoreLib::Neighbourhood::EigenValue1)
 		.value("EigenValue2", CCCoreLib::Neighbourhood::EigenValue2)
 		.value("EigenValue3", CCCoreLib::Neighbourhood::EigenValue3)
+        .export_values();
      	;
-
 }

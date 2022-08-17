@@ -294,7 +294,7 @@ void export_colors(py::module &m0)
         .def("setRed", &QColor::setRed, colorsPy_setRed_doc)
         .def("setRedF", &QColor::setRedF, colorsPy_setRedF_doc)
         .def("setRgb", &setRgb_py,
-              py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=255, //py::arg("self"),
+              py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=255,
              colorsPy_setRgb_doc)
         .def("setRgbUInt", &setRgbUInt_py, colorsPy_setRgbUInt_doc)
         .def("setRgba64", &QColor::setRgba64, colorsPy_setRgba64_doc)

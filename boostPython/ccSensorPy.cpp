@@ -30,8 +30,6 @@
 #include <ccHObjectCaster.h>
 #include "ccGLMatrix.h"
 
-using namespace boost::python;
-
 ccGLMatrix getRigidTransformationPy(ccSensor& self)
 {
     ccGLMatrix mat = self.getRigidTransformation();
@@ -126,39 +124,37 @@ bool addPositionPy(ccSensor& self, ccGLMatrix& trans)
     return self.addPosition(trans, 0);
 }
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(ComputeScatteringAnglesPy_overloads, ComputeScatteringAnglesPy, 1, 3)
 
-
-void export_ccSensor()
+void export_ccSensor(py::module &m0)
 {
-    enum_<CC_SENSOR_TYPE>("CC_SENSOR_TYPE")
+    py::enum_<CC_SENSOR_TYPE>(m0, "CC_SENSOR_TYPE")
         .value("UNKNOWN_SENSOR", CC_SENSOR_TYPE::UNKNOWN_SENSOR)
         .value("GROUND_BASED_LIDAR", CC_SENSOR_TYPE::GROUND_BASED_LIDAR)
+        .export_values();
          ;
 
-    enum_<ccGBLSensor::ROTATION_ORDER>("ROTATION_ORDER")
+    py::enum_<ccGBLSensor::ROTATION_ORDER>(m0, "ROTATION_ORDER")
         .value("YAW_THEN_PITCH", ccGBLSensor::ROTATION_ORDER::YAW_THEN_PITCH)
         .value("PITCH_THEN_YAW", ccGBLSensor::ROTATION_ORDER::PITCH_THEN_YAW)
+        .export_values();
         ;
 
-    class_<ccSensor, bases<ccHObject> >("ccSensor",
-            ccSensorPy_ccSensor_doc, init<QString>())
+    py::class_<ccSensor, ccHObject>(m0, "ccSensor", ccSensorPy_ccSensor_doc)
+         .def(py::init<QString>())
          .def("addPosition", addPositionPy, ccSensorPy_ccSensor_addPosition_doc)
          .def("ComputeScatteringAngles", ComputeScatteringAnglesPy,
-              ComputeScatteringAnglesPy_overloads(
-              (arg("self"), arg("cloud")=0, arg("toDegreeFlag")=true),
-              ccSensorPy_ccSensor_ComputeScatteringAnglesPy_doc))
+              py::arg("cloud")=0, py::arg("toDegreeFlag")=true,
+              ccSensorPy_ccSensor_ComputeScatteringAnglesPy_doc)
          .def("getGraphicScale", &ccSensor::getGraphicScale, ccSensorPy_ccSensor_getGraphicScale_doc)
          .def("getRigidTransformation", &getRigidTransformationPy,
                ccSensorPy_ccSensor_getRigidTransformation_doc)
          .def("getType", &ccSensor::getType, ccSensorPy_ccSensor_getType_doc)
          .def("setRigidTransformation", &ccSensor::setRigidTransformation, ccSensorPy_ccSensor_setRigidTransformation_doc)
          .def("setGraphicScale", &ccSensor::setGraphicScale, ccSensorPy_ccSensor_setGraphicScale_doc)
-         //.def("", &ccSensor::, ccSensorPy_ccSensor__doc)
          ;
 
-    class_<ccGBLSensor, bases<ccSensor> >("ccGBLSensor",
-            ccSensorPy_ccGBLSensor_doc, init<ccGBLSensor::ROTATION_ORDER>())
+    py::class_<ccGBLSensor,ccSensor >(m0, "ccGBLSensor", ccSensorPy_ccGBLSensor_doc)
+         .def(py::init<ccGBLSensor::ROTATION_ORDER>())
          .def("getUncertainty", &ccGBLSensor::getUncertainty, ccSensorPy_ccGBLSensor_getUncertainty_doc)
          .def("getType", getGBLSensorType, ccSensorPy_ccGBLSensor_getType_doc)
          ;
