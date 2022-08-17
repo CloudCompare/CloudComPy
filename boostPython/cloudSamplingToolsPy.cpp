@@ -37,11 +37,6 @@
 #include "PyScalarType.h"
 #include "pyccTrace.h"
 
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
-using namespace boost::python;
-
 ccPointCloud* resampleCloudWithOctree_py(ccPointCloud* cloud,
                                          int newNumberOfPoints,
                                          CCCoreLib::CloudSamplingTools::RESAMPLING_CELL_METHOD resamplingMethod,
@@ -64,30 +59,21 @@ ccPointCloud* resampleCloudWithOctreeAtLevel_py( CCCoreLib::GenericIndexedCloudP
     return result;
 }
 
-
-BOOST_PYTHON_FUNCTION_OVERLOADS(resampleCloudWithOctreeAtLevel_py_overloads, resampleCloudWithOctreeAtLevel_py, 3, 5)
-BOOST_PYTHON_FUNCTION_OVERLOADS(resampleCloudWithOctree_py_overloads, resampleCloudWithOctree_py, 3, 5)
-BOOST_PYTHON_FUNCTION_OVERLOADS(subsampleCloudWithOctreeAtLevel_overloads, CCCoreLib::CloudSamplingTools::subsampleCloudWithOctreeAtLevel, 3, 5)
-BOOST_PYTHON_FUNCTION_OVERLOADS(subsampleCloudWithOctree_overloads, CCCoreLib::CloudSamplingTools::subsampleCloudWithOctree, 3, 5)
-BOOST_PYTHON_FUNCTION_OVERLOADS(subsampleCloudRandomly_overloads, CCCoreLib::CloudSamplingTools::subsampleCloudRandomly, 2, 3)
-BOOST_PYTHON_FUNCTION_OVERLOADS(resampleCloudSpatially_overloads, CCCoreLib::CloudSamplingTools::resampleCloudSpatially, 3, 5)
-BOOST_PYTHON_FUNCTION_OVERLOADS(sorFilter_overloads, CCCoreLib::CloudSamplingTools::sorFilter, 1, 5)
-BOOST_PYTHON_FUNCTION_OVERLOADS(noiseFilter_overloads, CCCoreLib::CloudSamplingTools::noiseFilter, 3,10)
-
-void export_cloudSamplingTools()
+void export_cloudSamplingTools(py::module &m0)
 {
 
-    enum_<CCCoreLib::CloudSamplingTools::RESAMPLING_CELL_METHOD>("RESAMPLING_CELL_METHOD")
+    py::enum_<CCCoreLib::CloudSamplingTools::RESAMPLING_CELL_METHOD>(m0, "RESAMPLING_CELL_METHOD")
         .value("CELL_CENTER", CCCoreLib::CloudSamplingTools::CELL_CENTER)
         .value("CELL_GRAVITY_CENTER", CCCoreLib::CloudSamplingTools::CELL_GRAVITY_CENTER)
         ;
 
-    enum_<CCCoreLib::CloudSamplingTools::SUBSAMPLING_CELL_METHOD>("SUBSAMPLING_CELL_METHOD")
+    py::enum_<CCCoreLib::CloudSamplingTools::SUBSAMPLING_CELL_METHOD>(m0, "SUBSAMPLING_CELL_METHOD")
         .value("RANDOM_POINT", CCCoreLib::CloudSamplingTools::RANDOM_POINT)
         .value("NEAREST_POINT_TO_CELL_CENTER", CCCoreLib::CloudSamplingTools::NEAREST_POINT_TO_CELL_CENTER)
         ;
 
-    class_<CCCoreLib::CloudSamplingTools::SFModulationParams>("SFModulationParams", CloudSamplingToolsPy_SFModulationParams_doc)
+    py::class_<CCCoreLib::CloudSamplingTools::SFModulationParams>(m0, "SFModulationParams", CloudSamplingToolsPy_SFModulationParams_doc)
+        .def(py::init<>())
         .def_readwrite("enabled", &CCCoreLib::CloudSamplingTools::SFModulationParams::enabled,
                        CloudSamplingToolsPy_enabled_doc)
         .def_readwrite("a", &CCCoreLib::CloudSamplingTools::SFModulationParams::a,
@@ -96,77 +82,62 @@ void export_cloudSamplingTools()
                        CloudSamplingToolsPy_b_doc)
         ;
 
-         class_<CCCoreLib::CloudSamplingTools, boost::noncopyable>("CloudSamplingTools",
-                                                              CloudSamplingToolsPy_CloudSamplingTools_doc, no_init)
-        .def("resampleCloudWithOctreeAtLevel",
+     py::class_<CCCoreLib::CloudSamplingTools>(m0, "CloudSamplingTools",
+                                               CloudSamplingToolsPy_CloudSamplingTools_doc)
+        .def_static("resampleCloudWithOctreeAtLevel",
              &resampleCloudWithOctreeAtLevel_py,
-             resampleCloudWithOctreeAtLevel_py_overloads(
-             (arg("cloud"), arg("octreeLevel"), arg("resamplingMethod"),
-                     arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr),
-                     arg("inputOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr)),
-             CloudSamplingToolsPy_resampleCloudWithOctreeAtLevel_doc)[return_value_policy<reference_existing_object>()])
-            .staticmethod("resampleCloudWithOctreeAtLevel")
+             py::arg("cloud"), py::arg("octreeLevel"), py::arg("resamplingMethod"),
+             py::arg("progressCb")=nullptr,
+             py::arg("inputOctree")=nullptr,
+             CloudSamplingToolsPy_resampleCloudWithOctreeAtLevel_doc, py::return_value_policy::reference)
 
-        .def("resampleCloudWithOctree",
+        .def_static("resampleCloudWithOctree",
              &resampleCloudWithOctree_py,
-             resampleCloudWithOctree_py_overloads(
-             (arg("cloud"), arg("newNumberOfPoints"), arg("resamplingMethod"),
-                     arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr),
-                     arg("inputOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr)),
-             CloudSamplingToolsPy_resampleCloudWithOctree_doc)[return_value_policy<reference_existing_object>()])
-            .staticmethod("resampleCloudWithOctree")
+             py::arg("cloud"), py::arg("newNumberOfPoints"), py::arg("resamplingMethod"),
+             py::arg("progressCb")=nullptr,
+             py::arg("inputOctree")=nullptr,
+             CloudSamplingToolsPy_resampleCloudWithOctree_doc, py::return_value_policy::reference)
 
-        .def("subsampleCloudWithOctreeAtLevel",
+        .def_static("subsampleCloudWithOctreeAtLevel",
              &CCCoreLib::CloudSamplingTools::subsampleCloudWithOctreeAtLevel,
-             subsampleCloudWithOctreeAtLevel_overloads(
-             (arg("cloud"), arg("octreeLevel"), arg("subsamplingMethod"),
-                     arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr),
-                     arg("inputOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr)),
-            CloudSamplingToolsPy_subsampleCloudWithOctreeAtLevel_doc)[return_value_policy<reference_existing_object>()])
-            .staticmethod("subsampleCloudWithOctreeAtLevel")
+             py::arg("cloud"), py::arg("octreeLevel"), py::arg("subsamplingMethod"),
+             py::arg("progressCb")=nullptr,
+             py::arg("inputOctree")=nullptr,
+            CloudSamplingToolsPy_subsampleCloudWithOctreeAtLevel_doc, py::return_value_policy::reference)
 
-        .def("subsampleCloudWithOctree",
+        .def_static("subsampleCloudWithOctree",
              &CCCoreLib::CloudSamplingTools::subsampleCloudWithOctree,
-             subsampleCloudWithOctree_overloads(
-             (arg("cloud"), arg("newNumberOfPoints"), arg("subsamplingMethod"),
-                     arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr),
-                     arg("inputOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr)),
-             CloudSamplingToolsPy_subsampleCloudWithOctree_doc)[return_value_policy<reference_existing_object>()])
-            .staticmethod("subsampleCloudWithOctree")
+             py::arg("cloud"), py::arg("newNumberOfPoints"), py::arg("subsamplingMethod"),
+             py::arg("progressCb")=nullptr,
+             py::arg("inputOctree")=nullptr,
+             CloudSamplingToolsPy_subsampleCloudWithOctree_doc, py::return_value_policy::reference)
 
-        .def("subsampleCloudRandomly",
+        .def_static("subsampleCloudRandomly",
              &CCCoreLib::CloudSamplingTools::subsampleCloudRandomly,
-             subsampleCloudRandomly_overloads(
-             (arg("cloud"), arg("newNumberOfPoints"), arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr)),
-             CloudSamplingToolsPy_subsampleCloudRandomly_doc)[return_value_policy<reference_existing_object>()])
-            .staticmethod("subsampleCloudRandomly")
+             py::arg("cloud"), py::arg("newNumberOfPoints"), py::arg("progressCb")=nullptr,
+             CloudSamplingToolsPy_subsampleCloudRandomly_doc, py::return_value_policy::reference)
 
-        .def("resampleCloudSpatially",
+        .def_static("resampleCloudSpatially",
              &CCCoreLib::CloudSamplingTools::resampleCloudSpatially,
-             resampleCloudSpatially_overloads(
-             (arg("cloud"), arg("minDistance"), arg("modParams"),
-                     arg("octree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr),
-                     arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr)),
-             CloudSamplingToolsPy_resampleCloudSpatially_doc)[return_value_policy<reference_existing_object>()])
-            .staticmethod("resampleCloudSpatially")
+             py::arg("cloud"), py::arg("minDistance"), py::arg("modParams"),
+             py::arg("octree")=nullptr,
+             py::arg("progressCb")=nullptr,
+             CloudSamplingToolsPy_resampleCloudSpatially_doc, py::return_value_policy::reference)
 
-        .def("sorFilter",
+        .def_static("sorFilter",
              &CCCoreLib::CloudSamplingTools::sorFilter,
-             sorFilter_overloads(
-             (arg("cloud"), arg("knn")=6, arg("nSigma")=1.0,
-                     arg("octree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr),
-                     arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr)),
-             CloudSamplingToolsPy_sorFilter_doc)[return_value_policy<reference_existing_object>()])
-            .staticmethod("sorFilter")
+             py::arg("cloud"), py::arg("knn")=6, py::arg("nSigma")=1.0,
+             py::arg("octree")=nullptr,
+             py::arg("progressCb")=nullptr,
+             CloudSamplingToolsPy_sorFilter_doc, py::return_value_policy::reference)
 
-        .def("noiseFilter",
+        .def_static("noiseFilter",
              &CCCoreLib::CloudSamplingTools::noiseFilter,
-             noiseFilter_overloads(
-             (arg("cloud"), arg("kernelRadius"), arg("nSigma"), arg("removeIsolatedPoints")=false, arg("useKnn")=false,
-             arg("knn")=6, arg("useAbsoluteError")=true, arg("absoluteError")=0,
-             arg("octree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr),
-             arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr)),
-             CloudSamplingToolsPy_noiseFilter_doc)[return_value_policy<reference_existing_object>()])
-            .staticmethod("noiseFilter")
+             py::arg("cloud"), py::arg("kernelRadius"), py::arg("nSigma"),
+             py::arg("removeIsolatedPoints")=false, py::arg("useKnn")=false,
+             py::arg("knn")=6, py::arg("useAbsoluteError")=true, py::arg("absoluteError")=0,
+             py::arg("octree")=nullptr,
+             py::arg("progressCb")=nullptr,
+             CloudSamplingToolsPy_noiseFilter_doc, py::return_value_policy::reference)
         ;
 }

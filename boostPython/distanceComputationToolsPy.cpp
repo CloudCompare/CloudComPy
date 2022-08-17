@@ -38,9 +38,6 @@
 
 class PyGenericProgressCallback : public CCCoreLib::GenericProgressCallback {
 public:
-    /* Inherit the constructors */
-    //using CCCoreLib::GenericProgressCallback::GenericProgressCallback;
-
     /* Trampoline (need one for each virtual function) */
     void update(float percent) override {
         PYBIND11_OVERRIDE_PURE(
@@ -93,34 +90,6 @@ public:
         );
     }
 };
-
-//struct GenericProgressCallbackWrap : CCCoreLib::GenericProgressCallback, wrapper<CCCoreLib::GenericProgressCallback>
-//{
-//    virtual void update(float percent)
-//    {
-//        this->get_override("update")(percent);
-//    }
-//    virtual void setMethodTitle(const char* methodTitle)
-//    {
-//        this->get_override("setMethodTitle")(methodTitle);
-//    }
-//    virtual void setInfo(const char* infoStr)
-//    {
-//        this->get_override("setInfo")(infoStr);
-//    }
-//    virtual void start()
-//    {
-//        this->get_override("start")();
-//    }
-//    virtual void stop()
-//    {
-//        this->get_override("stop")();
-//    }
-//    virtual bool isCancelRequested()
-//    {
-//        return this->get_override("isCancelRequested")();
-//    }
-//};
 
 std::vector<double> computeApproxCloud2CloudDistance_py(CCCoreLib::GenericIndexedCloudPersist* comparedCloud,
                                                         CCCoreLib::GenericIndexedCloudPersist* referenceCloud,

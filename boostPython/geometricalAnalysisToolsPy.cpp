@@ -36,22 +36,15 @@
 #include "PyScalarType.h"
 #include "pyccTrace.h"
 
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
-using namespace boost::python;
-
-BOOST_PYTHON_FUNCTION_OVERLOADS(FlagDuplicatePoints_overloads, CCCoreLib::GeometricalAnalysisTools::FlagDuplicatePoints, 1, 4)
-
-void export_geometricalAnalysisTools()
+void export_geometricalAnalysisTools(py::module &m0)
 {
-	enum_<CCCoreLib::GeometricalAnalysisTools::Density>("Density")
+	py::enum_<CCCoreLib::GeometricalAnalysisTools::Density>(m0, "Density")
 		.value("DENSITY_KNN", CCCoreLib::GeometricalAnalysisTools::DENSITY_KNN)
 		.value("DENSITY_2D", CCCoreLib::GeometricalAnalysisTools::DENSITY_2D)
 		.value("DENSITY_3D", CCCoreLib::GeometricalAnalysisTools::DENSITY_3D)
      	;
 
-    enum_<CCCoreLib::GeometricalAnalysisTools::ErrorCode>("ErrorCode")
+	py::enum_<CCCoreLib::GeometricalAnalysisTools::ErrorCode>(m0, "ErrorCode")
         .value("NoError", CCCoreLib::GeometricalAnalysisTools::NoError)
         .value("InvalidInput", CCCoreLib::GeometricalAnalysisTools::InvalidInput)
         .value("NotEnoughPoints", CCCoreLib::GeometricalAnalysisTools::NotEnoughPoints)
@@ -62,18 +55,14 @@ void export_geometricalAnalysisTools()
         .value("ProcessCancelledByUser", CCCoreLib::GeometricalAnalysisTools::ProcessCancelledByUser)
         ;
 
-    class_<CCCoreLib::GeometricalAnalysisTools, boost::noncopyable>("GeometricalAnalysisTools",
-                                                                    geometricalAnalysisToolsPy_GeometricalAnalysisTools_doc, no_init)
-        .def("FlagDuplicatePoints",
+    py::class_<CCCoreLib::GeometricalAnalysisTools>(m0, "GeometricalAnalysisTools",
+                                                    geometricalAnalysisToolsPy_GeometricalAnalysisTools_doc)
+        .def_static("FlagDuplicatePoints",
              &CCCoreLib::GeometricalAnalysisTools::FlagDuplicatePoints,
-             FlagDuplicatePoints_overloads(
-             (arg("theCloud"), arg("minDistanceBetweenPoints")=std::numeric_limits<double>::epsilon(),
-              arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr),
-              arg("inputOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr)),
-             geometricalAnalysisToolsPy_FlagDuplicatePoints_doc))
-            .staticmethod("FlagDuplicatePoints")
-
+             py::arg("theCloud"), py::arg("minDistanceBetweenPoints")=std::numeric_limits<double>::epsilon(),
+             py::arg("progressCb")=nullptr,
+             py::arg("inputOctree")=nullptr,
+             geometricalAnalysisToolsPy_FlagDuplicatePoints_doc)
         ;
-
 
 }
