@@ -65,11 +65,13 @@ void export_cloudSamplingTools(py::module &m0)
     py::enum_<CCCoreLib::CloudSamplingTools::RESAMPLING_CELL_METHOD>(m0, "RESAMPLING_CELL_METHOD")
         .value("CELL_CENTER", CCCoreLib::CloudSamplingTools::CELL_CENTER)
         .value("CELL_GRAVITY_CENTER", CCCoreLib::CloudSamplingTools::CELL_GRAVITY_CENTER)
+        .export_values();
         ;
 
     py::enum_<CCCoreLib::CloudSamplingTools::SUBSAMPLING_CELL_METHOD>(m0, "SUBSAMPLING_CELL_METHOD")
         .value("RANDOM_POINT", CCCoreLib::CloudSamplingTools::RANDOM_POINT)
         .value("NEAREST_POINT_TO_CELL_CENTER", CCCoreLib::CloudSamplingTools::NEAREST_POINT_TO_CELL_CENTER)
+        .export_values();
         ;
 
     py::class_<CCCoreLib::CloudSamplingTools::SFModulationParams>(m0, "SFModulationParams", CloudSamplingToolsPy_SFModulationParams_doc)

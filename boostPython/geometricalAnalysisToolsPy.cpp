@@ -42,6 +42,7 @@ void export_geometricalAnalysisTools(py::module &m0)
 		.value("DENSITY_KNN", CCCoreLib::GeometricalAnalysisTools::DENSITY_KNN)
 		.value("DENSITY_2D", CCCoreLib::GeometricalAnalysisTools::DENSITY_2D)
 		.value("DENSITY_3D", CCCoreLib::GeometricalAnalysisTools::DENSITY_3D)
+        .export_values();
      	;
 
 	py::enum_<CCCoreLib::GeometricalAnalysisTools::ErrorCode>(m0, "ErrorCode")
@@ -53,6 +54,7 @@ void export_geometricalAnalysisTools(py::module &m0)
         .value("UnhandledCharacteristic", CCCoreLib::GeometricalAnalysisTools::UnhandledCharacteristic)
         .value("NotEnoughMemory", CCCoreLib::GeometricalAnalysisTools::NotEnoughMemory)
         .value("ProcessCancelledByUser", CCCoreLib::GeometricalAnalysisTools::ProcessCancelledByUser)
+        .export_values();
         ;
 
     py::class_<CCCoreLib::GeometricalAnalysisTools>(m0, "GeometricalAnalysisTools",

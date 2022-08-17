@@ -76,6 +76,7 @@ const ScalarType& (CCCoreLib::ScalarField::* getValue2)(std::size_t) const = &CC
 void export_ScalarField(py::module &m0)
 {
     py::class_<CCCoreLib::ScalarField, std::unique_ptr<CCCoreLib::ScalarField, py::nodelete>>(m0, "ScalarField", ScalarFieldPy_ScalarField_doc)
+        .def(py::init<const char*>(), py::arg("name")=nullptr)
         .def("addElement", &CCCoreLib::ScalarField::addElement, ScalarFieldPy_addElement_doc)
         .def("computeMeanAndVariance", &computeMeanAndVariance_py, ScalarFieldPy_computeMeanAndVariance_doc)
         .def("computeMinAndMax", &CCCoreLib::ScalarField::computeMinAndMax, ScalarFieldPy_computeMinAndMax_doc)
@@ -99,6 +100,7 @@ void export_ScalarField(py::module &m0)
     //TODO optional parameters on resizeSafe
 
     py::class_<ccScalarField, CCCoreLib::ScalarField , std::unique_ptr<ccScalarField, py::nodelete>>(m0, "ccScalarField", ccScalarFieldPy_ccScalarField_doc)
+        .def(py::init<const char*>(), py::arg("name")=nullptr)
         .def("isSerializable", &ccScalarField::isSerializable)
         ;
     //TODO add serialization functions

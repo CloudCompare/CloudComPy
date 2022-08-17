@@ -189,6 +189,7 @@ void export_colors(py::module &m0)
         .export_values();
 
     py::class_<QRgba64>(m0, "QRgba64", Rgba64Py_QRgba64_doc)
+        .def(py::init<>())
         .def("alpha8", &QRgba64::alpha8, Rgba64Py_alpha8_doc)
         .def("alpha", &QRgba64::alpha, Rgba64Py_alpha_doc)
         .def("blue8", &QRgba64::blue8, Rgba64Py_blue8_doc)

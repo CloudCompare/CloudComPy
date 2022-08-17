@@ -312,17 +312,20 @@ py::tuple DgmOctree_getTheCellPosWhichIncludesThePointLI_py(CCCoreLib::DgmOctree
 void export_ccOctree(py::module &m0)
 {
     py::class_<PointDescriptor_persistent_py>(m0, "PointDescriptor", DgmOctree_PointDescriptor_doc)
+        .def(py::init<>())
         .def_readonly("point", &PointDescriptor_persistent_py::point)
         .def_readonly("pointIndex", &PointDescriptor_persistent_py::pointIndex)
         .def_readonly("squareDistd", &PointDescriptor_persistent_py::squareDistd)
         ;
 
     py::class_<CCCoreLib::DgmOctree::CellDescriptor>(m0, "CellDescriptor", DgmOctree_CellDescriptor_doc)
+        .def(py::init<>())
         .def_readonly("center", &CCCoreLib::DgmOctree::CellDescriptor::center)
         .def_readonly("index", &CCCoreLib::DgmOctree::CellDescriptor::index)
         ;
 
     py::class_<CCCoreLib::DgmOctree::IndexAndCode>(m0, "IndexAndCode", DgmOctree_IndexAndCode_doc)
+        .def(py::init<>())
         .def_readonly("theIndex", &CCCoreLib::DgmOctree::IndexAndCode::theIndex)
         .def_readonly("theCode", &CCCoreLib::DgmOctree::IndexAndCode::theCode)
         .def_static("codeComp", &CCCoreLib::DgmOctree::IndexAndCode::codeComp, DgmOctree_codeComp_doc)
@@ -332,6 +335,7 @@ void export_ccOctree(py::module &m0)
         ;
 
     py::class_<CCCoreLib::DgmOctree::CylindricalNeighbourhood>(m0, "CylindricalNeighbourhood", DgmOctree_CylindricalNeighbourhood_doc)
+        .def(py::init<>())
         .def_readwrite("center",&CCCoreLib::DgmOctree::CylindricalNeighbourhood::center)
         .def_readwrite("dir", &CCCoreLib::DgmOctree::CylindricalNeighbourhood::dir)
         .def_readwrite("radius", &CCCoreLib::DgmOctree::CylindricalNeighbourhood::radius)
@@ -343,6 +347,7 @@ void export_ccOctree(py::module &m0)
     py::class_<CCCoreLib::DgmOctree::ProgressiveCylindricalNeighbourhood,
                 CCCoreLib::DgmOctree::CylindricalNeighbourhood >(m0, "ProgressiveCylindricalNeighbourhood",
                                                                    DgmOctree_ProgressiveCylindricalNeighbourhood_doc)
+        .def(py::init<>())
         .def_readwrite("currentHalfLength", &CCCoreLib::DgmOctree::ProgressiveCylindricalNeighbourhood::currentHalfLength)
         .def_readwrite("potentialCandidates", &CCCoreLib::DgmOctree::ProgressiveCylindricalNeighbourhood::potentialCandidates)
         .def_readwrite("prevMinCornerPos", &CCCoreLib::DgmOctree::ProgressiveCylindricalNeighbourhood::prevMinCornerPos)
@@ -350,6 +355,7 @@ void export_ccOctree(py::module &m0)
         ;
 
     py::class_<CCCoreLib::DgmOctree::BoxNeighbourhood>(m0, "BoxNeighbourhood", DgmOctree_BoxNeighbourhood_doc)
+        .def(py::init<>())
         .def_readwrite("center", &CCCoreLib::DgmOctree::BoxNeighbourhood::center)
         .def_property("axes", &DgmOctree_BoxNeighbourhood_getAxes_py, &DgmOctree_BoxNeighbourhood_setAxes_py)
         .def_readwrite("dimensions", &CCCoreLib::DgmOctree::BoxNeighbourhood::dimensions)
@@ -358,6 +364,7 @@ void export_ccOctree(py::module &m0)
 
     py::class_<CCCoreLib::DgmOctree::NearestNeighboursSearchStruct>(m0, "NearestNeighboursSearchStruct",
                                                                 DgmOctree_NearestNeighboursSearchStruct_doc)
+        .def(py::init<>())
         .def_readwrite("queryPoint", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::queryPoint)
         .def_readwrite("level", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::level)
         .def_readwrite("minNumberOfNeighbors", &CCCoreLib::DgmOctree::NearestNeighboursSearchStruct::minNumberOfNeighbors)

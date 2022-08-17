@@ -106,6 +106,7 @@ void export_ccMesh(py::module &m0)
     py::enum_<CCCoreLib::TRIANGULATION_TYPES>(m0, "TRIANGULATION_TYPES", ccMeshPy_TRIANGULATION_TYPES_doc)
         .value("DELAUNAY_2D_AXIS_ALIGNED", CCCoreLib::TRIANGULATION_TYPES::DELAUNAY_2D_AXIS_ALIGNED)
         .value("DELAUNAY_2D_BEST_LS_PLANE", CCCoreLib::TRIANGULATION_TYPES::DELAUNAY_2D_BEST_LS_PLANE)
+        .export_values();
         ;
 
     py::class_<CCCoreLib::GenericIndexedMesh>(m0, "GenericIndexedMesh") //, no_init, boost::noncopyable
