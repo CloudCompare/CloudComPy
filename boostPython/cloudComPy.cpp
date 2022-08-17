@@ -521,7 +521,7 @@ PYBIND11_MODULE(_cloudComPy, m0)
     export_ccPointCloud(m0);
     export_ccMesh(m0);
     export_ccPrimitives(m0);
-//    export_distanceComputationTools(m0);
+    export_distanceComputationTools(m0);
 //    export_geometricalAnalysisTools(m0);
     export_registrationTools(m0);
 //    export_cloudSamplingTools(m0);

@@ -40,7 +40,7 @@ void export_ccOctree(py::module &);
 void export_ccPointCloud(py::module &);
 void export_ccMesh(py::module &);
 void export_ccPrimitives(py::module &);
-//void export_distanceComputationTools(py::module &);
+void export_distanceComputationTools(py::module &);
 //void export_geometricalAnalysisTools(py::module &);
 void export_registrationTools(py::module &);
 //void export_cloudSamplingTools(py::module &);

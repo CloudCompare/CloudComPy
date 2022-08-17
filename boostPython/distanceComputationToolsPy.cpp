@@ -36,38 +36,92 @@
 #include "PyScalarType.h"
 #include "pyccTrace.h"
 
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
+class PyGenericProgressCallback : public CCCoreLib::GenericProgressCallback {
+public:
+    /* Inherit the constructors */
+    //using CCCoreLib::GenericProgressCallback::GenericProgressCallback;
 
-using namespace boost::python;
+    /* Trampoline (need one for each virtual function) */
+    void update(float percent) override {
+        PYBIND11_OVERRIDE_PURE(
+            void,                                   /* Return type */
+            CCCoreLib::GenericProgressCallback,     /* Parent class */
+            update,                                 /* Name of function in C++ (must match Python name) */
+            percent                                 /* Argument(s) */
+        );
+    }
 
-struct GenericProgressCallbackWrap : CCCoreLib::GenericProgressCallback, wrapper<CCCoreLib::GenericProgressCallback>
-{
-    virtual void update(float percent)
-    {
-        this->get_override("update")(percent);
+    void setMethodTitle(const char* methodTitle) override {
+        PYBIND11_OVERRIDE_PURE(
+            void,                                   /* Return type */
+            CCCoreLib::GenericProgressCallback,     /* Parent class */
+            setMethodTitle,                         /* Name of function in C++ (must match Python name) */
+            methodTitle                             /* Argument(s) */
+        );
     }
-    virtual void setMethodTitle(const char* methodTitle)
-    {
-        this->get_override("setMethodTitle")(methodTitle);
+
+    void setInfo(const char* infoStr) override {
+        PYBIND11_OVERRIDE_PURE(
+            void,                                   /* Return type */
+            CCCoreLib::GenericProgressCallback,     /* Parent class */
+            setInfo,                                /* Name of function in C++ (must match Python name) */
+            infoStr                                 /* Argument(s) */
+        );
     }
-    virtual void setInfo(const char* infoStr)
-    {
-        this->get_override("setInfo")(infoStr);
+
+    void start() override {
+        PYBIND11_OVERRIDE_PURE(
+            void,                                   /* Return type */
+            CCCoreLib::GenericProgressCallback,     /* Parent class */
+            start,                                  /* Name of function in C++ (must match Python name) */
+        );
     }
-    virtual void start()
-    {
-        this->get_override("start")();
+
+    void stop() override {
+        PYBIND11_OVERRIDE_PURE(
+            void,                                   /* Return type */
+            CCCoreLib::GenericProgressCallback,     /* Parent class */
+            stop,                                   /* Name of function in C++ (must match Python name) */
+        );
     }
-    virtual void stop()
-    {
-        this->get_override("stop")();
-    }
-    virtual bool isCancelRequested()
-    {
-        return this->get_override("isCancelRequested")();
+
+    bool isCancelRequested() override {
+        PYBIND11_OVERRIDE_PURE(
+            bool,                                   /* Return type */
+            CCCoreLib::GenericProgressCallback,     /* Parent class */
+            isCancelRequested,                      /* Name of function in C++ (must match Python name) */
+        );
     }
 };
+
+//struct GenericProgressCallbackWrap : CCCoreLib::GenericProgressCallback, wrapper<CCCoreLib::GenericProgressCallback>
+//{
+//    virtual void update(float percent)
+//    {
+//        this->get_override("update")(percent);
+//    }
+//    virtual void setMethodTitle(const char* methodTitle)
+//    {
+//        this->get_override("setMethodTitle")(methodTitle);
+//    }
+//    virtual void setInfo(const char* infoStr)
+//    {
+//        this->get_override("setInfo")(infoStr);
+//    }
+//    virtual void start()
+//    {
+//        this->get_override("start")();
+//    }
+//    virtual void stop()
+//    {
+//        this->get_override("stop")();
+//    }
+//    virtual bool isCancelRequested()
+//    {
+//        return this->get_override("isCancelRequested")();
+//    }
+//};
+
 std::vector<double> computeApproxCloud2CloudDistance_py(CCCoreLib::GenericIndexedCloudPersist* comparedCloud,
                                                         CCCoreLib::GenericIndexedCloudPersist* referenceCloud,
                                                         unsigned char octreeLevel = 7,
@@ -454,11 +508,6 @@ int determineBestOctreeLevel_py(ccPointCloud* compCloud,
     return theBestOctreeLevel;
 }
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2CloudDistances_overloads, computeCloud2CloudDistances_py, 3, 6)
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeCloud2MeshDistances_overloads, computeCloud2MeshDistances_py, 3, 5)
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeApproxCloud2CloudDistance_overloads, computeApproxCloud2CloudDistance_py, 2, 7)
-BOOST_PYTHON_FUNCTION_OVERLOADS(determineBestOctreeLevel_overloads, determineBestOctreeLevel_py, 1, 4)
-
 bool setSplitDistances(CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams& self, size_t count)
 {
     bool success = true;
@@ -499,14 +548,15 @@ CCCoreLib::ScalarField* getSplitDistance(CCCoreLib::DistanceComputationTools::Cl
     return self.splitDistances[index];
 }
 
-void export_distanceComputationTools()
+void export_distanceComputationTools(py::module &m0)
 {
 
-    class_<GenericProgressCallbackWrap, boost::noncopyable>("GenericProgressCallback", no_init)
+    py::class_<CCCoreLib::GenericProgressCallback, PyGenericProgressCallback>(m0, "GenericProgressCallback")
         ;
 
-    class_<CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams>("Cloud2CloudDistancesComputationParams",
-                                                                                      distanceComputationToolsPy_Cloud2CloudDistancesComputationParams_doc)
+    py::class_<CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams>(m0, "Cloud2CloudDistancesComputationParams",
+                                                                     distanceComputationToolsPy_Cloud2CloudDistancesComputationParams_doc)
+        .def(py::init<>())
         .def_readwrite("octreeLevel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::octreeLevel,
                        distanceComputationToolsPy_octreeLevel_doc)
         .def_readwrite("maxSearchDist", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::maxSearchDist,
@@ -517,26 +567,29 @@ void export_distanceComputationTools()
                        distanceComputationToolsPy_maxThreadCount_doc)
         .def_readwrite("localModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::localModel,
                        distanceComputationToolsPy_localModel_doc)
-        .def_readwrite("useSphericalSearchForLocalModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::useSphericalSearchForLocalModel,
+        .def_readwrite("useSphericalSearchForLocalModel",
+                       &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::useSphericalSearchForLocalModel,
                        distanceComputationToolsPy_useSphericalSearchForLocalModel_doc)
         .def_readwrite("kNNForLocalModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::kNNForLocalModel,
                        distanceComputationToolsPy_kNNForLocalModel_doc)
         .def_readwrite("radiusForLocalModel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::radiusForLocalModel,
                        distanceComputationToolsPy_radiusForLocalModel_doc)
-        .def_readwrite("reuseExistingLocalModels", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::reuseExistingLocalModels,
+        .def_readwrite("reuseExistingLocalModels",
+                       &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::reuseExistingLocalModels,
                        distanceComputationToolsPy_reuseExistingLocalModels_doc)
         .def_readwrite("CPSet", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::CPSet,
                        distanceComputationToolsPy_CPSet_doc)
         .def("setSplitDistances", &setSplitDistances,
              distanceComputationToolsPy_setSplitDistances_doc)
         .def("getSplitDistance", &getSplitDistance,distanceComputationToolsPy_getSplitDistance_doc,
-             return_value_policy<reference_existing_object>())
+             py::return_value_policy::reference)
         .def_readwrite("resetFormerDistances", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::resetFormerDistances,
                        distanceComputationToolsPy_resetFormerDistances_doc)
         ;
 
-    class_<CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams>("Cloud2MeshDistancesComputationParams",
-                                                                                     distanceComputationToolsPy_Cloud2MeshDistancesComputationParams_doc)
+    py::class_<CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams>(m0, "Cloud2MeshDistancesComputationParams",
+                                                                   distanceComputationToolsPy_Cloud2MeshDistancesComputationParams_doc)
+        .def(py::init<>())
         .def_readwrite("octreeLevel", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams::octreeLevel,
                        distanceComputationToolsPy_octreeLevel_doc)
         .def_readwrite("maxSearchDist", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams::maxSearchDist,
@@ -555,49 +608,41 @@ void export_distanceComputationTools()
                        distanceComputationToolsPy_CPSet_doc)
         ;
 
-    class_<CCCoreLib::DistanceComputationTools, boost::noncopyable>("DistanceComputationTools",
-                                                                    distanceComputationToolsPy_DistanceComputationTools_doc, no_init)
-        .def("computeCloud2CloudDistances",
-             &computeCloud2CloudDistances_py,
-             computeCloud2CloudDistances_overloads(
-             (arg("comparedCloud"), arg("referenceCloud"), arg("params"),
-              arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr),
-              arg("compOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr),
-              arg("refOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr)),
-             distanceComputationToolsPy_computeCloud2CloudDistances_doc))
-            .staticmethod("computeCloud2CloudDistances")
-        .def("computeCloud2MeshDistances",
-             &computeCloud2MeshDistances_py,
-             computeCloud2MeshDistances_overloads(
-             (arg("pointCloud"), arg("mesh"), arg("params"),
-                     arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr),
-                     arg("cloudOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr)),
-             distanceComputationToolsPy_computeCloud2MeshDistances_doc))
-            .staticmethod("computeCloud2MeshDistances")
-        .def("computeApproxCloud2CloudDistance",
-             &computeApproxCloud2CloudDistance_py,
-             computeApproxCloud2CloudDistance_overloads(
-             (arg("comparedCloud"), arg("referenceCloud"), arg("octreeLevel")=7,
-              arg("maxSearchDist")=0,
-              arg("progressCb")=bp::ptr((CCCoreLib::GenericProgressCallback*)nullptr),
-              arg("compOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr),
-              arg("refOctree")=bp::ptr((CCCoreLib::DgmOctree*)nullptr)),
-             distanceComputationToolsPy_computeApproxCloud2CloudDistance_doc))
-            .staticmethod("computeApproxCloud2CloudDistance")
-        .def("computeApproxCloud2MeshDistance",
-              &computeApproxCloud2MeshDistance_py,
-              distanceComputationToolsPy_computeApproxCloud2MeshDistance_doc)
-             .staticmethod("computeApproxCloud2MeshDistance")
-        .def("determineBestOctreeLevel",
-             &determineBestOctreeLevel_py,
-             determineBestOctreeLevel_overloads(
-             (arg("compCloud"),
-                     arg("refMesh")=bp::ptr((CCCoreLib::GenericIndexedMesh*)nullptr),
-                     arg("refCloud")=bp::ptr((ccPointCloud*)nullptr),
-                     arg("maxSearchDist")=0),
-             distanceComputationToolsPy_determineBestOctreeLevel_doc))
-            .staticmethod("determineBestOctreeLevel")
+    py::class_<CCCoreLib::DistanceComputationTools>(m0, "DistanceComputationTools",
+                                                    distanceComputationToolsPy_DistanceComputationTools_doc)
+        .def_static("computeCloud2CloudDistances",
+                    &computeCloud2CloudDistances_py,
+                    py::arg("comparedCloud"), py::arg("referenceCloud"), py::arg("params"),
+                    py::arg("progressCb")=nullptr,
+                    py::arg("compOctree")=nullptr,
+                    py::arg("refOctree")=nullptr,
+                    distanceComputationToolsPy_computeCloud2CloudDistances_doc)
+        .def_static("computeCloud2MeshDistances",
+                    &computeCloud2MeshDistances_py,
+                    py::arg("pointCloud"), py::arg("mesh"), py::arg("params"),
+                    py::arg("progressCb")=nullptr,
+                    py::arg("cloudOctree")=nullptr,
+                    distanceComputationToolsPy_computeCloud2MeshDistances_doc)
+        .def_static("computeApproxCloud2CloudDistance",
+                    &computeApproxCloud2CloudDistance_py,
+                    py::arg("comparedCloud"), py::arg("referenceCloud"), py::arg("octreeLevel")=7,
+                    py::arg("maxSearchDist")=0,
+                    py::arg("progressCb")=nullptr,
+                    py::arg("compOctree")=nullptr,
+                    py::arg("refOctree")=nullptr,
+                    distanceComputationToolsPy_computeApproxCloud2CloudDistance_doc)
+        .def_static("computeApproxCloud2MeshDistance",
+                    &computeApproxCloud2MeshDistance_py,
+                    distanceComputationToolsPy_computeApproxCloud2MeshDistance_doc)
+        .def_static("determineBestOctreeLevel",
+                    &determineBestOctreeLevel_py,
+                    py::arg("compCloud"),
+                    py::arg("refMesh")=nullptr,
+                    py::arg("refCloud")=nullptr,
+                    py::arg("maxSearchDist")=0,
+                    distanceComputationToolsPy_determineBestOctreeLevel_doc)
         ;
+
     // TODO: methods to add
 //    static int computeCloud2ConeEquation(GenericIndexedCloudPersist* cloud, const CCVector3& coneP1, const CCVector3& coneP2, const PointCoordinateType coneR1, const PointCoordinateType coneR2, bool signedDistances = true, bool solutionType = false, double* rms = nullptr);
 //    static int computeCloud2CylinderEquation(GenericIndexedCloudPersist* cloud, const CCVector3& cylinderP1, const CCVector3& cylinderP2, const PointCoordinateType cylinderRadius, bool signedDistances = true, bool solutionType = false, double* rms = nullptr);

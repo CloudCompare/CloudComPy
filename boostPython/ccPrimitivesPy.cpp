@@ -300,7 +300,7 @@ public:
     static ccQuadric* initWrapper2( CCVector2 minCorner,
                                     CCVector2 maxCorner,
                                     std::vector<PointCoordinateType> eqv,
-                                    const Tuple3ub* dims = 0)
+                                    const Tuple3ub* dims = nullptr)
     {
         if (eqv.size() != 6)
             throw std::range_error("equation parameters: vector of 6 float/double required");
@@ -311,8 +311,8 @@ public:
     static ccQuadric* initWrapper3( CCVector2 minCorner,
                                     CCVector2 maxCorner,
                                     std::vector<PointCoordinateType> eqv,
-                                    const Tuple3ub* dims = 0,
-                                    const ccGLMatrix* transMat = 0)
+                                    const Tuple3ub* dims = nullptr,
+                                    const ccGLMatrix* transMat = nullptr)
     {
         if (eqv.size() != 6)
             throw std::range_error("equation parameters: vector of 6 float/double required");
@@ -323,8 +323,8 @@ public:
     static ccQuadric* initWrapper4( CCVector2 minCorner,
                                     CCVector2 maxCorner,
                                     std::vector<PointCoordinateType> eqv,
-                                    const Tuple3ub* dims = 0,
-                                    const ccGLMatrix* transMat = 0,
+                                    const Tuple3ub* dims = nullptr,
+                                    const ccGLMatrix* transMat = nullptr,
                                     QString name = QString("Quadric"))
     {
         if (eqv.size() != 6)
@@ -336,15 +336,15 @@ public:
     static ccQuadric* initWrapper5( CCVector2 minCorner,
                                     CCVector2 maxCorner,
                                     std::vector<PointCoordinateType> eqv,
-                                    const Tuple3ub* dims = 0,
-                                    const ccGLMatrix* transMat = 0,
+                                    Tuple3ub dims = Tuple3ub(0,1,2),
+                                    const ccGLMatrix* transMat = nullptr,
                                     QString name = QString("Quadric"),
                                     unsigned precision = ccQuadric::DEFAULT_DRAWING_PRECISION)
     {
         if (eqv.size() != 6)
             throw std::range_error("equation parameters: vector of 6 float/double required");
         PointCoordinateType* eq = eqv.data();
-        return new ccQuadric(minCorner, maxCorner, eq, dims, transMat, name, precision);
+        return new ccQuadric(minCorner, maxCorner, eq, &dims, transMat, name, precision);
     }
 };
 
@@ -434,6 +434,7 @@ void export_ccPrimitives(py::module &m0)
         ;
 
     py::class_<ccGLMatrix, ccGLMatrixTpl<float> >(m0, "ccGLMatrix", ccPrimitivesPy_ccGLMatrix_doc)
+        .def(py::init<>())
         .def(py::init<const ccGLMatrixTpl<float>&>())
         .def(py::init<const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&>())
         .def(py::init( &ccGLMatrixWrap::initWrapper1 ))
@@ -448,6 +449,7 @@ void export_ccPrimitives(py::module &m0)
         ;
 
     py::class_<ccGLMatrixd, ccGLMatrixTpl<double> >(m0, "ccGLMatrixd", ccPrimitivesPy_ccGLMatrixd_doc)
+        .def(py::init<>())
         .def(py::init<const ccGLMatrixTpl<double>&>())
         .def(py::init<const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&>())
         .def(py::init(&ccGLMatrixdWrap::initWrapper1 ))
@@ -516,11 +518,14 @@ void export_ccPrimitives(py::module &m0)
         ;
 
     py::class_<ccQuadric, ccGenericPrimitive, ccMesh>(m0, "ccQuadric", ccPrimitivesPy_ccQuadric_doc)
-        .def(py::init(&ccQuadricWrap::initWrapper1 ))
-        .def(py::init(&ccQuadricWrap::initWrapper2 ))
-        .def(py::init(&ccQuadricWrap::initWrapper3 ))
-        .def(py::init(&ccQuadricWrap::initWrapper4 ))
-        .def(py::init(&ccQuadricWrap::initWrapper5 ))
+//        .def(py::init(&ccQuadricWrap::initWrapper1 ))
+//        .def(py::init(&ccQuadricWrap::initWrapper2 ))
+//        .def(py::init(&ccQuadricWrap::initWrapper3 ))
+//        .def(py::init(&ccQuadricWrap::initWrapper4 )).none(true)=static_cast<Tuple3ub*>(nullptr)
+        .def(py::init(&ccQuadricWrap::initWrapper5),
+            py::arg("minCorner"), py::arg("maxCorner"), py::arg("eqv"),
+            py::arg("dims")=Tuple3ub(0,1,2), py::arg("transMat")=nullptr,
+            py::arg("name")=QString("Quadric"), py::arg("precision")= ccQuadric::DEFAULT_DRAWING_PRECISION )
         ;
 
     py::class_<ccSphere, ccGenericPrimitive, ccMesh>(m0, "ccSphere", ccPrimitivesPy_ccSphere_doc)

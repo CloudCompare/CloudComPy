@@ -108,6 +108,47 @@ PYBIND11_TYPE_CASTER(QString, _("QString"));
     }
 };
 
+template<typename T> struct type_caster<Tuple3Tpl<T> >
+{
+public:
+PYBIND11_TYPE_CASTER(Tuple3Tpl<T>, _("Tuple3Tpl<T>"));
+
+    bool load(handle src, bool)
+    {
+        CCTRACE("Tuple3Tpl<T> load");
+        if(!src)
+        {
+            return false;
+        }
+        object temp;
+        handle load_src = src;
+
+        if (!PyTuple_Check(load_src.ptr()))
+            return false;
+        if (PyTuple_GET_SIZE(load_src.ptr()) != 3)
+            return false;
+        for (int i=0; i<3; i++)
+        {
+            PyObject* iptr = PyTuple_GET_ITEM(load_src.ptr(), i);
+            if (PyFloat_Check(iptr))
+                value.u[i] = PyFloat_AS_DOUBLE(iptr);
+            else if (PyLong_Check(iptr))
+                value.u[i] = PyLong_AsDouble(iptr);
+            else
+                return false;
+        }
+        return true;
+    }
+
+    static handle cast(const Tuple3Tpl<T>& src, return_value_policy /* policy */, handle /* parent */)
+    {
+        CCTRACE("Tuple3Tpl<T> cast");
+        tuple tup = make_tuple(src.x, src.y, src.z);
+        return tup.inc_ref();
+    }
+};
+
+
 template<> struct type_caster<CCVector3 >
 {
 public:
