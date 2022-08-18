@@ -31,10 +31,6 @@
 #include "pyccTrace.h"
 #include "MeshBoolean_DocStrings.hpp"
 
-
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
 void initTrace_MeshBoolean()
 {
 #ifdef _PYTHONAPI_DEBUG_
@@ -42,21 +38,20 @@ void initTrace_MeshBoolean()
 #endif
 }
 
-BOOST_PYTHON_MODULE(_MeshBoolean)
+
+PYBIND11_MODULE(_MeshBoolean, m4)
 {
-    using namespace boost::python;
+    m4.doc() = MeshBoolean_doc;
 
-    scope().attr("__doc__") = MeshBoolean_doc;
-
-    enum_<CSG_OPERATION>("CSG_OPERATION")
+    py::enum_<CSG_OPERATION>(m4, "CSG_OPERATION")
         .value("UNION", CSG_OPERATION::UNION)
         .value("INTERSECT", CSG_OPERATION::INTERSECT)
         .value("DIFF", CSG_OPERATION::DIFF)
         .value("SYM_DIFF", CSG_OPERATION::SYM_DIFF)
+        .export_values();
         ;
 
-    def("computeMeshBoolean", &computeMeshBoolean,
-        return_value_policy<reference_existing_object>(), MeshBoolean_computeMeshBoolean_doc);
-    def("initTrace_MeshBoolean", initTrace_MeshBoolean, MeshBoolean_initTrace_MeshBoolean_doc);
-
+        m4.def("computeMeshBoolean", &computeMeshBoolean,
+        py::return_value_policy::reference, MeshBoolean_computeMeshBoolean_doc);
+        m4.def("initTrace_MeshBoolean", initTrace_MeshBoolean, MeshBoolean_initTrace_MeshBoolean_doc);
 }

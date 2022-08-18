@@ -34,9 +34,6 @@
 #include "pyccTrace.h"
 #include "CSF_DocStrings.hpp"
 
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
 void initTrace_CSF()
 {
 #ifdef _PYTHONAPI_DEBUG_
@@ -44,20 +41,13 @@ void initTrace_CSF()
 #endif
 }
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeCSF_overloads, qCSF::computeCSF, 1, 6)
-
-
-BOOST_PYTHON_MODULE(_CSF)
+PYBIND11_MODULE(_CSF, m7)
 {
-    using namespace boost::python;
+    m7.doc() = CSF_doc;
 
-    scope().attr("__doc__") = CSF_doc;
-
-    def("computeCSF", qCSF::computeCSF,
-            computeCSF_overloads(
-        (arg("pc"), arg("csfRigidness")=2, arg("maxIteration")=500, arg("clothResolution")=2.0,
-         arg("classThreshold")=0.5, arg("csfPostprocessing")=false), CSF_computeCSF_doc));
-    def("initTrace_CSF", initTrace_CSF, CSF_initTrace_CSF_doc);
-
+    m7.def("computeCSF", qCSF::computeCSF,
+            py::arg("pc"), py::arg("csfRigidness")=2, py::arg("maxIteration")=500, py::arg("clothResolution")=2.0,
+            py::arg("classThreshold")=0.5, py::arg("csfPostprocessing")=false, CSF_computeCSF_doc);
+    m7.def("initTrace_CSF", initTrace_CSF, CSF_initTrace_CSF_doc);
 }
 

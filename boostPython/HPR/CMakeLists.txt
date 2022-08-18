@@ -40,7 +40,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 #target_sources( ${PROJECT_NAME} PRIVATE ${generated_ui_list} )
 
 target_include_directories( ${PROJECT_NAME} PRIVATE
-    ${Boost_INCLUDE_DIRS}
+    ${pybind11_INCLUDE_DIR}
     ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -54,7 +54,6 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
 target_link_libraries( ${PROJECT_NAME}
     PYCC_LIB
     CCAppCommon
-    ${Boost_LIBRARIES}
     ${Python3_LIBRARIES}
     )
 

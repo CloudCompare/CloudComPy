@@ -34,10 +34,6 @@
 #include "qM3C2Tools.h"
 #include "qM3C2Dialog.h"
 
-
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
 void initTrace_M3C2()
 {
 #ifdef _PYTHONAPI_DEBUG_
@@ -95,13 +91,11 @@ bool M3C2gessParamsToFile(std::vector<ccHObject*> clouds, const QString& paramFi
     return true;
 }
 
-BOOST_PYTHON_MODULE(_M3C2)
+PYBIND11_MODULE(_M3C2, m1)
 {
-    using namespace boost::python;
+    m1.doc() = M3C2_doc;
 
-    scope().attr("__doc__") = M3C2_doc;
-
-    def("computeM3C2", computeM3C2, return_value_policy<reference_existing_object>(), M3C2_computeM3C2_doc);
-    def("initTrace_M3C2", initTrace_M3C2, M3C2_initTrace_M3C2_doc);
-    def("M3C2gessParamsToFile", M3C2gessParamsToFile, M3C2_M3C2gessParamsToFile_doc);
+    m1.def("computeM3C2", computeM3C2, py::return_value_policy::reference, M3C2_computeM3C2_doc);
+    m1.def("initTrace_M3C2", initTrace_M3C2, M3C2_initTrace_M3C2_doc);
+    m1.def("M3C2gessParamsToFile", M3C2gessParamsToFile, M3C2_M3C2gessParamsToFile_doc);
 }

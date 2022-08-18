@@ -35,10 +35,6 @@
 #include "pyccTrace.h"
 #include "PCV_DocStrings.hpp"
 
-
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
 void initTrace_PCV()
 {
 #ifdef _PYTHONAPI_DEBUG_
@@ -119,19 +115,12 @@ bool computeShadeVIS(std::vector<ccHObject*> clouds,
     return PCVCommand::Process(candidates, rays, isClosedMesh, resolution);
 }
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeShadeVIS_overloads, computeShadeVIS, 1, 6)
-
-
-BOOST_PYTHON_MODULE(_PCV)
+PYBIND11_MODULE(_PCV, m2)
 {
-    using namespace boost::python;
+    m2.doc() = PCV_doc;
 
-    scope().attr("__doc__") = PCV_doc;
-
-    def("computeShadeVIS", computeShadeVIS,
-        computeShadeVIS_overloads(
-        (arg("clouds"), arg("cloudWithNormals")=bp::ptr((ccPointCloud*)nullptr), arg("rayCount")=256, arg("resolution")=1024,
-         arg("is360")=false, arg("isClosedMesh")=false), PCV_computeShadeVIS_doc));
-    def("initTrace_PCV", initTrace_PCV, PCV_initTrace_PCV_doc);
-
+    m2.def("computeShadeVIS", computeShadeVIS,
+        py::arg("clouds"), py::arg("cloudWithNormals")=nullptr, py::arg("rayCount")=256, py::arg("resolution")=1024,
+        py::arg("is360")=false, py::arg("isClosedMesh")=false, PCV_computeShadeVIS_doc);
+    m2.def("initTrace_PCV", initTrace_PCV, PCV_initTrace_PCV_doc);
 }

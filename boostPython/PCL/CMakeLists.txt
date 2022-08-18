@@ -35,12 +35,8 @@ add_library( ${PROJECT_NAME} SHARED )
     ${CMAKE_CURRENT_LIST_DIR}/PCLPy.cpp
     )
 
-#qt5_wrap_ui( generated_ui_list ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qPCL/ui/qPCLDialog.ui )
-#message(STATUS "generated_ui_list: ${generated_ui_list}")
-#target_sources( ${PROJECT_NAME} PRIVATE ${generated_ui_list} )
-
 target_include_directories( ${PROJECT_NAME} PRIVATE
-    ${Boost_INCLUDE_DIRS}
+    ${pybind11_INCLUDE_DIR}
     ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -54,7 +50,6 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
 target_link_libraries( ${PROJECT_NAME}
     PYCC_LIB
     CCAppCommon
-    ${Boost_LIBRARIES}
     ${Python3_LIBRARIES}
     )
 

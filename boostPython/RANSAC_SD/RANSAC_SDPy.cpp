@@ -34,10 +34,6 @@
 #include "pyccTrace.h"
 #include "RANSAC_SD_DocStrings.hpp"
 
-
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
 void initTrace_RANSAC_SD()
 {
 #ifdef _PYTHONAPI_DEBUG_
@@ -45,7 +41,7 @@ void initTrace_RANSAC_SD()
 #endif
 }
 
-bp::tuple computeRANSAC_SD(ccPointCloud* ccPC,
+py::tuple computeRANSAC_SD(ccPointCloud* ccPC,
                            const qRansacSD::RansacParams& param)
 {
     CCTRACE("computeRANSAC_SD");
@@ -88,7 +84,7 @@ bp::tuple computeRANSAC_SD(ccPointCloud* ccPC,
     {
         CCTRACE("Nothing found by RANSAC_SD!");
     }
-    bp::tuple res = bp::make_tuple(meshes, clouds);
+    py::tuple res = py::make_tuple(meshes, clouds);
     return res;
 }
 
@@ -112,21 +108,21 @@ void optimizeForCloud(qRansacSD::RansacParams& self, ccPointCloud* pc)
     self.bitmapEpsilon = 0.01 * scale;
 }
 
-BOOST_PYTHON_MODULE(_RANSAC_SD)
+PYBIND11_MODULE(_RANSAC_SD, m5)
 {
-    using namespace boost::python;
+    m5.doc() = RANSAC_SD_doc;
 
-    scope().attr("__doc__") = RANSAC_SD_doc;
-
-    enum_<qRansacSD::RANSAC_PRIMITIVE_TYPES>("RANSAC_PRIMITIVE_TYPES")
+    py::enum_<qRansacSD::RANSAC_PRIMITIVE_TYPES>(m5, "RANSAC_PRIMITIVE_TYPES")
         .value("RPT_PLANE", qRansacSD::RPT_PLANE )
         .value("RPT_SPHERE", qRansacSD::RPT_SPHERE )
         .value("RPT_CYLINDER", qRansacSD::RPT_CYLINDER )
         .value("RPT_CONE", qRansacSD::RPT_CONE )
         .value("RPT_TORUS", qRansacSD::RPT_TORUS )
+        .export_values();
         ;
 
-    class_<qRansacSD::RansacParams>("RansacParams", RANSAC_SD_RansacParams_doc)
+    py::class_<qRansacSD::RansacParams>(m5, "RansacParams", RANSAC_SD_RansacParams_doc)
+        .def(py::init<>())
         .def_readwrite("epsilon", &qRansacSD::RansacParams::epsilon,
                        RANSAC_SD_RansacParams_epsilon_doc)
         .def_readwrite("bitmapEpsilon", &qRansacSD::RansacParams::bitmapEpsilon,
@@ -174,8 +170,7 @@ BOOST_PYTHON_MODULE(_RANSAC_SD)
         .def("optimizeForCloud", optimizeForCloud, RANSAC_SD_RansacParams_optimizeForCloud_doc)
         ;
 
-    def("computeRANSAC_SD", computeRANSAC_SD, RANSAC_SD_computeRANSAC_SD_doc);
+    m5.def("computeRANSAC_SD", computeRANSAC_SD, RANSAC_SD_computeRANSAC_SD_doc);
 
-    def("initTrace_RANSAC_SD", initTrace_RANSAC_SD, RANSAC_SD_initTrace_RANSAC_SD_doc);
-
+    m5.def("initTrace_RANSAC_SD", initTrace_RANSAC_SD, RANSAC_SD_initTrace_RANSAC_SD_doc);
 }

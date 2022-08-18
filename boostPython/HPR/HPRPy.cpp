@@ -34,10 +34,6 @@
 #include "pyccTrace.h"
 #include "HPR_DocStrings.hpp"
 
-
-namespace bp = boost::python;
-namespace bnp = boost::python::numpy;
-
 void initTrace_HPR()
 {
 #ifdef _PYTHONAPI_DEBUG_
@@ -149,19 +145,12 @@ ccPointCloud* computeHPR( ccPointCloud* cloud,
     return nullptr;
 }
 
-BOOST_PYTHON_FUNCTION_OVERLOADS(computeHPR_overloads, computeHPR, 2, 3)
-
-
-BOOST_PYTHON_MODULE(_HPR)
+PYBIND11_MODULE(_HPR, m3)
 {
-    using namespace boost::python;
+    m3.doc() = HPR_doc;
 
-    scope().attr("__doc__") = HPR_doc;
-
-    def("computeHPR", computeHPR,
-        computeHPR_overloads(
-        (arg("cloud"), arg("viewPoint"), arg("octreeLevel")=7),
-        HPR_computeHPR_doc)[return_value_policy<reference_existing_object>()]);
-    def("initTrace_HPR", initTrace_HPR, HPR_initTrace_HPR_doc);
-
+    m3.def("computeHPR", computeHPR,
+        py::arg("cloud"), py::arg("viewPoint"), py::arg("octreeLevel")=7,
+        HPR_computeHPR_doc, py::return_value_policy::reference);
+    m3.def("initTrace_HPR", initTrace_HPR, HPR_initTrace_HPR_doc);
 }
