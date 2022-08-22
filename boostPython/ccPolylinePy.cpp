@@ -20,7 +20,6 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "ccPolylinePy.hpp"
 
 #include <ccPolyline.h>
 #include <Polyline.h>

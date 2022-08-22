@@ -20,27 +20,36 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "ccOctreePy.hpp"
 
 #include <DgmOctree.h>
 
 #include <ReferenceCloud.h>
 #include <ccOctree.h>
 #include <CCGeom.h>
+#include <pybind11/detail/type_caster_base.h>
 
 #include "ccOctreePy_DocStrings.hpp"
 
 #include "PyScalarType.h"
 #include "pyccTrace.h"
 #include <QObject>
+#include <QSharedPointer>
 
-
-template <typename T>
-T* get_pointer(QSharedPointer<T> const& p)
+struct PointDescriptor_persistent_py
 {
-    return p.data();
-}
+    const CCVector3 point;
+    unsigned pointIndex;
+    double squareDistd;
+    PointDescriptor_persistent_py();
+    PointDescriptor_persistent_py(const CCCoreLib::DgmOctree::PointDescriptor& pt);
+};
 
+//template <typename T>
+//T* get_pointer(QSharedPointer<T> const& p)
+//{
+//    return p.data();
+//}
+//
 //namespace boost
 //{
 //    namespace python
@@ -309,6 +318,16 @@ py::tuple DgmOctree_getTheCellPosWhichIncludesThePointLI_py(CCCoreLib::DgmOctree
     return py::make_tuple(cellPos, inBounds);
 }
 
+//namespace pybind11 { namespace detail { template <> struct move_always<ccOctree> : std::true_type {}; } }
+//void try_static_assert() {
+//  static_assert(
+//      !py::detail::is_copy_constructible<ccOctree>::value,
+//      "copy constructible is not OK");  // Compiles
+//  static_assert(
+//      std::is_move_constructible<ccOctree>::value,
+//      "move constructible should be OK");  // Compiles
+//}
+
 void export_ccOctree(py::module &m0)
 {
     py::class_<PointDescriptor_persistent_py>(m0, "PointDescriptor", DgmOctree_PointDescriptor_doc)
@@ -464,5 +483,6 @@ void export_ccOctree(py::module &m0)
     // pointsAndTheirCellCodes
     // rayCast
 
+    //py::class_<ccOctree, CCCoreLib::DgmOctree, std::unique_ptr<ccOctree, py::nodelete>>(m0, "ccOctree", ccOctree_ccOctree_doc); //        ;, boost::noncopyable>
     py::class_<ccOctree, CCCoreLib::DgmOctree>(m0, "ccOctree", ccOctree_ccOctree_doc); //        ;, boost::noncopyable>
 }

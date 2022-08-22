@@ -20,7 +20,6 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "cloudSamplingToolsPy.hpp"
 
 #include <boost/python/numpy.hpp>
 #include <boost/python.hpp>

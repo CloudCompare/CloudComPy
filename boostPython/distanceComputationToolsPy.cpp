@@ -20,7 +20,6 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "distanceComputationToolsPy.hpp"
 
 #include <ccPointCloud.h>
 #include <GenericIndexedCloudPersist.h>

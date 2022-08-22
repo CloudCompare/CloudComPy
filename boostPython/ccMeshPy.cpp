@@ -20,7 +20,6 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "ccMeshPy.hpp"
 
 #include <CCGeom.h>
 #include <ccMesh.h>

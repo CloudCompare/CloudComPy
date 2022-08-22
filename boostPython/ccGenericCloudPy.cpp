@@ -20,7 +20,6 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "ccGenericCloudPy.hpp"
 
 #include <ccBBox.h>
 #include <ReferenceCloud.h>
@@ -131,6 +130,26 @@ void showNormalsPy(ccHObject& self, bool isShown)
     else self.showNormals(false);
 }
 
+ccOctree* getOctreePy(ccGenericPointCloud& self )
+{
+    QSharedPointer<ccOctree> shared = self.getOctree();
+    ccOctree* ptr= shared.data();
+    CCTRACE("getOctreePy: " << ptr);
+    return ptr;
+}
+
+std::unique_ptr<ccOctree, py::nodelete> computeOctreePy(ccGenericPointCloud& self, CCCoreLib::GenericProgressCallback* progressCb=nullptr, bool autoAddChild=true )
+{
+    QSharedPointer<ccOctree> shared = self.computeOctree(progressCb, autoAddChild);
+    std::unique_ptr<ccOctree, py::nodelete> ptr = std::unique_ptr<ccOctree, py::nodelete>(shared.data());
+    CCTRACE("computeOctreePy: " << ptr.get());
+    CCVector3 bbmin, bbmax;
+    ptr->getBoundingBox(bbmin, bbmax);
+    CCTRACE("bbox: " << bbmin.x<<" "<< bbmin.y<<" "<< bbmin.z<<" - "<< bbmax.x<<" "<< bbmax.y<<" "<< bbmax.z);
+    return ptr;
+}
+
+
 void export_ccGenericCloud(py::module &m0)
 {
     py::enum_<CC_TYPES::CCTYPES>(m0, "CC_TYPES")
@@ -224,8 +243,8 @@ void export_ccGenericCloud(py::module &m0)
     py::class_<ccGenericPointCloud, CCCoreLib::GenericIndexedCloudPersist, ccShiftedObject>(m0, "ccGenericPointCloud")
         .def("computeOctree", &ccGenericPointCloud::computeOctree,
              py::arg("progressCb")=nullptr, py::arg("autoAddChild")=true,
-             ccGenericPointCloud_computeOctree_doc )
-        .def("getOctree", &ccGenericPointCloud::getOctree, ccGenericPointCloud_getOctree_doc)
+             ccGenericPointCloud_computeOctree_doc, py::return_value_policy::reference )
+        .def("getOctree", &ccGenericPointCloud::getOctree, ccGenericPointCloud_getOctree_doc, py::return_value_policy::reference)
         .def("deleteOctree", &ccGenericPointCloud::deleteOctree, ccGenericPointCloud_deleteOctree_doc)
 		.def("getOwnBB", &ccGenericPointCloud_getOwnBB, ccGenericPointCloud_getOwnBB_doc)
         ;

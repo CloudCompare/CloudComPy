@@ -20,7 +20,6 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "ccSensorPy.hpp"
 #include "ccSensorPy_DocStrings.hpp"
 
 #include <ccSensor.h>

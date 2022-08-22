@@ -29,8 +29,17 @@
 #include <pybind11/stl_bind.h>
 #include <pybind11/numpy.h>
 #include "conversions.hpp"
+#include <QSharedPointer>
 
 namespace py = pybind11;
+
+PYBIND11_DECLARE_HOLDER_TYPE(T, QSharedPointer<T>);
+namespace PYBIND11_NAMESPACE { namespace detail {
+    template <typename T>
+    struct holder_helper<QSharedPointer<T>> { // <-- specialization
+        static const T *get(const QSharedPointer<T> &p) { CCTRACE("pointer " << p.data()); return p.data(); }
+    };
+}}
 
 void export_colors(py::module &);
 void export_ScalarField(py::module &);

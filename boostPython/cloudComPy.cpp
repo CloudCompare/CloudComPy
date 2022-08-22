@@ -27,6 +27,7 @@
 #include <ccGLMatrix.h>
 #include <ccHObject.h>
 #include <ccPointCloud.h>
+#include <ccOctree.h>
 #include <ccMesh.h>
 #include <ScalarField.h>
 #include <ccNormalVectors.h>
@@ -38,6 +39,7 @@
 #include <ParallelSort.h>
 
 #include <QString>
+#include <QSharedPointer>
 #include <vector>
 
 #include "optdefines.h"

@@ -20,7 +20,6 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "geometricalAnalysisToolsPy.hpp"
 
 #include <ccPointCloud.h>
 #include <GenericIndexedCloudPersist.h>

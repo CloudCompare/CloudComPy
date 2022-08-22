@@ -20,7 +20,6 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "NeighbourhoodPy.hpp"
 
 #include <Neighbourhood.h>
 #include "NeighbourhoodPy_DocStrings.hpp"

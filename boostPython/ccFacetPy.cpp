@@ -20,7 +20,6 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "ccFacetPy.hpp"
 
 #include <ccFacet.h>
 #include <ccHObject.h>

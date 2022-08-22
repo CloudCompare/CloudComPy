@@ -20,7 +20,6 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-#include "ccPrimitivesPy.hpp"
 
 #include <CCGeom.h>
 #include <ccObject.h>

@@ -20,7 +20,6 @@
 //##########################################################################
 
 #include "cloudComPy.hpp"
-//#include "colorsPy.hpp"
 
 #include <QColor>
 
