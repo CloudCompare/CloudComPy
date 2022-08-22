@@ -130,19 +130,21 @@ void showNormalsPy(ccHObject& self, bool isShown)
     else self.showNormals(false);
 }
 
-ccOctree* getOctreePy(ccGenericPointCloud& self )
+const CCCoreLib::DgmOctree* getOctreePy(ccGenericPointCloud& self )
 {
     QSharedPointer<ccOctree> shared = self.getOctree();
-    ccOctree* ptr= shared.data();
+    //ccOctree* ptr= shared.data();
+    const CCCoreLib::DgmOctree* ptr = dynamic_cast<CCCoreLib::DgmOctree*>(shared.data());
     CCTRACE("getOctreePy: " << ptr);
     return ptr;
 }
 
-std::unique_ptr<ccOctree, py::nodelete> computeOctreePy(ccGenericPointCloud& self, CCCoreLib::GenericProgressCallback* progressCb=nullptr, bool autoAddChild=true )
+const CCCoreLib::DgmOctree* computeOctreePy(ccGenericPointCloud& self, CCCoreLib::GenericProgressCallback* progressCb=nullptr, bool autoAddChild=true )
 {
     QSharedPointer<ccOctree> shared = self.computeOctree(progressCb, autoAddChild);
-    std::unique_ptr<ccOctree, py::nodelete> ptr = std::unique_ptr<ccOctree, py::nodelete>(shared.data());
-    CCTRACE("computeOctreePy: " << ptr.get());
+//    std::unique_ptr<ccOctree, py::nodelete> ptr = std::unique_ptr<ccOctree, py::nodelete>(shared.data());
+//    CCTRACE("computeOctreePy: " << ptr.get());
+    const CCCoreLib::DgmOctree* ptr = dynamic_cast<CCCoreLib::DgmOctree*>(shared.data());
     CCVector3 bbmin, bbmax;
     ptr->getBoundingBox(bbmin, bbmax);
     CCTRACE("bbox: " << bbmin.x<<" "<< bbmin.y<<" "<< bbmin.z<<" - "<< bbmax.x<<" "<< bbmax.y<<" "<< bbmax.z);
@@ -241,10 +243,10 @@ void export_ccGenericCloud(py::module &m0)
 		;
 
     py::class_<ccGenericPointCloud, CCCoreLib::GenericIndexedCloudPersist, ccShiftedObject>(m0, "ccGenericPointCloud")
-        .def("computeOctree", &ccGenericPointCloud::computeOctree,
+        .def("computeOctree", &computeOctreePy,
              py::arg("progressCb")=nullptr, py::arg("autoAddChild")=true,
              ccGenericPointCloud_computeOctree_doc, py::return_value_policy::reference )
-        .def("getOctree", &ccGenericPointCloud::getOctree, ccGenericPointCloud_getOctree_doc, py::return_value_policy::reference)
+        .def("getOctree", &getOctreePy, ccGenericPointCloud_getOctree_doc, py::return_value_policy::reference)
         .def("deleteOctree", &ccGenericPointCloud::deleteOctree, ccGenericPointCloud_deleteOctree_doc)
 		.def("getOwnBB", &ccGenericPointCloud_getOwnBB, ccGenericPointCloud_getOwnBB_doc)
         ;

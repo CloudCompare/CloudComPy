@@ -484,5 +484,5 @@ void export_ccOctree(py::module &m0)
     // rayCast
 
     //py::class_<ccOctree, CCCoreLib::DgmOctree, std::unique_ptr<ccOctree, py::nodelete>>(m0, "ccOctree", ccOctree_ccOctree_doc); //        ;, boost::noncopyable>
-    py::class_<ccOctree, CCCoreLib::DgmOctree>(m0, "ccOctree", ccOctree_ccOctree_doc); //        ;, boost::noncopyable>
+    //py::class_<ccOctree, CCCoreLib::DgmOctree>(m0, "ccOctree", ccOctree_ccOctree_doc); //        ;, boost::noncopyable>
 }
