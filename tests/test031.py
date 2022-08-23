@@ -56,5 +56,5 @@ if not isOk:
     raise RuntimeError
 
 res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud_2s.las"))
-if res:
+if res != cc.CC_FERR_NO_ERROR:
     raise RuntimeError

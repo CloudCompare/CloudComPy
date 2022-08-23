@@ -216,6 +216,7 @@ void export_colors(py::module &m0)
         ;
 
     py::class_<QColor>(m0, "QColor", colorsPy_QColor_doc)
+        .def(py::init<>())
         .def(py::init<int, int, int, int>())
         .def(py::init<unsigned int>())
         .def(py::init<QRgba64>())

@@ -10,10 +10,6 @@ Octrees, descriptors and neighbourhood
 Octrees
 -----------------------
 
-.. autoclass:: ccOctree
-   :members:
-   :show-inheritance:
-
 .. autoclass:: DgmOctree
    :members:
    :inherited-members:

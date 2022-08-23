@@ -123,21 +123,40 @@ PYBIND11_TYPE_CASTER(Tuple3Tpl<T>, _("Tuple3Tpl<T>"));
         object temp;
         handle load_src = src;
 
-        if (!PyTuple_Check(load_src.ptr()))
-            return false;
-        if (PyTuple_GET_SIZE(load_src.ptr()) != 3)
-            return false;
-        for (int i=0; i<3; i++)
+        if (PyTuple_Check(load_src.ptr()))
         {
-            PyObject* iptr = PyTuple_GET_ITEM(load_src.ptr(), i);
-            if (PyFloat_Check(iptr))
-                value.u[i] = PyFloat_AS_DOUBLE(iptr);
-            else if (PyLong_Check(iptr))
-                value.u[i] = PyLong_AsDouble(iptr);
-            else
+            if (PyTuple_GET_SIZE(load_src.ptr()) != 3)
                 return false;
+            for (int i=0; i<3; i++)
+            {
+                PyObject* iptr = PyTuple_GET_ITEM(load_src.ptr(), i);
+                if (PyFloat_Check(iptr))
+                    value.u[i] = PyFloat_AS_DOUBLE(iptr);
+                else if (PyLong_Check(iptr))
+                    value.u[i] = PyLong_AsDouble(iptr);
+                else
+                    return false;
+            }
+            return true;
         }
-        return true;
+        else if (PyList_Check(load_src.ptr()))
+        {
+            if (PyList_GET_SIZE(load_src.ptr()) != 3)
+                return false;
+            for (int i=0; i<3; i++)
+            {
+                PyObject* iptr = PyList_GET_ITEM(load_src.ptr(), i);
+                if (PyFloat_Check(iptr))
+                    value.u[i] = PyFloat_AS_DOUBLE(iptr);
+                else if (PyLong_Check(iptr))
+                    value.u[i] = PyLong_AsDouble(iptr);
+                else
+                    return false;
+            }
+            return true;
+        }
+        else
+            return false;
     }
 
     static handle cast(const Tuple3Tpl<T>& src, return_value_policy /* policy */, handle /* parent */)
@@ -148,15 +167,14 @@ PYBIND11_TYPE_CASTER(Tuple3Tpl<T>, _("Tuple3Tpl<T>"));
     }
 };
 
-
-template<> struct type_caster<CCVector3 >
+template<typename T> struct type_caster<Vector3Tpl<T> >
 {
 public:
-PYBIND11_TYPE_CASTER(CCVector3, _("CCVector3"));
+PYBIND11_TYPE_CASTER(Vector3Tpl<T>, _("Vector3Tpl<T>"));
 
     bool load(handle src, bool)
     {
-        CCTRACE("CCVector3 load");
+        CCTRACE("Vector3Tpl<T> load");
         if(!src)
         {
             return false;
@@ -164,40 +182,58 @@ PYBIND11_TYPE_CASTER(CCVector3, _("CCVector3"));
         object temp;
         handle load_src = src;
 
-        if (!PyTuple_Check(load_src.ptr()))
-            return false;
-        if (PyTuple_GET_SIZE(load_src.ptr()) != 3)
-            return false;
-        for (int i=0; i<3; i++)
+        if (PyTuple_Check(load_src.ptr()))
         {
-            PyObject* iptr = PyTuple_GET_ITEM(load_src.ptr(), i);
-            if (PyFloat_Check(iptr))
-                value.u[i] = PyFloat_AS_DOUBLE(iptr);
-            else if (PyLong_Check(iptr))
-                value.u[i] = PyLong_AsDouble(iptr);
-            else
+            if (PyTuple_GET_SIZE(load_src.ptr()) != 3)
                 return false;
+            for (int i=0; i<3; i++)
+            {
+                PyObject* iptr = PyTuple_GET_ITEM(load_src.ptr(), i);
+                if (PyFloat_Check(iptr))
+                    value.u[i] = PyFloat_AS_DOUBLE(iptr);
+                else if (PyLong_Check(iptr))
+                    value.u[i] = PyLong_AsDouble(iptr);
+                else
+                    return false;
+            }
+            return true;
         }
-        return true;
+        else if (PyList_Check(load_src.ptr()))
+        {
+            if (PyList_GET_SIZE(load_src.ptr()) != 3)
+                return false;
+            for (int i=0; i<3; i++)
+            {
+                PyObject* iptr = PyList_GET_ITEM(load_src.ptr(), i);
+                if (PyFloat_Check(iptr))
+                    value.u[i] = PyFloat_AS_DOUBLE(iptr);
+                else if (PyLong_Check(iptr))
+                    value.u[i] = PyLong_AsDouble(iptr);
+                else
+                    return false;
+            }
+            return true;
+        }
+        else
+            return false;
     }
 
-    static handle cast(const CCVector3& src, return_value_policy /* policy */, handle /* parent */)
+    static handle cast(const Vector3Tpl<T>& src, return_value_policy /* policy */, handle /* parent */)
     {
-        CCTRACE("CCVector3 cast");
+        CCTRACE("Vector3Tpl<T> cast");
         tuple tup = make_tuple(src.x, src.y, src.z);
         return tup.inc_ref();
     }
 };
 
-
-template<> struct type_caster<CCVector2 >
+template<typename T> struct type_caster<Vector2Tpl<T> >
 {
 public:
-PYBIND11_TYPE_CASTER(CCVector2, _("CCVector2"));
+PYBIND11_TYPE_CASTER(Vector2Tpl<T>, _("Vector2Tpl<T>"));
 
     bool load(handle src, bool)
     {
-        CCTRACE("CCVector2 load");
+        CCTRACE("Vector2Tpl<T> load");
         if(!src)
         {
             return false;
@@ -205,30 +241,130 @@ PYBIND11_TYPE_CASTER(CCVector2, _("CCVector2"));
         object temp;
         handle load_src = src;
 
-        if (!PyTuple_Check(load_src.ptr()))
-            return false;
-        if (PyTuple_GET_SIZE(load_src.ptr()) != 2)
-            return false;
-        for (int i=0; i<2; i++)
+        if (PyTuple_Check(load_src.ptr()))
         {
-            PyObject* iptr = PyTuple_GET_ITEM(load_src.ptr(), i);
-            if (PyFloat_Check(iptr))
-                value.u[i] = PyFloat_AS_DOUBLE(iptr);
-            else if (PyLong_Check(iptr))
-                value.u[i] = PyLong_AsDouble(iptr);
-            else
+            if (PyTuple_GET_SIZE(load_src.ptr()) != 2)
                 return false;
+            for (int i=0; i<2; i++)
+            {
+                PyObject* iptr = PyTuple_GET_ITEM(load_src.ptr(), i);
+                if (PyFloat_Check(iptr))
+                    value.u[i] = PyFloat_AS_DOUBLE(iptr);
+                else if (PyLong_Check(iptr))
+                    value.u[i] = PyLong_AsDouble(iptr);
+                else
+                    return false;
+            }
+            return true;
         }
-        return true;
+        else if (PyList_Check(load_src.ptr()))
+        {
+            if (PyList_GET_SIZE(load_src.ptr()) != 2)
+                return false;
+            for (int i=0; i<2; i++)
+            {
+                PyObject* iptr = PyList_GET_ITEM(load_src.ptr(), i);
+                if (PyFloat_Check(iptr))
+                    value.u[i] = PyFloat_AS_DOUBLE(iptr);
+                else if (PyLong_Check(iptr))
+                    value.u[i] = PyLong_AsDouble(iptr);
+                else
+                    return false;
+            }
+            return true;
+        }
+        else
+            return false;
     }
 
-    static handle cast(const CCVector2& src, return_value_policy /* policy */, handle /* parent */)
+    static handle cast(const Vector2Tpl<T>& src, return_value_policy /* policy */, handle /* parent */)
     {
-        CCTRACE("CCVector2 cast");
+        CCTRACE("Vector2Tpl<T> cast");
         tuple tup = make_tuple(src.x, src.y);
         return tup.inc_ref();
     }
 };
+
+//template<> struct type_caster<CCVector3 >
+//{
+//public:
+//PYBIND11_TYPE_CASTER(CCVector3, _("CCVector3"));
+//
+//    bool load(handle src, bool)
+//    {
+//        CCTRACE("CCVector3 load");
+//        if(!src)
+//        {
+//            return false;
+//        }
+//        object temp;
+//        handle load_src = src;
+//
+//        if (!PyTuple_Check(load_src.ptr()))
+//            return false;
+//        if (PyTuple_GET_SIZE(load_src.ptr()) != 3)
+//            return false;
+//        for (int i=0; i<3; i++)
+//        {
+//            PyObject* iptr = PyTuple_GET_ITEM(load_src.ptr(), i);
+//            if (PyFloat_Check(iptr))
+//                value.u[i] = PyFloat_AS_DOUBLE(iptr);
+//            else if (PyLong_Check(iptr))
+//                value.u[i] = PyLong_AsDouble(iptr);
+//            else
+//                return false;
+//        }
+//        return true;
+//    }
+//
+//    static handle cast(const CCVector3& src, return_value_policy /* policy */, handle /* parent */)
+//    {
+//        CCTRACE("CCVector3 cast");
+//        tuple tup = make_tuple(src.x, src.y, src.z);
+//        return tup.inc_ref();
+//    }
+//};
+//
+
+//template<> struct type_caster<CCVector2 >
+//{
+//public:
+//PYBIND11_TYPE_CASTER(CCVector2, _("CCVector2"));
+//
+//    bool load(handle src, bool)
+//    {
+//        CCTRACE("CCVector2 load");
+//        if(!src)
+//        {
+//            return false;
+//        }
+//        object temp;
+//        handle load_src = src;
+//
+//        if (!PyTuple_Check(load_src.ptr()))
+//            return false;
+//        if (PyTuple_GET_SIZE(load_src.ptr()) != 2)
+//            return false;
+//        for (int i=0; i<2; i++)
+//        {
+//            PyObject* iptr = PyTuple_GET_ITEM(load_src.ptr(), i);
+//            if (PyFloat_Check(iptr))
+//                value.u[i] = PyFloat_AS_DOUBLE(iptr);
+//            else if (PyLong_Check(iptr))
+//                value.u[i] = PyLong_AsDouble(iptr);
+//            else
+//                return false;
+//        }
+//        return true;
+//    }
+//
+//    static handle cast(const CCVector2& src, return_value_policy /* policy */, handle /* parent */)
+//    {
+//        CCTRACE("CCVector2 cast");
+//        tuple tup = make_tuple(src.x, src.y);
+//        return tup.inc_ref();
+//    }
+//};
 
 }
 }
