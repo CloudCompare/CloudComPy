@@ -138,11 +138,11 @@ void export_ccSensor(py::module &m0)
         .export_values();
         ;
 
-    py::class_<ccSensor, ccHObject>(m0, "ccSensor", ccSensorPy_ccSensor_doc)
+    py::class_<ccSensor, ccHObject, std::unique_ptr<ccSensor, py::nodelete> >(m0, "ccSensor", ccSensorPy_ccSensor_doc)
          .def(py::init<QString>())
          .def("addPosition", addPositionPy, ccSensorPy_ccSensor_addPosition_doc)
          .def("ComputeScatteringAngles", ComputeScatteringAnglesPy,
-              py::arg("cloud")=0, py::arg("toDegreeFlag")=true,
+              py::arg("cloud")=nullptr, py::arg("toDegreeFlag")=true,
               ccSensorPy_ccSensor_ComputeScatteringAnglesPy_doc)
          .def("getGraphicScale", &ccSensor::getGraphicScale, ccSensorPy_ccSensor_getGraphicScale_doc)
          .def("getRigidTransformation", &getRigidTransformationPy,
@@ -152,7 +152,7 @@ void export_ccSensor(py::module &m0)
          .def("setGraphicScale", &ccSensor::setGraphicScale, ccSensorPy_ccSensor_setGraphicScale_doc)
          ;
 
-    py::class_<ccGBLSensor,ccSensor >(m0, "ccGBLSensor", ccSensorPy_ccGBLSensor_doc)
+    py::class_<ccGBLSensor,ccSensor, std::unique_ptr<ccGBLSensor, py::nodelete> >(m0, "ccGBLSensor", ccSensorPy_ccGBLSensor_doc)
          .def(py::init<ccGBLSensor::ROTATION_ORDER>())
          .def("getUncertainty", &ccGBLSensor::getUncertainty, ccSensorPy_ccGBLSensor_getUncertainty_doc)
          .def("getType", getGBLSensorType, ccSensorPy_ccGBLSensor_getType_doc)
