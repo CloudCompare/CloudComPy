@@ -555,6 +555,13 @@ std::vector<ccSensor*> getSensors(ccPointCloud &self)
     return sensors;
 }
 
+void applyRigidTransformationPy(ccPointCloud &self, const ccGLMatrixTpl<float>& m)
+{
+    //ccGLMatrix* matrix = m;
+    CCTRACE("applyRigidTransformationPy");
+    self.applyRigidTransformation(m);
+}
+
 int (ccPointCloud::*addScalarFieldt)(const char*) = &ccPointCloud::addScalarField;
 
 void export_ccPointCloud(py::module &m0)
@@ -570,6 +577,7 @@ void export_ccPointCloud(py::module &m0)
         .def(py::init<QString, unsigned>(), py::arg("name")=QString(), py::arg("uniqueID")=0xFFFFFFFF) // TODO optional<QString, unsigned> >())
         .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)
+        .def("applyRigidTransformation", &applyRigidTransformationPy, ccPointCloudPy_applyRigidTransformation_doc)
         .def("cloneThis", &ccPointCloud::cloneThis,
              py::arg("destCloud")=nullptr, py::arg("ignoreChildren")=false,
              ccPointCloudPy_cloneThis_doc, py::return_value_policy::reference)
