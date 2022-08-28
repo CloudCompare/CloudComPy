@@ -160,10 +160,10 @@ py::array CoordsToNpArray_copy(ccPointCloud &self)
     CCTRACE("CoordsToNpArray with copy, ownership transfered to Python");
     size_t nRows = self.size();
     PointCoordinateType* s = (PointCoordinateType*) self.getPoint(0);
-    ssize_t ndim = 2;
-    std::vector<ssize_t> shape =
+    size_t ndim = 2;
+    std::vector<size_t> shape =
     { nRows, 3 };
-    std::vector<ssize_t> strides =
+    std::vector<size_t> strides =
     { 3 * sizeof(PointCoordinateType), sizeof(PointCoordinateType) };
     return py::array(py::buffer_info(s,                                                    // data as contiguous array
                                      sizeof(PointCoordinateType),                          // size of one scalar
@@ -179,9 +179,9 @@ py::array CoordsToNpArray_py(ccPointCloud &self)
     CCTRACE("CoordsToNpArray without copy, ownership stays in C++");
     size_t nRows = self.size();
     PointCoordinateType* s = (PointCoordinateType*) self.getPoint(0);
-    ssize_t ndim = 2;
-    std::vector<ssize_t> shape = { nRows, 3 };
-    std::vector<ssize_t> strides = { 3 * sizeof(PointCoordinateType), sizeof(PointCoordinateType) };
+    size_t ndim = 2;
+    std::vector<size_t> shape = { nRows, 3 };
+    std::vector<size_t> strides = { 3 * sizeof(PointCoordinateType), sizeof(PointCoordinateType) };
     auto capsule = py::capsule(s, [](void *v) { CCTRACE("C++ coords not deleted"); });
     return py::array(py::buffer_info(s,                                                    // data as contiguous array
                                      sizeof(PointCoordinateType),                          // size of one scalar
@@ -202,9 +202,9 @@ py::array ColorsToNpArray_copy(ccPointCloud &self)
     }
     size_t nRows = self.size();
     ColorCompType* s = (ColorCompType*) (self.rgbaColors()->data());
-    ssize_t ndim = 2;
-    std::vector<ssize_t> shape = { nRows, 4 };
-    std::vector<ssize_t> strides = { 4 * sizeof(ColorCompType), sizeof(ColorCompType) };
+    size_t ndim = 2;
+    std::vector<size_t> shape = { nRows, 4 };
+    std::vector<size_t> strides = { 4 * sizeof(ColorCompType), sizeof(ColorCompType) };
     return py::array(py::buffer_info(s,                                              // data as contiguous array
                                      sizeof(ColorCompType),                          // size of one scalar
                                      py::format_descriptor<ColorCompType>::format(), // data type
@@ -224,9 +224,9 @@ py::array ColorsToNpArray_py(ccPointCloud &self)
     }
     size_t nRows = self.size();
     ColorCompType* s = (ColorCompType*) (self.rgbaColors()->data());
-    ssize_t ndim = 2;
-    std::vector<ssize_t> shape = { nRows, 4 };
-    std::vector<ssize_t> strides = { 4 * sizeof(ColorCompType), sizeof(ColorCompType) };
+    size_t ndim = 2;
+    std::vector<size_t> shape = { nRows, 4 };
+    std::vector<size_t> strides = { 4 * sizeof(ColorCompType), sizeof(ColorCompType) };
     auto capsule = py::capsule(s, [](void *v) { CCTRACE("C++ colors not deleted"); });
     return py::array(py::buffer_info(s,                                              // data as contiguous array
                                      sizeof(ColorCompType),                          // size of one scalar

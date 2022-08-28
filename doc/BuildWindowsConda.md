@@ -9,12 +9,12 @@ From Anaconda prompt:
 ```
 conda update -y -n base -c defaults conda
 conda activate
-conda create -y --name CloudComPy39 python=3.9
+conda create -y --name CloudComPy310 python=3.10
    # --- erase previous env if existing
-conda activate CloudComPy39
+conda activate CloudComPy310
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install -y "boost=1.72" "cgal=5.0" cmake "ffmpeg=4.3" "gdal=3.3" "jupyterlab=3.2" "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.11" "pdal=2.3" "psutil=5.9" "qt=5.12" "scipy=1.8" "sphinx_rtd_theme=1.0" "spyder=5.2" "tbb=2021.5" "tbb-devel=2021.5" "xerces-c=3.2"
+conda install -y "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
 ```
 For information, the list of packages actually installed for building and testing can be found in `building/conda-list`.
 
