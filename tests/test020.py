@@ -44,24 +44,58 @@ if not math.isclose(mesh.size(), 19602, rel_tol=5e-02):
 
 meshSize = mesh.size()
 
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.asc")) # OK
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.xyz")) # OK (idem .asc)
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.las")) # OK
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.laz")) # OK
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud14.las"), version="1.4") # OK
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud14.laz"), version="1.4") # OK
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.E57")) # OK  FileIO::setWriterInfo has not been called
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.sbf")) # OK
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.ply")) # OK  FileIO::setWriterInfo has not been called
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.vtk")) # OK
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.dxf")) # OK
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.pcd")) # OK
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.shp")) # OK
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.pn"))  # NOK cloudComPy.CC_FILE_ERROR.CC_FERR_BAD_ENTITY_TYPE
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.pv"))  # OK
-cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.bin")) # OK
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.asc")) # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.xyz")) # OK (idem .asc)
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.las")) # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.laz")) # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud14.las"), version="1.4") # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud14.laz"), version="1.4") # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.E57")) # OK  FileIO::setWriterInfo has not been called
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.sbf")) # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.ply")) # OK  FileIO::setWriterInfo has not been called
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.vtk")) # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.dxf")) # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.pcd")) # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.shp")) # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.pn"))  # NOK cloudComPy.CC_FILE_ERROR.CC_FERR_BAD_ENTITY_TYPE
+if res != cc.CC_FILE_ERROR.CC_FERR_BAD_ENTITY_TYPE:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.pv"))  # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.bin")) # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
 if cc.isPluginDraco():
-    cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.drc")) # OK
+    res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.drc")) # OK
+    if res != cc.CC_FERR_NO_ERROR:
+        raise RuntimeError
 
 cloudasc = cc.loadPointCloud(os.path.join(dataDir, "cloud.asc"))
 if cloudasc.size() != 10000:
@@ -127,17 +161,35 @@ if cc.isPluginDraco():
     if clouddrc.size() != 10000:
         raise RuntimeError
 
-cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.ma"))  # NOK cloudComPy.CC_FILE_ERROR.CC_FERR_BAD_ENTITY_TYPE
-cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.dxf")) # OK  FileIO::setWriterInfo has not been called
-cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.off")) # OK
-cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.stl")) # OK
-cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.vtk")) # OK
-cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.obj")) # OK  FileIO::setWriterInfo has not been called
-cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.ply")) # OK  FileIO::setWriterInfo has not been called
+res = cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.ma"))  # NOK cloudComPy.CC_FILE_ERROR.CC_FERR_BAD_ENTITY_TYPE
+if res != cc.CC_FILE_ERROR.CC_FERR_BAD_ENTITY_TYPE:
+    raise RuntimeError
+res = cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.dxf")) # OK  FileIO::setWriterInfo has not been called
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.off")) # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.stl")) # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.vtk")) # OK
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.obj")) # OK  FileIO::setWriterInfo has not been called
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+res = cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.ply")) # OK  FileIO::setWriterInfo has not been called
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
 mesh.addChild(cloud)
-cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.bin")) # OK with cloud as child
+res = cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.bin")) # OK with cloud as child
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
 if cc.isPluginFbx():
-    cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.fbx")) # OK
+    res = cc.SaveMesh(mesh, os.path.join(dataDir, "mesh.fbx")) # OK
+    if res != cc.CC_FERR_NO_ERROR:
+        raise RuntimeError
 
 meshdxf = cc.loadMesh(os.path.join(dataDir, "mesh.dxf"))
 if meshdxf.size() != meshSize:

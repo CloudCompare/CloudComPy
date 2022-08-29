@@ -76,7 +76,6 @@ if plane.size() != 2:
 #---ccPlane01-end
 
 #---ccSphere01-begin
-tr4 = cc.ccGLMatrix()
 tr5 = cc.ccGLMatrix()
 tr5.initFromParameters(0.0, (0., 0., 0.), (-7.0, 5.0, 1.0))
 sphere = cc.ccSphere(1.5, tr5, "aSphere", 72)
