@@ -114,11 +114,11 @@ if cloudlaz.size() != 10000:
     raise RuntimeError
 
 cloud14las = cc.loadPointCloud(os.path.join(dataDir, "cloud14.las"))
-if cloudlas.size() != 10000:
+if cloud14las.size() != 10000:
     raise RuntimeError
 
 cloud14laz = cc.loadPointCloud(os.path.join(dataDir, "cloud14.laz"))
-if cloudlaz.size() != 10000:
+if cloud14laz.size() != 10000:
     raise RuntimeError
 
 cloudE57 = cc.loadPointCloud(os.path.join(dataDir, "cloud.E57"))
