@@ -155,6 +155,11 @@
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_IO_QLAS_FWF",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_IO_QPDAL",
           "value": "true",
           "type": "BOOL"
@@ -451,17 +456,17 @@
         },
         {
           "name": "LASLIB_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include/laszip",
+          "value": "C:/Users/paulr/CloudComPy/lasTools/LAStools/LASlib/inc",
           "type": "PATH"
         },
         {
           "name": "LASLIB_RELEASE_LIBRARY",
-          "value": "${anacondaRoot}/Library/lib/laszip3.lib",
+          "value": "C:/Users/paulr/CloudComPy/lasTools/LAStools/LASlib/VC14/lib/x64/LASlibVC14.lib",
           "type": "FILEPATH"
         },
         {
           "name": "LASZIP_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include/laszip",
+          "value": "C:/Users/paulr/CloudComPy/lasTools/LAStools/LASzip/src",
           "type": "PATH"
         },
         {
