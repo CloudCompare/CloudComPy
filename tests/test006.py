@@ -45,3 +45,17 @@ cloud1 = cc.loadPointCloud(os.path.join(dataDir, "res1.xyz"), cc.CC_SHIFT_MODE.X
 coords1 = cloud1.toNpArray()
 if not isCoordEqual(coords1[0], (-5., -5., -0.10131836)):
     raise RuntimeError
+
+cloud = cc.loadPointCloud(getSampleCloud(5.0))
+cloud.translate((100000, 200000, 300000))
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "shifted.xyz"))
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
+
+cloud = cc.loadPointCloud(os.path.join(dataDir, "shifted.xyz"))
+if not cloud.isShifted():
+    raise RuntimeError
+shift = cloud.getGlobalShift()
+if not isCoordEqual(shift, (-100000, -200000, -300000), tol=1.e-2):
+    raise RuntimeError
+    

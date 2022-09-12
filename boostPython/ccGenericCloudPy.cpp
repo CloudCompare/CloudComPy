@@ -231,6 +231,12 @@ void export_ccGenericCloud(py::module &m0)
         ;
 
     py::class_<ccShiftedObject, ccHObject>(m0, "ccShiftedObject")
+        .def("getGlobalShift", &ccShiftedObject::getGlobalShift, ccShiftedObject_getGlobalShift_doc)
+        .def("setGlobalShift", static_cast<void (ccShiftedObject::*)(double,double,double)>(&ccShiftedObject::setGlobalShift),
+             ccShiftedObject_setGlobalShift_doc)
+        .def("isShifted", &ccShiftedObject::isShifted, ccShiftedObject_isShifted_doc)
+        .def("getGlobalScale", &ccShiftedObject::getGlobalScale, ccShiftedObject_getGlobalScale_doc)
+        .def("setGlobalScale", &ccShiftedObject::setGlobalScale, ccShiftedObject_setGlobalScale_doc)
         ;
 
     py::class_<CCCoreLib::GenericIndexedCloudPersist>(m0, "GenericIndexedCloudPersist")

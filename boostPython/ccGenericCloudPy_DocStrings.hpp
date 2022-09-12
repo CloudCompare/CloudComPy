@@ -218,6 +218,47 @@ Returns the bounding box object.
 :return: bounding box
 :rtype: ccBBox)";
 
+const char* ccShiftedObject_getGlobalShift_doc= R"(
+Returns the shift applied to original coordinates.
+
+Original coordinates are equal to '(P/scale - shift)'
+The shift is typically used when saving to a file.
+
+:return: applied shift (x, y, z)
+:rtype: tuple
+)";
+
+const char* ccShiftedObject_setGlobalShift_doc= R"(
+Sets shift applied to original coordinates (information storage only)
+
+Such a shift can typically be applied at loading time.
+Original coordinates are equal to '(P/scale - shift)'
+
+:param double x: x shift
+:param double y: y shift
+:param double z: z shift
+)";
+
+const char* ccShiftedObject_getGlobalScale_doc= R"(
+Returns the scale applied to original coordinates.
+
+:return: the scale applied to original coordinates.
+:rtype: double
+)";
+
+const char* ccShiftedObject_setGlobalScale_doc= R"(
+Sets the scale applied to original coordinates (information storage only).
+
+:param double scale: scale applied
+)";
+
+const char* ccShiftedObject_isShifted_doc= R"(
+Returns whether the cloud is shifted or not
+
+:return: whether the cloud is shifted or not
+:rtype: bool
+)";
+
 const char* PointCloudTpl_ccGenericPointCloud_QString_getPoint_doc= R"(
 get the ith point in the cloud array.
 

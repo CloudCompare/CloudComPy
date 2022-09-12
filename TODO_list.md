@@ -125,16 +125,17 @@ TODO List
 * DONE: build examples of loop with objects created and destroyed for a stable memory usage (issue #40)
 * DONE: fix or document memory leak problem (issue #62)
 * DONE: add CSF filter (issue #61)
+* DONE: Try PyBind11 as a replacement for boost.python : potentially faster and lighter.
+* DONE: update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows (issue #53)
+* DONE: fix the bug on save scalar fields with laz 1.4 -add a test on extra scalar field saved an correctly loaded - check values (issue #54)
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
-- TODO: Try PyBind11 as a replacement for boost.python : potentially faster and lighter.
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
 - TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
 - TODO: evaluate the feasibility of a virtual 3D view snapshot (issue #49)
 - TODO: evaluate the feasibility of pip or conda packaging of CloudComPy (issue #50)
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
-- TODO: update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows (issue #53)
-- TODO: fix the bug on save scalar fields with laz 1.4 -add a test on extra scalar field saved an correctly loaded - check values (issue #54)
 - TODO: check possibility of automatic downloading of sample files for ctest, update README for ctest (issue #65)
 - TODO: get access to global shift: see ccShiftedObject::getGlobalShift (issue #66)
+- TODO: rename boostPython directory into pybind11 and adapt scripts.
 
