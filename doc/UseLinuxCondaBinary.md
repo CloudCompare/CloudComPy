@@ -104,7 +104,7 @@ An example of notebook is provided in ```doc/samples/histogramOnDistanceComputat
 cd  <path install>/doc/PythonAPI_test
 ```
 
-To execute all the tests (about two minutes):
+To execute all the tests (takes about three minutes, creates about 1.3GB of data files):
 
 ```
 ctest

@@ -72,7 +72,7 @@ cd  <path install>\CloudComPy310\doc\PythonAPI_test
 ```
 NB: ```envCloudComPy.bat``` is OK but not mandatory here, ```ctest``` resets the necessary paths
 
-To execute all the tests (about two minutes):
+To execute all the tests (takes about three minutes, creates about 1.3GB of data files):
 
 ```
 ctest
