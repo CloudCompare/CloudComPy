@@ -8,7 +8,7 @@
       "buildRoot": "C:/Users/paulr/CloudComPy/build2019/${name}",
       "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy310",
       "anacondaRoot": "C:/Users/paulr/anaconda3/envs/CloudComPy310",
-      "Qt5Root": "C:/Qt/5.15.2/msvc2019_64",
+      "Qt5Root": "C:/Users/paulr/anaconda3/envs/CloudComPy310/Library",
       "cmakeExecutable": "C:/Users/paulr/anaconda3/envs/CloudComPy310/Library/bin/cmake.exe",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
