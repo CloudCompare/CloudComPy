@@ -84,7 +84,7 @@ endif()
 
 add_subdirectory( CloudCompare )
 add_subdirectory( pyAPI )
-add_subdirectory( boostPython )
+add_subdirectory( pybind11 )
 add_subdirectory( tests )
 add_subdirectory( doc )
 

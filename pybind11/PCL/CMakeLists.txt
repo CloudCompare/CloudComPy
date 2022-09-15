@@ -19,20 +19,20 @@
 #                                                                        #
 ##########################################################################
 
-message(STATUS "Plugin MeshBoolean boost Python processing")
+message(STATUS "Plugin PCL boost Python processing")
 
 # --- ----------------------------------------------------------
 # --- target boost.Python library: Python module cloudComPy
 
-project( _MeshBoolean VERSION 0.1 )
+project( _PCL VERSION 0.1 )
 
 add_library( ${PROJECT_NAME} SHARED )
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
+#set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
     target_sources( ${PROJECT_NAME}
     PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/MeshBooleanPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/PCLPy.cpp
     )
 
 target_include_directories( ${PROJECT_NAME} PRIVATE
@@ -40,12 +40,10 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
     ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../boostPython
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../pybind11
     ${CMAKE_CURRENT_SOURCE_DIR}/../../pyAPI
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qMeshBoolean/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qPCL/include
     ${CCCoreLib_SOURCE_DIR}/include
-    ${EIGEN_ROOT_DIR}
-    ${LIBIGL_INCLUDE_DIR}
     ${QCC_DB_LIB_SOURCE_DIR}
     )
 
@@ -57,12 +55,12 @@ target_link_libraries( ${PROJECT_NAME}
 
 if ( UNIX )
     target_link_libraries( ${PROJECT_NAME}
-        QMESH_BOOLEAN_PLUGIN
+        QPCL_PLUGIN
         )
 endif()
 if ( MSVC )
     target_link_libraries( ${PROJECT_NAME}
-        QMESH_BOOLEAN_PLUGIN
+        QPCL_PLUGIN
         )
 endif()
 
@@ -89,17 +87,17 @@ set(PYTHONAPI_SCRIPTS
 # --- install
 
 if( WIN32 OR APPLE)
-    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare/cloudComPy/MeshBoolean )
-    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/MeshBoolean )
+    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare/cloudComPy/PCL )
+    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/PCL )
 else()
-    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare/cloudComPy/MeshBoolean)
+    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare/cloudComPy/PCL)
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
 endif()
 
 if(WIN32)
-  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _MeshBoolean_d RELEASE_OUTPUT_NAME _MeshBoolean)
+  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _PCL_d RELEASE_OUTPUT_NAME _PCL)
 else()
   set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 endif()

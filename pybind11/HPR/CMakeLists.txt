@@ -19,12 +19,12 @@
 #                                                                        #
 ##########################################################################
 
-message(STATUS "Plugin CSF boost Python processing")
+message(STATUS "Plugin HPR boost Python processing")
 
 # --- ----------------------------------------------------------
 # --- target boost.Python library: Python module cloudComPy
 
-project( _CSF VERSION 0.1 )
+project( _HPR VERSION 0.1 )
 
 add_library( ${PROJECT_NAME} SHARED )
 
@@ -32,17 +32,21 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
     target_sources( ${PROJECT_NAME}
     PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/CSFPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/HPRPy.cpp
     )
+
+#qt5_wrap_ui( generated_ui_list ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qHPR/ui/qHPRDialog.ui )
+#message(STATUS "generated_ui_list: ${generated_ui_list}")
+#target_sources( ${PROJECT_NAME} PRIVATE ${generated_ui_list} )
 
 target_include_directories( ${PROJECT_NAME} PRIVATE
     ${pybind11_INCLUDE_DIR}
     ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../boostPython
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../pybind11
     ${CMAKE_CURRENT_SOURCE_DIR}/../../pyAPI
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qCSF/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qHPR/include
     ${CCCoreLib_SOURCE_DIR}/include
     ${QCC_DB_LIB_SOURCE_DIR}
     )
@@ -55,12 +59,12 @@ target_link_libraries( ${PROJECT_NAME}
 
 if ( UNIX )
     target_link_libraries( ${PROJECT_NAME}
-        QCSF_PLUGIN
+        QHPR_PLUGIN
         )
 endif()
 if ( MSVC )
     target_link_libraries( ${PROJECT_NAME}
-        QCSF_PLUGIN
+        QHPR_PLUGIN
         )
 endif()
 
@@ -87,17 +91,17 @@ set(PYTHONAPI_SCRIPTS
 # --- install
 
 if( WIN32 OR APPLE)
-    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare/cloudComPy/CSF )
-    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/CSF )
+    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare/cloudComPy/HPR )
+    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/HPR )
 else()
-    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare/cloudComPy/CSF)
+    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare/cloudComPy/HPR)
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
 endif()
 
 if(WIN32)
-  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _CSF_d RELEASE_OUTPUT_NAME _CSF)
+  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _HPR_d RELEASE_OUTPUT_NAME _HPR)
 else()
   set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 endif()

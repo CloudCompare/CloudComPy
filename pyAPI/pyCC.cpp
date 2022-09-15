@@ -303,7 +303,7 @@ void pyCC_setupPaths(pyCC* capi)
         capi->m_ShaderPath = (theDir.absolutePath() + "/share/cloudcompare/shaders");
         capi->m_TranslationPath = (theDir.absolutePath() + "/share/cloudcompare/translations");
     }
-    else if ( theDir.dirName() == "sip" || theDir.dirName() == "boostPython" ) // build
+    else if ( theDir.dirName() == "sip" || theDir.dirName() == "pybind11" ) // build
     {
         theDir.cdUp();
         CCTRACE("cloudCompare install: " << theDir.absolutePath().toStdString());
