@@ -107,37 +107,37 @@ TODO List
 
 * DONE: build the reference documentation on Windows
 * DONE: A tutorial, to find some examples for the principal use cases : replaced by a user documentation with use cases
-* DONE: Plugin PCL (issue #35)
-* DONE: Mesh triangles iterator functions (issue #36)
-* DONE: add option for las/laz version (1.3, 1.4) (issue #32)
+* DONE: (issue #35) Plugin PCL
+* DONE: (issue #36) Mesh triangles iterator functions
+* DONE: (issue #32) add option for las/laz version (1.3, 1.4)
 * DONE: Fix the doc on RANSAC_SD, primitives types
-* DONE: Cut a mesh with a polyline (Crop2D) (issue #38)
-* DONE: add functions to handle display state of colors and scalar fields (for save in .bin and opening in GUI) (issue #43)
-* DONE: compute gradients for scalar fields (issue  #46)
-* DONE: get the transformation matrix computed by the fast global registration function in PCL Plugin (issue #35)
-* DONE: try reading .ply files with extra columns interpreted as scalarFields, regardless of their names (issue #51)
-* DONE: fix the bug in ccGLMatrix constructor (issue #52)
-* DONE: improve C2C split distances (issue #56)
-* DONE: get access to sensor TSL info (sensors position, transformation...) (issue #57)
-* DONE: get access to E57 structure, check version of libE57 (issue #58)
-* DONE: implement sensors and scattering angles calculation (issue #59)
-* DONE: implement GuessBestParams for M2C2 plugin (issue #60)
-* DONE: build examples of loop with objects created and destroyed for a stable memory usage (issue #40)
-* DONE: fix or document memory leak problem (issue #62)
-* DONE: add CSF filter (issue #61)
+* DONE: (issue #38) Cut a mesh with a polyline (Crop2D)
+* DONE: (issue #43) add functions to handle display state of colors and scalar fields (for save in .bin and opening in GUI)
+* DONE: (issue #46) compute gradients for scalar fields
+* DONE: (issue #35) get the transformation matrix computed by the fast global registration function in PCL Plugin
+* DONE: (issue #51) try reading .ply files with extra columns interpreted as scalarFields, regardless of their names
+* DONE: (issue #52) fix the bug in ccGLMatrix constructor
+* DONE: (issue #56) improve C2C split distances
+* DONE: (issue #57) get access to sensor TSL info (sensors position, transformation...)
+* DONE: (issue #58) get access to E57 structure, check version of libE57
+* DONE: (issue #59) implement sensors and scattering angles calculation
+* DONE: (issue #60) implement GuessBestParams for M2C2 plugin
+* DONE: (issue #40) build examples of loop with objects created and destroyed for a stable memory usage
+* DONE: (issue #62) fix or document memory leak problem
+* DONE: (issue #61) add CSF filter
 * DONE: Try PyBind11 as a replacement for boost.python : potentially faster and lighter.
-* DONE: update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows (issue #53)
-* DONE: fix the bug on save scalar fields with laz 1.4 -add a test on extra scalar field saved an correctly loaded - check values (issue #54)
-* DONE: get access to global shift: see ccShiftedObject::getGlobalShift (issue #66)
-* DONE: check possibility of automatic downloading of sample files for ctest, update README for ctest (issue #65)
+* DONE: (issue #53) update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows
+* DONE: (issue #54) fix the bug on save scalar fields with laz 1.4 -add a test on extra scalar field saved an correctly loaded - check values
+* DONE: (issue #66) get access to global shift: see ccShiftedObject::getGlobalShift
+* DONE: (issue #65) check possibility of automatic downloading of sample files for ctest, update README for ctest
 * DONE: rename boostPython directory into pybind11 and adapt scripts.
+* DONE: (issue #64) a use case with invalid points (E57 file) and scalar fields to resize
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
 - TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
-- TODO: evaluate the feasibility of a virtual 3D view snapshot (issue #49)
-- TODO: evaluate the feasibility of pip or conda packaging of CloudComPy (issue #50)
-- TODO: a use case with invalid points (E57 file) and scalar fields to resize (issue #64)
+- TODO: (issue #49) evaluate the feasibility of a virtual 3D view snapshot
+- TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 
 
