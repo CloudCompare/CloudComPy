@@ -130,12 +130,12 @@ TODO List
 * DONE: fix the bug on save scalar fields with laz 1.4 -add a test on extra scalar field saved an correctly loaded - check values (issue #54)
 * DONE: get access to global shift: see ccShiftedObject::getGlobalShift (issue #66)
 * DONE: check possibility of automatic downloading of sample files for ctest, update README for ctest (issue #65)
+* DONE: rename boostPython directory into pybind11 and adapt scripts.
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
 - TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
-- TODO: rename boostPython directory into pybind11 and adapt scripts.
 - TODO: evaluate the feasibility of a virtual 3D view snapshot (issue #49)
 - TODO: evaluate the feasibility of pip or conda packaging of CloudComPy (issue #50)
 
