@@ -140,17 +140,17 @@ endif()
 
 if(WIN32)
   if( NOT INSTALL_PREREQUISITE_LIBRARIES )
-    set( QT_DLL_FILES ${Qt5_DIR}/../../../bin/Qt5Concurrent.dll
-                      ${Qt5_DIR}/../../../bin/Qt5Core.dll
-                      ${Qt5_DIR}/../../../bin/Qt5Gui.dll
-                      ${Qt5_DIR}/../../../bin/Qt5OpenGL.dll
-                      ${Qt5_DIR}/../../../bin/Qt5PrintSupport.dll
-                      ${Qt5_DIR}/../../../bin/Qt5Svg.dll
-                      ${Qt5_DIR}/../../../bin/Qt5Widgets.dll
-                      ${Qt5_DIR}/../../../bin/Qt5WebSockets.dll
-                      ${Qt5_DIR}/../../../bin/Qt5Network.dll)
-    message( STATUS "QT_DLL_FILES ${QT_DLL_FILES}" )
-	install( FILES ${QT_DLL_FILES} DESTINATION CloudCompare )
+#    set( QT_DLL_FILES ${Qt5_DIR}/../../../bin/Qt5Concurrent.dll
+#                      ${Qt5_DIR}/../../../bin/Qt5Core.dll
+#                      ${Qt5_DIR}/../../../bin/Qt5Gui.dll
+#                      ${Qt5_DIR}/../../../bin/Qt5OpenGL.dll
+#                      ${Qt5_DIR}/../../../bin/Qt5PrintSupport.dll
+#                      ${Qt5_DIR}/../../../bin/Qt5Svg.dll
+#                      ${Qt5_DIR}/../../../bin/Qt5Widgets.dll
+#                      ${Qt5_DIR}/../../../bin/Qt5WebSockets.dll
+#                      ${Qt5_DIR}/../../../bin/Qt5Network.dll)
+#    message( STATUS "QT_DLL_FILES ${QT_DLL_FILES}" )
+#	install( FILES ${QT_DLL_FILES} DESTINATION CloudCompare )
 
     if ( PLUGIN_IO_QRDB )
         message( STATUS "rdblib.dll ${CMAKE_CURRENT_BINARY_DIR}/../_deps/rdb_sdk-src/library/rdblib.dll")
@@ -184,7 +184,6 @@ if(WIN32)
 	  install( FILES ${QT_DLL_FILES} DESTINATION ccViewer ) 
 	endif()
 
-    install( DIRECTORY ${Qt5_DIR}/../../../plugins/ DESTINATION qtplugins )
   endif()
 endif()
 
