@@ -57,6 +57,8 @@ The IDE [Spyder](https://www.spyder-ide.org/) and [Jupyter](https://jupyter.org/
 ```
 spyder
 ```
+The first time you run Spyder, you may need to add the paths to CloudCompare and the test scripts to the PYTHONPATH,
+using the menu Tools / PYTHONPATH Manager. These paths are the same as those defined in the envCloudComPy.bat script.
 
 ```
 jupyter notebook

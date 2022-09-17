@@ -4,7 +4,7 @@ Cloud Compare Python API Choices of technology, TODO list & questions
 Choice of a wrapping tool
 -------------------------
 
-Several tools are available. I successively tested PyQt/sip, then Pyside2/Shiboken2, and BoostPython. 
+Several tools are available. I successively tested PyQt/sip, then Pyside2/Shiboken2, and Boost.Python. 
 BostPython is the one I'm currently using.
 
 First try: PyQt SIP
@@ -32,13 +32,15 @@ not allowing the wrapping of some complex class inheritance: In cloudCompare, th
 Shiboken2 does not handle this situation correctly, the limitation is known and will probably not be fixed in the short term
 (TODO: find the link on the bug reports).  
 
-Selected tool: BoostPython
---------------------------
-BoostPython is a mature and stable project. It is entirely based on C++, we write C++ to describe the interface, explicitly, 
+Selected tool: Boost.Python, then pybind11
+------------------------------------------
+Boost.Python is a mature and stable project. It is entirely based on C++, we write C++ to describe the interface, explicitly, 
 for all the classes, methods, functions that we want to show.
 The documentation is succinct and austere (small tutorial and reference documentation). 
 Learning is laborious, but the tool is very powerful and introducing new classes and methods becomes easier, 
 when most of the type converters have been defined.
+
+I have now replaced Boost.Python by pybind11: pybind11 is rewritten on the basis of Boost.Python, offers more possibilities, and continues to evolve.
 
 Windows 10 generation and testing
 ---------------------------------
@@ -126,11 +128,11 @@ TODO List
 * DONE: (issue #62) fix or document memory leak problem
 * DONE: (issue #61) add CSF filter
 * DONE: Try PyBind11 as a replacement for boost.python : potentially faster and lighter.
-* DONE: (issue #53) update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux, build problems on Windows
-* DONE: (issue #54) fix the bug on save scalar fields with laz 1.4 -add a test on extra scalar field saved an correctly loaded - check values
+* DONE: (issue #53) update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux and Windows
+* DONE: (issue #54) fix the bug on save scalar fields with laz 1.4 -test added on extra scalar field saved an correctly loaded
 * DONE: (issue #66) get access to global shift: see ccShiftedObject::getGlobalShift
 * DONE: (issue #65) check possibility of automatic downloading of sample files for ctest, update README for ctest
-* DONE: rename boostPython directory into pybind11 and adapt scripts.
+* DONE: rename Boost.Python directory into pybind11 and adapt scripts.
 * DONE: (issue #64) a use case with invalid points (E57 file) and scalar fields to resize
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
