@@ -6,14 +6,22 @@ export CLOUDCOMPY_INSTDIR=${HOME}/projets/CloudComPy/installConda               
 export CLOUDCOMPY_INSTNAME=CloudComPy310                                               # CloudComPy install directory name
 export CLOUDCOMPY_INSTALL=${CLOUDCOMPY_INSTDIR}/${CLOUDCOMPY_INSTNAME}                 # CloudComPy install directory
 export CLOUDCOMPY_TARFILE=CloudComPy_Conda310_Linux64_"$(date +"%Y%m%d-%H%M")".tgz     # CloudComPy Binary tarfile (will be in ${CLOUDCOMPY_INSTDIR}
-export CONDA_ROOT=${HOME}/anaconda3                                                    # root directory of conda installation
+if [ -d ${HOME}/anaconda3 ]; then
+    export CONDA_ROOT=${HOME}/anaconda3                                                # root directory of conda installation
+else
+    export CONDA_ROOT=${HOME}/miniconda3                                                # root directory of conda installation
+fi
 export CONDA_ENV=CloudComPy310                                                         # conda environment name
 export CONDA_PATH=${CONDA_ROOT}/envs/${CONDA_ENV}                                      # conda environment directory
 export CORK_REP=${HOME}/projets/CloudComPy/cork                                        # directory of cork (remove the plugin in cmake options if not needed)
 export DRACO_REP=${HOME}/projets/CloudComPy/dracoInstall                               # directory of draco (remove the plugin in cmake options if not needed)
 export FBXSDK_REP=${HOME}/projets/CloudComPy/fbxSdk                                    # directory of fbx sdk (remove the plugin in cmake options if not needed)
 export LIBIGL_REP=${HOME}/projets/CloudComPy/libigl                                    # directory of libigl (remove the plugin in cmake options if not needed)
-export OPENCASCADE_REP=${HOME}/projets/hydro95/prerequisites/install/Occ-740p3_opt     # directory of OpenCascade (remove the plugin in cmake options if not needed)
+if [ -d ${HOME}/projets/hydro95/prerequisites/install/Occ-740p3_opt ]; then
+    export OPENCASCADE_REP=${HOME}/projets/hydro95/prerequisites/install/Occ-740p3_opt # directory of OpenCascade (remove the plugin in cmake options if not needed)
+else
+    export OPENCASCADE_REP=/home/paul/projets/hydro95/prerequisites/install/Occ-740p3EDFp1 
+fi
 export NBTHREADS="$(grep -c processor /proc/cpuinfo)"                                  # number of threads for parallel make
 
 . ${CONDA_ROOT}/etc/profile.d/conda.sh                                                 # required to have access to conda commands in a shell script
@@ -39,7 +47,7 @@ conda_buildenv()
     fi
     conda config --add channels conda-forge && \
     conda config --set channel_priority strict && \
-    conda install -y "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" "qhull=2020.2" "qt=5.15" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
+    conda install -y "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
 }
 
 # --- CloudComPy build
@@ -142,6 +150,7 @@ cloudcompy_configure()
     -DPLUGIN_STANDARD_QRANSAC_SD:BOOL="1" \
     -DPLUGIN_STANDARD_QRSA:BOOL="1" \
     -DPYTHONAPI_TEST_DIRECTORY:STRING="CloudComPy/Data" \
+    -DPYTHONAPI_EXTDATA_DIRECTORY:STRING="CloudComPy/ExternalData" \
     -DPYTHONAPI_TRACES:BOOL="1" \
     -DPYTHON_PREFERED_VERSION:STRING="3.10" \
     -DTBB_DIR:PATH="${CONDA_PATH}/lib/cmake/TBB" \
