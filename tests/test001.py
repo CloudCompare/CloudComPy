@@ -107,7 +107,7 @@ if not isCoordEqual(g, (-4.9999999e-03, -4.9999999e-03, 9.6193114e-03)):
     raise RuntimeError
 
 res = cc.SavePointCloud(cloud, os.path.join(dataDir, "res1.bin"))
-if res:
+if res != cc.CC_FERR_NO_ERROR:
     raise RuntimeError
 
 cloud = cc.loadPointCloud(os.path.join(dataDir, "res1.bin"))

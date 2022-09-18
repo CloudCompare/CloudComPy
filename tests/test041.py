@@ -24,6 +24,7 @@
 import os
 import sys
 import math
+import requests
 
 os.environ["_CCTRACE_"] = "ON"  # only if you want C++ debug traces
 
@@ -33,6 +34,14 @@ import cloudComPy as cc
 
 #---sensor001-begin
 # example data available here: http://sourceforge.net/projects/e57-3d-imgfmt/files/E57Example-data/manitouNoInvalidPoints.e57/download
+if not os.path.isfile(os.path.join(dataExtDir,"manitouNoInvalidPoints.e57")):
+    if not os.path.exists(dataExtDir):
+        os.makedirs(dataExtDir)
+    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/30-manitounoinvalidpoints-e57"
+    r = requests.get(url)
+    with open(os.path.join(dataExtDir,"manitouNoInvalidPoints.e57"), 'wb') as f:
+        f.write(r.content)
+        
 entities = cc.importFile(os.path.join(dataExtDir,"manitouNoInvalidPoints.e57"))
 #---sensor001-end
 
@@ -80,5 +89,23 @@ for entity in entities[1]:
 #---sensor004-end
 
 res = cc.SaveEntities(entities[1], os.path.join(dataDir, "manitouNoInvalidPoints.bin"))
-    
 
+#--- check files with invalid points (invalid points are discarded and scalar fields should be of correct size)
+# example data available here: http://sourceforge.net/projects/e57-3d-imgfmt/files/E57Example-data/manitou.e57/download
+if not os.path.isfile(os.path.join(dataExtDir,"manitou.e57")):
+    if not os.path.exists(dataExtDir):
+        os.makedirs(dataExtDir)
+    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/31-manitou-e57"
+    r = requests.get(url)
+    with open(os.path.join(dataExtDir,"manitou.e57"), 'wb') as f:
+        f.write(r.content)
+        
+entities = cc.importFile(os.path.join(dataExtDir,"manitou.e57"))
+for entity in entities[1]:
+    print(entity.getName(), "size", entity.size())
+    sf = entity.getScalarField(0)
+    print("sf.currentSize()", sf.currentSize())
+    if (sf.currentSize() > entity.size()):
+        raise RuntimeError
+res = cc.SaveEntities(entities[1], os.path.join(dataDir, "manitou.bin"))
+    

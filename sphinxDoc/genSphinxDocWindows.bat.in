@@ -1,6 +1,6 @@
 
 call C:\Users\paulr\anaconda3\Scripts\activate.bat C:\Users\paulr\anaconda3
-call conda activate CloudComPy39
+call conda activate CloudComPy310
 call @CMAKE_INSTALL_PREFIX@\envCloudComPy.bat
 del @SPHINXDOCTREES@\*.doctree
 @SPHINXBUILD@ -c @CMAKE_BINARY_DIR@/sphinxDoc -b html -d @SPHINXDOCTREES@ @ALLSPHINXOPTS@ @CMAKE_INSTALL_PREFIX@\doc\html 

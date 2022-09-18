@@ -72,9 +72,10 @@ for i in range(10):
     print("memory USS, delta current: %s max: %s" %
           (curMem - refMem, maxMem - refMem))
     print("coord no copy %s" % i)
-    if (maxMem - refMem) > 0.35 * coordMem: # some memory not immediately released ?
+    if (maxMem - refMem) > 0.1 * coordMem: # some memory not immediately released ?
         raise RuntimeError
 
+coords = None
 print("=========== loop coords with copy =============")
 for i in range(10):
     coords = cloud.toNpArrayCopy()
@@ -110,10 +111,11 @@ print(
 refMem = curMem
 maxMem = curMem
 
+asf = None
 print("=========== loop scalar field no copy =============")
 for i in range(10):
-    coords = sf.toNpArray()
-    if coords.shape != (cloud.size(),):
+    asf = sf.toNpArray()
+    if asf.shape != (cloud.size(),):
         raise RuntimeError
     curMem = thisProcess.memory_full_info().uss
     if curMem > maxMem:
@@ -121,13 +123,14 @@ for i in range(10):
     print("memory USS, delta current: %s max: %s" %
           (curMem - refMem, maxMem - refMem))
     print("scalarField no copy %s" % i)
-    if (maxMem - refMem) > 0.65 * sfMem: # some memory not immediately released ?
+    if (maxMem - refMem) > 0.1 * sfMem: # some memory not immediately released ?
         raise RuntimeError
 
+asf = None
 print("=========== loop scalar field with copy =============")
 for i in range(10):
-    coords = sf.toNpArrayCopy()
-    if coords.shape != (cloud.size(),):
+    asf = sf.toNpArrayCopy()
+    if asf.shape != (cloud.size(),):
         raise RuntimeError
     curMem = thisProcess.memory_full_info().uss
     if curMem > maxMem:
@@ -137,3 +140,11 @@ for i in range(10):
     print("scalarField copy %s" % i)
     if (maxMem - refMem) > 2.0 * sfMem: # some memory not immediately released ?
         raise RuntimeError
+
+asf = None
+curMem = thisProcess.memory_full_info().uss
+if curMem > maxMem:
+    maxMem = curMem
+print(
+    "memory USS, after cleaning, delta from REFERENCE: %s" %
+     (curMem - startMem))

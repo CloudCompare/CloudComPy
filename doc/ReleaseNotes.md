@@ -2,6 +2,28 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## September 18, 2022 CloudComPy release:
+
+ - CloudComPy is now built with pybind11 instead of Boost.Python. For the CloudComPy user, the scripts are unchanged, 
+   but there is always the possibility of small changes in the behaviour of the code or bugs not covered by the tests.
+   (if so, please post issues).
+ - CloudComPy is built with Python 3.10 instead of Python 3.9, you have to use a new Conda environment
+   (see the README for instructions).
+ - update to CloudCompare master > 2.12.4 (september 15, 2022)
+ - (issue #53) update pdal version to 2.4.2: needs conda Python 3.10. Works on Linux and Windows
+ - (issue #54) fix the bug on save scalar fields with laz 1.4 -test added on extra scalar field saved an correctly loaded, see test020.py
+ - (issue #64) a use case with invalid points (E57 file) and scalar fields to resize, see test041.py
+ - (issue #65) add possibility of automatic downloading of sample files for ctest, update README for ctest, see test041.py
+ - (issue #66) get access to global shift: see ccShiftedObject::getGlobalShift, see test006.py
+ - Various small fixes.
+
+** NOTE**: issues #49 and #50 are still under analysis, they will require further development.
+   The changes done in the conda packaging and the use of pybind11 are a necessary step towards solving these issues.
+
+** WARNING ** On Windows, with the binary based on the conda packages, Python 3.10, only the English version of CloudCompare is available,
+   the translations are not available: it seems that this is due to a bug in the Qt 5.15.4 version of the conda package.
+   We are waiting for the correction of this bug in the packaging.
+
 ## July 19, 2022 CloudComPy release:
 
  - update to CloudCompare master > 2.12.4 (july 19, 2022)

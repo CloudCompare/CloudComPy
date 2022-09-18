@@ -6,9 +6,10 @@
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "C:/Users/paulr/CloudComPy/build2019/${name}",
-      "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy39",
-      "anacondaRoot": "C:/Users/paulr/anaconda3/envs/CloudComPy39",
-      "Qt5Root": "C:/Qt/5.15.2/msvc2019_64",
+      "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy310",
+      "anacondaRoot": "C:/Users/paulr/anaconda3/envs/CloudComPy310",
+      "Qt5Root": "C:/Users/paulr/anaconda3/envs/CloudComPy310/Library",
+      "cmakeExecutable": "C:/Users/paulr/anaconda3/envs/CloudComPy310/Library/bin/cmake.exe",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
@@ -20,7 +21,7 @@
         },
         {
           "name": "PYTHON_PREFERED_VERSION:STRING",
-          "value": "3.9",
+          "value": "3.10",
           "type": "STRING"
         },
         {
@@ -150,6 +151,11 @@
         },
         {
           "name": "PLUGIN_IO_QFBX",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QLAS_FWF",
           "value": "true",
           "type": "BOOL"
         },
@@ -384,6 +390,21 @@
           "type": "PATH"
         },
         {
+          "name": "FLANN_ROOT",
+          "value": "${anacondaRoot}/Library",
+          "type": "PATH"
+        },
+        {
+          "name": "PC_FLANN_INCLUDE_DIRS",
+          "value": "${anacondaRoot}/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "PC_FLANN_LIBRARY_DIRS",
+          "value": "${anacondaRoot}/Library/lib",
+          "type": "PATH"
+        },
+        {
           "name": "FFMPEG_INCLUDE_DIR",
           "value": "${anacondaRoot}/Library/include",
           "type": "PATH"
@@ -435,17 +456,17 @@
         },
         {
           "name": "LASLIB_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include/laszip",
+          "value": "C:/Users/paulr/CloudComPy/lasTools/LAStools/LASlib/inc",
           "type": "PATH"
         },
         {
           "name": "LASLIB_RELEASE_LIBRARY",
-          "value": "${anacondaRoot}/Library/lib/laszip3.lib",
+          "value": "C:/Users/paulr/CloudComPy/lasTools/LAStools/LASlib/VC14/lib/x64/LASlibVC14.lib",
           "type": "FILEPATH"
         },
         {
           "name": "LASZIP_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include/laszip",
+          "value": "C:/Users/paulr/CloudComPy/lasTools/LAStools/LASzip/src",
           "type": "PATH"
         },
         {
@@ -486,6 +507,11 @@
         {
           "name": "OPENCASCADE_TBB_DLL_DIR",
           "value": "${anacondaRoot}/Library/lib/tbb.lib",
+          "type": "PATH"
+        },
+        {
+          "name": "QHULL_DIR",
+          "value": "${anacondaRoot}/Library/lib/cmake/Qhull",
           "type": "PATH"
         },
         {

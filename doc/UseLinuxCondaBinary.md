@@ -1,6 +1,6 @@
 ## Installing, testing and using a CloudComPy binary on Linux, with conda
 
-The binary *CloudComPy_Conda39_Linux64_-date-.tgz* available [here](https://www.simulation.openfields.fr/index.php/download-binaries) is built with a Conda environment
+The binary *CloudComPy_Conda310_Linux64_-date-.tgz* available [here](https://www.simulation.openfields.fr/index.php/download-binaries) is built with a Conda environment
 (see [here](BuildLinuxConda.md) for the corresponding building instructions).
 
 As CloudComPy is under development, these instructions and the link are subject to change from time to time...
@@ -24,17 +24,17 @@ You need to create an environment for CloudComPy with conda, from the terminal
 conda activate
 conda update -y -n base -c defaults conda
 ```
-If your environment CloudComPy39 does not exist:
+If your environment CloudComPy310 does not exist:
 ```
-conda create --name CloudComPy39 python=3.9
+conda create --name CloudComPy310 python=3.10
    # --- erase previous env if existing
 ```
 Add or update the packages:
 ```
-conda activate CloudComPy39
+conda activate CloudComPy310
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install "boost=1.72" "cgal=5.0" cmake ffmpeg "gdal=3.3" jupyterlab "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5.3" "openmp=8.0" "pcl=1.11" "pdal=2.3" "psutil=5.9" "qhull=2019.1" "qt=5.12" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
+conda install "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
 ```
 
 **Remark:** if conda is unknown, or in a bash script, add the following instruction before conda commands:
@@ -54,7 +54,7 @@ The script `bin/condaCloud.sh` overrides the conda command for activation and de
 From a new prompt (replace `<path install>` by its value): 
 
 ```
-. <path install>/bin/condaCloud.sh activate CloudComPy39
+. <path install>/bin/condaCloud.sh activate CloudComPy310
 ```
 
 if conda is unknown, execute the following instruction before:
@@ -100,11 +100,11 @@ An example of notebook is provided in ```doc/samples/histogramOnDistanceComputat
 ### Execute all the Python tests:
 
 ```
-. <path install>/bin/condaCloud.sh activate CloudComPy39
+. <path install>/bin/condaCloud.sh activate CloudComPy310
 cd  <path install>/doc/PythonAPI_test
 ```
 
-To execute all the tests (about two minutes):
+To execute all the tests (takes about three minutes, creates about 1.3GB of data files):
 
 ```
 ctest
