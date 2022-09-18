@@ -21,8 +21,8 @@ Windows
 The Windows Conda packaging provides a batch file to call after loading the conda environment, from the conda prompt:
 ::
 
-    cd <path install>/CloudComPy39
-    conda activate CloudComPy39
+    cd <path install>/CloudComPy310
+    conda activate CloudComPy310
     envCloudComPy.bat
 
 
@@ -32,8 +32,8 @@ Linux
 The LinuxConda packaging provides a shell script:
 ::
 
-    cd <path install>\CloudComPy39
-    bin/condaCloud.sh activate CloudComPy39
+    cd <path install>\CloudComPy310
+    bin/condaCloud.sh activate CloudComPy310
 
 --------------------------
 Python3: CloudComPy import
