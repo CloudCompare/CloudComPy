@@ -70,9 +70,9 @@ ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFi
     return outputCloud;
 }
 
-bool M3C2gessParamsToFile(std::vector<ccHObject*> clouds, const QString& paramFilename, bool fastMode)
+bool M3C2guessParamsToFile(std::vector<ccHObject*> clouds, const QString& paramFilename, bool fastMode)
 {
-    CCTRACE("M3C2gessParamsToFile");
+    CCTRACE("M3C2guessParamsToFile");
     if (clouds.size() < 2)
     {
         CCTRACE("minimum two clouds required for M3C2 computation");
@@ -97,5 +97,5 @@ PYBIND11_MODULE(_M3C2, m1)
 
     m1.def("computeM3C2", computeM3C2, py::return_value_policy::reference, M3C2_computeM3C2_doc);
     m1.def("initTrace_M3C2", initTrace_M3C2, M3C2_initTrace_M3C2_doc);
-    m1.def("M3C2gessParamsToFile", M3C2gessParamsToFile, M3C2_M3C2gessParamsToFile_doc);
+    m1.def("M3C2guessParamsToFile", M3C2guessParamsToFile, M3C2_M3C2guessParamsToFile_doc);
 }

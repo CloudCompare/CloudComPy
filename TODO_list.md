@@ -141,5 +141,7 @@ TODO List
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
 - TODO: (issue #49) evaluate the feasibility of a virtual 3D view snapshot
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
+- TODO: (issue #60) implement precision maps for M3C2 plugin
+- TODO: (issue #71) implement scalar field interpolation from another entity.
 
 

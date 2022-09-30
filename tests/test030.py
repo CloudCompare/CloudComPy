@@ -75,7 +75,7 @@ if cc.isPluginM3C2():
     cloud = cc.loadPointCloud(getSampleCloud(5.0))
     cloud1 = cc.loadPointCloud(getSampleCloud(1.0))
     paramFilename = os.path.join(dataDir, "m3c2_params.txt")
-    ret = cc.M3C2.M3C2gessParamsToFile([cloud,cloud1], paramFilename, True)
+    ret = cc.M3C2.M3C2guessParamsToFile([cloud,cloud1], paramFilename, True)
     cloud2 = cc.M3C2.computeM3C2([cloud,cloud1], paramFilename)
 #---computeM3C2_01-end
     

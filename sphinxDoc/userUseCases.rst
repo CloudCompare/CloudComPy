@@ -772,10 +772,10 @@ The plugin computes signed distances between two clouds.
 
 The :py:func:`~.cloudComPy.M3C2.computeM3C2` function relies on a large number of parameters grouped in a file.
 The CloudCompare GUI offers a 'guess parameters' option and a way to save the parameters to a file.
-The :py:func:`~.cloudComPy.M3C2.M3C2gessParamsToFile` function do the same job.
+The :py:func:`~.cloudComPy.M3C2.M3C2guessParamsToFile` function do the same job.
 
 You have to import the The :py:mod:`~.cloudComPy.M3C2` plugin.
-The :py:func:`~.cloudComPy.M3C2.M3C2gessParamsToFile` function requires the two clouds, the params file,
+The :py:func:`~.cloudComPy.M3C2.M3C2guessParamsToFile` function requires the two clouds, the params file,
 and a boolean to get a fast guess or not.
 The :py:func:`~.cloudComPy.M3C2.computeM3C2` function requires only the two clouds and the params file,
 and produces a cloud with new scalar field 'M3C2 distance':
