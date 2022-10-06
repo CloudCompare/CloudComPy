@@ -41,7 +41,10 @@ void initTrace_M3C2()
 #endif
 }
 
-ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFilename)
+ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds,
+                          const QString& paramFilename,
+                          std::vector<ccScalarField*> precisionMaps = {},
+                          std::vector<double> scales = {})
 {
     CCTRACE("computeM3C2");
     if (clouds.size() < 2)
@@ -60,6 +63,24 @@ ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFi
     }
     dlg.setCorePointsCloud(corePointsCloud);
 
+    qM3C2Process::s_M3C2Params = M3C2Params(); // init to default values
+    if ((precisionMaps.size() == 6) && (scales.size() == 2))
+    {
+        CCTRACE("computeM3C2 using precision maps");
+        qM3C2Process::s_M3C2Params.usePrecisionMaps = true;
+        qM3C2Process::s_M3C2Params.cloud1PM.sX = precisionMaps[0];
+        qM3C2Process::s_M3C2Params.cloud1PM.sY = precisionMaps[1];
+        qM3C2Process::s_M3C2Params.cloud1PM.sZ = precisionMaps[2];
+        qM3C2Process::s_M3C2Params.cloud1PM.scale = scales[0];
+        qM3C2Process::s_M3C2Params.cloud2PM.sX = precisionMaps[3];
+        qM3C2Process::s_M3C2Params.cloud2PM.sY = precisionMaps[4];
+        qM3C2Process::s_M3C2Params.cloud2PM.sZ = precisionMaps[5];
+        qM3C2Process::s_M3C2Params.cloud2PM.scale = scales[1];
+    }
+    else
+    {
+        CCTRACE("computeM3C2 without precision maps");
+    }
     QString errorMessage;
     ccPointCloud* outputCloud = nullptr; //only necessary for the command line version in fact
     if (!qM3C2Process::Compute(dlg, errorMessage, outputCloud, false))
@@ -95,7 +116,10 @@ PYBIND11_MODULE(_M3C2, m1)
 {
     m1.doc() = M3C2_doc;
 
-    m1.def("computeM3C2", computeM3C2, py::return_value_policy::reference, M3C2_computeM3C2_doc);
+    m1.def("computeM3C2", computeM3C2,
+           py::arg("clouds"), py::arg("paramFilename"),
+           py::arg("precisionMaps")=std::vector<ccScalarField*>{}, py::arg("scales")=std::vector<double>{},
+           py::return_value_policy::reference, M3C2_computeM3C2_doc);
     m1.def("initTrace_M3C2", initTrace_M3C2, M3C2_initTrace_M3C2_doc);
     m1.def("M3C2guessParamsToFile", M3C2guessParamsToFile, M3C2_M3C2guessParamsToFile_doc);
 }

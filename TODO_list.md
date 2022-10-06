@@ -134,6 +134,7 @@ TODO List
 * DONE: (issue #65) check possibility of automatic downloading of sample files for ctest, update README for ctest
 * DONE: rename Boost.Python directory into pybind11 and adapt scripts.
 * DONE: (issue #64) a use case with invalid points (E57 file) and scalar fields to resize
+* TODO: (issue #60) implement precision maps for M3C2 plugin
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -141,7 +142,6 @@ TODO List
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
 - TODO: (issue #49) evaluate the feasibility of a virtual 3D view snapshot
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
-- TODO: (issue #60) implement precision maps for M3C2 plugin
 - TODO: (issue #71) implement scalar field interpolation from another entity.
-
+- TODO: (issue #72) define a better message on Windows when setting the environment for CloudComPy
 

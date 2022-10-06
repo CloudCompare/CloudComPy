@@ -795,6 +795,17 @@ The M3C2 params file generated below corresponds to the 'guess params' option of
    :literal:
    :code: python
 
+To use the precision maps, you have to provide the six corresponding scalar fields in list
+(3 components for the first cloud and 3 components for the second cloud),
+and also two scales in a list. When these lists are provided, the computation uses the precision maps, 
+and supersedes the corresponding option in the params file.
+
+.. include:: ../tests/test030.py
+   :start-after: #---computeM3C2_02-begin
+   :end-before:  #---computeM3C2_02-end
+   :literal:
+   :code: python
+
 The above code snippets are from :download:`test030.py <../tests/test030.py>`.
 
 ShadeVIS (ambiant occlusion) with Plugin PCV
