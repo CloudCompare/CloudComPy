@@ -66,7 +66,7 @@ endif()
 
 # scripts to set environment
 if(WIN32)
-	set(ENV_CLOUDCOMPY envCloudComPy.bat)
+	set(ENV_CLOUDCOMPY envCloudComPy.bat checkenv.py)
     install(PROGRAMS ${ENV_CLOUDCOMPY}
             DESTINATION .
            )

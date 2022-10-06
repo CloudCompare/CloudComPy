@@ -2,6 +2,15 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## October 07, 2022 CloudComPy release:
+
+ - (issue #60) implement precision maps for M3C2 plugin
+ - (issue #71) implement scalar field interpolation from another entity.
+ - (issue #72) define a better message on Windows when setting the environment for CloudComPy
+ - Various small fixes.
+
+** NOTE**: still working on issues #49 and #50...
+
 ## September 18, 2022 CloudComPy release:
 
  - CloudComPy is now built with pybind11 instead of Boost.Python. For the CloudComPy user, the scripts are unchanged, 
