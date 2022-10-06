@@ -149,6 +149,29 @@ Here, the filter is a regular expression that works on the field name in upperca
 :rtype: tuple
 )";
 
+const char* cloudComPy_interpolatorParameters_doc=R"(
+Parameters for scalar fields interpolation from a source cloud to a destination cloud.
+
+:ivar int method: from INTERPOL_METHOD: NEAREST_NEIGHBOR, K_NEAREST_NEIGHBORS, RADIUS, default NEAREST_NEIGHBOR
+:ivar int algos: from INTERPOL_ALGO: AVERAGE, MEDIAN, NORMAL_DIST, default AVERAGE
+:ivar int knn: number of neighbors, default 0
+:ivar float radius: default 0
+:ivar float sigma: default 0
+)";
+
+const char* cloudComPy_interpolateScalarFieldsFrom_doc=R"(
+Interpolate scalar fields from a source cloud to a destination cloud.
+
+:param ccPointCloud destCloud: the cloud receiving the interpolatated scalar fields.
+:param ccPointCloud srcCloud: the source cloud containing the scalar fields to interpolate.
+:param list sfIndexes: the list of indexes of scalar fields in the source cloud, to interpolate.
+:param interpolatorParameters params: interpolation parameter structure
+:param int,optional octreeLevel: octree level, default 0
+
+:return: success
+:rtype: bool
+)";
+
 const char* cloudComPy_ICPres_doc=R"(
 Result values on ICP registration.
 

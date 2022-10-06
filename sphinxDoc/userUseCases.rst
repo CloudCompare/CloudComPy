@@ -709,6 +709,26 @@ Finally, a simple rasterization to mesh:
    :literal:
    :code: python
 
+Interpolate scalar fields from one cloud to another
+---------------------------------------------------
+
+The concepts are introduced in the CloudCompare wiki 
+`interpolate scalar fields <https://www.cloudcompare.org/doc/wiki/index.php/Scalar_fields%5CInterpolate_from_another_entity>`_
+
+In the following example, 3 scalar fields from a cloud are selected for interpolation on another cloud.
+the :py:class:`~.cloudComPy.interpolatorParameters` class is used to define the method, algorithm and values required for the interpolation.
+The :py:func:`cloudComPy.interpolateScalarFieldsFrom` function computes the interpolation.
+ 
+Here, the distance between the clouds is locally greater than the radius, so the interpolated scalar fields are filed with NaN in some places.
+
+.. include:: ../tests/test044.py
+   :start-after: #---interpolSF_01-begin
+   :end-before:  #---interpolSF_01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test044.py <../tests/test044.py>`.
+
 Finding an optimal bounding box
 -------------------------------
 
