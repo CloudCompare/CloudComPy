@@ -709,6 +709,26 @@ Finally, a simple rasterization to mesh:
    :literal:
    :code: python
 
+Interpolate scalar fields from one cloud to another
+---------------------------------------------------
+
+The concepts are introduced in the CloudCompare wiki 
+`interpolate scalar fields <https://www.cloudcompare.org/doc/wiki/index.php/Scalar_fields%5CInterpolate_from_another_entity>`_
+
+In the following example, 3 scalar fields from a cloud are selected for interpolation on another cloud.
+the :py:class:`~.cloudComPy.interpolatorParameters` class is used to define the method, algorithm and values required for the interpolation.
+The :py:func:`cloudComPy.interpolateScalarFieldsFrom` function computes the interpolation.
+ 
+Here, the distance between the clouds is locally greater than the radius, so the interpolated scalar fields are filed with NaN in some places.
+
+.. include:: ../tests/test044.py
+   :start-after: #---interpolSF_01-begin
+   :end-before:  #---interpolSF_01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test044.py <../tests/test044.py>`.
+
 Finding an optimal bounding box
 -------------------------------
 
@@ -772,10 +792,10 @@ The plugin computes signed distances between two clouds.
 
 The :py:func:`~.cloudComPy.M3C2.computeM3C2` function relies on a large number of parameters grouped in a file.
 The CloudCompare GUI offers a 'guess parameters' option and a way to save the parameters to a file.
-The :py:func:`~.cloudComPy.M3C2.M3C2gessParamsToFile` function do the same job.
+The :py:func:`~.cloudComPy.M3C2.M3C2guessParamsToFile` function do the same job.
 
 You have to import the The :py:mod:`~.cloudComPy.M3C2` plugin.
-The :py:func:`~.cloudComPy.M3C2.M3C2gessParamsToFile` function requires the two clouds, the params file,
+The :py:func:`~.cloudComPy.M3C2.M3C2guessParamsToFile` function requires the two clouds, the params file,
 and a boolean to get a fast guess or not.
 The :py:func:`~.cloudComPy.M3C2.computeM3C2` function requires only the two clouds and the params file,
 and produces a cloud with new scalar field 'M3C2 distance':
@@ -792,6 +812,17 @@ The M3C2 params file generated below corresponds to the 'guess params' option of
 .. include:: ../tests/test030.py
    :start-after: #---M3C2params01-begin
    :end-before:  #---M3C2params01-end
+   :literal:
+   :code: python
+
+To use the precision maps, you have to provide the six corresponding scalar fields in list
+(3 components for the first cloud and 3 components for the second cloud),
+and also two scales in a list. When these lists are provided, the computation uses the precision maps, 
+and supersedes the corresponding option in the params file.
+
+.. include:: ../tests/test030.py
+   :start-after: #---computeM3C2_02-begin
+   :end-before:  #---computeM3C2_02-end
    :literal:
    :code: python
 

@@ -75,7 +75,7 @@ if cc.isPluginM3C2():
     cloud = cc.loadPointCloud(getSampleCloud(5.0))
     cloud1 = cc.loadPointCloud(getSampleCloud(1.0))
     paramFilename = os.path.join(dataDir, "m3c2_params.txt")
-    ret = cc.M3C2.M3C2gessParamsToFile([cloud,cloud1], paramFilename, True)
+    ret = cc.M3C2.M3C2guessParamsToFile([cloud,cloud1], paramFilename, True)
     cloud2 = cc.M3C2.computeM3C2([cloud,cloud1], paramFilename)
 #---computeM3C2_01-end
     
@@ -91,5 +91,71 @@ if cc.isPluginM3C2():
         raise RuntimeError
     if not math.isclose(sf.getMin(), -0.70, rel_tol=0.01):
         raise RuntimeError
-    
+
     cc.SaveEntities([cloud, cloud1, cloud2], os.path.join(dataDir, "M3C2.bin"))
+
+    npts = 1000000
+    x = np.float32(-5 +10*np.random.random((npts)))
+    y = np.float32(-5 +10*np.random.random((npts)))
+    f = np.sqrt(x*x + y*y)
+    u = 0.005*f
+    z = np.sin(3*f)/(f+1.e-6) + 2*u*(0.5-np.random.random((npts)))
+    d = np.zeros(npts)
+    coords = np.column_stack((x,y,z))
+    cloud = cc.ccPointCloud("cloud")
+    cloud.coordsFromNPArray_copy(coords)
+    cloud.addScalarField("ux")
+    cloud.addScalarField("uy")
+    cloud.addScalarField("uz")
+    sfx = cloud.getScalarField(0)
+    sfx.fromNpArrayCopy(d)
+    sfy = cloud.getScalarField(1)
+    sfy.fromNpArrayCopy(d)
+    sfz = cloud.getScalarField(2)
+    sfz.fromNpArrayCopy(u)
+
+    npts = 1000000
+    x = np.float32(-5 +10*np.random.random((npts)))
+    y = np.float32(-5 +10*np.random.random((npts)))
+    f = np.sqrt(x*x + y*y)
+    u = 0.01*f
+    z = 0.2+np.sin(3*f)/(f+1.e-6) + 2*u*(0.5-np.random.random((npts)))
+    d = np.zeros(npts)
+    coords = np.column_stack((x,y,z))
+    cloud1 = cc.ccPointCloud("cloud1")
+    cloud1.coordsFromNPArray_copy(coords)
+    cloud1.addScalarField("ux")
+    cloud1.addScalarField("uy")
+    cloud1.addScalarField("uz")
+    sfx = cloud1.getScalarField(0)
+    sfx.fromNpArrayCopy(d)
+    sfy = cloud1.getScalarField(1)
+    sfy.fromNpArrayCopy(d)
+    sfz = cloud1.getScalarField(2)
+    sfz.fromNpArrayCopy(u)
+
+#---computeM3C2_02-begin
+    sfs = []
+    dic = cloud.getScalarFieldDic()
+    sfs.append(cloud.getScalarField(dic["ux"]))
+    sfs.append(cloud.getScalarField(dic["uy"]))
+    sfs.append(cloud.getScalarField(dic["uz"]))
+    dic1 = cloud1.getScalarFieldDic()
+    sfs.append(cloud1.getScalarField(dic1["ux"]))
+    sfs.append(cloud1.getScalarField(dic1["uy"]))
+    sfs.append(cloud1.getScalarField(dic1["uz"]))
+    scales = [1., 1.]
+    paramFilename = os.path.join(dataDir, "m3c2_params2.txt")
+    ret = cc.M3C2.M3C2guessParamsToFile([cloud,cloud1], paramFilename, True)
+    cloud2 = cc.M3C2.computeM3C2([cloud,cloud1], paramFilename, sfs, scales)
+#---computeM3C2_02-end
+    
+    dic= cloud2.getScalarFieldDic()
+    sf = cloud2.getScalarField(dic['distance uncertainty'])
+    if sf is None:
+        raise RuntimeError
+    mean,var = sf.computeMeanAndVariance()
+    if not math.isclose(mean, 0.0682, rel_tol=0.01):
+        raise RuntimeError
+
+    cc.SaveEntities([cloud, cloud1, cloud2], os.path.join(dataDir, "M3C2pm.bin"))

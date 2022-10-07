@@ -23,6 +23,7 @@ cloudComPy module, functions
 .. autofunction:: importFile
 .. autofunction:: initCC
 .. autofunction:: initCloudCompare
+.. autofunction:: interpolateScalarFieldsFrom
 .. autofunction:: invertNormals
 .. autofunction:: isPluginDraco
 .. autofunction:: isPluginFbx
@@ -70,6 +71,10 @@ cloudComPy module, functions
    :undoc-members:
 
 .. autoclass:: ICPres
+   :members:
+   :undoc-members:
+
+.. autoclass:: interpolatorParameters
    :members:
    :undoc-members:
 

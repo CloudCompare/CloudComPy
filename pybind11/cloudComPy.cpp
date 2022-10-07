@@ -37,6 +37,7 @@
 #include <ccCommon.h>
 #include <AutoSegmentationTools.h>
 #include <ParallelSort.h>
+#include <ccPointCloudInterpolator.h>
 
 #include <QString>
 #include <QSharedPointer>
@@ -513,6 +514,28 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
     return res;
 }
 
+//struct interpolatorParameters: public ccPointCloudInterpolator::Parameters
+//{
+//}
+
+//{
+//    ccPointCloudInterpolator::Parameters::Method method = ccPointCloudInterpolator::Parameters::Method::NEAREST_NEIGHBOR;
+//    ccPointCloudInterpolator::Parameters::Algo algo = ccPointCloudInterpolator::Parameters::Algo::AVERAGE;
+//    unsigned knn = 0;
+//    float radius = 0;
+//    double sigma = 0;
+//};
+
+bool InterpolateScalarFieldsFrom_py(ccPointCloud* destCloud,
+                                    ccPointCloud* srcCloud,
+                                    std::vector<int> sfIndexes,
+                                    const ccPointCloudInterpolator::Parameters& params,
+                                    unsigned char octreeLevel = 0)
+{
+    CCTRACE("InterpolateScalarFieldsFrom_py");
+    return ccPointCloudInterpolator::InterpolateScalarFieldsFrom(destCloud, srcCloud, sfIndexes, params, nullptr, octreeLevel);
+}
+
 PYBIND11_MODULE(_cloudComPy, m0)
 {
     export_colors(m0);
@@ -626,9 +649,39 @@ PYBIND11_MODULE(_cloudComPy, m0)
         .value("PER_CELL_INVALID", ccRasterGrid::PER_CELL_INVALID)
         .export_values();
 
+    py::enum_<ccPointCloudInterpolator::Parameters::Method>(m0, "INTERPOL_METHOD")
+        .value("NEAREST_NEIGHBOR", ccPointCloudInterpolator::Parameters::Method::NEAREST_NEIGHBOR)
+        .value("K_NEAREST_NEIGHBORS", ccPointCloudInterpolator::Parameters::Method::K_NEAREST_NEIGHBORS)
+        .value("RADIUS", ccPointCloudInterpolator::Parameters::Method::RADIUS)
+        .export_values();
+
+    py::enum_<ccPointCloudInterpolator::Parameters::Algo>(m0, "INTERPOL_ALGO")
+        .value("AVERAGE", ccPointCloudInterpolator::Parameters::Algo::AVERAGE)
+        .value("MEDIAN", ccPointCloudInterpolator::Parameters::Algo::MEDIAN)
+        .value("NORMAL_DIST", ccPointCloudInterpolator::Parameters::Algo::NORMAL_DIST)
+        .export_values();
+
     m0.def("importFile", &importFilePy,
            py::arg("filename"), py::arg("mode")=AUTO, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0, py::arg("extraData")="",
            cloudComPy_importFile_doc);
+
+    py::class_<ccPointCloudInterpolator::Parameters>(m0, "interpolatorParameters", cloudComPy_interpolatorParameters_doc)
+        .def(py::init<>())
+        .def_readwrite("method", &ccPointCloudInterpolator::Parameters::method,
+                       cloudComPy_interpolatorParameters_doc)
+        .def_readwrite("algos", &ccPointCloudInterpolator::Parameters::algo,
+                       cloudComPy_interpolatorParameters_doc)
+        .def_readwrite("knn", &ccPointCloudInterpolator::Parameters::knn,
+                       cloudComPy_interpolatorParameters_doc)
+        .def_readwrite("radius", &ccPointCloudInterpolator::Parameters::radius,
+                       cloudComPy_interpolatorParameters_doc)
+        .def_readwrite("sigma", &ccPointCloudInterpolator::Parameters::sigma,
+                       cloudComPy_interpolatorParameters_doc)
+        ;
+
+    m0.def("interpolateScalarFieldsFrom", &InterpolateScalarFieldsFrom_py,
+           py::arg("destCloud"), py::arg("srcCloud"), py::arg("sfIndexes"), py::arg("params"), py::arg("octreeLevel")=0,
+           cloudComPy_interpolateScalarFieldsFrom_doc);
 
     m0.def("loadPointCloud", &loadPointCloudPy,
            py::arg("filename"),

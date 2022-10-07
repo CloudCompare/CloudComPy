@@ -465,7 +465,7 @@
           "type": "FILEPATH"
         },
         {
-          "name": "LASZIP_INCLUDE_DIR",
+          "name": "LASZIP_LASTOOLS_INCLUDE_DIR",
           "value": "C:/Users/paulr/CloudComPy/lasTools/LAStools/LASzip/src",
           "type": "PATH"
         },
