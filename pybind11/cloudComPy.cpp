@@ -55,6 +55,9 @@ QString greet()
 
 void initCC_py()
 {
+#ifdef _PYTHONAPI_DEBUG_
+    ccLogTrace::settrace();
+#endif
     PyObject *cc_module;
     cc_module = PyImport_ImportModule("cloudComPy");
     const char* modulePath = PyUnicode_AsUTF8(PyModule_GetFilenameObject(cc_module));

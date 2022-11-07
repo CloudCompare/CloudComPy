@@ -145,3 +145,4 @@ TODO List
 - TODO: (issue #49) evaluate the feasibility of a virtual 3D view snapshot
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 - TODO: (issue #74) document RANSAC_SD plugin: extract plane equation.
+- TODO: (issue #76) fix the tracing system.
