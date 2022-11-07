@@ -652,4 +652,10 @@ GeoTiff files are only available with the GDAL plugin.
 :rtype: None
 )";
 
+const char* cloudComPy_setTraces_doc= R"(
+Activate or deactivate trace system.
+
+:param bool isActive: whether to activate or deactivate the trace system.
+)";
+
 #endif /* CLOUDCOMPY_DOCSTRINGS_HPP_ */

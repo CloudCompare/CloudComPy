@@ -41,6 +41,7 @@ cloudComPy module, functions
 .. autofunction:: SaveEntities
 .. autofunction:: SaveMesh
 .. autofunction:: SavePointCloud
+.. autofunction:: setTraces
 
 .. autoclass:: ccBBox
    :members:
