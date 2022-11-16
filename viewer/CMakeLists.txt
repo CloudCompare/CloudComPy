@@ -6,14 +6,13 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
 target_sources( ${PROJECT_NAME}
     PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/ccViewer/ccviewer.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/ccViewer/ccviewer.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/ccViewer/ccViewerApplication.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/ccViewer/ccViewerApplication.cpp
+    viewerPy.h
+    viewerPy.cpp
+    viewerPyApplication.h
+    viewerPyApplication.cpp
     )
 
 target_include_directories( ${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/ccViewer
     ${CC_FBO_LIB_SOURCE_DIR}/include
     ${CCCoreLib_SOURCE_DIR}/include
     ${QCC_DB_LIB_SOURCE_DIR}

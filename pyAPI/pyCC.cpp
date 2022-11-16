@@ -45,11 +45,7 @@
 #include <SimpleMesh.h>
 #include <ccMaterialSet.h>
 #include <ccHObject.h>
-#include <ccviewer.h>
-#include <ccViewerApplication.h>
-
-//libs/qCC_io
-#include<AsciiFilter.h>
+#include <AsciiFilter.h>
 #include <pyccTrace.h>
 
 //libs/CCPluginStub
@@ -78,6 +74,8 @@
 #include <QObject>
 #include <QMessageBox>
 
+#include <viewerPy.h>
+#include <viewerPyApplication.h>
 #include "optdefines.h"
 
 #ifdef PLUGIN_IO_QFBX
@@ -241,8 +239,12 @@ pyCC* initCloudCompare()
     if (!s_pyCCInternals)
     {
         CCTRACE("initCloudCompare");
-    	ccViewerApplication::InitOpenGL();
-    	ccViewerApplication* app = new ccViewerApplication(pyCC_argc, pyCC_argv, false);
+    	viewerPyApplication::InitOpenGL();
+        QDir appDir = initCC::moduleDir;
+        appDir.cdUp();
+        appDir.cdUp();
+        QString appliDir = appDir.absolutePath() + "/bin";
+    	viewerPyApplication* app = new viewerPyApplication(pyCC_argc, pyCC_argv, false, appliDir);
     	//QApplication* app = new QApplication(pyCC_argc, pyCC_argv);
         s_pyCCInternals = new pyCC;
         s_pyCCInternals->m_silentMode = false;
@@ -262,6 +264,9 @@ pyCC* initCloudCompare()
         for (int i = 0; i < s_pyCCInternals->m_PluginPaths.size(); ++i)
             CCTRACE("pluginPath: " << s_pyCCInternals->m_PluginPaths.at(i).toStdString());
         ccPluginManager::Get().loadPlugins();
+    	viewerPy* w = new viewerPy();
+    	app->setViewer(w);
+    	//w->show();
     }
     return s_pyCCInternals;
 }

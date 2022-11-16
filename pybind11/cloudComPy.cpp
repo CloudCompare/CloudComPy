@@ -41,9 +41,12 @@
 #include <ReferenceCloud.h>
 
 //#include <ccMainAppInterface.h>
+#include <viewerPy.h>
+#include <viewerPyApplication.h>
 
 #include <QString>
 #include <QSharedPointer>
+#include <QApplication>
 #include <vector>
 #include <tuple>
 
@@ -650,7 +653,16 @@ int LabelConnectedComponents_py(std::vector<ccHObject*> entities,
 
 void renderPy(ccPointCloud* cloud)
 {
-
+	CCTRACE("renderPy");
+	QCoreApplication *coreApp = QCoreApplication::instance();
+	viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+	if (!app)
+	{
+		CCTRACE("cannot find viewerPyApplication!");
+	}
+	viewerPy* w = app->getViewer();
+	w->show();
+	app->exec();
 }
 
 bool InterpolateScalarFieldsFrom_py(ccPointCloud* destCloud,
@@ -1287,5 +1299,7 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::arg("export_perCellHeightRange")=false,
            cloudComPy_RasterizeGeoTiffOnly_doc,
            py::return_value_policy::reference);
+
+    m0.def("render", &renderPy);
 
 }
