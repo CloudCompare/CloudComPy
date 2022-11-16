@@ -45,7 +45,8 @@
 #include <SimpleMesh.h>
 #include <ccMaterialSet.h>
 #include <ccHObject.h>
-//#include <ccObject.h>
+#include <ccviewer.h>
+#include <ccViewerApplication.h>
 
 //libs/qCC_io
 #include<AsciiFilter.h>
@@ -240,7 +241,9 @@ pyCC* initCloudCompare()
     if (!s_pyCCInternals)
     {
         CCTRACE("initCloudCompare");
-        QApplication* app = new QApplication(pyCC_argc, pyCC_argv);
+    	ccViewerApplication::InitOpenGL();
+    	ccViewerApplication* app = new ccViewerApplication(pyCC_argc, pyCC_argv, false);
+    	//QApplication* app = new QApplication(pyCC_argc, pyCC_argv);
         s_pyCCInternals = new pyCC;
         s_pyCCInternals->m_silentMode = false;
         s_pyCCInternals->m_autoSaveMode = true;
@@ -345,6 +348,7 @@ void pyCC_setupPaths(pyCC* capi)
         }
     }
 }
+
 ccPolyline* loadPolyline(
     const char* filename, CC_SHIFT_MODE mode, int skip, double x, double y, double z)
 {

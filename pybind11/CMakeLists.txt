@@ -56,7 +56,7 @@ add_library( ${PROJECT_NAME} SHARED )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
-    target_sources( ${PROJECT_NAME}
+target_sources( ${PROJECT_NAME}
     PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/cloudComPy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/colorsPy.cpp
@@ -81,6 +81,7 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
     ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../pyAPI
+    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/ccViewer
     ${CCCoreLib_SOURCE_DIR}/include
     ${QCC_DB_LIB_SOURCE_DIR}
     )
