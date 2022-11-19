@@ -661,7 +661,9 @@ void renderPy(ccPointCloud* cloud)
 		CCTRACE("cannot find viewerPyApplication!");
 	}
 	viewerPy* w = app->getViewer();
+	w->addToDB(cloud);
 	w->show();
+	w->doActionRenderToFile();
 	app->exec();
 }
 

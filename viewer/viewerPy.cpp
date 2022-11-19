@@ -91,68 +91,68 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 	reflectPerspectiveState();
 	reflectPivotVisibilityState();
 
-//#ifdef CC_3DXWARE_SUPPORT
-//	enable3DMouse(true);
-//#else
-//	ui.actionEnable3DMouse->setEnabled(false);
-//#endif
-//
-//	//Signals & slots connection
-//	connect(m_glWindow,								&ccGLWindow::filesDropped,				this,	qOverload<QStringList>(&viewerPy::addToDB), Qt::QueuedConnection);
-//	connect(m_glWindow,								&ccGLWindow::entitySelectionChanged,	this,	&viewerPy::selectEntity);
-//	connect(m_glWindow,								&ccGLWindow::exclusiveFullScreenToggled,this,	&viewerPy::onExclusiveFullScreenToggled);
-//
-//	//"Options" menu
-//	connect(ui.actionDisplayParameters,				&QAction::triggered,					this,	&viewerPy::showDisplayParameters);
-//	connect(ui.actionEditCamera,					&QAction::triggered,					this,	&viewerPy::doActionEditCamera);
-//	//"Display > Standard views" menu
-//	connect(ui.actionSetViewTop,					&QAction::triggered,					this,	&viewerPy::setTopView);
-//	connect(ui.actionSetViewBottom,					&QAction::triggered,					this,	&viewerPy::setBottomView);
-//	connect(ui.actionSetViewFront,					&QAction::triggered,					this,	&viewerPy::setFrontView);
-//	connect(ui.actionSetViewBack,					&QAction::triggered,					this,	&viewerPy::setBackView);
-//	connect(ui.actionSetViewLeft,					&QAction::triggered,					this,	&viewerPy::setLeftView);
-//	connect(ui.actionSetViewRight,					&QAction::triggered,					this,	&viewerPy::setRightView);
-//	connect(ui.actionSetViewIso1,					&QAction::triggered,					this,	&viewerPy::setIsoView1);
-//	connect(ui.actionSetViewIso2,					&QAction::triggered,					this,	&viewerPy::setIsoView2);
-//
-//	//"Options > Perspective" menu
-//	connect(ui.actionSetOrthoView,					&QAction::triggered,					this,	&viewerPy::setOrthoView);
-//	connect(ui.actionSetCenteredPerspectiveView,	&QAction::triggered,					this,	&viewerPy::setCenteredPerspectiveView);
-//	connect(ui.actionSetViewerPerspectiveView,		&QAction::triggered,					this,	&viewerPy::setViewerPerspectiveView);
-//	//"Options > Rotation symbol" menu
-//	connect(ui.actionSetPivotAlwaysOn,				&QAction::triggered,					this,	&viewerPy::setPivotAlwaysOn);
-//	connect(ui.actionSetPivotRotationOnly,			&QAction::triggered,					this,	&viewerPy::setPivotRotationOnly);
-//	connect(ui.actionSetPivotOff,					&QAction::triggered,					this,	&viewerPy::setPivotOff);
-//	//"Options > 3D mouse" menu
-//	connect(ui.actionEnable3DMouse,					&QAction::toggled,						this,	&viewerPy::enable3DMouse);
-//	//"Display > Lights & Materials" menu
-//	connect(ui.actionToggleSunLight,				&QAction::toggled,						this,	&viewerPy::toggleSunLight);
-//	connect(ui.actionToggleCustomLight,				&QAction::toggled,						this,	&viewerPy::toggleCustomLight);
-//	//"Options" menu
-//	connect(ui.actionGlobalZoom,					&QAction::triggered,					this,	&viewerPy::setGlobalZoom);
-//	connect(ui.actionEnableStereo,					&QAction::toggled,						this,	&viewerPy::toggleStereoMode);
-//	connect(ui.actionFullScreen,					&QAction::toggled,						this,	&viewerPy::toggleFullScreen);
-//	connect(ui.actionLockRotationVertAxis,			&QAction::triggered,					this,   &viewerPy::toggleRotationAboutVertAxis);
-//
-//	//"Options > Selected" menu
-//	connect(ui.actionShowColors,					&QAction::toggled,						this,	&viewerPy::toggleColorsShown);
-//	connect(ui.actionShowNormals,					&QAction::toggled,						this,	&viewerPy::toggleNormalsShown);
-//	connect(ui.actionShowMaterials,					&QAction::toggled,						this,	&viewerPy::toggleMaterialsShown);
-//	connect(ui.actionShowScalarField,				&QAction::toggled,						this,	&viewerPy::toggleScalarShown);
-//	connect(ui.actionShowColorRamp,					&QAction::toggled,						this,	&viewerPy::toggleColorbarShown);
-//	connect(ui.actionZoomOnSelectedEntity,			&QAction::triggered,					this,	&viewerPy::zoomOnSelectedEntity);
-//	connect(ui.actionDelete,						&QAction::triggered,					this,	&viewerPy::doActionDeleteSelectedEntity);
-//
-//
-//	//"Shaders" menu
-//	connect(ui.actionNoFilter,						&QAction::triggered,					this,	&viewerPy::doDisableGLFilter);
-//    connect(ui.actionRenderToFile,                  &QAction::triggered,                    this,   &viewerPy::doActionRenderToFile);
-//
-//	//"Help" menu
-//	connect(ui.actionAbout,							&QAction::triggered,					this,	&viewerPy::doActionAbout);
-//	connect(ui.actionHelpShortcuts,					&QAction::triggered,					this,	&viewerPy::doActionDisplayShortcuts);
-//
-//	loadPlugins();
+#ifdef CC_3DXWARE_SUPPORT
+	enable3DMouse(true);
+#else
+	ui.actionEnable3DMouse->setEnabled(false);
+#endif
+
+	//Signals & slots connection
+	connect(m_glWindow,								&ccGLWindow::filesDropped,				this,	qOverload<QStringList>(&viewerPy::addToDB), Qt::QueuedConnection);
+	connect(m_glWindow,								&ccGLWindow::entitySelectionChanged,	this,	&viewerPy::selectEntity);
+	connect(m_glWindow,								&ccGLWindow::exclusiveFullScreenToggled,this,	&viewerPy::onExclusiveFullScreenToggled);
+
+	//"Options" menu
+	connect(ui.actionDisplayParameters,				&QAction::triggered,					this,	&viewerPy::showDisplayParameters);
+	connect(ui.actionEditCamera,					&QAction::triggered,					this,	&viewerPy::doActionEditCamera);
+	//"Display > Standard views" menu
+	connect(ui.actionSetViewTop,					&QAction::triggered,					this,	&viewerPy::setTopView);
+	connect(ui.actionSetViewBottom,					&QAction::triggered,					this,	&viewerPy::setBottomView);
+	connect(ui.actionSetViewFront,					&QAction::triggered,					this,	&viewerPy::setFrontView);
+	connect(ui.actionSetViewBack,					&QAction::triggered,					this,	&viewerPy::setBackView);
+	connect(ui.actionSetViewLeft,					&QAction::triggered,					this,	&viewerPy::setLeftView);
+	connect(ui.actionSetViewRight,					&QAction::triggered,					this,	&viewerPy::setRightView);
+	connect(ui.actionSetViewIso1,					&QAction::triggered,					this,	&viewerPy::setIsoView1);
+	connect(ui.actionSetViewIso2,					&QAction::triggered,					this,	&viewerPy::setIsoView2);
+
+	//"Options > Perspective" menu
+	connect(ui.actionSetOrthoView,					&QAction::triggered,					this,	&viewerPy::setOrthoView);
+	connect(ui.actionSetCenteredPerspectiveView,	&QAction::triggered,					this,	&viewerPy::setCenteredPerspectiveView);
+	connect(ui.actionSetViewerPerspectiveView,		&QAction::triggered,					this,	&viewerPy::setViewerPerspectiveView);
+	//"Options > Rotation symbol" menu
+	connect(ui.actionSetPivotAlwaysOn,				&QAction::triggered,					this,	&viewerPy::setPivotAlwaysOn);
+	connect(ui.actionSetPivotRotationOnly,			&QAction::triggered,					this,	&viewerPy::setPivotRotationOnly);
+	connect(ui.actionSetPivotOff,					&QAction::triggered,					this,	&viewerPy::setPivotOff);
+	//"Options > 3D mouse" menu
+	connect(ui.actionEnable3DMouse,					&QAction::toggled,						this,	&viewerPy::enable3DMouse);
+	//"Display > Lights & Materials" menu
+	connect(ui.actionToggleSunLight,				&QAction::toggled,						this,	&viewerPy::toggleSunLight);
+	connect(ui.actionToggleCustomLight,				&QAction::toggled,						this,	&viewerPy::toggleCustomLight);
+	//"Options" menu
+	connect(ui.actionGlobalZoom,					&QAction::triggered,					this,	&viewerPy::setGlobalZoom);
+	connect(ui.actionEnableStereo,					&QAction::toggled,						this,	&viewerPy::toggleStereoMode);
+	connect(ui.actionFullScreen,					&QAction::toggled,						this,	&viewerPy::toggleFullScreen);
+	connect(ui.actionLockRotationVertAxis,			&QAction::triggered,					this,   &viewerPy::toggleRotationAboutVertAxis);
+
+	//"Options > Selected" menu
+	connect(ui.actionShowColors,					&QAction::toggled,						this,	&viewerPy::toggleColorsShown);
+	connect(ui.actionShowNormals,					&QAction::toggled,						this,	&viewerPy::toggleNormalsShown);
+	connect(ui.actionShowMaterials,					&QAction::toggled,						this,	&viewerPy::toggleMaterialsShown);
+	connect(ui.actionShowScalarField,				&QAction::toggled,						this,	&viewerPy::toggleScalarShown);
+	connect(ui.actionShowColorRamp,					&QAction::toggled,						this,	&viewerPy::toggleColorbarShown);
+	connect(ui.actionZoomOnSelectedEntity,			&QAction::triggered,					this,	&viewerPy::zoomOnSelectedEntity);
+	connect(ui.actionDelete,						&QAction::triggered,					this,	&viewerPy::doActionDeleteSelectedEntity);
+
+
+	//"Shaders" menu
+	connect(ui.actionNoFilter,						&QAction::triggered,					this,	&viewerPy::doDisableGLFilter);
+    connect(ui.actionRenderToFile,                  &QAction::triggered,                    this,   &viewerPy::doActionRenderToFile);
+
+	//"Help" menu
+	connect(ui.actionAbout,							&QAction::triggered,					this,	&viewerPy::doActionAbout);
+	connect(ui.actionHelpShortcuts,					&QAction::triggered,					this,	&viewerPy::doActionDisplayShortcuts);
+
+	loadPlugins();
 }
 
 viewerPy::~viewerPy()
