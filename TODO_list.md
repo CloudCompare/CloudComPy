@@ -146,3 +146,4 @@ TODO List
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 - TODO: (issue #74) document RANSAC_SD plugin: extract plane equation.
 - TODO: (issue #76) fix the tracing system.
+- TODO: fix documentation on building on Windows

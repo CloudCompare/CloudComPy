@@ -1,5 +1,5 @@
 
-call C:\Users\paulr\anaconda3\Scripts\activate.bat C:\Users\paulr\anaconda3
+call @CONDA_BASE_DIRECTORY@\Scripts\activate.bat @CONDA_BASE_DIRECTORY@
 call conda activate CloudComPy310
 call @CMAKE_INSTALL_PREFIX@\envCloudComPy.bat
 del @SPHINXDOCTREES@\*.doctree

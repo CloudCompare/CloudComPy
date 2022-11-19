@@ -5,11 +5,12 @@
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "buildRoot": "C:/Users/paulr/CloudComPy/build2019/${name}",
-      "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy310",
-      "anacondaRoot": "C:/Users/paulr/anaconda3/envs/CloudComPy310",
-      "Qt5Root": "C:/Users/paulr/anaconda3/envs/CloudComPy310/Library",
-      "cmakeExecutable": "C:/Users/paulr/anaconda3/envs/CloudComPy310/Library/bin/cmake.exe",
+      "home": "${env.USERPROFILE}",
+      "buildRoot": "${home}/CloudComPy/build2019/${name}",
+      "installRoot": "${home}/CloudComPy/install/CloudComPy310",
+      "condaBase": "${home}/anaconda3",
+      "condaRoot": "${condaBase}/envs/CloudComPy310",
+      "cmakeExecutable": "${condaRoot}/Library/bin/cmake.exe",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
@@ -58,6 +59,16 @@
           "name": "USE_CONDA_PACKAGES",
           "value": "True",
           "type": "BOOL"
+        },
+        {
+          "name": "CONDA_BASE_DIRECTORY",
+          "value": "${condaBase}",
+          "type": "STRING"
+        },
+        {
+          "name": "CONDA_ROOT_DIRECTORY",
+          "value": "${condaRoot}",
+          "type": "STRING"
         },
         {
           "name": "INSTALL_PREREQUISITE_LIBRARIES",
@@ -306,112 +317,112 @@
         },
         {
           "name": "Qt5_DIR",
-          "value": "${Qt5Root}/lib/cmake/Qt5",
+          "value": "${condaRoot}/Library/lib/cmake/Qt5",
           "type": "STRING"
         },
         {
           "name": "Qt5LinguistTools_DIR",
-          "value": "${Qt5Root}/lib/cmake/Qt5LinguistTools",
+          "value": "${condaRoot}/Library/lib/cmake/Qt5LinguistTools",
           "type": "STRING"
         },
         {
           "name": "Qt5Test_DIR",
-          "value": "${Qt5Root}/lib/cmake/Qt5Test",
+          "value": "${condaRoot}/Library/lib/cmake/Qt5Test",
           "type": "STRING"
         },
         {
           "name": "BOOST_INCLUDEDIR",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "STRING"
         },
         {
           "name": "BOOST_LIBRARYDIR",
-          "value": "${anacondaRoot}/Library/lib",
+          "value": "${condaRoot}/Library/lib",
           "type": "STRING"
         },
         {
           "name": "Python3_ROOT_DIR",
-          "value": "${anacondaRoot}",
+          "value": "${condaRoot}",
           "type": "STRING"
         },
         {
           "name": "NUMPY_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Lib/site-packages/numpy/core/include",
+          "value": "${condaRoot}/Lib/site-packages/numpy/core/include",
           "type": "STRING"
         },
         {
           "name": "CGAL_DIR",
-          "value": "${anacondaRoot}/Library/lib/cmake/CGAL",
+          "value": "${condaRoot}/Library/lib/cmake/CGAL",
           "type": "PATH"
         },
         {
           "name": "CORK_INCLUDE_DIR",
-          "value": "C:/Users/paulr/CloudComPy/cork/src",
+          "value": "${home}/CloudComPy/cork/src",
           "type": "PATH"
         },
         {
           "name": "CORK_RELEASE_LIBRARY_FILE",
-          "value": "C:/Users/paulr/CloudComPy/cork/win/VS2013/x64/Release/wincork2013.lib",
+          "value": "${home}/CloudComPy/cork/win/VS2013/x64/Release/wincork2013.lib",
           "type": "FILEPATH"
         },
         {
           "name": "Draco_DIR",
-          "value": "C:/Users/paulr/CloudComPy/draco/out/install/x64-Release/share/cmake",
+          "value": "${home}/CloudComPy/draco/out/install/x64-Release/share/cmake",
           "type": "PATH"
         },
         {
           "name": "EIGEN_ROOT_DIR",
-          "value": "${anacondaRoot}/Library/include/eigen3",
+          "value": "${condaRoot}/Library/include/eigen3",
           "type": "PATH"
         },
         {
           "name": "LIBIGL_INCLUDE_DIR",
-          "value": "C:/Users/paulr/CloudComPy/libigl/libigl/include",
+          "value": "${home}/CloudComPy/libigl/libigl/include",
           "type": "PATH"
         },
         {
           "name": "LIBIGL_RELEASE_LIBRARY_FILE",
-          "value": "C:/Users/paulr/CloudComPy/libigl/libigl/out/install/x64-Release/lib/igl.lib",
+          "value": "${home}/CloudComPy/libigl/libigl/out/install/x64-Release/lib/igl.lib",
           "type": "FILEPATH"
         },
         {
           "name": "OPENCV_DIR",
-          "value": "${anacondaRoot}/Library/cmake",
+          "value": "${condaRoot}/Library/cmake",
           "type": "PATH"
         },
         {
           "name": "PCL_DIR",
-          "value": "${anacondaRoot}/Library/cmake",
+          "value": "${condaRoot}/Library/cmake",
           "type": "PATH"
         },
         {
           "name": "PDAL_DIR",
-          "value": "${anacondaRoot}/Library/lib/cmake/PDAL",
+          "value": "${condaRoot}/Library/lib/cmake/PDAL",
           "type": "PATH"
         },
         {
           "name": "FLANN_ROOT",
-          "value": "${anacondaRoot}/Library",
+          "value": "${condaRoot}/Library",
           "type": "PATH"
         },
         {
           "name": "PC_FLANN_INCLUDE_DIRS",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "PC_FLANN_LIBRARY_DIRS",
-          "value": "${anacondaRoot}/Library/lib",
+          "value": "${condaRoot}/Library/lib",
           "type": "PATH"
         },
         {
           "name": "FFMPEG_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "FFMPEG_LIBRARY_DIR",
-          "value": "${anacondaRoot}/Library/lib",
+          "value": "${condaRoot}/Library/lib",
           "type": "PATH"
         },
         {
@@ -436,57 +447,57 @@
         },
         {
           "name": "GDAL_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "GDAL_LIBRARY",
-          "value": "${anacondaRoot}/Library/lib/gdal_i.lib",
+          "value": "${condaRoot}/Library/lib/gdal_i.lib",
           "type": "FILEPATH"
         },
         {
           "name": "GMP_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "GMP_LIBRARIES",
-          "value": "${anacondaRoot}/Library/lib/mpir.lib",
+          "value": "${condaRoot}/Library/lib/mpir.lib",
           "type": "FILEPATH"
         },
         {
           "name": "LASLIB_INCLUDE_DIR",
-          "value": "C:/Users/paulr/CloudComPy/lasTools/LAStools/LASlib/inc",
+          "value": "${home}/CloudComPy/lasTools/LAStools/LASlib/inc",
           "type": "PATH"
         },
         {
           "name": "LASLIB_RELEASE_LIBRARY",
-          "value": "C:/Users/paulr/CloudComPy/lasTools/LAStools/LASlib/VC14/lib/x64/LASlibVC14.lib",
+          "value": "${home}/CloudComPy/lasTools/LAStools/LASlib/VC14/lib/x64/LASlibVC14.lib",
           "type": "FILEPATH"
         },
         {
           "name": "LASZIP_LASTOOLS_INCLUDE_DIR",
-          "value": "C:/Users/paulr/CloudComPy/lasTools/LAStools/LASzip/src",
+          "value": "${home}/CloudComPy/lasTools/LAStools/LASzip/src",
           "type": "PATH"
         },
         {
           "name": "MPIR_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "MPIR_RELEASE_LIBRARY_FILE",
-          "value": "${anacondaRoot}/Library/lib/mpir.lib",
+          "value": "${condaRoot}/Library/lib/mpir.lib",
           "type": "FILEPATH"
         },
         {
           "name": "MPFR_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library",
+          "value": "${condaRoot}/Library",
           "type": "PATH"
         },
         {
           "name": "MPFR_LIBRARIES",
-          "value": "${anacondaRoot}/Library/lib/mpfr.lib",
+          "value": "${condaRoot}/Library/lib/mpfr.lib",
           "type": "FILEPATH"
         },
         {
@@ -506,41 +517,41 @@
         },
         {
           "name": "OPENCASCADE_TBB_DLL_DIR",
-          "value": "${anacondaRoot}/Library/lib/tbb.lib",
+          "value": "${condaRoot}/Library/lib/tbb.lib",
           "type": "PATH"
         },
         {
           "name": "QHULL_DIR",
-          "value": "${anacondaRoot}/Library/lib/cmake/Qhull",
+          "value": "${condaRoot}/Library/lib/cmake/Qhull",
           "type": "PATH"
         },
         {
           "name": "TBB_DIR",
-          "value": "${anacondaRoot}/Library/lib/cmake/TBB",
+          "value": "${condaRoot}/Library/lib/cmake/TBB",
           "type": "PATH"
         },
         {
           "name": "XercesC_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "XercesC_LIBRARY",
-          "value": "${anacondaRoot}/Library/lib/xerces-c_3.lib",
+          "value": "${condaRoot}/Library/lib/xerces-c_3.lib",
           "type": "FILEPATH"
         },
         {
           "name": "ZLIB_INCLUDE_DIR",
-          "value": "${anacondaRoot}/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "ZLIB_LIBRARY",
-          "value": "C:/Users/paulr/anaconda3/Library/lib/zlib.lib",
+          "value": "${home}/anaconda3/Library/lib/zlib.lib",
           "type": "FILEPATH"
         }
       ],
-      "intelliSenseMode": "windows-clang-x64"
+      "intelliSenseMode": "windows-msvc-x64"
     }
   ]
 }
