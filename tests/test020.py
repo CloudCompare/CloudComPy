@@ -133,7 +133,7 @@ cloud14SFlas = cc.loadPointCloud(os.path.join(dataDir, "cloud14SF.las"))
 if cloud14SFlas.size() != 10000:
     raise RuntimeError
 dic = cloud14SFlas.getScalarFieldDic()
-sf = cloud14SFlas.getScalarField(dic['Coord _Z'])
+sf = cloud14SFlas.getScalarField(dic['Coord___Z'])
 sfmin = sf.getMin()             # -0.65168703
 sfmax = sf.getMax()             #  3.0
 if not math.isclose(sfmin, -0.65168703, rel_tol=1e-06):
@@ -145,7 +145,7 @@ cloud14SFlaz = cc.loadPointCloud(os.path.join(dataDir, "cloud14SF.laz"))
 if cloud14SFlaz.size() != 10000:
     raise RuntimeError
 dic = cloud14SFlaz.getScalarFieldDic()
-sf = cloud14SFlaz.getScalarField(dic['Coord _Z'])
+sf = cloud14SFlaz.getScalarField(dic['Coord___Z'])
 sfmin = sf.getMin()             # -0.65168703
 sfmax = sf.getMax()             #  3.0
 if not math.isclose(sfmin, -0.65168703, rel_tol=1e-06):
