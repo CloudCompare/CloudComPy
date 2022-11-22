@@ -73,11 +73,13 @@ The binary are available [here](https://www.simulation.openfields.fr/index.php/d
 
 # CloudComPy: building
 
-Prerequisites for CloudComPy are Python3, BoostPython and Numpy plus, of course, everything needed to build CloudCompare and its plugins.
+Prerequisites for CloudComPy are Python3, PyBind11 and Numpy plus, of course, everything needed to build CloudCompare and its plugins.
 
 With CloudComPy you build CloudCompare and the associated Python module.
 
-Compilation is done with CMake, minimum version  3.13 or newer.
+Compilation is done with CMake, minimum version 3.13 or newer.
+
+## **WARNING: the building instructions are not up to date!**
 
 ## prerequisites versions
 The minimum required version of each prerequisite is not always precisely identified. Examples of constructions that work are given [here](doc/prerequisitesVersions.md).
