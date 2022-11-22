@@ -146,4 +146,6 @@ TODO List
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
 - TODO: (issue #49) evaluate the feasibility of a virtual 3D view snapshot
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
-- TODO: fix documentation on building on Windows
+- TODO: Fix documentation on building on Windows
+- TODO: Take into account the new las io plugin of CloudCompare, both in CloudCompare and CloudComPy
+- TODO: Wrap the Surface Revolution Analysis plugin of CloudCompare in CloudComPy
