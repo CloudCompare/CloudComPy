@@ -2,6 +2,15 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## November 22, 2022 CloudComPy release:
+
+ - update to CloudCompare master > 2.12.4 (November 20, 2022). The new LAS plugin is not yet taken into account in this release.
+ - (issue #74) document RANSAC_SD plugin: extract plane equation.
+ - (issue #76) fix the tracing system.
+ - Various small fixes.
+ 
+ ** NOTE**: experiments in progress on issue #49...
+ 
 ## October 07, 2022 CloudComPy release:
 
  - (issue #60) implement precision maps for M3C2 plugin

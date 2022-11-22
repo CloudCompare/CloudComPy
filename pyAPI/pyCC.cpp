@@ -4350,7 +4350,7 @@ ccHObject* GetSlice_(ccHObject* obj, ccClipBox* clipBox, bool silent)
         }
         clipBox->flagPointsInside(inputCloud, &selectionTable);
 
-        ccGenericPointCloud* sliceCloud = inputCloud->createNewCloudFromVisibilitySelection(false, &selectionTable, true);
+        ccGenericPointCloud* sliceCloud = inputCloud->createNewCloudFromVisibilitySelection(false, &selectionTable, nullptr, true);
         if (!sliceCloud)
         {
             CCTRACE("Not enough memory!");

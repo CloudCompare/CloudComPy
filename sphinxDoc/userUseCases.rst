@@ -296,7 +296,8 @@ The above code snippets are from :download:`test011.py <../tests/test011.py>`.
 Fitting ccPlane
 ---------------
 
-The method :py:meth:`~.cloudComPy.ccPlane.Fit` allows to adjust a plane primitive on a cloud:
+The method :py:meth:`~.cloudComPy.ccPlane.Fit` allows to adjust a plane primitive on a cloud.
+The method :py:meth:`~.cloudComPy.ccPlane.getEquation` gives the 4 coefficients of the plane ([a, b, c, d] as ax+by+cz=d):
 
 .. include:: ../tests/test012.py
    :start-after: #---planeFit01-begin
@@ -947,6 +948,13 @@ The :py:func:`~.cloudComPy.RANSAC_SD.computeRANSAC_SD` function returns a list o
    :end-before:  #---RANSACSD02-end
    :literal:
    :code: python
+
+For each type of primitive (plane, sphere, cylinder,..) it is possible to get the parameters of the equation.
+For instance, a plane is identified with
+::
+	mesh.isA((cc.CC_TYPES.PLANE)
+
+For the plane primitive, the method :py:meth:`~.cloudComPy.ccPlane.getEquation` returns the 4 coefficients of the plane equation: [a, b, c, d] as ax+by+cz=d
 
 The above code snippets are from :download:`test035.py <../tests/test035.py>`.
 

@@ -137,6 +137,8 @@ TODO List
 * DONE: (issue #60) implement precision maps for M3C2 plugin
 * DONE: (issue #71) implement scalar field interpolation from another entity.
 * DONE: (issue #72) define a better message on Windows when setting the environment for CloudComPy
+* DONE: (issue #74) document RANSAC_SD plugin: extract plane equation.
+* DONE: (issue #76) fix the tracing system.
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -144,4 +146,6 @@ TODO List
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
 - TODO: (issue #49) evaluate the feasibility of a virtual 3D view snapshot
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
-
+- TODO: Fix documentation on building on Windows
+- TODO: Take into account the new las io plugin of CloudCompare, both in CloudCompare and CloudComPy
+- TODO: Wrap the Surface Revolution Analysis plugin of CloudCompare in CloudComPy

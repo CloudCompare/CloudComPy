@@ -55,6 +55,9 @@ QString greet()
 
 void initCC_py()
 {
+#ifdef _PYTHONAPI_DEBUG_
+    ccLogTrace::settrace();
+#endif
     PyObject *cc_module;
     cc_module = PyImport_ImportModule("cloudComPy");
     const char* modulePath = PyUnicode_AsUTF8(PyModule_GetFilenameObject(cc_module));
@@ -62,7 +65,19 @@ void initCC_py()
     initCC::init(modulePath);
 }
 
-void initCloudCompare_py()
+void setTraces_py(bool isActive)
+{
+    if (isActive)
+    {
+        ccLogTrace::settrace(1);
+    }
+    else
+    {
+        ccLogTrace::settrace(0);
+    }
+}
+
+ void initCloudCompare_py()
 {
     pyCC* pyCCInternals = initCloudCompare();
 }
@@ -707,6 +722,8 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("SaveEntities", &SaveEntities, cloudComPy_SaveEntities_doc);
 
     m0.def("initCC", &initCC_py, cloudComPy_initCC_doc);
+
+    m0.def("setTraces", &setTraces_py, cloudComPy_setTraces_doc);
 
     m0.def("initCloudCompare", &initCloudCompare_py, cloudComPy_initCloudCompare_doc);
 
