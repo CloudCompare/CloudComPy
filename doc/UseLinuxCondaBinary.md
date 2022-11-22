@@ -34,7 +34,7 @@ Add or update the packages:
 conda activate CloudComPy310
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" laszip jupyterlab "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
+conda install "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
 ```
 
 **Remark:** if conda is unknown, or in a bash script, add the following instruction before conda commands:
