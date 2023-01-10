@@ -149,3 +149,5 @@ TODO List
 - TODO: Fix documentation on building on Windows
 - TODO: Take into account the new las io plugin of CloudCompare, both in CloudCompare and CloudComPy
 - TODO: Wrap the Surface Revolution Analysis plugin of CloudCompare in CloudComPy
+- TODO: (issue #77) Canupo plugin: at least the same as in command mode
+
