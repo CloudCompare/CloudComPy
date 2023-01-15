@@ -654,13 +654,13 @@ PYBIND11_MODULE(_cloudComPy, m0)
         .export_values();
 
     py::enum_<ccRasterGrid::ExportableFields>(m0, "ExportableFields")
-        .value("PER_CELL_HEIGHT", ccRasterGrid::PER_CELL_HEIGHT)
+        .value("PER_CELL_HEIGHT", ccRasterGrid::PER_CELL_VALUE)
         .value("PER_CELL_COUNT", ccRasterGrid::PER_CELL_COUNT)
-        .value("PER_CELL_MIN_HEIGHT", ccRasterGrid::PER_CELL_MIN_HEIGHT)
-        .value("PER_CELL_MAX_HEIGHT", ccRasterGrid::PER_CELL_MAX_HEIGHT)
-        .value("PER_CELL_AVG_HEIGHT", ccRasterGrid::PER_CELL_AVG_HEIGHT)
-        .value("PER_CELL_HEIGHT_STD_DEV", ccRasterGrid::PER_CELL_HEIGHT_STD_DEV)
-        .value("PER_CELL_HEIGHT_RANGE", ccRasterGrid::PER_CELL_HEIGHT_RANGE)
+        .value("PER_CELL_MIN_HEIGHT", ccRasterGrid::PER_CELL_MIN_VALUE)
+        .value("PER_CELL_MAX_HEIGHT", ccRasterGrid::PER_CELL_MAX_VALUE)
+        .value("PER_CELL_AVG_HEIGHT", ccRasterGrid::PER_CELL_AVG_VALUE)
+        .value("PER_CELL_HEIGHT_STD_DEV", ccRasterGrid::PER_CELL_VALUE_STD_DEV)
+        .value("PER_CELL_HEIGHT_RANGE", ccRasterGrid::PER_CELL_VALUE_RANGE)
         .value("PER_CELL_INVALID", ccRasterGrid::PER_CELL_INVALID)
         .export_values();
 
@@ -716,7 +716,7 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("SaveMesh", &SaveMesh, cloudComPy_SaveMesh_doc);
 
     m0.def("SavePointCloud", &SavePointCloud,
-           py::arg("cloud"), py::arg("filename"), py::arg("version")=QString(""),
+           py::arg("cloud"), py::arg("filename"), py::arg("version")=QString(""), py::arg("pointFormat")=-1,
            cloudComPy_SavePointCloud_doc);
 
     m0.def("SaveEntities", &SaveEntities, cloudComPy_SaveEntities_doc);

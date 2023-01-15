@@ -951,6 +951,7 @@ The :py:func:`~.cloudComPy.RANSAC_SD.computeRANSAC_SD` function returns a list o
 
 For each type of primitive (plane, sphere, cylinder,..) it is possible to get the parameters of the equation.
 For instance, a plane is identified with
+
 ::
 	mesh.isA((cc.CC_TYPES.PLANE)
 
