@@ -67,3 +67,11 @@ with open(os.path.join(dataDir, "profil.txt"), 'w') as f:
         r = 5+np.cos(z*np.pi/10)
         f.write("%f %f\n" % (r, z))
 
+
+if cc.isPluginSRA():
+    import cloudComPy.SRA
+    poly = cc.SRA.loadProfile(os.path.join(dataDir, "profil.txt"), 2, False)
+    sra = cc.SRA.qSRA()
+    res=sra.doComputeRadialDists(cl, poly)
+    res = cc.SaveEntities([cl,poly], os.path.join(dataDir, "revol2.bin"))
+

@@ -139,6 +139,7 @@ TODO List
 * DONE: (issue #72) define a better message on Windows when setting the environment for CloudComPy
 * DONE: (issue #74) document RANSAC_SD plugin: extract plane equation.
 * DONE: (issue #76) fix the tracing system.
+- TODO: Take into account the new las io plugin of CloudCompare, both in CloudCompare and CloudComPy
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -147,7 +148,9 @@ TODO List
 - TODO: (issue #49) evaluate the feasibility of a virtual 3D view snapshot
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 - TODO: Fix documentation on building on Windows
-- TODO: Take into account the new las io plugin of CloudCompare, both in CloudCompare and CloudComPy
 - TODO: Wrap the Surface Revolution Analysis plugin of CloudCompare in CloudComPy
 - TODO: (issue #77) Canupo plugin: at least the same as in command mode
+- TODO: (issue #82) remove old wrap of M3C2 PLUGIN (WRAP_PLUGIN_M3C2)
+- TODO: (issue #85) fix install procedure, Qt 5.15.6 is not compatible with Qt 5.15.4
+- TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
 

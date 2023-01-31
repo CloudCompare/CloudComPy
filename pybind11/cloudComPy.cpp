@@ -743,6 +743,8 @@ PYBIND11_MODULE(_cloudComPy, m0)
 
     m0.def("isPluginCSF", &pyccPlugins::isPluginCSF, cloudComPy_isPluginCSF_doc);
 
+    m0.def("isPluginSRA", &pyccPlugins::isPluginSRA, cloudComPy_isPluginSRA_doc);
+
     m0.def("isPluginRANSAC_SD", &pyccPlugins::isPluginRANSAC_SD, cloudComPy_isPluginRANSAC_SD_doc);
 
     m0.def("computeCurvature", &computeCurvature, cloudComPy_computeCurvature_doc);

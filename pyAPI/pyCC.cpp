@@ -160,6 +160,12 @@ bool pyccPlugins::_isPluginMeshBoolean = true;
 bool pyccPlugins::_isPluginMeshBoolean = false;
 #endif
 
+#ifdef PLUGIN_STANDARD_QSRA
+bool pyccPlugins::_isPluginSRA = true;
+#else
+bool pyccPlugins::_isPluginSRA = false;
+#endif
+
 // --- internal struct
 
 //* Extended file loading parameters, from plugins/ccCommandLineInterface.h

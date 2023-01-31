@@ -195,6 +195,8 @@ endif()
 if ( PLUGIN_STANDARD_QCSF )
     add_subdirectory( CSF )
 endif()
-
+if ( PLUGIN_STANDARD_QSRA )
+    add_subdirectory( SRA )
+endif()
 
 
