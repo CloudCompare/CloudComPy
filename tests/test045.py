@@ -73,5 +73,20 @@ if cc.isPluginSRA():
     poly = cc.SRA.loadProfile(os.path.join(dataDir, "profil.txt"), 2, False)
     sra = cc.SRA.qSRA()
     res=sra.doComputeRadialDists(cl, poly)
-    res = cc.SaveEntities([cl,poly], os.path.join(dataDir, "revol2.bin"))
+    dic = cl.getScalarFieldDic()
+    sf = cl.getScalarField(dic['Radial distance'])
+    if not math.isclose(sf.getMin(), -0.1, rel_tol = 0.01):
+        raise RuntimeError
+    if not math.isclose(sf.getMax(), 0.1, rel_tol = 0.01):
+        raise RuntimeError
+    
+    clmap = cc.SRA.exportMapAsCloud(cl, poly, sf, 0.5, 0.01, 0., 10., baseRadius=2)
+    if clmap.size() != 720000:
+        raise RuntimeError
+
+    meshmap = cc.SRA.exportMapAsMesh(cl, poly, sf, 0.5, 0.01, 0., 10., colScale=cc.SRA.DEFAULT_SCALES.YELLOW_BROWN)
+    if meshmap.size() != 144000:
+        raise RuntimeError
+    
+    res = cc.SaveEntities([cl,poly, clmap, meshmap], os.path.join(dataDir, "revol2.bin"))
 

@@ -153,4 +153,5 @@ TODO List
 - TODO: (issue #82) remove old wrap of M3C2 PLUGIN (WRAP_PLUGIN_M3C2)
 - TODO: (issue #85) fix install procedure, Qt 5.15.6 is not compatible with Qt 5.15.4
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
+- TODO: (issue #83) Fix bug in RANSAC SD python plugin: meshes not detected when sensors in dataset
 
