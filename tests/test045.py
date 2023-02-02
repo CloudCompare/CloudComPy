@@ -68,6 +68,7 @@ with open(os.path.join(dataDir, "profil.txt"), 'w') as f:
         f.write("%f %f\n" % (r, z))
 
 
+#---SRA01-begin
 if cc.isPluginSRA():
     import cloudComPy.SRA
     poly = cc.SRA.loadProfile(os.path.join(dataDir, "profil.txt"), 2, False)
@@ -75,16 +76,21 @@ if cc.isPluginSRA():
     res=sra.doComputeRadialDists(cl, poly)
     dic = cl.getScalarFieldDic()
     sf = cl.getScalarField(dic['Radial distance'])
+#---SRA01-end
     if not math.isclose(sf.getMin(), -0.1, rel_tol = 0.01):
         raise RuntimeError
     if not math.isclose(sf.getMax(), 0.1, rel_tol = 0.01):
         raise RuntimeError
     
+#---SRA02-begin
     clmap = cc.SRA.exportMapAsCloud(cl, poly, sf, 0.5, 0.01, 0., 10., baseRadius=2)
+#---SRA02-end
     if clmap.size() != 720000:
         raise RuntimeError
 
+#---SRA03-begin
     meshmap = cc.SRA.exportMapAsMesh(cl, poly, sf, 0.5, 0.01, 0., 10., colScale=cc.SRA.DEFAULT_SCALES.YELLOW_BROWN)
+#---SRA03-end
     if meshmap.size() != 144000:
         raise RuntimeError
     

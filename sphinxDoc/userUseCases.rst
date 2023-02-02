@@ -959,7 +959,7 @@ For the plane primitive, the method :py:meth:`~.cloudComPy.ccPlane.getEquation` 
 
 The above code snippets are from :download:`test035.py <../tests/test035.py>`.
 
-compute Cloth Simulation Filter on a cloud with CSF plugin
+Compute Cloth Simulation Filter on a cloud with CSF plugin
 ----------------------------------------------------------
 
 The concepts are presented in the 
@@ -987,6 +987,48 @@ And a second example:
    :code: python
 
 The above code snippets are from :download:`test043.py <../tests/test043.py>`.
+
+Compute distance between a cloud and a surface of revolution, with SRA plugin
+-----------------------------------------------------------------------------
+
+The concepts are presented in the 
+`CloudCompare wiki - SRA (plugin) <https://www.cloudcompare.org/doc/wiki/index.php/Surface_of_Revolution_Analysis_(plugin)>`_.
+
+You have to import the The :py:mod:`~.cloudComPy.SRA` plugin.
+
+The surface of revolution is defined by a profile.
+See `CloudCompare wiki - SRA (plugin) <https://www.cloudcompare.org/doc/wiki/index.php/Surface_of_Revolution_Analysis_(plugin)>`_ 
+for a descritpion of the text file format for the profile.
+This profile can be loaded with the :py:func:`~.cloudComPy.SRA.loadProfile` function.
+
+The :py:meth:`~.cloudComPy.SRA.qSRA.doComputeRadialDists` method of :py:class:`~.cloudComPy.SRA.qSRA` class
+computes the radial distances between the cloud and the surface of revolution
+and store the result as a scalar field named 'Radial distance'.
+
+An example:
+
+.. include:: ../tests/test045.py
+   :start-after: #---SRA01-begin
+   :end-before:  #---SRA01-end
+   :literal:
+   :code: python
+
+Distance map can be exported as a cloud or a mesh with the :py:func:`~.cloudComPy.SRA.exportMapAsCloud` 
+and :py:func:`~.cloudComPy.SRA.exportMapAsMesh` functions:
+
+.. include:: ../tests/test045.py
+   :start-after: #---SRA02-begin
+   :end-before:  #---SRA02-end
+   :literal:
+   :code: python
+
+.. include:: ../tests/test045.py
+   :start-after: #---SRA03-begin
+   :end-before:  #---SRA03-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test045.py <../tests/test045.py>`.
 
 Sclices and contours
 --------------------
