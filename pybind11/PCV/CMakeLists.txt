@@ -19,10 +19,10 @@
 #                                                                        #
 ##########################################################################
 
-message(STATUS "Plugin PCV boost Python processing")
+message(STATUS "Plugin PCV pybind11 processing")
 
 # --- ----------------------------------------------------------
-# --- target boost.Python library: Python module cloudComPy
+# --- target pybind11 library: Python module cloudComPy
 
 project( _PCV VERSION 0.1 )
 

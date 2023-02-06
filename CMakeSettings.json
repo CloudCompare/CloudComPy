@@ -301,11 +301,6 @@
           "type": "BOOL"
         },
         {
-          "name": "WRAP_PLUGIN_QM3C2",
-          "value": "False",
-          "type": "BOOL"
-        },
-        {
           "name": "POISSON_RECON_WITH_OPEN_MP",
           "value": "True",
           "type": "BOOL"

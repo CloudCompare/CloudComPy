@@ -19,10 +19,10 @@
 #                                                                        #
 ##########################################################################
 
-message(STATUS "Plugin SRA boost Python processing")
+message(STATUS "Plugin SRA pybind11 processing")
 
 # --- ----------------------------------------------------------
-# --- target boost.Python library: Python module cloudComPy
+# --- target pybind11 library: Python module cloudComPy
 
 project( _SRA VERSION 0.1 )
 

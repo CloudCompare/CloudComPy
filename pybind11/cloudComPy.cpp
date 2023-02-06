@@ -759,10 +759,6 @@ PYBIND11_MODULE(_cloudComPy, m0)
 
     m0.def("computeMomentOrder1", &computeMomentOrder1, cloudComPy_computeMomentOrder1_doc);
 
-#ifdef WRAP_PLUGIN_QM3C2
-    m0.def("computeM3C2", &computeM3C2, py::return_value_policy::reference, cloudComPy_computeM3C2_doc);
-#endif
-
     m0.def("filterBySFValue", &filterBySFValue, py::return_value_policy::reference, cloudComPy_filterBySFValue_doc);
 
     m0.def("GetPointCloudRadius", &GetPointCloudRadius,

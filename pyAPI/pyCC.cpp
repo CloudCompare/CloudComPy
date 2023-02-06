@@ -87,11 +87,6 @@
 #include <LASFWFFilter.h>
 #endif
 
-#ifdef WRAP_PLUGIN_QM3C2
-#include "qM3C2Process.h"
-#include "qM3C2Dialog.h"
-#endif
-
 #ifdef CC_GDAL_SUPPORT
 //GDAL
 #include <cpl_string.h>
@@ -773,36 +768,6 @@ bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds)
 {
 	return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::MomentOrder1, 0, radius, clouds);
 }
-
-#ifdef WRAP_PLUGIN_QM3C2
-ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFilename)
-{
-    if (clouds.size() <2)
-    {
-        CCTRACE("minimum two clouds required for M3C2 computation");
-        return nullptr;
-    }
-    ccPointCloud* cloud1 = ccHObjectCaster::ToPointCloud(clouds[0]);
-    ccPointCloud* cloud2 = ccHObjectCaster::ToPointCloud(clouds[1]);
-    ccPointCloud* corePointsCloud = (clouds.size() > 2 ? ccHObjectCaster::ToPointCloud(clouds[2]) : nullptr);
-
-    qM3C2Dialog dlg(cloud1, cloud2, nullptr);
-    if (!dlg.loadParamsFromFile(paramFilename))
-    {
-        return nullptr;
-    }
-    dlg.setCorePointsCloud(corePointsCloud);
-
-    QString errorMessage;
-    ccPointCloud* outputCloud = nullptr; //only necessary for the command line version in fact
-    if (!qM3C2Process::Compute(dlg, errorMessage, outputCloud, false))
-    {
-        CCTRACE(errorMessage.toStdString());
-        return nullptr;
-    }
-    return outputCloud;
-}
-#endif
 
 ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
 {
