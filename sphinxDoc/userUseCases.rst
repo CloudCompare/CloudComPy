@@ -988,6 +988,33 @@ And a second example:
 
 The above code snippets are from :download:`test043.py <../tests/test043.py>`.
 
+Classify a point cloud with Canupo plugin and a trained classifier
+------------------------------------------------------------------
+
+The concepts are presented in the 
+`CloudCompare wiki - CANUPO (plugin) <https://www.cloudcompare.org/doc/wiki/index.php/CANUPO_(plugin)>`_.
+
+You have to import the The :py:mod:`~.cloudComPy.Canupo` plugin.
+
+For the test, an example of cloud and a classifier are provided:
+
+.. include:: ../tests/test046.py
+   :start-after: #---Canupo001-begin
+   :end-before:  #---Canupo001-end
+   :literal:
+   :code: python
+
+The :py:func:`~.cloudComPy.Canupo.Classify` function takes in input a ccPointCloud, a classifier file and several optional parameters.
+The function produce two scalar fields in the cloud: 'CANUPO.class' and 'CANUPO.confidence'.
+
+.. include:: ../tests/test046.py
+   :start-after: #---Canupo002-begin
+   :end-before:  #---Canupo002-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test046.py <../tests/test046.py>`.
+
 Compute distance between a cloud and a surface of revolution, with SRA plugin
 -----------------------------------------------------------------------------
 
@@ -1106,8 +1133,8 @@ the function returns a tuple(list of slices, list of envelopes, list of contours
 
 The above code snippets are from :download:`test036.py <../tests/test036.py>`.
 
-ExtractConnectedComponents
---------------------------
+Extract Connected Components
+----------------------------
 
 The tool used here is described in
 `CloudCompare wiki - Label Connected Components <https://www.cloudcompare.org/doc/wiki/index.php/Label_Connected_Components>`_.

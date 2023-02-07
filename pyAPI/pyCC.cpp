@@ -161,6 +161,12 @@ bool pyccPlugins::_isPluginSRA = true;
 bool pyccPlugins::_isPluginSRA = false;
 #endif
 
+#ifdef PLUGIN_STANDARD_QCANUPO
+bool pyccPlugins::_isPluginCanupo = true;
+#else
+bool pyccPlugins::_isPluginCanupo = false;
+#endif
+
 // --- internal struct
 
 //* Extended file loading parameters, from plugins/ccCommandLineInterface.h

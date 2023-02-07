@@ -271,6 +271,12 @@ returns True if CloudComPy is built with the CSF plugin.
 :return: True if CloudComPy is built with the CSF plugin, False otherwise.
 :rtype: bool)";
 
+const char* cloudComPy_isPluginCanupo_doc= R"(
+returns True if CloudComPy is built with the CANUPO plugin.
+
+:return: True if CloudComPy is built with the CANUPO plugin, False otherwise.
+:rtype: bool)";
+
 const char* cloudComPy_isPluginSRA_doc= R"(
 returns True if CloudComPy is built with the SRA plugin.
 

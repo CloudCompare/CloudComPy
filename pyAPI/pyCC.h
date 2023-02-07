@@ -69,6 +69,8 @@ struct pyccPlugins
     static bool isPluginMeshBoolean() { return _isPluginMeshBoolean; };
     static bool _isPluginSRA;
     static bool isPluginSRA() { return _isPluginSRA; };
+    static bool _isPluginCanupo;
+    static bool isPluginCanupo() { return _isPluginCanupo; };
 };
 
 enum CC_DIRECTION

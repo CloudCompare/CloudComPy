@@ -48,6 +48,7 @@ cloudComPy: a Python interface for CloudCompare
    :maxdepth: 3
    :caption: plugins Reference documentation
    
+   Canupo.rst
    CSF.rst
    HPR.rst
    M3C2.rst
