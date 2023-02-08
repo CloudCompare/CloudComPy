@@ -143,6 +143,7 @@ TODO List
 * DONE: Take into account the new las io plugin of CloudCompare, both in CloudCompare and CloudComPy
 * DONE: Wrap the Surface Revolution Analysis plugin of CloudCompare in CloudComPy
 * DONE: (issue #82) remove old wrap of M3C2 PLUGIN (WRAP_PLUGIN_M3C2)
+* DONE: (issue #83) Fix bug in RANSAC SD python plugin: meshes not detected when sensors in dataset
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -153,5 +154,4 @@ TODO List
 - TODO: Fix documentation on building on Windows
 - TODO: (issue #85) fix install procedure, Qt 5.15.6 is not compatible with Qt 5.15.4
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
-- TODO: (issue #83) Fix bug in RANSAC SD python plugin: meshes not detected when sensors in dataset
 
