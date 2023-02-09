@@ -49,7 +49,7 @@ conda_buildenv()
     fi
     conda config --add channels conda-forge && \
     conda config --set channel_priority strict && \
-    conda install -y "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
+    conda install -y "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
 }
 
 # --- CloudComPy build
@@ -124,7 +124,7 @@ cloudcompy_configure()
     -DPLUGIN_IO_QFBX:BOOL="1" \
     -DPLUGIN_IO_QLAS:BOOL="1" \
     -DPLUGIN_IO_QLAS_FWF:BOOL="0" \
-    -DPLUGIN_IO_QPDAL:BOOL="1" \
+    -DPLUGIN_IO_QPDAL:BOOL="0" \
     -DPLUGIN_IO_QPHOTOSCAN:BOOL="1" \
     -DPLUGIN_IO_QRDB:BOOL="1" \
     -DPLUGIN_IO_QRDB_FETCH_DEPENDENCY:BOOL="1" \
