@@ -144,6 +144,7 @@ TODO List
 * DONE: Wrap the Surface Revolution Analysis plugin of CloudCompare in CloudComPy
 * DONE: (issue #82) remove old wrap of M3C2 PLUGIN (WRAP_PLUGIN_M3C2)
 * DONE: (issue #83) Fix bug in RANSAC SD python plugin: meshes not detected when sensors in dataset
+* DONE: (issue #85) fix install procedure, Qt 5.15.6 is not compatible with Qt 5.15.4
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -152,6 +153,6 @@ TODO List
 - TODO: (issue #49) evaluate the feasibility of a virtual 3D view snapshot
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 - TODO: Fix documentation on building on Windows
-- TODO: (issue #85) fix install procedure, Qt 5.15.6 is not compatible with Qt 5.15.4
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
+- TODO: reactivate the Draco IO Plugin on Windows (link problem)
 
