@@ -227,7 +227,7 @@ Here are my json file, for the first method, with the plugins availables with mi
         },
         {
           "name": "PLUGIN_IO_QPDAL",
-          "value": "true",
+          "value": "false",
           "type": "BOOL"
         },
         {
@@ -514,21 +514,6 @@ Here are my json file, for the first method, with the plugins availables with mi
           "name": "GMP_LIBRARIES",
           "value": "${condaRoot}/Library/lib/mpir.lib",
           "type": "FILEPATH"
-        },
-        {
-          "name": "LASLIB_INCLUDE_DIR",
-          "value": "${home}/CloudComPy/lasTools/LAStools/LASlib/inc",
-          "type": "PATH"
-        },
-        {
-          "name": "LASLIB_RELEASE_LIBRARY",
-          "value": "${home}/CloudComPy/lasTools/LAStools/LASlib/VC14/lib/x64/LASlibVC14.lib",
-          "type": "FILEPATH"
-        },
-        {
-          "name": "LASZIP_LASTOOLS_INCLUDE_DIR",
-          "value": "${home}/CloudComPy/lasTools/LAStools/LASzip/src",
-          "type": "PATH"
         },
         {
           "name": "MPIR_INCLUDE_DIR",
