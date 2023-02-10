@@ -951,6 +951,7 @@ The :py:func:`~.cloudComPy.RANSAC_SD.computeRANSAC_SD` function returns a list o
 
 For each type of primitive (plane, sphere, cylinder,..) it is possible to get the parameters of the equation.
 For instance, a plane is identified with
+
 ::
 	mesh.isA((cc.CC_TYPES.PLANE)
 
@@ -958,7 +959,7 @@ For the plane primitive, the method :py:meth:`~.cloudComPy.ccPlane.getEquation` 
 
 The above code snippets are from :download:`test035.py <../tests/test035.py>`.
 
-compute Cloth Simulation Filter on a cloud with CSF plugin
+Compute Cloth Simulation Filter on a cloud with CSF plugin
 ----------------------------------------------------------
 
 The concepts are presented in the 
@@ -986,6 +987,75 @@ And a second example:
    :code: python
 
 The above code snippets are from :download:`test043.py <../tests/test043.py>`.
+
+Classify a point cloud with Canupo plugin and a trained classifier
+------------------------------------------------------------------
+
+The concepts are presented in the 
+`CloudCompare wiki - CANUPO (plugin) <https://www.cloudcompare.org/doc/wiki/index.php/CANUPO_(plugin)>`_.
+
+You have to import the The :py:mod:`~.cloudComPy.Canupo` plugin.
+
+For the test, an example of cloud and a classifier are provided:
+
+.. include:: ../tests/test046.py
+   :start-after: #---Canupo001-begin
+   :end-before:  #---Canupo001-end
+   :literal:
+   :code: python
+
+The :py:func:`~.cloudComPy.Canupo.Classify` function takes in input a ccPointCloud, a classifier file and several optional parameters.
+The function produce two scalar fields in the cloud: 'CANUPO.class' and 'CANUPO.confidence'.
+
+.. include:: ../tests/test046.py
+   :start-after: #---Canupo002-begin
+   :end-before:  #---Canupo002-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test046.py <../tests/test046.py>`.
+
+Compute distance between a cloud and a surface of revolution, with SRA plugin
+-----------------------------------------------------------------------------
+
+The concepts are presented in the 
+`CloudCompare wiki - SRA (plugin) <https://www.cloudcompare.org/doc/wiki/index.php/Surface_of_Revolution_Analysis_(plugin)>`_.
+
+You have to import the The :py:mod:`~.cloudComPy.SRA` plugin.
+
+The surface of revolution is defined by a profile.
+See `CloudCompare wiki - SRA (plugin) <https://www.cloudcompare.org/doc/wiki/index.php/Surface_of_Revolution_Analysis_(plugin)>`_ 
+for a descritpion of the text file format for the profile.
+This profile can be loaded with the :py:func:`~.cloudComPy.SRA.loadProfile` function.
+
+The :py:meth:`~.cloudComPy.SRA.qSRA.doComputeRadialDists` method of :py:class:`~.cloudComPy.SRA.qSRA` class
+computes the radial distances between the cloud and the surface of revolution
+and store the result as a scalar field named 'Radial distance'.
+
+An example:
+
+.. include:: ../tests/test045.py
+   :start-after: #---SRA01-begin
+   :end-before:  #---SRA01-end
+   :literal:
+   :code: python
+
+Distance map can be exported as a cloud or a mesh with the :py:func:`~.cloudComPy.SRA.exportMapAsCloud` 
+and :py:func:`~.cloudComPy.SRA.exportMapAsMesh` functions:
+
+.. include:: ../tests/test045.py
+   :start-after: #---SRA02-begin
+   :end-before:  #---SRA02-end
+   :literal:
+   :code: python
+
+.. include:: ../tests/test045.py
+   :start-after: #---SRA03-begin
+   :end-before:  #---SRA03-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test045.py <../tests/test045.py>`.
 
 Sclices and contours
 --------------------
@@ -1063,8 +1133,8 @@ the function returns a tuple(list of slices, list of envelopes, list of contours
 
 The above code snippets are from :download:`test036.py <../tests/test036.py>`.
 
-ExtractConnectedComponents
---------------------------
+Extract Connected Components
+----------------------------
 
 The tool used here is described in
 `CloudCompare wiki - Label Connected Components <https://www.cloudcompare.org/doc/wiki/index.php/Label_Connected_Components>`_.

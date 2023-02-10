@@ -654,13 +654,13 @@ PYBIND11_MODULE(_cloudComPy, m0)
         .export_values();
 
     py::enum_<ccRasterGrid::ExportableFields>(m0, "ExportableFields")
-        .value("PER_CELL_HEIGHT", ccRasterGrid::PER_CELL_HEIGHT)
+        .value("PER_CELL_HEIGHT", ccRasterGrid::PER_CELL_VALUE)
         .value("PER_CELL_COUNT", ccRasterGrid::PER_CELL_COUNT)
-        .value("PER_CELL_MIN_HEIGHT", ccRasterGrid::PER_CELL_MIN_HEIGHT)
-        .value("PER_CELL_MAX_HEIGHT", ccRasterGrid::PER_CELL_MAX_HEIGHT)
-        .value("PER_CELL_AVG_HEIGHT", ccRasterGrid::PER_CELL_AVG_HEIGHT)
-        .value("PER_CELL_HEIGHT_STD_DEV", ccRasterGrid::PER_CELL_HEIGHT_STD_DEV)
-        .value("PER_CELL_HEIGHT_RANGE", ccRasterGrid::PER_CELL_HEIGHT_RANGE)
+        .value("PER_CELL_MIN_HEIGHT", ccRasterGrid::PER_CELL_MIN_VALUE)
+        .value("PER_CELL_MAX_HEIGHT", ccRasterGrid::PER_CELL_MAX_VALUE)
+        .value("PER_CELL_AVG_HEIGHT", ccRasterGrid::PER_CELL_AVG_VALUE)
+        .value("PER_CELL_HEIGHT_STD_DEV", ccRasterGrid::PER_CELL_VALUE_STD_DEV)
+        .value("PER_CELL_HEIGHT_RANGE", ccRasterGrid::PER_CELL_VALUE_RANGE)
         .value("PER_CELL_INVALID", ccRasterGrid::PER_CELL_INVALID)
         .export_values();
 
@@ -716,7 +716,7 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("SaveMesh", &SaveMesh, cloudComPy_SaveMesh_doc);
 
     m0.def("SavePointCloud", &SavePointCloud,
-           py::arg("cloud"), py::arg("filename"), py::arg("version")=QString(""),
+           py::arg("cloud"), py::arg("filename"), py::arg("version")=QString(""), py::arg("pointFormat")=-1,
            cloudComPy_SavePointCloud_doc);
 
     m0.def("SaveEntities", &SaveEntities, cloudComPy_SaveEntities_doc);
@@ -743,6 +743,10 @@ PYBIND11_MODULE(_cloudComPy, m0)
 
     m0.def("isPluginCSF", &pyccPlugins::isPluginCSF, cloudComPy_isPluginCSF_doc);
 
+    m0.def("isPluginCanupo", &pyccPlugins::isPluginCanupo, cloudComPy_isPluginCanupo_doc);
+
+    m0.def("isPluginSRA", &pyccPlugins::isPluginSRA, cloudComPy_isPluginSRA_doc);
+
     m0.def("isPluginRANSAC_SD", &pyccPlugins::isPluginRANSAC_SD, cloudComPy_isPluginRANSAC_SD_doc);
 
     m0.def("computeCurvature", &computeCurvature, cloudComPy_computeCurvature_doc);
@@ -756,10 +760,6 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("computeRoughness", &computeRoughness, cloudComPy_computeRoughness_doc);
 
     m0.def("computeMomentOrder1", &computeMomentOrder1, cloudComPy_computeMomentOrder1_doc);
-
-#ifdef WRAP_PLUGIN_QM3C2
-    m0.def("computeM3C2", &computeM3C2, py::return_value_policy::reference, cloudComPy_computeM3C2_doc);
-#endif
 
     m0.def("filterBySFValue", &filterBySFValue, py::return_value_policy::reference, cloudComPy_filterBySFValue_doc);
 

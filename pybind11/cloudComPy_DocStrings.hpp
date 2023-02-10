@@ -271,6 +271,18 @@ returns True if CloudComPy is built with the CSF plugin.
 :return: True if CloudComPy is built with the CSF plugin, False otherwise.
 :rtype: bool)";
 
+const char* cloudComPy_isPluginCanupo_doc= R"(
+returns True if CloudComPy is built with the CANUPO plugin.
+
+:return: True if CloudComPy is built with the CANUPO plugin, False otherwise.
+:rtype: bool)";
+
+const char* cloudComPy_isPluginSRA_doc= R"(
+returns True if CloudComPy is built with the SRA plugin.
+
+:return: True if CloudComPy is built with the SRA plugin, False otherwise.
+:rtype: bool)";
+
 const char* cloudComPy_isPluginRANSAC_SD_doc= R"(
 returns True if CloudComPy is built with the RANSAC_SD plugin.
 
@@ -375,14 +387,19 @@ or between two point clouds.
 const char* cloudComPy_SavePointCloud_doc= R"(
 Save a 3D cloud in a file.
 
-The file name extension determines the format (.asc .las .E57 .sbf .ply .vtk .dxf .pcd .pn .pv .bin)
-An optional string can be used to specify format:
-To use the LAS_FWF IO plugin to save .las or .laz file in format 1.4: version="1.4"
-(without version, las or laz file are saved in format 1.2)
+The file name extension determines the format (.asc .las .E57 .sbf .ply .vtk .dxf .pcd .pn .pv .bin).
+
+Optional values can be used to specify version and format, with the LAS plugin, for .las or .laz files:
+
+- version="1.2" or "1.3" or "1.4"
+  (without version, las or laz file are either saved in the version of the original file or in version 1.2)
+
+- pointFormat=N with N integer between 0 and 10 
 
 :param ccPointCloud cloud: the cloud to save.
 :param str filename: The cloud file.
-:param string,optional version: optional string, default "", used to specify a particular version.  
+:param string,optional version: optional string, default "", used to specify a particular version. (for las plugin only)
+:param int,optional pointFormat: optional point format valid values 0 to 10), default -1 (automatically set)(for las plugin only)
 
 :return: 0 or I/O error.
 :rtype: CC_FILE_ERROR)";

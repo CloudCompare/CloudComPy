@@ -54,22 +54,35 @@ py::tuple computeRANSAC_SD(ccPointCloud* ccPC,
         CCTRACE("found " << nbChildren << " shapes");
         for (int i=0; i<nbChildren; i++)
         {
+            CCTRACE(" --- shape n°: " << i << " ---");
             ccHObject* child = objsFound->getChild(i);
             if (child)
             {
+                CCTRACE("child name: " << child->getName().toStdString() << " type: " << child->getClassID());
                 int nbch = child->getChildrenNumber();
                 CCTRACE("nbch " << nbch);
                 if (nbch)
                 {
-                    ccHObject* grandChild = child->getChild(0);
-                    if (grandChild)
+                    bool meshFound = false;
+                    for (int j=0; j<nbch; j++)
                     {
-                        CCTRACE(grandChild->getName().toStdString());
-                        child->detachAllChildren();
-                        ccMesh* prim = ccHObjectCaster::ToMesh(grandChild);
-                        meshes.push_back(prim);
+                        ccHObject* grandChild = child->getChild(j);
+                        if (grandChild)
+                        {
+                            CCTRACE(grandChild->getName().toStdString() << " type: " << grandChild->getClassID());
+                            ccMesh* prim = ccHObjectCaster::ToMesh(grandChild);
+                            if (prim)
+                            {
+                                CCTRACE("mesh name: " << prim->getName().toStdString());
+                                meshes.push_back(prim);
+                                meshFound = true;
+                                child->detachAllChildren();
+                                break;
+                            }
+                        }
                     }
-                    else meshes.push_back(nullptr);
+                    if (!meshFound)
+                        meshes.push_back(nullptr);
                 }
                 else meshes.push_back(nullptr);
                 ccPointCloud* pc = ccHObjectCaster::ToPointCloud(child);

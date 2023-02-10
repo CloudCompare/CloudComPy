@@ -19,10 +19,10 @@
 #                                                                        #
 ##########################################################################
 
-message(STATUS "Plugin CSF boost Python processing")
+message(STATUS "Plugin CSF pybind11 processing")
 
 # --- ----------------------------------------------------------
-# --- target boost.Python library: Python module cloudComPy
+# --- target pybind11 library: Python module cloudComPy
 
 project( _CSF VERSION 0.1 )
 

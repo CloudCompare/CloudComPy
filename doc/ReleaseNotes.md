@@ -2,6 +2,17 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## February 09, 2023 CloudComPy release:
+
+ - update to CloudCompare master > 2.12.4 (January 9 2023)
+ - (issue #77) Canupo plugin: at least the same as in command mode (test046.py)
+ - Take into account the new las io plugin of CloudCompare, both in CloudCompare and CloudComPy
+ - Wrap the Surface Revolution Analysis plugin of CloudCompare in CloudComPy (test045.py)
+ - (issue #82) remove old wrap of M3C2 PLUGIN (WRAP_PLUGIN_M3C2)
+ - (issue #83) Fix bug in RANSAC SD python plugin: meshes not detected when sensors in dataset
+ - (issue #85) fix install procedure, Qt 5.15.6 is not compatible with Qt 5.15.4
+ - Various small fixes.
+
 ## November 22, 2022 CloudComPy release:
 
  - update to CloudCompare master > 2.12.4 (November 20, 2022). The new LAS plugin is not yet taken into account in this release.
@@ -14,7 +25,7 @@ These release notes start with the October 18, 2021 CloudComPy release.
 ## October 07, 2022 CloudComPy release:
 
  - (issue #60) implement precision maps for M3C2 plugin
- - (issue #71) implement scalar field interpolation from another entity.
+ - (issue #71) implement scalar field interpolation from another entity. (test044.py)
  - (issue #72) define a better message on Windows when setting the environment for CloudComPy
  - Various small fixes.
 

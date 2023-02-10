@@ -19,10 +19,10 @@
 #                                                                        #
 ##########################################################################
 
-message(STATUS "Plugin RANSAC_SD boost Python processing")
+message(STATUS "Plugin RANSAC_SD pybind11 processing")
 
 # --- ----------------------------------------------------------
-# --- target boost.Python library: Python module cloudComPy
+# --- target pybind11 library: Python module cloudComPy
 
 project( _RANSAC_SD VERSION 0.1 )
 

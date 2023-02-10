@@ -1,11 +1,11 @@
 
-## Build on Windows 10, with Anaconda3 or miniconda
+## Build on Windows 10, with Anaconda3 or miniconda3
 
 There are several methods to install the prerequisites on Windows 10. 
-I chose to install Anaconda, which is a very complete and large Python-based tools environment. 
-There is a package system under Anaconda, to select the products you need. It has all our prerequisites.
+I chose to install miniconda, which is a very complete and large Python-based tools environment. 
+There is a package system under miniconda, to select the products you need. It has all our prerequisites.
 
-From Anaconda prompt:
+From miniconda prompt:
 ```
 conda update -y -n base -c defaults conda
 conda activate
@@ -14,17 +14,13 @@ conda create -y --name CloudComPy310 python=3.10
 conda activate CloudComPy310
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install -y "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
+conda install -y "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
 ```
 For information, the list of packages actually installed for building and testing can be found in `building/conda-list`.
 
-CMake from Anaconda is used to get ctest at install, not for build.
+CMake from miniconda is used to get ctest at install, not for build.
 
-I do not use Qt from conda packages, I still have a problem at runtime when reading xyz files with the HEAD of CloudCompare
-(after commit "New features (#1420)" from 2021-03-07).
-With a separate install of Qt 5.15.2 binaries, it works fine...
-
-To use FBX format plugin, install the FBX SDK, not provided by an Anaconda package.
+To use FBX format plugin, install the FBX SDK, not provided by an miniconda package.
 
 It is necessary to configure Visual Studio 2019 with CMake.
 
@@ -33,15 +29,23 @@ without knowing if there is a better way to take into account the prerequisites 
 
 - 1: Launch the Visual Studio GUI as is, without any additions, and give all the necessary paths for the prerequisites.
 
-- 2: Launch the Visual Studio GUI from the `Anaconda Prompt (Anaconda3)` console with the command: 
+- 2: Launch the Visual Studio GUI from the `miniconda Prompt (miniconda3)` console with the command: 
 `"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"`. 
 
-With the Anaconda environment, many paths and variables are found automatically. 
+With the miniconda environment, many paths and variables are found automatically. 
 In both cases, it is necessary to provide some configuration variables to CMake. 
 With Visual Studio, these variables can be filled in a json file, which is read during the configuration step. 
 I suppose it is also possible to install cmake-gui to do the same.
 
-Here are my json file, for the first method, with the plugins availables with Anaconda packages:
+The following plugins require to install specific libraries, not packaged. You can deactivate these plugins in the json file if you don't want to rebuild
+the libraries...
+
+    PLUGIN_STANDARD_QCORK see Cork for boolean operation
+    PLUGIN_IO_QDRACO, see file I/O
+    PLUGIN_IO_QFBX for Autodesk format, see file I/O and above
+    PLUGIN_IO_QSTEP for step format (OpenCascade libraries)
+
+Here are my json file, for the first method, with the plugins availables with miniconda packages (you will find CMakeSettings.json in the sources):
 
 ```
 {
@@ -51,55 +55,24 @@ Here are my json file, for the first method, with the plugins availables with An
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "buildRoot": "C:/Users/paulr/CloudComPy/build/${name}",
-      "installRoot": "C:/Users/paulr/CloudComPy/install/CloudComPy37",
+      "home": "${env.USERPROFILE}",
+      "buildRoot": "${home}/CloudComPy/build2019/${name}",
+      "installRoot": "${home}/CloudComPy/install/CloudComPy310",
+      "condaBase": "${home}/miniconda3",
+      "condaRoot": "${condaBase}/envs/CloudComPy310",
+      "cmakeExecutable": "${condaRoot}/Library/bin/cmake.exe",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
         {
-          "name": "Qt5_DIR",
-          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5",
-          "type": "STRING"
-        },
-        {
-          "name": "Qt5LinguistTools_DIR",
-          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5LinguistTools",
-          "type": "STRING"
-        },
-        {
-          "name": "Qt5Test_DIR",
-          "value": "C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5Test",
-          "type": "STRING"
-        },
-        {
-          "name": "BOOST_INCLUDEDIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
-          "type": "STRING"
-        },
-        {
-          "name": "BOOST_LIBRARYDIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib",
-          "type": "STRING"
-        },
-        {
-          "name": "Boost_DEBUG:BOOL",
-          "value": "OFF",
-          "type": "STRING"
-        },
-        {
-          "name": "Python3_ROOT_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37",
+          "name": "CMAKE_SHARED_LINKER_FLAGS",
+          "value": "/machine:x64 /FORCE:MULTIPLE",
           "type": "STRING"
         },
         {
           "name": "PYTHON_PREFERED_VERSION:STRING",
-          "value": "3.7",
-          "type": "STRING"
-        },
-        {
-          "name": "NUMPY_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Lib/site-packages/numpy/core/include",
+          "value": "3.10",
           "type": "STRING"
         },
         {
@@ -108,13 +81,13 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "STRING"
         },
         {
-          "name": "PYTHONAPI_TRACES:BOOL",
-          "value": "ON",
+          "name": "PYTHONAPI_EXTDATA_DIRECTORY",
+          "value": "CloudComPy/ExternalData",
           "type": "STRING"
         },
         {
-          "name": "INSTALL_PREREQUISITE_LIBRARIES",
-          "value": "OFF",
+          "name": "PYTHONAPI_TRACES:BOOL",
+          "value": "ON",
           "type": "STRING"
         },
         {
@@ -128,7 +101,27 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "STRING"
         },
         {
-          "name": "OPTION_SCALAR_DOUBLE:BOOL",
+          "name": "BUILD_REFERENCE_DOC:BOOL",
+          "value": "ON",
+          "type": "STRING"
+        },
+        {
+          "name": "USE_CONDA_PACKAGES",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "CONDA_BASE_DIRECTORY",
+          "value": "${condaBase}",
+          "type": "STRING"
+        },
+        {
+          "name": "CONDA_ROOT_DIRECTORY",
+          "value": "${condaRoot}",
+          "type": "STRING"
+        },
+        {
+          "name": "INSTALL_PREREQUISITE_LIBRARIES",
           "value": "OFF",
           "type": "STRING"
         },
@@ -141,6 +134,21 @@ Here are my json file, for the first method, with the plugins availables with An
           "name": "CCCORELIB_USE_QT_CONCURRENT",
           "value": "True",
           "type": "BOOL"
+        },
+        {
+          "name": "CCCORELIB_USE_TBB",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "Boost_DEBUG:BOOL",
+          "value": "OFF",
+          "type": "STRING"
+        },
+        {
+          "name": "OPTION_SCALAR_DOUBLE:BOOL",
+          "value": "OFF",
+          "type": "STRING"
         },
         {
           "name": "OPTION_USE_GDAL",
@@ -193,6 +201,11 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_IO_QDRACO",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_IO_QE57",
           "value": "true",
           "type": "BOOL"
@@ -204,12 +217,17 @@ Here are my json file, for the first method, with the plugins availables with An
         },
         {
           "name": "PLUGIN_IO_QLAS_FWF",
-          "value": "False",
+          "value": "false",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QLAS",
+          "value": "true",
           "type": "BOOL"
         },
         {
           "name": "PLUGIN_IO_QPDAL",
-          "value": "true",
+          "value": "false",
           "type": "BOOL"
         },
         {
@@ -218,8 +236,18 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_IO_QRDB",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QRDB_FETCH_DEPENDENCY",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_IO_QSTEP",
-          "value": "False",
+          "value": "True",
           "type": "BOOL"
         },
         {
@@ -258,6 +286,11 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_STANDARD_QCORK",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_STANDARD_QCSF",
           "value": "True",
           "type": "BOOL"
@@ -284,6 +317,11 @@ Here are my json file, for the first method, with the plugins availables with An
         },
         {
           "name": "PLUGIN_STANDARD_QM3C2",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_STANDARD_QMESH_BOOLEAN",
           "value": "True",
           "type": "BOOL"
         },
@@ -328,38 +366,113 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "BOOL"
         },
         {
+          "name": "Qt5_DIR",
+          "value": "${condaRoot}/Library/lib/cmake/Qt5",
+          "type": "STRING"
+        },
+        {
+          "name": "Qt5LinguistTools_DIR",
+          "value": "${condaRoot}/Library/lib/cmake/Qt5LinguistTools",
+          "type": "STRING"
+        },
+        {
+          "name": "Qt5Test_DIR",
+          "value": "${condaRoot}/Library/lib/cmake/Qt5Test",
+          "type": "STRING"
+        },
+        {
+          "name": "BOOST_INCLUDEDIR",
+          "value": "${condaRoot}/Library/include",
+          "type": "STRING"
+        },
+        {
+          "name": "BOOST_LIBRARYDIR",
+          "value": "${condaRoot}/Library/lib",
+          "type": "STRING"
+        },
+        {
+          "name": "Python3_ROOT_DIR",
+          "value": "${condaRoot}",
+          "type": "STRING"
+        },
+        {
+          "name": "NUMPY_INCLUDE_DIR",
+          "value": "${condaRoot}/Lib/site-packages/numpy/core/include",
+          "type": "STRING"
+        },
+        {
           "name": "CGAL_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/cmake/CGAL",
+          "value": "${condaRoot}/Library/lib/cmake/CGAL",
+          "type": "PATH"
+        },
+        {
+          "name": "CORK_INCLUDE_DIR",
+          "value": "${home}/CloudComPy/cork/src",
+          "type": "PATH"
+        },
+        {
+          "name": "CORK_RELEASE_LIBRARY_FILE",
+          "value": "${home}/CloudComPy/cork/win/VS2013/x64/Release/wincork2013.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "Draco_DIR",
+          "value": "${home}/CloudComPy/draco/install/share/cmake",
           "type": "PATH"
         },
         {
           "name": "EIGEN_ROOT_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include/eigen3",
+          "value": "${condaRoot}/Library/include/eigen3",
           "type": "PATH"
         },
         {
+          "name": "LIBIGL_INCLUDE_DIR",
+          "value": "${home}/CloudComPy/libigl/libigl/include",
+          "type": "PATH"
+        },
+        {
+          "name": "LIBIGL_RELEASE_LIBRARY_FILE",
+          "value": "${home}/CloudComPy/libigl/libigl/out/install/x64-Release/lib/igl.lib",
+          "type": "FILEPATH"
+        },
+        {
           "name": "OPENCV_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/cmake",
+          "value": "${condaRoot}/Library/cmake",
           "type": "PATH"
         },
         {
           "name": "PCL_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/cmake",
+          "value": "${condaRoot}/Library/cmake",
           "type": "PATH"
         },
         {
           "name": "PDAL_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/cmake/PDAL",
+          "value": "${condaRoot}/Library/lib/cmake/PDAL",
+          "type": "PATH"
+        },
+        {
+          "name": "FLANN_ROOT",
+          "value": "${condaRoot}/Library",
+          "type": "PATH"
+        },
+        {
+          "name": "PC_FLANN_INCLUDE_DIRS",
+          "value": "${condaRoot}/Library/include",
+          "type": "PATH"
+        },
+        {
+          "name": "PC_FLANN_LIBRARY_DIRS",
+          "value": "${condaRoot}/Library/lib",
           "type": "PATH"
         },
         {
           "name": "FFMPEG_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "FFMPEG_LIBRARY_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib",
+          "value": "${condaRoot}/Library/lib",
           "type": "PATH"
         },
         {
@@ -384,47 +497,42 @@ Here are my json file, for the first method, with the plugins availables with An
         },
         {
           "name": "GDAL_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "GDAL_LIBRARY",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/gdal_i.lib",
+          "value": "${condaRoot}/Library/lib/gdal_i.lib",
           "type": "FILEPATH"
         },
         {
           "name": "GMP_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "GMP_LIBRARIES",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/mpir.lib",
+          "value": "${condaRoot}/Library/lib/mpir.lib",
           "type": "FILEPATH"
         },
         {
-          "name": "LASLIB_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include/laszip",
+          "name": "MPIR_INCLUDE_DIR",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
-          "name": "LASLIB_RELEASE_LIBRARY",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/laszip3.lib",
+          "name": "MPIR_RELEASE_LIBRARY_FILE",
+          "value": "${condaRoot}/Library/lib/mpir.lib",
           "type": "FILEPATH"
-        },
-        {
-          "name": "LASZIP_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include/laszip",
-          "type": "PATH"
         },
         {
           "name": "MPFR_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library",
+          "value": "${condaRoot}/Library",
           "type": "PATH"
         },
         {
           "name": "MPFR_LIBRARIES",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/mpfr.lib",
+          "value": "${condaRoot}/Library/lib/mpfr.lib",
           "type": "FILEPATH"
         },
         {
@@ -443,38 +551,48 @@ Here are my json file, for the first method, with the plugins availables with An
           "type": "PATH"
         },
         {
-          "name": "TBB_INCLUDE_DIRS",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "name": "OPENCASCADE_TBB_DLL_DIR",
+          "value": "${condaRoot}/Library/lib/tbb.lib",
+          "type": "PATH"
+        },
+        {
+          "name": "QHULL_DIR",
+          "value": "${condaRoot}/Library/lib/cmake/Qhull",
+          "type": "PATH"
+        },
+        {
+          "name": "TBB_DIR",
+          "value": "${condaRoot}/Library/lib/cmake/TBB",
           "type": "PATH"
         },
         {
           "name": "XercesC_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "XercesC_LIBRARY",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/lib/xerces-c_3.lib",
+          "value": "${condaRoot}/Library/lib/xerces-c_3.lib",
           "type": "FILEPATH"
         },
         {
           "name": "ZLIB_INCLUDE_DIR",
-          "value": "C:/Users/paulr/anaconda3/envs/CloudComPy37/Library/include",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
           "name": "ZLIB_LIBRARY",
-          "value": "C:/Users/paulr/anaconda3/Library/lib/zlib.lib",
+          "value": "${condaRoot}/Library/lib/zlib.lib",
           "type": "FILEPATH"
         }
       ],
-      "intelliSenseMode": "windows-clang-x64"
+      "intelliSenseMode": "windows-msvc-x64"
     }
   ]
 }
 ```
 
-After the installation step, it is in any case necessary to load the Anaconda environment (Anaconda Prompt console) 
+After the installation step, it is in any case necessary to load the miniconda environment (miniconda Prompt console) 
 for Python and Numpy to be correctly configured.
 
 The tests are installed in `<install-dir>/doc/PythonAPI_test`, with shell scripts to set the `PYTHONPATH` and launch one test.

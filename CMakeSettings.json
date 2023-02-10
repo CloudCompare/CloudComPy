@@ -8,7 +8,7 @@
       "home": "${env.USERPROFILE}",
       "buildRoot": "${home}/CloudComPy/build2019/${name}",
       "installRoot": "${home}/CloudComPy/install/CloudComPy310",
-      "condaBase": "${home}/anaconda3",
+      "condaBase": "${home}/miniconda3",
       "condaRoot": "${condaBase}/envs/CloudComPy310",
       "cmakeExecutable": "${condaRoot}/Library/bin/cmake.exe",
       "cmakeCommandArgs": "",
@@ -152,7 +152,7 @@
         },
         {
           "name": "PLUGIN_IO_QDRACO",
-          "value": "True",
+          "value": "False",
           "type": "BOOL"
         },
         {
@@ -167,12 +167,17 @@
         },
         {
           "name": "PLUGIN_IO_QLAS_FWF",
+          "value": "false",
+          "type": "BOOL"
+        },
+        {
+          "name": "PLUGIN_IO_QLAS",
           "value": "true",
           "type": "BOOL"
         },
         {
           "name": "PLUGIN_IO_QPDAL",
-          "value": "true",
+          "value": "false",
           "type": "BOOL"
         },
         {
@@ -301,11 +306,6 @@
           "type": "BOOL"
         },
         {
-          "name": "WRAP_PLUGIN_QM3C2",
-          "value": "False",
-          "type": "BOOL"
-        },
-        {
           "name": "POISSON_RECON_WITH_OPEN_MP",
           "value": "True",
           "type": "BOOL"
@@ -367,7 +367,7 @@
         },
         {
           "name": "Draco_DIR",
-          "value": "${home}/CloudComPy/draco/out/install/x64-Release/share/cmake",
+          "value": "${home}/CloudComPy/draco/install/share/cmake",
           "type": "PATH"
         },
         {
@@ -466,21 +466,6 @@
           "type": "FILEPATH"
         },
         {
-          "name": "LASLIB_INCLUDE_DIR",
-          "value": "${home}/CloudComPy/lasTools/LAStools/LASlib/inc",
-          "type": "PATH"
-        },
-        {
-          "name": "LASLIB_RELEASE_LIBRARY",
-          "value": "${home}/CloudComPy/lasTools/LAStools/LASlib/VC14/lib/x64/LASlibVC14.lib",
-          "type": "FILEPATH"
-        },
-        {
-          "name": "LASZIP_LASTOOLS_INCLUDE_DIR",
-          "value": "${home}/CloudComPy/lasTools/LAStools/LASzip/src",
-          "type": "PATH"
-        },
-        {
           "name": "MPIR_INCLUDE_DIR",
           "value": "${condaRoot}/Library/include",
           "type": "PATH"
@@ -547,7 +532,7 @@
         },
         {
           "name": "ZLIB_LIBRARY",
-          "value": "${home}/anaconda3/Library/lib/zlib.lib",
+          "value": "${condaRoot}/Library/lib/zlib.lib",
           "type": "FILEPATH"
         }
       ],

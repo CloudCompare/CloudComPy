@@ -19,20 +19,20 @@
 #                                                                        #
 ##########################################################################
 
-message(STATUS "Plugin PCL pybind11 processing")
+message(STATUS "Plugin Canupo pybind11 processing")
 
 # --- ----------------------------------------------------------
 # --- target pybind11 library: Python module cloudComPy
 
-project( _PCL VERSION 0.1 )
+project( _Canupo VERSION 0.1 )
 
 add_library( ${PROJECT_NAME} SHARED )
 
-#set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
+set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
     target_sources( ${PROJECT_NAME}
     PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/PCLPy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CanupoPy.cpp
     )
 
 target_include_directories( ${PROJECT_NAME} PRIVATE
@@ -42,7 +42,7 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../pybind11
     ${CMAKE_CURRENT_SOURCE_DIR}/../../pyAPI
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qPCL/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qCanupo/include
     ${CCCoreLib_SOURCE_DIR}/include
     ${QCC_DB_LIB_SOURCE_DIR}
     )
@@ -55,12 +55,12 @@ target_link_libraries( ${PROJECT_NAME}
 
 if ( UNIX )
     target_link_libraries( ${PROJECT_NAME}
-        QPCL_PLUGIN
+        QCANUPO_PLUGIN
         )
 endif()
 if ( MSVC )
     target_link_libraries( ${PROJECT_NAME}
-        QPCL_PLUGIN
+        QCANUPO_PLUGIN
         )
 endif()
 
@@ -87,17 +87,17 @@ set(PYTHONAPI_SCRIPTS
 # --- install
 
 if( WIN32 OR APPLE)
-    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare/cloudComPy/PCL )
-    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/PCL )
+    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare/cloudComPy/Canupo )
+    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/Canupo )
 else()
-    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare/cloudComPy/PCL)
+    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare/cloudComPy/Canupo)
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
 endif()
 
 if(WIN32)
-  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _PCL_d RELEASE_OUTPUT_NAME _PCL)
+  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _Canupo_d RELEASE_OUTPUT_NAME _CSF)
 else()
   set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 endif()

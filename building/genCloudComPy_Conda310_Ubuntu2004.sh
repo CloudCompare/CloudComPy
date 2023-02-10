@@ -17,8 +17,10 @@ export CORK_REP=${HOME}/projets/CloudComPy/cork                                 
 export DRACO_REP=${HOME}/projets/CloudComPy/dracoInstall                               # directory of draco (remove the plugin in cmake options if not needed)
 export FBXSDK_REP=${HOME}/projets/CloudComPy/fbxSdk                                    # directory of fbx sdk (remove the plugin in cmake options if not needed)
 export LIBIGL_REP=${HOME}/projets/CloudComPy/libigl                                    # directory of libigl (remove the plugin in cmake options if not needed)
-if [ -d ${HOME}/projets/hydro95/prerequisites/install/Occ-740p3_opt ]; then
-    export OPENCASCADE_REP=${HOME}/projets/hydro95/prerequisites/install/Occ-740p3_opt # directory of OpenCascade (remove the plugin in cmake options if not needed)
+if [ -d ${HOME}/projets/CloudComPy/Occ-740p3_opt ]; then
+    export OPENCASCADE_REP=${HOME}/projets/CloudComPy/Occ-740p3_opt                    # directory of OpenCascade (remove the plugin in cmake options if not needed)
+elif [ -d ${HOME}/projets/hydro95/prerequisites/install/Occ-740p3_opt ]; then
+    export OPENCASCADE_REP=${HOME}/projets/hydro95/prerequisites/install/Occ-740p3_opt
 else
     export OPENCASCADE_REP=/home/paul/projets/hydro95/prerequisites/install/Occ-740p3EDFp1 
 fi
@@ -47,7 +49,7 @@ conda_buildenv()
     fi
     conda config --add channels conda-forge && \
     conda config --set channel_priority strict && \
-    conda install -y "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
+    conda install -y "boost=1.74" "cgal=5.4" cmake ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
 }
 
 # --- CloudComPy build
@@ -76,7 +78,7 @@ cloudcompy_configure()
     -DCCCORELIB_SHARED:BOOL="1" \
     -DCCCORELIB_USE_CGAL:BOOL="1" \
     -DCCCORELIB_USE_TBB:BOOL="0" \
-    -DCMAKE_BUILD_TYPE:STRING="Release" \
+    -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo" \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/c++ \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/cc \
     -DCMAKE_Fortran_COMPILER:FILEPATH=/usr/bin/gfortran \
@@ -95,7 +97,7 @@ cloudcompy_configure()
     -DGMP_LIBRARIES:FILEPATH="${CONDA_PATH}/lib/libgmp.so" \
     -DGMP_LIBRARIES_DIR:FILEPATH="${CONDA_PATH}" \
     -DLASLIB_INCLUDE_DIR:PATH="${HOME}/projets/CloudComPy/LAStools/LASlib/inc" \
-    -DLASZIP_INCLUDE_DIR:PATH="${HOME}/projets/CloudComPy/LAStools/LASzip/src" \
+    -DLASZIP_LASTOOLS_INCLUDE_DIR:PATH="${HOME}/projets/CloudComPy/LAStools/LASzip/src" \
     -DLASLIB_RELEASE_LIBRARY:FILEPATH="${HOME}/projets/CloudComPy/LAStoolsInstall/lib/LASlib/libLASlib.a" \
     -DLIBIGL_INCLUDE_DIR:PATH="${LIBIGL_REP}/libigl/include" \
     -DLIBIGL_RELEASE_LIBRARY_FILE:FILEPATH="${LIBIGL_REP}/install/lib/libigl.a" \
@@ -120,8 +122,9 @@ cloudcompy_configure()
     -DPLUGIN_IO_QDRACO:BOOL="1" \
     -DPLUGIN_IO_QE57:BOOL="1" \
     -DPLUGIN_IO_QFBX:BOOL="1" \
-    -DPLUGIN_IO_QLAS_FWF:BOOL="1" \
-    -DPLUGIN_IO_QPDAL:BOOL="1" \
+    -DPLUGIN_IO_QLAS:BOOL="1" \
+    -DPLUGIN_IO_QLAS_FWF:BOOL="0" \
+    -DPLUGIN_IO_QPDAL:BOOL="0" \
     -DPLUGIN_IO_QPHOTOSCAN:BOOL="1" \
     -DPLUGIN_IO_QRDB:BOOL="1" \
     -DPLUGIN_IO_QRDB_FETCH_DEPENDENCY:BOOL="1" \
@@ -148,7 +151,7 @@ cloudcompy_configure()
     -DPLUGIN_STANDARD_QPCV:BOOL="1" \
     -DPLUGIN_STANDARD_QPOISSON_RECON:BOOL="1" \
     -DPLUGIN_STANDARD_QRANSAC_SD:BOOL="1" \
-    -DPLUGIN_STANDARD_QRSA:BOOL="1" \
+    -DPLUGIN_STANDARD_QSRA:BOOL="1" \
     -DPYTHONAPI_TEST_DIRECTORY:STRING="CloudComPy/Data" \
     -DPYTHONAPI_EXTDATA_DIRECTORY:STRING="CloudComPy/ExternalData" \
     -DPYTHONAPI_TRACES:BOOL="1" \
@@ -190,7 +193,7 @@ cloudcompy_test()
     cd doc/PythonAPI_test && ctest
 }
 
-conda_buildenv  && \
+conda_buildenv && \
 cloudcompy_setenv && \
 cloudcompy_configure && \
 cloudcompy_build && \

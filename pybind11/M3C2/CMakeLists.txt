@@ -19,10 +19,10 @@
 #                                                                        #
 ##########################################################################
 
-message(STATUS "Plugin M3C2 boost Python processing")
+message(STATUS "Plugin M3C2 pybind11 processing")
 
 # --- ----------------------------------------------------------
-# --- target boost.Python library: Python module cloudComPy
+# --- target pybind11 library: Python module cloudComPy
 
 project( _M3C2 VERSION 0.1 )
 

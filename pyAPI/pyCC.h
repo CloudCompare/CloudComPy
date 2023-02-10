@@ -67,6 +67,10 @@ struct pyccPlugins
     static bool isPluginHPR() { return _isPluginHPR; };
     static bool _isPluginMeshBoolean;
     static bool isPluginMeshBoolean() { return _isPluginMeshBoolean; };
+    static bool _isPluginSRA;
+    static bool isPluginSRA() { return _isPluginSRA; };
+    static bool _isPluginCanupo;
+    static bool isPluginCanupo() { return _isPluginCanupo; };
 };
 
 enum CC_DIRECTION
@@ -125,7 +129,7 @@ std::vector<ccHObject*> importFile(const char* filename,
  * \param filename
  * \return IO status
  */
-CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version=QString());
+CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version=QString(), int pointFormat=-1 );
 
 //! save a mesh to a file
 /*! the file type is given by the extension
@@ -167,10 +171,6 @@ bool computeApproxLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density opti
 bool computeRoughness(double radius, std::vector<ccHObject*> clouds);
 
 bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds);
-
-#ifdef WRAP_PLUGIN_QM3C2
-ccPointCloud* computeM3C2(std::vector<ccHObject*> clouds, const QString& paramFilename);
-#endif
 
 //! Filters out points whose scalar values falls into an interval(see ccPointCloud::filterBySFValue)
 /** Threshold values should be expressed relatively to the current displayed scalar field.
