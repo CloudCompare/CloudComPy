@@ -6,7 +6,7 @@
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "home": "${env.USERPROFILE}",
-      "buildRoot": "${home}/CloudComPy/build2019/${name}",
+      "buildRoot": "${home}/CloudComPy/build2022/${name}",
       "installRoot": "${home}/CloudComPy/install/CloudComPy310",
       "condaBase": "${home}/miniconda3",
       "condaRoot": "${condaBase}/envs/CloudComPy310",
@@ -152,7 +152,7 @@
         },
         {
           "name": "PLUGIN_IO_QDRACO",
-          "value": "False",
+          "value": "True",
           "type": "BOOL"
         },
         {
@@ -366,11 +366,16 @@
           "type": "FILEPATH"
         },
         {
-          "name": "Draco_DIR",
-          "value": "${home}/CloudComPy/draco/install/share/cmake",
+          "name": "DRACO_INCLUDE_DIR",
+          "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
+          "name": "DRACO_LIBRARY",
+          "value": "${condaRoot}/Library/lib/draco.lib",
+          "type": "PATH"
+        },
+       {
           "name": "EIGEN_ROOT_DIR",
           "value": "${condaRoot}/Library/include/eigen3",
           "type": "PATH"
