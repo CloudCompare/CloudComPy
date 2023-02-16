@@ -146,6 +146,7 @@ TODO List
 * DONE: (issue #83) Fix bug in RANSAC SD python plugin: meshes not detected when sensors in dataset
 * DONE: (issue #85) fix install procedure, Qt 5.15.6 is not compatible with Qt 5.15.4
 * DONE: reactivate the Draco IO Plugin on Windows (link problem)
+* DONE: (issue89) update the docker scripts
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step

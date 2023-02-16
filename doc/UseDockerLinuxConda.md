@@ -1,6 +1,9 @@
 ## docker-miniconda
 
-Thanks to this [proposal](https://github.com/CloudCompare/CloudComPy/issues/10) from [arkanoid87](https://github.com/arkanoid87) you can try to use CloudComPy on Linux with miniconda docker images.
+**WARNING: This is not up to date and does not work as is. Take it as an example to adapt...**
+
+Thanks to this [proposal](https://github.com/CloudCompare/CloudComPy/issues/10) from [arkanoid87](https://github.com/arkanoid87) 
+you can try to use CloudComPy on Linux with miniconda docker images.
 
 The original proposal is dedicated to automatic tests, but one can consider several use cases for docker:
 
@@ -9,14 +12,16 @@ The original proposal is dedicated to automatic tests, but one can consider seve
 
  2. provide a CloudComPy execution environment (bash prompt to launch CloudComPy scripts, without graphical environment)
 
- 3. provide an execution environment for CloudComPy and CloudCompare (bash prompt to launch CloudComPy, CloudCompare scripts, with a graphical environment, using your host GPU for 3D rendering)
+ 3. provide an execution environment for CloudComPy and CloudCompare (bash prompt to launch CloudComPy, CloudCompare scripts, 
+ with a graphical environment, using your host GPU for 3D rendering)
 
 In all cases, the process of building the binary from the sources is described in [building with Docker](BuildLinuxCondaDocker.md)).
 
-For the last case (3D graphics), with an Nvidia GPU, the NVIDIA Container Toolkit allows users to build and run [GPU accelerated containers](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/overview.html).
+For the last case (3D graphics), with an Nvidia GPU, the NVIDIA Container Toolkit allows users to build and run 
+[GPU accelerated containers](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/overview.html).
 
 ------------------------------------
-### chapter to be redesigned...
+### chapter to be redesigned. 
 Install
 
 ```

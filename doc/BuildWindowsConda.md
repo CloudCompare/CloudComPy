@@ -41,7 +41,7 @@ The following plugins require to install specific libraries, not packaged. You c
 the libraries...
 
     PLUGIN_STANDARD_QCORK see Cork for boolean operation
-    PLUGIN_IO_QDRACO, see file I/O
+    PLUGIN_STANDARD_QMESH_BOOLEAN 
     PLUGIN_IO_QFBX for Autodesk format, see file I/O and above
     PLUGIN_IO_QSTEP for step format (OpenCascade libraries)
 

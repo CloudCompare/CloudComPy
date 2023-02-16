@@ -1,26 +1,24 @@
-#!/bin/bash
 
-export CLOUDCOMPY_SRC=${HOME}/projets/CloudComPy/CloudComPy                            # CloudComPy source directory
-export CLOUDCOMPY_BUILD=${HOME}/projets/CloudComPy/buildConda39                        # CloudComPy build directory
-export CLOUDCOMPY_INSTDIR=${HOME}/projets/CloudComPy/installConda                      # directory for CloudComPy installs
-export CLOUDCOMPY_INSTNAME=CloudComPy39                                                # CloudComPy install directory name
-export CLOUDCOMPY_INSTALL=${CLOUDCOMPY_INSTDIR}/${CLOUDCOMPY_INSTNAME}                 # CloudComPy install directory
-export CLOUDCOMPY_TARFILE=CloudComPy_Conda39_Linux64_"$(date +"%Y%m%d-%H%M")".tgz      # CloudComPy Binary tarfile (will be in ${CLOUDCOMPY_INSTDIR}
-export CONDA_ROOT=${HOME}/anaconda3                                                    # root directory of conda installation
-export CONDA_ENV=CloudComPy39                                                          # conda environment name
-export CONDA_PATH=${CONDA_ROOT}/envs/${CONDA_ENV}                                      # conda environment directory
-export CORK_REP=${HOME}/projets/CloudComPy/cork                                        # directory of cork (remove the plugin in cmake options if not needed)
-export DRACO_REP=${HOME}/projets/CloudComPy/dracoInstall                               # directory of draco (remove the plugin in cmake options if not needed)
-export FBXSDK_REP=${HOME}/projets/CloudComPy/fbxSdk                                    # directory of fbx sdk (remove the plugin in cmake options if not needed)
-export LIBIGL_REP=${HOME}/projets/CloudComPy/libigl                                    # directory of libigl (remove the plugin in cmake options if not needed)
-export OPENCASCADE_REP=${HOME}/projets/hydro95/prerequisites/install/Occ-740p3_opt     # directory of OpenCascade (remove the plugin in cmake options if not needed)
-export NBTHREADS="$(grep -c processor /proc/cpuinfo)"                                  # number of threads for parallel make
+export CLOUDCOMPY_SRC=/root/CloudComPy                                             # CloudComPy source directory
+export CLOUDCOMPY_BUILD=/root/buildConda310                                        # CloudComPy build directory
+export CLOUDCOMPY_INSTDIR=/opt/installConda                                        # directory for CloudComPy installs
+export CLOUDCOMPY_INSTNAME=CloudComPy310                                           # CloudComPy install directory name
+export CLOUDCOMPY_INSTALL=${CLOUDCOMPY_INSTDIR}/${CLOUDCOMPY_INSTNAME}             # CloudComPy install directory
+export CLOUDCOMPY_TARFILE=CloudComPy_Conda310_Linux64_"$(date +"%Y%m%d-%H%M")".tgz # CloudComPy Binary tarfile (will be in ${CLOUDCOMPY_INSTDIR}
+export CONDA_ROOT=/opt/conda                                                       # root directory of conda installation
+export CONDA_ENV=CloudComPy310                                                     # conda environment name
+export CONDA_PATH=${CONDA_ROOT}/envs/${CONDA_ENV}                                  # conda environment directory
+export FBXSDK_REP=/root/fbxsdk                                                     # directory of fbx sdk (remove the plugin Fbx in cmake options if not needed)
+export CORK_REP=/root/cork                                                         # directory of cork (remove the plugin Cork in cmake options if not needed)
+export LIBIGL_REP=/root/libigl                                                     # directory of libigl (remove the plugin Mesh_Boolean in cmake options if not needed)
+export OPENCASCADE_REP=/root/occt                                                  # directory of OpenCascade (remove the plugin Step in cmake options if not needed)
+export NBTHREADS="$(grep -c processor /proc/cpuinfo)"                              # number of threads for parallel make
 
-. ${CONDA_ROOT}/etc/profile.d/conda.sh                                                 # required to have access to conda commands in a shell script
+. ${CONDA_ROOT}/etc/profile.d/conda.sh                                             # required to have access to conda commands in a shell script
 
 error_exit()
 {
-  echo "Error $1" 1>&2
+  echo "*** Error $1"
   exit 1
 }
 
@@ -29,17 +27,16 @@ error_exit()
 conda_buildenv()
 {
     echo "# --- build conda environment ---"
-    conda update -y -n base -c defaults conda
     conda activate ${CONDA_ENV}
     ret=$?
     if [ $ret != "0" ]; then
         conda activate && \
-        conda create -y --name ${CONDA_ENV} python=3.9 && \
+        conda create -y --name ${CONDA_ENV} python=3.10 && \
         conda activate ${CONDA_ENV} || error_exit "conda environment ${CONDA_ENV} cannot be built"
     fi
     conda config --add channels conda-forge && \
     conda config --set channel_priority strict && \
-    conda install -y "boost=1.72" "cgal=5.0" cmake ffmpeg "gdal=3.3" jupyterlab "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5.3" "openmp=8.0" "pcl=1.11" "pdal=2.3" "psutil=5.9" "qhull=2019.1" "qt=5.12" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
+    conda install -y "boost=1.74" "cgal=5.4" cmake draco ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
 }
 
 # --- CloudComPy build
@@ -75,7 +72,8 @@ cloudcompy_configure()
     -DCMAKE_INSTALL_PREFIX:PATH="${CLOUDCOMPY_INSTALL}" \
     -DCORK_INCLUDE_DIR:PATH="${CORK_REP}/src" \
     -DCORK_RELEASE_LIBRARY_FILE:FILEPATH="${CORK_REP}/lib/libcork.a" \
-    -DDraco_DIR:PATH="${DRACO_REP}/share/cmake" \
+    -DDRACO_INCLUDE_DIR:PATH="${CONDA_PATH}/include" \
+    -DDRACO_LIBRARY:PATH="${CONDA_PATH}/lib/libdraco.a" \
     -DEIGEN_INCLUDE_DIR:PATH="${CONDA_PATH}/include/eigen3" \
     -DEIGEN_ROOT_DIR:PATH="${CONDA_PATH}/include/eigen3" \
     -DFBX_SDK_INCLUDE_DIR:PATH="${FBXSDK_REP}/include" \
@@ -86,9 +84,6 @@ cloudcompy_configure()
     -DGMP_INCLUDE_DIR:PATH="${CONDA_PATH}/include" \
     -DGMP_LIBRARIES:FILEPATH="${CONDA_PATH}/lib/libgmp.so" \
     -DGMP_LIBRARIES_DIR:FILEPATH="${CONDA_PATH}" \
-    -DLASLIB_INCLUDE_DIR:PATH="${HOME}/projets/CloudComPy/LAStools/LASlib/inc" \
-    -DLASZIP_INCLUDE_DIR:PATH="${HOME}/projets/CloudComPy/LAStools/LASzip/src" \
-    -DLASLIB_RELEASE_LIBRARY:FILEPATH="${HOME}/projets/CloudComPy/LAStoolsInstall/lib/LASlib/libLASlib.a" \
     -DLIBIGL_INCLUDE_DIR:PATH="${LIBIGL_REP}/libigl/include" \
     -DLIBIGL_RELEASE_LIBRARY_FILE:FILEPATH="${LIBIGL_REP}/install/lib/libigl.a" \
     -DMPFR_INCLUDE_DIR:PATH="${CONDA_PATH}/include" \
@@ -111,14 +106,15 @@ cloudcompy_configure()
     -DPLUGIN_IO_QCSV_MATRIX:BOOL="1" \
     -DPLUGIN_IO_QDRACO:BOOL="1" \
     -DPLUGIN_IO_QE57:BOOL="1" \
-    -DPLUGIN_IO_QFBX:BOOL="1" \
-    -DPLUGIN_IO_QLAS_FWF:BOOL="1" \
-    -DPLUGIN_IO_QPDAL:BOOL="1" \
+    -DPLUGIN_IO_QFBX:BOOL="0" \
+    -DPLUGIN_IO_QLAS:BOOL="1" \
+    -DPLUGIN_IO_QLAS_FWF:BOOL="0" \
+    -DPLUGIN_IO_QPDAL:BOOL="0" \
     -DPLUGIN_IO_QPHOTOSCAN:BOOL="1" \
     -DPLUGIN_IO_QRDB:BOOL="1" \
     -DPLUGIN_IO_QRDB_FETCH_DEPENDENCY:BOOL="1" \
     -DPLUGIN_IO_QRDB_INSTALL_DEPENDENCY:BOOL="1" \
-    -DPLUGIN_IO_QSTEP:BOOL="1" \
+    -DPLUGIN_IO_QSTEP:BOOL="0" \
     -DPLUGIN_STANDARD_MASONRY_QAUTO_SEG:BOOL="1" \
     -DPLUGIN_STANDARD_MASONRY_QMANUAL_SEG:BOOL="1" \
     -DPLUGIN_STANDARD_QANIMATION:BOOL="1" \
@@ -127,23 +123,24 @@ cloudcompy_configure()
     -DPLUGIN_STANDARD_QCLOUDLAYERS:BOOL="1" \
     -DPLUGIN_STANDARD_QCOLORIMETRIC_SEGMENTER:BOOL="1" \
     -DPLUGIN_STANDARD_QCOMPASS:BOOL="1" \
-    -DPLUGIN_STANDARD_QCORK:BOOL="1" \
+    -DPLUGIN_STANDARD_QCORK:BOOL="0" \
     -DPLUGIN_STANDARD_QCSF:BOOL="1" \
     -DPLUGIN_STANDARD_QFACETS:BOOL="1" \
     -DPLUGIN_STANDARD_QHOUGH_NORMALS:BOOL="1" \
     -DPLUGIN_STANDARD_QHPR:BOOL="1" \
     -DPLUGIN_STANDARD_QJSONRPC:BOOL="1" \
     -DPLUGIN_STANDARD_QM3C2:BOOL="1" \
-    -DPLUGIN_STANDARD_QMESH_BOOLEAN:BOOL="1" \
+    -DPLUGIN_STANDARD_QMESH_BOOLEAN:BOOL="0" \
     -DPLUGIN_STANDARD_QMPLANE:BOOL="1" \
     -DPLUGIN_STANDARD_QPCL:BOOL="1" \
     -DPLUGIN_STANDARD_QPCV:BOOL="1" \
     -DPLUGIN_STANDARD_QPOISSON_RECON:BOOL="1" \
     -DPLUGIN_STANDARD_QRANSAC_SD:BOOL="1" \
-    -DPLUGIN_STANDARD_QRSA:BOOL="1" \
+    -DPLUGIN_STANDARD_QSRA:BOOL="1" \
     -DPYTHONAPI_TEST_DIRECTORY:STRING="CloudComPy/Data" \
+    -DPYTHONAPI_EXTDATA_DIRECTORY:STRING="CloudComPy/ExternalData" \
     -DPYTHONAPI_TRACES:BOOL="1" \
-    -DPYTHON_PREFERED_VERSION:STRING="3.9" \
+    -DPYTHON_PREFERED_VERSION:STRING="3.10" \
     -DTBB_DIR:PATH="${CONDA_PATH}/lib/cmake/TBB" \
     -DUSE_CONDA_PACKAGES:BOOL="1" \
     -DUSE_EXTERNAL_QHULL_FOR_QHPR:BOOL="0" \
@@ -158,16 +155,11 @@ cloudcompy_build()
 {
     echo "# --- build and install CloudComPy ---"
     cd ${CLOUDCOMPY_BUILD} && make -j${NBTHREADS} && make install
-    cd ${OPENCASCADE_REP}/lib && \
-    cp -f libTKSTEP.so.7 libTKSTEPBase.so.7 libTKSTEPAttr.so.7 libTKSTEP209.so.7 libTKShHealing.so.7 libTKTopAlgo.so.7 libTKBRep.so.7 \
-    libTKGeomBase.so.7 libTKG3d.so.7 libTKG2d.so.7 libTKMath.so.7 libTKernel.so.7 libTKXSBase.so.7 libTKGeomAlgo.so.7 libTKMesh.so.7 \
-    ${CLOUDCOMPY_INSTALL}/lib/cloudcompare/plugins
 }
 
 cloudcompy_tarfile()
 {
     echo "# --- generate CloudComPy binaries tarfile ---"
-    cd ${CLOUDCOMPY_INSTNAME} && find . -type d -name __pycache__ -exec rm -rf {} \;
     cd ${CLOUDCOMPY_INSTDIR} && rm -f ${CLOUDCOMPY_TARFILE} &&\
     tar cvzf ${CLOUDCOMPY_TARFILE} ${CLOUDCOMPY_INSTNAME}
 }
@@ -177,13 +169,16 @@ cloudcompy_test()
     echo "# --- test CloudComPy ---"
     cd ${CLOUDCOMPY_INSTALL} && \
     . bin/condaCloud.sh activate ${CLOUDCOMPY_INSTNAME} && \
+    export QT_QPA_PLATFORM=offscreen && \
     rm -rf ~/CloudComPy/Data &&
     cd doc/PythonAPI_test && ctest
 }
 
-conda_buildenv  && \
+#conda_buildenv
+
 cloudcompy_setenv && \
 cloudcompy_configure && \
 cloudcompy_build && \
-cloudcompy_tarfile && \
-cloudcompy_test
+cloudcompy_tarfile
+
+# cloudcompy_test
