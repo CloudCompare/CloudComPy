@@ -10,7 +10,7 @@ From miniconda prompt:
 conda update -y -n base -c defaults conda
 conda activate
 conda create -y --name CloudComPy310 python=3.10
-   # --- erase previous env if existing
+   # --- erase previous env with the same name if existing
 conda activate CloudComPy310
 conda config --add channels conda-forge
 conda config --set channel_priority strict
