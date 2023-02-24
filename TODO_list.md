@@ -147,6 +147,7 @@ TODO List
 * DONE: (issue #85) fix install procedure, Qt 5.15.6 is not compatible with Qt 5.15.4
 * DONE: reactivate the Draco IO Plugin on Windows (link problem)
 * DONE: (issue #89) update the docker scripts
+* DONE: (issue #90) abort on deleteInstance on a cloud created by pybind11 constructor
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -156,6 +157,5 @@ TODO List
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 - TODO: Fix documentation on building on Windows
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
-- TODO: (issue #90) abort on deleteInstance on a cloud created by pybind11 constructor
 - TODO: (issue #91) add 'up direction' in computeRoughness
 

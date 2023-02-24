@@ -30,15 +30,17 @@
 void export_ccPolyline(py::module &m0)
 {
 
-	py::class_<CCCoreLib::Polyline, CCCoreLib::ReferenceCloud> (m0, "Polyline",
-			ccPolylinePy_Polyline_doc)
+	py::class_<CCCoreLib::Polyline, CCCoreLib::ReferenceCloud,
+               std::unique_ptr<CCCoreLib::Polyline, py::nodelete>> (m0, "Polyline",
+			   ccPolylinePy_Polyline_doc)
 		 .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>())
          .def("isClosed", &ccPolyline::isClosed, ccPolylinePy_isClosed_doc)
 	     .def("setClosed", &ccPolyline::setClosed, ccPolylinePy_setClosed_doc)
 		 ;
 
-    py::class_<ccPolyline,CCCoreLib::Polyline, ccShiftedObject >(m0, "ccPolyline",
-    		ccPolylinePy_ccPolyline_doc)
+    py::class_<ccPolyline,CCCoreLib::Polyline, ccShiftedObject,
+               std::unique_ptr<ccPolyline, py::nodelete> >(m0, "ccPolyline",
+    	       ccPolylinePy_ccPolyline_doc)
         .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>())
         .def("computeLength", &ccPolyline::computeLength, ccPolylinePy_computeLength_doc)
         .def("getName", &ccPolyline::getName, ccPolylinePy_getName_doc)

@@ -228,6 +228,9 @@ void export_ccGenericCloud(py::module &m0)
         .def("showColors", & showColorsPy, ccHObject_showColors_doc)
         .def("showNormals", & showNormalsPy, ccHObject_showNormals_doc)
         .def("showSF", & showSFPy, ccHObject_showSF_doc)
+        .def("incRef",   [](pybind11::handle handle) { handle.inc_ref();}, ccHObject_incRef_doc)
+        .def("decRef",   [](pybind11::handle handle) { handle.dec_ref();}, ccHObject_decRef_doc)
+        .def("countRef", [](pybind11::object obj)    { return obj.ref_count();}, ccHObject_countRef_doc)
         ;
 
     py::class_<ccShiftedObject, ccHObject>(m0, "ccShiftedObject")
@@ -264,7 +267,8 @@ void export_ccGenericCloud(py::module &m0)
         .def("addPoint", &CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>::addPoint, PointCloudTpl_addPoint_doc)
 		;
 
-    py::class_<CCCoreLib::ReferenceCloud, CCCoreLib::GenericIndexedCloudPersist>(m0, "ReferenceCloud", ReferenceCloud_Doc)
+    py::class_<CCCoreLib::ReferenceCloud, CCCoreLib::GenericIndexedCloudPersist,
+               std::unique_ptr<CCCoreLib::ReferenceCloud, py::nodelete>>(m0, "ReferenceCloud", ReferenceCloud_Doc)
         .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>())
         .def("addPointIndexGlobal", addPointIndex1_py, ReferenceCloud_addPointIndexGlobal_doc)
         .def("addPointIndex", addPointIndex2_py, ReferenceCloud_addPointIndex_doc)
