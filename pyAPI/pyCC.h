@@ -31,6 +31,7 @@
   #endif
 #endif
 
+#include <CCGeom.h>
 #include <GeometricalAnalysisTools.h>
 #include <ccPolyline.h>
 #include <ccPointCloud.h>
@@ -168,7 +169,7 @@ bool computeLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density option, do
 
 bool computeApproxLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density option, double radius, std::vector<ccHObject*> clouds);
 
-bool computeRoughness(double radius, std::vector<ccHObject*> clouds);
+bool computeRoughnessPy(double radius, std::vector<ccHObject*> clouds, CCVector3 roughnessUpDir = CCVector3(0,0,0));
 
 bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds);
 
@@ -327,7 +328,8 @@ bool pyCC_ComputeGeomCharacteristic(
     CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic c,
     int subOption,
     PointCoordinateType radius,
-    ccHObject::Container& entities);
+    ccHObject::Container& entities,
+    const CCVector3* roughnessUpDir=nullptr);
 
 //! copied from ccLibAlgorithms::GetDensitySFName
 QString pyCC_GetDensitySFName(

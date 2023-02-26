@@ -757,7 +757,9 @@ PYBIND11_MODULE(_cloudComPy, m0)
 
     m0.def("computeApproxLocalDensity", &computeApproxLocalDensity, cloudComPy_computeApproxLocalDensity_doc);
 
-    m0.def("computeRoughness", &computeRoughness, cloudComPy_computeRoughness_doc);
+    m0.def("computeRoughness", &computeRoughnessPy,
+           py::arg("radius"), py::arg("clouds"), py::arg("roughnessUpDir")=CCVector3(0,0,0),
+           cloudComPy_computeRoughness_doc);
 
     m0.def("computeMomentOrder1", &computeMomentOrder1, cloudComPy_computeMomentOrder1_doc);
 

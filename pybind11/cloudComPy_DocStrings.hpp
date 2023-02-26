@@ -505,6 +505,7 @@ This point will appear in grey (or not at all if you uncheck the 'display NaN va
 :param float radius: try value obtained by :py:meth:`GetPointCloudRadius`.
 :param clouds: list of clouds
 :type clouds: list of :py:class:`ccHObject`
+:param vector,optional roughnessUpDir: when defined, up direction allows a signed value of the roughness (up: positive, down: negative)
 
 :return: True if OK, else False
 :rtype: bool)";

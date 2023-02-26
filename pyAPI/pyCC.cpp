@@ -765,9 +765,18 @@ bool computeApproxLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density opti
 	return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::ApproxLocalDensity, option, radius, clouds);
 }
 
-bool computeRoughness(double radius, std::vector<ccHObject*> clouds)
+bool computeRoughnessPy(double radius, std::vector<ccHObject*> clouds, CCVector3 roughnessUpDir)
 {
-	return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::Roughness, 0, radius, clouds);
+    if (roughnessUpDir.norm2() == 0)
+    {
+        CCTRACE("computeRoughness without up direction");
+        return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::Roughness, 0, radius, clouds, nullptr);
+    }
+    else
+    {
+        CCTRACE("computeRoughness with up direction");
+        return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::Roughness, 0, radius, clouds, &roughnessUpDir);
+    }
 }
 
 bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds)
@@ -813,7 +822,8 @@ bool pyCC_ComputeGeomCharacteristic(
     CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic c,
     int subOption,
     PointCoordinateType radius,
-    ccHObject::Container& entities)
+    ccHObject::Container& entities,
+    const CCVector3* roughnessUpDir)
 {
 // TODO duplicated code from ccLibAlgorithms::ComputeGeomCharacteristic
     CCTRACE("pyCCComputeGeomCharacteristic "<< subOption << " radius: " << radius);
@@ -945,6 +955,7 @@ bool pyCC_ComputeGeomCharacteristic(
                     pc->setCurrentScalarField(sfIdx);
                 else
                 {
+                    CCTRACE("Failed to create scalar field on cloud (not enough memory?): " << pc->getName().toStdString());
                     continue;
                 }
             }
@@ -955,12 +966,13 @@ bool pyCC_ComputeGeomCharacteristic(
                 octree = cloud->computeOctree(nullptr);
                 if (!octree)
                 {
+                    CCTRACE("Couldn't compute octree for cloud " << cloud->getName().toStdString());
                     break;
                 }
             }
 
             CCCoreLib::GeometricalAnalysisTools::ErrorCode result = CCCoreLib::GeometricalAnalysisTools::ComputeCharactersitic(
-                    c, subOption, cloud, radius, nullptr, nullptr, octree.data());
+                    c, subOption, cloud, radius, roughnessUpDir, nullptr, octree.data());
 
             if (result == CCCoreLib::GeometricalAnalysisTools::NoError)
             {
@@ -969,6 +981,19 @@ bool pyCC_ComputeGeomCharacteristic(
                     pc->setCurrentDisplayedScalarField(sfIdx);
                     pc->showSF(sfIdx >= 0);
                     pc->getCurrentInScalarField()->computeMinAndMax();
+                    if (c == CCCoreLib::GeometricalAnalysisTools::Roughness && roughnessUpDir != nullptr)
+                    {
+                        // signed roughness should be displayed with a symmetrical color scale
+                        ccScalarField* sf = dynamic_cast<ccScalarField*>(pc->getCurrentInScalarField());
+                        if (sf)
+                        {
+                            sf->setSymmetricalScale(true);
+                        }
+                        else
+                        {
+                            assert(false);
+                        }
+                    }
                 }
                 cloud->prepareDisplayForRefresh();
             }
@@ -1003,6 +1028,8 @@ bool pyCC_ComputeGeomCharacteristic(
                     errorMessage = "Unknown error";
                     break;
                 }
+
+                CCTRACE("Failed to apply processing to cloud " << cloud->getName().toStdString());
 
                 if (pc && sfIdx >= 0)
                 {
