@@ -94,7 +94,7 @@ if cc.isPluginPCL():
     su.setParameters(cloud4, searchRadius=0.3, upsampleMethod=1)
     res=su.compute()
     cloud5=su.getOutputCloud()
-    if cloud5.getName() != 'dataSample2_3 - Cloud_smoothed':
+    if cloud5.getName() != 'dataSample2_3.0_0_0.1 - Cloud_smoothed':
         raiseRuntimeError
     if cloud5.size() != 50000:
         raiseRuntimeError

@@ -180,7 +180,6 @@ if not ret:
 timestamps.append(time.time())
 print("duration computeMomentOrder1:", timestamps[-1] -timestamps[-2])
 
-
 ret = cc.computeRoughness(0.06, [cloud])
 if not ret:
     raise RuntimeError
@@ -188,6 +187,12 @@ timestamps.append(time.time())
 print("duration computeRoughness:", timestamps[-1] -timestamps[-2])
 print("Total duration:", timestamps[-1] -timestamps[0])
 
+ret = cc.computeRoughness(0.06, [cloud], (0., 1., 0.))
+if not ret:
+    raise RuntimeError
+timestamps.append(time.time())
+print("duration computeRoughness up dir:", timestamps[-1] -timestamps[-2])
+print("Total duration:", timestamps[-1] -timestamps[0])
 
 dic = cloud.getScalarFieldDic()
 if len(dic) != 24:

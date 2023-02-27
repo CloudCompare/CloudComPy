@@ -505,6 +505,7 @@ This point will appear in grey (or not at all if you uncheck the 'display NaN va
 :param float radius: try value obtained by :py:meth:`GetPointCloudRadius`.
 :param clouds: list of clouds
 :type clouds: list of :py:class:`ccHObject`
+:param vector,optional roughnessUpDir: when defined, up direction allows a signed value of the roughness (up: positive, down: negative)
 
 :return: True if OK, else False
 :rtype: bool)";
@@ -598,6 +599,8 @@ GeoTiff files are only available with the GDAL plugin.
 :param ProjectionType,optional projectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
 :param ProjectionType,optional sfProjectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
 :param EmptyCellFillOption,optional emptyCellFillStrategy: default EmptyCellFillOption.LEAVE_EMPTY
+:param double,optional DelaunayMaxEdgeLength: used when EmptyCellFillOption is INTERPOLATE_DELAUNAY: maximum edge length, default 1.0 
+:param int,optional KrigingParamsKNN: used when EmptyCellFillOption is KRIGING: number of neighbour nodes, default 8
 :param float,optional customHeight: default float('nan')
 :param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
 :param bool export_perCellCount: export scalarField, default False
@@ -627,6 +630,8 @@ GeoTiff files are only available with the GDAL plugin.
 :param ProjectionType,optional projectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
 :param ProjectionType,optional sfProjectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
 :param EmptyCellFillOption,optional emptyCellFillStrategy: default EmptyCellFillOption.LEAVE_EMPTY
+:param double,optional DelaunayMaxEdgeLength: used when EmptyCellFillOption is INTERPOLATE_DELAUNAY: maximum edge length, default 1.0 
+:param int,optional KrigingParamsKNN: used when EmptyCellFillOption is KRIGING: number of neighbour nodes, default 8
 :param float,optional customHeight: default float('nan')
 :param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
 :param bool export_perCellCount: export scalarField, default False
@@ -656,6 +661,8 @@ GeoTiff files are only available with the GDAL plugin.
 :param ProjectionType,optional projectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
 :param ProjectionType,optional sfProjectionType: default ProjectionType.PROJ_AVERAGE_VALUE,
 :param EmptyCellFillOption,optional emptyCellFillStrategy: default EmptyCellFillOption.LEAVE_EMPTY
+:param double,optional DelaunayMaxEdgeLength: used when EmptyCellFillOption is INTERPOLATE_DELAUNAY: maximum edge length, default 1.0 
+:param int,optional KrigingParamsKNN: used when EmptyCellFillOption is KRIGING: number of neighbour nodes, default 8
 :param float,optional customHeight: default float('nan')
 :param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
 :param bool export_perCellCount: export scalarField, default False

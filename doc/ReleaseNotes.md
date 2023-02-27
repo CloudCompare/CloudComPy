@@ -2,6 +2,16 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## February 27, 2023 CloudComPy release:
+
+ - update to CloudCompare master (tag v2.13.alpha.230227, February 27, 2023)
+ - reactivate the Draco IO Plugin on Windows (link problem)
+ - (issue #89) update the docker scripts
+ - (issue #90) abort on deleteInstance on a cloud created by pybind11 constructor (test047.py)
+ - (issue #91) add 'up direction' in computeRoughness (test024.py)
+ - fix CloudComPy behavior with CloudCompare commit "Smart BIN file version (#1744)"
+ - Various small fixes.
+
 ## February 09, 2023 CloudComPy release:
 
  - update to CloudCompare master > 2.12.4 (January 9 2023)

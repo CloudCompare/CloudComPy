@@ -573,7 +573,8 @@ void export_ccPointCloud(py::module &m0)
         .value("WRN_OUT_OF_MEM_FOR_FWF", ccPointCloud::CLONE_WARNINGS::WRN_OUT_OF_MEM_FOR_FWF)
         .export_values();
 
-    py::class_<ccPointCloud, CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString> >(m0, "ccPointCloud", ccPointCloudPy_ccPointCloud_doc)
+    py::class_<ccPointCloud, CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>,
+               std::unique_ptr<ccPointCloud, py::nodelete> >(m0, "ccPointCloud", ccPointCloudPy_ccPointCloud_doc)
         .def(py::init<QString, unsigned>(), py::arg("name")=QString(), py::arg("uniqueID")=0xFFFFFFFF) // TODO optional<QString, unsigned> >())
         .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)

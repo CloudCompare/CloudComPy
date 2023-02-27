@@ -188,6 +188,21 @@ for reopening in the GUI in a predefined state (colors, normal, scalarFields).
 :param bool isShown: whether to show or not the ScalarFields.
 )";
 
+const char* ccHObject_incRef_doc=R"(
+Increment the Python reference counter.
+Do not use, for debug and tests only.
+)";
+
+const char* ccHObject_decRef_doc=R"(
+Decrement the Python reference counter.
+Do not use, for debug and tests only.
+)";
+
+const char* ccHObject_countRef_doc=R"(
+Get the value of the Python reference counter.
+Do not use, for debug and tests only.
+)";
+
 const char* ccGenericPointCloud_computeOctree_doc= R"(
 Computes the cloud octree.
 

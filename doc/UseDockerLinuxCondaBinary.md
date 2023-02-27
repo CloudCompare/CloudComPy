@@ -1,5 +1,7 @@
 ## docker-miniconda (Work in Progress...)
 
+**WARNING: This is not up to date and does not work as is. Take it as an example to adapt...**
+
 Installation
 
 ```

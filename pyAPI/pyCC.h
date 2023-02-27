@@ -31,6 +31,7 @@
   #endif
 #endif
 
+#include <CCGeom.h>
 #include <GeometricalAnalysisTools.h>
 #include <ccPolyline.h>
 #include <ccPointCloud.h>
@@ -168,7 +169,7 @@ bool computeLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density option, do
 
 bool computeApproxLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density option, double radius, std::vector<ccHObject*> clouds);
 
-bool computeRoughness(double radius, std::vector<ccHObject*> clouds);
+bool computeRoughnessPy(double radius, std::vector<ccHObject*> clouds, CCVector3 roughnessUpDir = CCVector3(0,0,0));
 
 bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds);
 
@@ -262,6 +263,8 @@ ccPointCloud* RasterizeToCloud(
 	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
 	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+    double DelaunayMaxEdgeLength = 1.0,
+    int KrigingParamsKNN = 8,
 	double customHeight = std::numeric_limits<double>::quiet_NaN(),
 	ccBBox gridBBox = ccBBox(),
 	bool export_perCellCount = false,
@@ -283,6 +286,8 @@ ccMesh* RasterizeToMesh(
 	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
 	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+    double DelaunayMaxEdgeLength = 1.0,
+    int KrigingParamsKNN = 8,
 	double customHeight = std::numeric_limits<double>::quiet_NaN(),
 	ccBBox gridBBox = ccBBox(),
     bool export_perCellCount = false,
@@ -304,6 +309,8 @@ ccHObject* RasterizeGeoTiffOnly(
 	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
 	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+    double DelaunayMaxEdgeLength = 1.0,
+    int KrigingParamsKNN = 8,
 	double customHeight = std::numeric_limits<double>::quiet_NaN(),
 	ccBBox gridBBox = ccBBox(),
     bool export_perCellCount = false,
@@ -327,7 +334,8 @@ bool pyCC_ComputeGeomCharacteristic(
     CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic c,
     int subOption,
     PointCoordinateType radius,
-    ccHObject::Container& entities);
+    ccHObject::Container& entities,
+    const CCVector3* roughnessUpDir=nullptr);
 
 //! copied from ccLibAlgorithms::GetDensitySFName
 QString pyCC_GetDensitySFName(
@@ -352,6 +360,8 @@ ccHObject* Rasterize_(
 	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
 	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+	double DelaunayMaxEdgeLength = 1.0,
+	int KrigingParamsKNN = 8,
 	double customHeight = std::numeric_limits<double>::quiet_NaN(),
 	ccBBox gridBBox = ccBBox(),
 	const std::vector<ccRasterGrid::ExportableFields>& extraScalarFields= {});

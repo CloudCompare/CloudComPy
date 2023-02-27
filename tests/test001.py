@@ -33,7 +33,7 @@ import cloudComPy as cc
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 namecloud = cloud.getName()
 print("cloud name: %s" % namecloud)
-if namecloud != "dataSample_5 - Cloud":
+if namecloud != "dataSample_5.0 - Cloud":
     raise RuntimeError
 
 npts = cloud.size()
@@ -113,7 +113,7 @@ if res != cc.CC_FERR_NO_ERROR:
 cloud = cc.loadPointCloud(os.path.join(dataDir, "res1.bin"))
 namecloud = cloud.getName()
 print("cloud name: %s" % namecloud)
-if namecloud != "dataSample_5 - Cloud":
+if namecloud != "dataSample_5.0 - Cloud":
     raise RuntimeError
 
 npts = cloud.size()

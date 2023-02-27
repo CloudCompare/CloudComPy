@@ -1,0 +1,48 @@
+FROM continuumio/miniconda3:master
+
+RUN . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate && \
+    conda create --name CloudComPy310 python=3.10 && \
+    conda activate CloudComPy310 && \
+    conda config --add channels conda-forge && \
+    conda config --set channel_priority strict && \
+    conda install "boost=1.74" "cgal=5.4" cmake draco ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
+
+RUN apt-get update && apt-get install -y gfortran g++ make libgl1 libgl-dev
+
+RUN . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate CloudComPy310 && \
+    cd && rm -rf CloudComPy && git clone --recurse-submodules https://github.com/prascle/CloudComPy.git && \
+    cd CloudComPy && git checkout CloudComPy_docker-20230216 --recurse-submodules
+
+ARG FBXINC=noplugin
+ARG FBXLIB=noplugin
+ARG CORKINC=noplugin
+ARG CORKLIB=noplugin
+ARG LIBIGL=noplugin
+ARG OPENCASCADE=noplugin
+
+COPY $FBXINC /root/fbxsdk/include/
+COPY $FBXLIB /root/fbxsdk/lib/
+COPY $CORKINC /root/cork/src/
+COPY $CORKLIB /root/cork/lib/
+copy $LIBIGL /root/libigl/
+copy $OPENCASCADE /root/occt/
+COPY genCloudComPy_Conda310_docker.sh /root/
+
+RUN cd /root && \
+    if [ -f fbxsdk/include/fbxsdk.h ]; then \
+        sed -i 's/QFBX:BOOL="0"/QFBX:BOOL="1"/g' genCloudComPy_Conda310_docker.sh; \
+    fi; \
+    if [ -f cork/src/cork.h ]; then \
+        sed -i 's/QCORK:BOOL="0"/QCORK:BOOL="1"/g' genCloudComPy_Conda310_docker.sh; \
+    fi; \
+    cd /root && chmod +x genCloudComPy_Conda310_docker.sh && ./genCloudComPy_Conda310_docker.sh
+
+RUN echo "#!/bin/bash\n\
+. /opt/conda/etc/profile.d/conda.sh\n\
+cd /opt/installConda/CloudComPy310\n\
+. bin/condaCloud.sh activate CloudComPy310\n\
+export QT_QPA_PLATFORM=offscreen\n\
+cd /opt/installConda/CloudComPy310/doc/PythonAPI_test\n\
+ctest" > /execTests.sh && chmod +x /execTests.sh

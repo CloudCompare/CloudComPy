@@ -1,6 +1,7 @@
 #ifndef __OPTDEFINES_H__
 #define __OPTDEFINES_H__
 
+#cmakedefine PLUGIN_IO_QDRACO
 #cmakedefine PLUGIN_IO_QFBX
 #cmakedefine PLUGIN_IO_QLAS_FWF
 #cmakedefine PLUGIN_STANDARD_QM3C2

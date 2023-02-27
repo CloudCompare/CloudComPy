@@ -4,8 +4,8 @@ Cloud Compare Python API Choices of technology, TODO list & questions
 Choice of a wrapping tool
 -------------------------
 
-Several tools are available. I successively tested PyQt/sip, then Pyside2/Shiboken2, and Boost.Python. 
-BostPython is the one I'm currently using.
+Several tools are available. I successively tested PyQt/sip, then Pyside2/Shiboken2, Boost.Python and PyBind11. 
+PyBind11 is the one I'm currently using.
 
 First try: PyQt SIP
 -------------------
@@ -63,7 +63,7 @@ See the available methodes in the Python test scripts
 
 Duplicate qCC code elements
 ---------------------------
-The Cloud Compare Python API code is gathered in a PYCC directory (Cloud Compare Python API).
+The Cloud Compare Python API code is gathered in a PYCC directory (Cloud Compare Python API) and also in the pybind11 directory.
 It is based on potentially all the CloudCompare libraries, except the application itself (qCC).
 It does not require any modification of the called libraries.
 By cons, need to duplicate code from qCC, without GUI graphics calls.
@@ -91,7 +91,7 @@ Python's garbage collector relies on a references counter on which we can act in
 The Wrapper makes it possible to say explicitly who has the ownership of the objects created at the interface.
 Establish rules and tests to be sure of writing reliable code (Numpy Array <--> Coordinates or ScalarField is an important particular case).
 Currently the interface does not prohibit potentially destructive actions.
-NB: no problem detected to date on the reduced interface, with simple tests ...
+NB: no problem detected to date on the interface, with simple tests ...
 
 Portable Python tests
 ---------------------
@@ -102,7 +102,8 @@ The test scripts are dependent on local paths, and on a local dataset.
 
 Windows Packaging
 -----------------
-Windows version is built with Anaconda3 packages. Anaconda provides all the libraries and environment required.
+Windows version is built with Anaconda3 packages. Anaconda provides almost all the libraries and environment required.
+Only a few plugins require libraries that are not packaged.
 
 TODO List
 ---------
@@ -145,6 +146,11 @@ TODO List
 * DONE: (issue #82) remove old wrap of M3C2 PLUGIN (WRAP_PLUGIN_M3C2)
 * DONE: (issue #83) Fix bug in RANSAC SD python plugin: meshes not detected when sensors in dataset
 * DONE: (issue #85) fix install procedure, Qt 5.15.6 is not compatible with Qt 5.15.4
+* DONE: reactivate the Draco IO Plugin on Windows (link problem)
+* DONE: (issue #89) update the docker scripts
+* DONE: (issue #90) abort on deleteInstance on a cloud created by pybind11 constructor
+* DONE: (issue #91) add 'up direction' in computeRoughness
+* DONE: fix CloudComPy behavior with CloudCompare commit "Smart BIN file version (#1744)"
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -154,5 +160,4 @@ TODO List
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 - TODO: Fix documentation on building on Windows
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
-- TODO: reactivate the Draco IO Plugin on Windows (link problem)
 

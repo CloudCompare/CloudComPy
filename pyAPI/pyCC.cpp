@@ -765,9 +765,18 @@ bool computeApproxLocalDensity(CCCoreLib::GeometricalAnalysisTools::Density opti
 	return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::ApproxLocalDensity, option, radius, clouds);
 }
 
-bool computeRoughness(double radius, std::vector<ccHObject*> clouds)
+bool computeRoughnessPy(double radius, std::vector<ccHObject*> clouds, CCVector3 roughnessUpDir)
 {
-	return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::Roughness, 0, radius, clouds);
+    if (roughnessUpDir.norm2() == 0)
+    {
+        CCTRACE("computeRoughness without up direction");
+        return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::Roughness, 0, radius, clouds, nullptr);
+    }
+    else
+    {
+        CCTRACE("computeRoughness with up direction");
+        return pyCC_ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::Roughness, 0, radius, clouds, &roughnessUpDir);
+    }
 }
 
 bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds)
@@ -813,7 +822,8 @@ bool pyCC_ComputeGeomCharacteristic(
     CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic c,
     int subOption,
     PointCoordinateType radius,
-    ccHObject::Container& entities)
+    ccHObject::Container& entities,
+    const CCVector3* roughnessUpDir)
 {
 // TODO duplicated code from ccLibAlgorithms::ComputeGeomCharacteristic
     CCTRACE("pyCCComputeGeomCharacteristic "<< subOption << " radius: " << radius);
@@ -945,6 +955,7 @@ bool pyCC_ComputeGeomCharacteristic(
                     pc->setCurrentScalarField(sfIdx);
                 else
                 {
+                    CCTRACE("Failed to create scalar field on cloud (not enough memory?): " << pc->getName().toStdString());
                     continue;
                 }
             }
@@ -955,12 +966,13 @@ bool pyCC_ComputeGeomCharacteristic(
                 octree = cloud->computeOctree(nullptr);
                 if (!octree)
                 {
+                    CCTRACE("Couldn't compute octree for cloud " << cloud->getName().toStdString());
                     break;
                 }
             }
 
             CCCoreLib::GeometricalAnalysisTools::ErrorCode result = CCCoreLib::GeometricalAnalysisTools::ComputeCharactersitic(
-                    c, subOption, cloud, radius, nullptr, nullptr, octree.data());
+                    c, subOption, cloud, radius, roughnessUpDir, nullptr, octree.data());
 
             if (result == CCCoreLib::GeometricalAnalysisTools::NoError)
             {
@@ -969,6 +981,19 @@ bool pyCC_ComputeGeomCharacteristic(
                     pc->setCurrentDisplayedScalarField(sfIdx);
                     pc->showSF(sfIdx >= 0);
                     pc->getCurrentInScalarField()->computeMinAndMax();
+                    if (c == CCCoreLib::GeometricalAnalysisTools::Roughness && roughnessUpDir != nullptr)
+                    {
+                        // signed roughness should be displayed with a symmetrical color scale
+                        ccScalarField* sf = dynamic_cast<ccScalarField*>(pc->getCurrentInScalarField());
+                        if (sf)
+                        {
+                            sf->setSymmetricalScale(true);
+                        }
+                        else
+                        {
+                            assert(false);
+                        }
+                    }
                 }
                 cloud->prepareDisplayForRefresh();
             }
@@ -1003,6 +1028,8 @@ bool pyCC_ComputeGeomCharacteristic(
                     errorMessage = "Unknown error";
                     break;
                 }
+
+                CCTRACE("Failed to apply processing to cloud " << cloud->getName().toStdString());
 
                 if (pc && sfIdx >= 0)
                 {
@@ -1705,11 +1732,29 @@ bool ComputeVolume_(    ccRasterGrid& grid,
             return false;
         }
 
+        ccRasterGrid::InterpolationType interpolationType = ccRasterGrid::InterpolationTypeFromEmptyCellFillOption(groundEmptyCellFillStrategy);
+        ccRasterGrid::DelaunayInterpolationParams dInterpParams;
+        void* interpolationParams = nullptr;
+        switch (interpolationType)
+        {
+        case ccRasterGrid::InterpolationType::DELAUNAY:
+            dInterpParams.maxEdgeLength = groundMaxEdgeLength;
+            interpolationParams = (void*)&dInterpParams;
+            break;
+        case ccRasterGrid::InterpolationType::KRIGING:
+            // not supported yet
+            assert(false);
+            break;
+        default:
+            // do nothing
+            break;
+        }
+
         if (groundRaster.fillWith(  ground,
                                     vertDim,
                                     projectionType,
-                                    groundEmptyCellFillStrategy == ccRasterGrid::INTERPOLATE,
-                                    groundMaxEdgeLength,
+                                    interpolationType,
+                                    interpolationParams,
                                     ccRasterGrid::INVALID_PROJECTION_TYPE,
                                     pDlg.data()))
         {
@@ -1734,11 +1779,29 @@ bool ComputeVolume_(    ccRasterGrid& grid,
             return false;
         }
 
+        ccRasterGrid::InterpolationType interpolationType = ccRasterGrid::InterpolationTypeFromEmptyCellFillOption(ceilEmptyCellFillStrategy);
+        ccRasterGrid::DelaunayInterpolationParams dInterpParams;
+        void* interpolationParams = nullptr;
+        switch (interpolationType)
+        {
+        case ccRasterGrid::InterpolationType::DELAUNAY:
+            dInterpParams.maxEdgeLength = ceilMaxEdgeLength;
+            interpolationParams = (void*)&dInterpParams;
+            break;
+        case ccRasterGrid::InterpolationType::KRIGING:
+            // not supported yet
+            assert(false);
+            break;
+        default:
+            // do nothing
+            break;
+        }
+
         if (ceilRaster.fillWith(ceil,
                                 vertDim,
                                 projectionType,
-                                ceilEmptyCellFillStrategy == ccRasterGrid::INTERPOLATE,
-                                ceilMaxEdgeLength,
+                                interpolationType,
+                                interpolationParams,
                                 ccRasterGrid::INVALID_PROJECTION_TYPE,
                                 pDlg.data()))
         {
@@ -1932,6 +1995,8 @@ ccPointCloud* RasterizeToCloud(
 	ccRasterGrid::ProjectionType projectionType,
 	ccRasterGrid::ProjectionType sfProjectionType,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy,
+    double DelaunayMaxEdgeLength,
+    int KrigingParamsKNN,
 	double customHeight,
 	ccBBox gridBBox,
     bool export_perCellCount,
@@ -1952,6 +2017,7 @@ ccPointCloud* RasterizeToCloud(
 	ccHObject* entity = Rasterize_(cloud, gridStep, vertDir, 1,
 			outputRasterZ, outputRasterSFs, outputRasterRGB, pathToImages, resample,
 			projectionType, sfProjectionType, emptyCellFillStrategy,
+			DelaunayMaxEdgeLength, KrigingParamsKNN,
 			customHeight, gridBBox, extraScalarFields);
 	CCTRACE("entity:" << entity);
 	ccPointCloud* rcloud = ccHObjectCaster::ToPointCloud(entity);
@@ -1970,6 +2036,8 @@ ccMesh* RasterizeToMesh(
 	ccRasterGrid::ProjectionType projectionType,
 	ccRasterGrid::ProjectionType sfProjectionType,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy,
+    double DelaunayMaxEdgeLength,
+    int KrigingParamsKNN,
 	double customHeight,
 	ccBBox gridBBox,
     bool export_perCellCount,
@@ -1990,6 +2058,7 @@ ccMesh* RasterizeToMesh(
 	ccHObject* entity = Rasterize_(cloud, gridStep, vertDir, 2,
 			outputRasterZ, outputRasterSFs, outputRasterRGB, pathToImages, resample,
 			projectionType, sfProjectionType, emptyCellFillStrategy,
+            DelaunayMaxEdgeLength, KrigingParamsKNN,
 			customHeight, gridBBox, extraScalarFields);
 	CCTRACE("entity:" << entity);
 	ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
@@ -2008,6 +2077,8 @@ ccHObject* RasterizeGeoTiffOnly(
 	ccRasterGrid::ProjectionType projectionType,
 	ccRasterGrid::ProjectionType sfProjectionType,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy,
+    double DelaunayMaxEdgeLength,
+    int KrigingParamsKNN,
 	double customHeight,
 	ccBBox gridBBox,
     bool export_perCellCount,
@@ -2028,6 +2099,7 @@ ccHObject* RasterizeGeoTiffOnly(
 	ccHObject* entity = Rasterize_(cloud, gridStep, vertDir, 2,
 			outputRasterZ, outputRasterSFs, outputRasterRGB, pathToImages, resample,
 			projectionType, sfProjectionType, emptyCellFillStrategy,
+            DelaunayMaxEdgeLength, KrigingParamsKNN,
 			customHeight, gridBBox, extraScalarFields);
 	return nullptr; // only image files created, no object returned
 }
@@ -2043,7 +2115,7 @@ bool ExportGeoTiff_(const QString& outputFilename,
 					ccGenericPointCloud* originCloud/*=0*/,
 					int visibleSfIndex=-1)
 {
-	CCTRACE("fillEmptyCellsStrategy:" << fillEmptyCellsStrategy << " " <<ccRasterGrid::INTERPOLATE);
+	CCTRACE("fillEmptyCellsStrategy:" << fillEmptyCellsStrategy);
 #ifdef CC_GDAL_SUPPORT
 
 	if (exportBands.visibleSF && visibleSfIndex < 0)
@@ -2057,14 +2129,15 @@ bool ExportGeoTiff_(const QString& outputFilename,
 	const unsigned char X = Z == 2 ? 0 : Z + 1;
 	const unsigned char Y = X == 2 ? 0 : X + 1;
 
-	//global shift
-	assert(gridBBox.isValid());
-	double shiftX = gridBBox.minCorner().u[X];
-	double shiftY = gridBBox.maxCorner().u[Y];
-	double shiftZ = 0.0;
+    double stepX = grid.gridStep;
+    double stepY = grid.gridStep;
 
-	double stepX = grid.gridStep;
-	double stepY = grid.gridStep;
+    //global shift
+    assert(gridBBox.isValid());
+    double shiftX = gridBBox.minCorner().u[X] - stepX / 2; //we will declare the raster grid as 'Pixel-is-area'!
+    double shiftY = gridBBox.maxCorner().u[Y] + stepY / 2; //we will declare the raster grid as 'Pixel-is-area'!
+    double shiftZ = 0.0;
+
 	if (originCloud)
 	{
 		const CCVector3d& shift = originCloud->getGlobalShift();
@@ -2289,7 +2362,7 @@ bool ExportGeoTiff_(const QString& outputFilename,
 			emptyCellHeight = grid.maxHeight;
 			break;
 		case ccRasterGrid::FILL_CUSTOM_HEIGHT:
-		case ccRasterGrid::INTERPOLATE:
+		case ccRasterGrid::INTERPOLATE_DELAUNAY:
 			emptyCellHeight = customHeightForEmptyCells;
 			break;
 		case ccRasterGrid::FILL_AVERAGE_HEIGHT:
@@ -2421,12 +2494,18 @@ ccHObject* Rasterize_(
 	ccRasterGrid::ProjectionType projectionType,
 	ccRasterGrid::ProjectionType sfProjectionType,
 	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy,
+    double DelaunayMaxEdgeLength,
+    int KrigingParamsKNN,
 	double customHeight,
 	ccBBox gridBBox,
     const std::vector<ccRasterGrid::ExportableFields>& extraScalarFields)
 {
 	CCTRACE("Rasterize_");
 	CCTRACE("Cloud:" << cloud);
+    ccRasterGrid::DelaunayInterpolationParams dInterpParams;
+    ccRasterGrid::KrigingParams krigingParams;
+    // force auto-guess
+    krigingParams.autoGuess = true;
 	ccHObject* entity = nullptr;
 	bool isCellCount = false;
 	if (gridStep <= 0)
@@ -2478,13 +2557,27 @@ ccHObject* Rasterize_(
 			return nullptr;
 		}
 
+        ccRasterGrid::InterpolationType interpolationType = ccRasterGrid::InterpolationTypeFromEmptyCellFillOption(emptyCellFillStrategy);
+        void* interpolationParams = nullptr;
+        switch (interpolationType)
+        {
+        case ccRasterGrid::InterpolationType::DELAUNAY:
+            interpolationParams = (void*)&dInterpParams;
+            break;
+        case ccRasterGrid::InterpolationType::KRIGING:
+            interpolationParams = (void*)&krigingParams;
+            break;
+        default:
+            // do nothing
+            break;
+        }
+
 		if (grid.fillWith(cloud,
 		                  vertDir,
 		                  projectionType,
-		                  emptyCellFillStrategy == ccRasterGrid::INTERPOLATE,
-						  0.0,
-		                  sfProjectionType,
-		                  nullptr))
+                          interpolationType,
+                          interpolationParams,
+                          sfProjectionType))
 		{
 			grid.fillEmptyCells(emptyCellFillStrategy, customHeight);
 		}
