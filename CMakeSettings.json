@@ -362,7 +362,7 @@
         },
         {
           "name": "CORK_RELEASE_LIBRARY_FILE",
-          "value": "${home}/CloudComPy/cork/win/VS2013/x64/Release/wincork2013.lib",
+          "value": "${home}/CloudComPy/cork/win/VS2022/x64/Release/wincork2022.lib",
           "type": "FILEPATH"
         },
         {
