@@ -77,7 +77,7 @@ rcloud2 = cc.RasterizeToCloud(cloud,
                           outputRasterZ = True,
                           outputRasterSFs = True,
                           pathToImages = dataDir,
-                          emptyCellFillStrategy = cc.EmptyCellFillOption.INTERPOLATE,
+                          emptyCellFillStrategy = cc.EmptyCellFillOption.INTERPOLATE_DELAUNAY,
                           export_perCellCount = True,
                           export_perCellAvgHeight = True)
 #---resterize04-end

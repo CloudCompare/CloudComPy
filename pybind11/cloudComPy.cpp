@@ -650,7 +650,8 @@ PYBIND11_MODULE(_cloudComPy, m0)
 		.value("FILL_MAXIMUM_HEIGHT", ccRasterGrid::FILL_MAXIMUM_HEIGHT)
 		.value("FILL_CUSTOM_HEIGHT", ccRasterGrid::FILL_CUSTOM_HEIGHT)
 		.value("FILL_AVERAGE_HEIGHT", ccRasterGrid::FILL_AVERAGE_HEIGHT)
-		.value("INTERPOLATE", ccRasterGrid::INTERPOLATE)
+		.value("INTERPOLATE_DELAUNAY", ccRasterGrid::INTERPOLATE_DELAUNAY)
+        .value("KRIGING", ccRasterGrid::KRIGING)
         .export_values();
 
     py::enum_<ccRasterGrid::ExportableFields>(m0, "ExportableFields")
@@ -859,6 +860,8 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
            py::arg("sfProjectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
            py::arg("emptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+           py::arg("DelaunayMaxEdgeLength")=1.0,
+           py::arg("KrigingParamsKNN")=8,
            py::arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
            py::arg("gridBBox")=ccBBox(),
            py::arg("export_perCellCount")=false,
@@ -882,6 +885,8 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
            py::arg("sfProjectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
            py::arg("emptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+           py::arg("DelaunayMaxEdgeLength")=1.0,
+           py::arg("KrigingParamsKNN")=8,
            py::arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
            py::arg("gridBBox")=ccBBox(),
            py::arg("export_perCellCount")=false,
@@ -905,6 +910,8 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
            py::arg("sfProjectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
            py::arg("emptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+           py::arg("DelaunayMaxEdgeLength")=1.0,
+           py::arg("KrigingParamsKNN")=8,
            py::arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
            py::arg("gridBBox")=ccBBox(),
            py::arg("export_perCellCount")=false,
