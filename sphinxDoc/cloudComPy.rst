@@ -35,6 +35,7 @@ cloudComPy module, functions
 .. autofunction:: loadMesh
 .. autofunction:: loadPointCloud
 .. autofunction:: loadPolyline
+.. autofunction:: MergeEntities
 .. autofunction:: RasterizeGeoTiffOnly
 .. autofunction:: RasterizeToCloud
 .. autofunction:: RasterizeToMesh

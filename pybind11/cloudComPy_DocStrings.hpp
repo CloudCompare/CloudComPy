@@ -368,6 +368,18 @@ Load a polyline from a file.
 
 Usage: see ccPolyline doc.)";
 
+const char* cloudComPy_MergeEntities_doc= R"(
+Merge a list of point clouds, or a list of meshes.
+
+:param tuple entities: list of clouds or list of meshes (not mixed)
+:param bool,optional deleteOriginalClouds: whether to delete the original clouds or not, default false
+:param bool,optional createSFcloudIndex: create a scalar field with the original cloud indexes, default false
+:param bool,optional createSubMeshes: create submeshes with original meshes, default false
+
+:return: merged entity
+:rtype: ccHObject (cloud or mesh)
+)";
+
 const char* cloudComPy_ReportInfoVol_doc= R"(
 Result values on 2.5D volume calculation. See :py:class:`ComputeVolume25D`
 
