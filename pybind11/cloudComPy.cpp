@@ -309,7 +309,7 @@ struct ComponentIndexAndSize
     }
 };
 
-
+//! from MainWindow::createComponentsClouds
 std::vector<ccPointCloud*> createComponentsClouds_(   ccGenericPointCloud* cloud,
                                                       CCCoreLib::ReferenceCloudContainer& components,
                                                       unsigned minPointsPerComponent,

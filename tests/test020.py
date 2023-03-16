@@ -27,7 +27,7 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual, createSymbolicLinks, getSamplePoly
+from gendata import getSampleCloud, getSampleCloud2, dataDir, dataExtDir, isCoordEqual, createSymbolicLinks, getSamplePoly
 import cloudComPy as cc
 
 createSymbolicLinks() # required for tests on build, before cc.initCC
@@ -309,3 +309,25 @@ if p_sx.size() != 7:
 p_shp=cc.loadPolyline(os.path.join(dataDir, "poly01.shp"))
 if p_shp.size() != 7:
     raise RuntimeError
+
+#---LASTimeShift001-begin
+# example data available here: https://github.com/CloudCompare/CloudComPy/issues/94
+
+if not os.path.isfile(os.path.join(dataExtDir,"lidar_veg_cloud.las")):
+    if not os.path.exists(dataExtDir):
+        os.makedirs(dataExtDir)
+    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/38-recombi-10-txt"
+    r = requests.get(url)
+    with open(os.path.join(dataExtDir,"lidar_veg_cloud.las"), 'wb') as f:
+        f.write(r.content)
+#---LASTimeShift001-end
+
+#---LASTimeShift002-begin
+cloud=cc.loadPointCloud(os.path.join(dataExtDir,"lidar_veg_cloud.las"))
+dic = cloud.getScalarFieldDic()
+sf = cloud.getScalarField(dic['Gps Time'])
+timeShift = sf.getGlobalShift()
+#---LASTimeShift002-end
+if not math.isclose(timeShift, 120000):
+    raise RuntimeError
+
