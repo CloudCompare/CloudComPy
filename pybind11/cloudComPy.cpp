@@ -38,11 +38,14 @@
 #include <AutoSegmentationTools.h>
 #include <ParallelSort.h>
 #include <ccPointCloudInterpolator.h>
+#include <ReferenceCloud.h>
+
 //#include <ccMainAppInterface.h>
 
 #include <QString>
 #include <QSharedPointer>
 #include <vector>
+#include <tuple>
 
 #include "optdefines.h"
 
@@ -311,16 +314,18 @@ struct ComponentIndexAndSize
 };
 
 //! from MainWindow::createComponentsClouds
-std::vector<ccPointCloud*> createComponentsClouds_(   ccGenericPointCloud* cloud,
-                                                      CCCoreLib::ReferenceCloudContainer& components,
-                                                      unsigned minPointsPerComponent,
-                                                      bool randomColors,
-                                                      bool sortBysize=true)
+std::tuple <std::vector<ccPointCloud*>, std::vector<ccPointCloud*>>
+createComponentsClouds_(ccGenericPointCloud* cloud,
+                        CCCoreLib::ReferenceCloudContainer& components,
+                        unsigned minPointsPerComponent,
+                        bool randomColors,
+                        bool sortBysize=true)
 {
     CCTRACE("createComponentsClouds_ " << randomColors);
     std::vector<ccPointCloud*> resultClouds;
+    std::vector<ccPointCloud*> residualClouds;
     if (!cloud || components.empty())
-        return resultClouds;
+        return {resultClouds, residualClouds};
 
     std::vector<ComponentIndexAndSize> sortedIndexes;
     std::vector<ComponentIndexAndSize>* _sortedIndexes = nullptr;
@@ -353,6 +358,8 @@ std::vector<ccPointCloud*> createComponentsClouds_(   ccGenericPointCloud* cloud
     //we create "real" point clouds for all input components
     {
         ccPointCloud* pc = cloud->isA(CC_TYPES::POINT_CLOUD) ? static_cast<ccPointCloud*>(cloud) : nullptr;
+        CCCoreLib::ReferenceCloud* refCloud = new CCCoreLib::ReferenceCloud(cloud);
+        ccPointCloud* residualCloud = nullptr;
 
         //for each component
         int nbComp =0;
@@ -390,11 +397,35 @@ std::vector<ccPointCloud*> createComponentsClouds_(   ccGenericPointCloud* cloud
                     CCTRACE("[CreateComponentsClouds] Failed to create component " << nbComp << "(not enough memory)");
                 }
             }
+            else
+            {
+                // regroup all small chunks in one entity
+                unsigned numberOfPoints = compIndexes->size();
+                for (unsigned i = 0; i < numberOfPoints; ++i)
+                {
+                    //add the point to the current component
+                    if (!refCloud->addPointIndex(i))
+                    {
+                        //not enough memory
+                        CCTRACE("not enough memory!");
+                        delete refCloud;
+                        refCloud = nullptr;
+                        break;
+                    }
+                }
+            }
 
             delete compIndexes;
             compIndexes = nullptr;
         }
 
+        if (refCloud)
+        {
+            residualCloud = (pc ? pc->partialClone(refCloud) : ccPointCloud::From(refCloud));
+            residualClouds.push_back(residualCloud);
+            delete refCloud;
+            refCloud = nullptr;
+        }
         components.clear();
 
         if (nbComp == 0)
@@ -406,7 +437,7 @@ std::vector<ccPointCloud*> createComponentsClouds_(   ccGenericPointCloud* cloud
             CCTRACE("[CreateComponentsClouds] " << nbComp << " component(s) were created from cloud " << cloud->getName().toStdString());
         }
     }
-    return resultClouds;
+    return {resultClouds, residualClouds};
 }
 
 py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
@@ -420,7 +451,8 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
     int nbCloudDone = 0;
 
     std::vector<ccHObject*> resultComponents;
-    py::tuple res = py::make_tuple(nbCloudDone, resultComponents);
+    std::vector<ccHObject*> residualComponents;
+    py::tuple res = py::make_tuple(nbCloudDone, resultComponents, residualComponents);
 
     std::vector<ccGenericPointCloud*> clouds;
     {
@@ -441,6 +473,7 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
     {
         if (cloud && cloud->isA(CC_TYPES::POINT_CLOUD))
         {
+            CCTRACE("cloud");
             ccPointCloud* pc = static_cast<ccPointCloud*>(cloud);
 
             ccOctree::Shared theOctree = cloud->getOctree();
@@ -468,6 +501,7 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
             pc->setCurrentScalarField(sfIdx);
 
             //we try to label all CCs
+            CCTRACE("---");
             CCCoreLib::ReferenceCloudContainer components;
             int componentCount = CCCoreLib::AutoSegmentationTools::labelConnectedComponents(cloud,
                                                                                         static_cast<unsigned char>(octreeLevel),
@@ -475,9 +509,17 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
                                                                                         nullptr,
                                                                                         theOctree.data());
 
+            CCTRACE("---");
             if (componentCount >= 0)
             {
                 //if successful, we extract each CC (stored in "components")
+
+                pc->getCurrentInScalarField()->computeMinAndMax();
+                if (!CCCoreLib::AutoSegmentationTools::extractConnectedComponents(cloud, components))
+                {
+                    CCTRACE("[ExtractConnectedComponents] Something went wrong while extracting CCs from cloud " << cloud->getName().toStdString());
+                }
+                CCTRACE("---");
 
                 //safety test
                 {
@@ -489,6 +531,7 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
                         }
                     }
                 }
+                CCTRACE("total components: " << componentCount << " with " << realComponentCount << " components of size > " << minComponentSize);
 
                 if (realComponentCount > maxNumberComponents)
                 {
@@ -498,12 +541,6 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
                     pc->deleteScalarField(sfIdx);
                     res = py::make_tuple(nbCloudDone, resultComponents);
                     return res;
-                }
-
-                pc->getCurrentInScalarField()->computeMinAndMax();
-                if (!CCCoreLib::AutoSegmentationTools::extractConnectedComponents(cloud, components))
-                {
-                    CCTRACE("[ExtractConnectedComponents] Something went wrong while extracting CCs from cloud " << cloud->getName().toStdString());
                 }
             }
             else
@@ -518,15 +555,19 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
             //we create "real" point clouds for all CCs
             if (!components.empty())
             {
-                std::vector<ccPointCloud*> resultClouds = createComponentsClouds_(cloud, components, minComponentSize, randColors, true);
+                std::vector<ccPointCloud*> resultClouds;
+                std::vector<ccPointCloud*> residualClouds;
+                std::tie(resultClouds, residualClouds) = createComponentsClouds_(cloud, components, minComponentSize, randColors, true);
                 for (ccPointCloud* cloud : resultClouds)
                     resultComponents.push_back(cloud);
+                for (ccPointCloud* cloud : residualClouds)
+                    residualComponents.push_back(cloud);
             }
             nbCloudDone++;
-
+            CCTRACE("nbCloudDone: " << nbCloudDone);
         }
     }
-    res = py::make_tuple(nbCloudDone, resultComponents);
+    res = py::make_tuple(nbCloudDone, resultComponents, residualComponents);
     return res;
 }
 

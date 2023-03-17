@@ -42,9 +42,9 @@ if not os.path.isfile(os.path.join(dataExtDir,"pumpARowColumnIndexNoInvalidPoint
 
 cloud = cc.loadPointCloud(os.path.join(dataExtDir, "pumpARowColumnIndexNoInvalidPoints.e57"))
 res = cc.ExtractConnectedComponents(clouds=[cloud], randomColors=True)
-
-cloud2 = cc.MergeEntities(res[1], createSFcloudIndex=True)
-cloud3 = cc.MergeEntities(res[1], deleteOriginalClouds=True)
+res2 = res[1] + res[2] # connected components plus regrouped residual components
+cloud2 = cc.MergeEntities(res2, createSFcloudIndex=True)
+cloud3 = cc.MergeEntities(res2, deleteOriginalClouds=True)
 res = None
 
 
