@@ -314,17 +314,17 @@ if p_shp.size() != 7:
 #---LASTimeShift001-begin
 # example data available here: https://github.com/CloudCompare/CloudComPy/issues/94
 
-if not os.path.isfile(os.path.join(dataExtDir,"lidar_veg_cloud.las")):
+if not os.path.isfile(os.path.join(dataExtDir,"PTS_LAMB93_IGN69_extract.las")):
     if not os.path.exists(dataExtDir):
         os.makedirs(dataExtDir)
-    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/38-recombi-10-txt"
+    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/45-pts-lamb93-ign69-extract-las"
     r = requests.get(url)
-    with open(os.path.join(dataExtDir,"lidar_veg_cloud.las"), 'wb') as f:
+    with open(os.path.join(dataExtDir,"PTS_LAMB93_IGN69_extract.las"), 'wb') as f:
         f.write(r.content)
 #---LASTimeShift001-end
 
 #---LASTimeShift002-begin
-cloud=cc.loadPointCloud(os.path.join(dataExtDir,"lidar_veg_cloud.las"))
+cloud=cc.loadPointCloud(os.path.join(dataExtDir,"PTS_LAMB93_IGN69_extract.las"))
 dic = cloud.getScalarFieldDic()
 sf = cloud.getScalarField(dic['Gps Time'])
 timeShift = sf.getGlobalShift()
