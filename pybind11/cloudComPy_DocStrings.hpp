@@ -74,13 +74,14 @@ the gap is roughly d/2**n.
 :param list[ccPointCloud] clouds: the set of clouds
 :param int,optional octreeLevel: the octree level used to define the connection between nodes, default 8.
 :param int,optional minComponentSize: the minimum number of nodes to constitute a component, default 100.
+                                      The residual nodes are regrouped in a "residual component" (one per input cloud).
 :param int,optional maxNumberComponents: maximum number of components accepted (default 100):
                                          The process stops when this number is reached. 
                                          The return gives the number of clouds already processed.
                                          Check this number to see if some clouds have not been processed.
 :param bool optional randomColors: whether to color randomly the components or not, default False.
 
-:return: a tuple (number of clouds processed, list of components)
+:return: a tuple (number of clouds processed, list of components, list of residual components)
 :rtype: tuple
 )";
 
@@ -373,6 +374,8 @@ Merge a list of point clouds, or a list of meshes.
 
 :param tuple entities: list of clouds or list of meshes (not mixed)
 :param bool,optional deleteOriginalClouds: whether to delete the original clouds or not, default false
+                                           **WARNING** No automatic action on the Python side to disable the variables referencing deleted objects!
+                                           (same behavior as "deleteEntity" function).
 :param bool,optional createSFcloudIndex: create a scalar field with the original cloud indexes, default false
 :param bool,optional createSubMeshes: create submeshes with original meshes, default false
 

@@ -40,12 +40,14 @@ if not os.path.isfile(os.path.join(dataExtDir,"pumpARowColumnIndexNoInvalidPoint
     with open(os.path.join(dataExtDir,"pumpARowColumnIndexNoInvalidPoints.e57"), 'wb') as f:
         f.write(r.content)
 
+#---extractCC01-begin
 cloud = cc.loadPointCloud(os.path.join(dataExtDir, "pumpARowColumnIndexNoInvalidPoints.e57"))
 res = cc.ExtractConnectedComponents(clouds=[cloud], randomColors=True)
 res2 = res[1] + res[2] # connected components plus regrouped residual components
 cloud2 = cc.MergeEntities(res2, createSFcloudIndex=True)
 cloud3 = cc.MergeEntities(res2, deleteOriginalClouds=True)
 res = None
+#---extractCC01-end
 
 
 tr1 = cc.ccGLMatrix()
@@ -60,7 +62,9 @@ tr3 = cc.ccGLMatrix()
 tr3.initFromParameters(0., (0., 0., 0.), (3.0, 0.0, 4.0))
 cylinder = cc.ccCylinder(0.5, 3.0, tr3, 'aCylinder', 48)
 
+#---merge02-begin
 mesh1 = cc.MergeEntities([box, cone, cylinder])
 mesh2 = cc.MergeEntities([box, cone, cylinder], createSubMeshes=True)
+#---merge02-end
 
 cc.SaveEntities([cloud, cloud2, cloud3, box, cone, cylinder, mesh1, mesh2], os.path.join(dataDir, "merge.bin"))
