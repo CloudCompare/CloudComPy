@@ -102,7 +102,9 @@ void export_ScalarField(py::module &m0)
     py::class_<ccScalarField, CCCoreLib::ScalarField , std::unique_ptr<ccScalarField, py::nodelete>>(m0, "ccScalarField", ccScalarFieldPy_ccScalarField_doc)
         .def(py::init<const char*>(), py::arg("name")=nullptr)
         .def("isSerializable", &ccScalarField::isSerializable)
+        .def("getGlobalShift", &ccScalarField::getGlobalShift, ccScalarFieldPy_getGlobalShift_doc)
         ;
+
     //TODO add serialization functions
 }
 

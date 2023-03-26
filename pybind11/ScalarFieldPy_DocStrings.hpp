@@ -168,7 +168,16 @@ the numpy array object and its data will be handled by the Python Garbage Collec
 )";
 
 const char* ccScalarFieldPy_ccScalarField_doc= R"(
-)";
+A scalar field associated to display-related parameters.
+Extends the CCCoreLib::ScalarField object.)";
 
+const char* ccScalarFieldPy_getGlobalShift_doc= R"(
+Returns Global Shift if any.
+Used for instance for LAS GPS time shift
+
+:return: global shift
+:rtype: float
+
+)";
 
 #endif /* SCALARFIELDPY_DOCSTRINGS_HPP_ */

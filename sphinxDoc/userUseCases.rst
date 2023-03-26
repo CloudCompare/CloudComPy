@@ -1159,9 +1159,41 @@ to define the size of the gap between the components.
    :literal:
    :code: python
 
-The function returns a tuple (number of clouds processed, list of components)
+The function returns a tuple (number of clouds processed, list of components, list of residual components).
+The "residual component" corresponds to all the remaining nodes of an input cloud: see for instance:
 
-The above code snippets are from :download:`test037.py <../tests/test037.py>`.
+.. include:: ../tests/test048.py
+   :start-after: #---extractCC01-begin
+   :end-before:  #---extractCC01-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test037.py <../tests/test037.py>` and  :download:`test048.py <../tests/test048.py>`.
+
+Merge several entities (clouds or meshes)
+-----------------------------------------
+
+The :py:func:`~.cloudComPy.MergeEntities` function allows to merge several clouds, or several meshes.
+
+Merging a list of clouds:
+
+.. include:: ../tests/test048.py
+   :start-after: #---extractCC01-begin
+   :end-before:  #---extractCC01-end
+   :literal:
+   :code: python
+
+Merging a list of meshes:
+
+
+.. include:: ../tests/test048.py
+   :start-after: #---merge02-begin
+   :end-before:  #---merge02-end
+   :literal:
+   :code: python
+
+
+The above code snippets are from :download:`test048.py <../tests/test048.py>`.
 
 Avoid memory leaks in an iterative process
 ------------------------------------------

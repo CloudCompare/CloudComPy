@@ -160,4 +160,5 @@ TODO List
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 - TODO: Fix documentation on building on Windows
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
-
+- TODO: (issue #94) retrieve time shift applied automatically on scalar field 
+- TODO: (issue #95) merge components (from ExtractConnectedComponents), retrieve small components not listed

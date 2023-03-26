@@ -38,10 +38,14 @@
 #include <AutoSegmentationTools.h>
 #include <ParallelSort.h>
 #include <ccPointCloudInterpolator.h>
+#include <ReferenceCloud.h>
+
+//#include <ccMainAppInterface.h>
 
 #include <QString>
 #include <QSharedPointer>
 #include <vector>
+#include <tuple>
 
 #include "optdefines.h"
 
@@ -309,17 +313,19 @@ struct ComponentIndexAndSize
     }
 };
 
-
-std::vector<ccPointCloud*> createComponentsClouds_(   ccGenericPointCloud* cloud,
-                                                      CCCoreLib::ReferenceCloudContainer& components,
-                                                      unsigned minPointsPerComponent,
-                                                      bool randomColors,
-                                                      bool sortBysize=true)
+//! from MainWindow::createComponentsClouds
+std::tuple <std::vector<ccPointCloud*>, std::vector<ccPointCloud*>>
+createComponentsClouds_(ccGenericPointCloud* cloud,
+                        CCCoreLib::ReferenceCloudContainer& components,
+                        unsigned minPointsPerComponent,
+                        bool randomColors,
+                        bool sortBysize=true)
 {
     CCTRACE("createComponentsClouds_ " << randomColors);
     std::vector<ccPointCloud*> resultClouds;
+    std::vector<ccPointCloud*> residualClouds;
     if (!cloud || components.empty())
-        return resultClouds;
+        return {resultClouds, residualClouds};
 
     std::vector<ComponentIndexAndSize> sortedIndexes;
     std::vector<ComponentIndexAndSize>* _sortedIndexes = nullptr;
@@ -352,6 +358,8 @@ std::vector<ccPointCloud*> createComponentsClouds_(   ccGenericPointCloud* cloud
     //we create "real" point clouds for all input components
     {
         ccPointCloud* pc = cloud->isA(CC_TYPES::POINT_CLOUD) ? static_cast<ccPointCloud*>(cloud) : nullptr;
+        CCCoreLib::ReferenceCloud* refCloud = new CCCoreLib::ReferenceCloud(cloud);
+        ccPointCloud* residualCloud = nullptr;
 
         //for each component
         int nbComp =0;
@@ -389,11 +397,35 @@ std::vector<ccPointCloud*> createComponentsClouds_(   ccGenericPointCloud* cloud
                     CCTRACE("[CreateComponentsClouds] Failed to create component " << nbComp << "(not enough memory)");
                 }
             }
+            else
+            {
+                // regroup all small chunks in one entity
+                unsigned numberOfPoints = compIndexes->size();
+                for (unsigned i = 0; i < numberOfPoints; ++i)
+                {
+                    //add the point to the current component
+                    if (!refCloud->addPointIndex(i))
+                    {
+                        //not enough memory
+                        CCTRACE("not enough memory!");
+                        delete refCloud;
+                        refCloud = nullptr;
+                        break;
+                    }
+                }
+            }
 
             delete compIndexes;
             compIndexes = nullptr;
         }
 
+        if (refCloud)
+        {
+            residualCloud = (pc ? pc->partialClone(refCloud) : ccPointCloud::From(refCloud));
+            residualClouds.push_back(residualCloud);
+            delete refCloud;
+            refCloud = nullptr;
+        }
         components.clear();
 
         if (nbComp == 0)
@@ -405,7 +437,7 @@ std::vector<ccPointCloud*> createComponentsClouds_(   ccGenericPointCloud* cloud
             CCTRACE("[CreateComponentsClouds] " << nbComp << " component(s) were created from cloud " << cloud->getName().toStdString());
         }
     }
-    return resultClouds;
+    return {resultClouds, residualClouds};
 }
 
 py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
@@ -419,7 +451,8 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
     int nbCloudDone = 0;
 
     std::vector<ccHObject*> resultComponents;
-    py::tuple res = py::make_tuple(nbCloudDone, resultComponents);
+    std::vector<ccHObject*> residualComponents;
+    py::tuple res = py::make_tuple(nbCloudDone, resultComponents, residualComponents);
 
     std::vector<ccGenericPointCloud*> clouds;
     {
@@ -440,6 +473,7 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
     {
         if (cloud && cloud->isA(CC_TYPES::POINT_CLOUD))
         {
+            CCTRACE("cloud");
             ccPointCloud* pc = static_cast<ccPointCloud*>(cloud);
 
             ccOctree::Shared theOctree = cloud->getOctree();
@@ -467,6 +501,7 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
             pc->setCurrentScalarField(sfIdx);
 
             //we try to label all CCs
+            CCTRACE("---");
             CCCoreLib::ReferenceCloudContainer components;
             int componentCount = CCCoreLib::AutoSegmentationTools::labelConnectedComponents(cloud,
                                                                                         static_cast<unsigned char>(octreeLevel),
@@ -474,9 +509,17 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
                                                                                         nullptr,
                                                                                         theOctree.data());
 
+            CCTRACE("---");
             if (componentCount >= 0)
             {
                 //if successful, we extract each CC (stored in "components")
+
+                pc->getCurrentInScalarField()->computeMinAndMax();
+                if (!CCCoreLib::AutoSegmentationTools::extractConnectedComponents(cloud, components))
+                {
+                    CCTRACE("[ExtractConnectedComponents] Something went wrong while extracting CCs from cloud " << cloud->getName().toStdString());
+                }
+                CCTRACE("---");
 
                 //safety test
                 {
@@ -488,6 +531,7 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
                         }
                     }
                 }
+                CCTRACE("total components: " << componentCount << " with " << realComponentCount << " components of size > " << minComponentSize);
 
                 if (realComponentCount > maxNumberComponents)
                 {
@@ -497,12 +541,6 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
                     pc->deleteScalarField(sfIdx);
                     res = py::make_tuple(nbCloudDone, resultComponents);
                     return res;
-                }
-
-                pc->getCurrentInScalarField()->computeMinAndMax();
-                if (!CCCoreLib::AutoSegmentationTools::extractConnectedComponents(cloud, components))
-                {
-                    CCTRACE("[ExtractConnectedComponents] Something went wrong while extracting CCs from cloud " << cloud->getName().toStdString());
                 }
             }
             else
@@ -517,15 +555,19 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
             //we create "real" point clouds for all CCs
             if (!components.empty())
             {
-                std::vector<ccPointCloud*> resultClouds = createComponentsClouds_(cloud, components, minComponentSize, randColors, true);
+                std::vector<ccPointCloud*> resultClouds;
+                std::vector<ccPointCloud*> residualClouds;
+                std::tie(resultClouds, residualClouds) = createComponentsClouds_(cloud, components, minComponentSize, randColors, true);
                 for (ccPointCloud* cloud : resultClouds)
                     resultComponents.push_back(cloud);
+                for (ccPointCloud* cloud : residualClouds)
+                    residualComponents.push_back(cloud);
             }
             nbCloudDone++;
-
+            CCTRACE("nbCloudDone: " << nbCloudDone);
         }
     }
-    res = py::make_tuple(nbCloudDone, resultComponents);
+    res = py::make_tuple(nbCloudDone, resultComponents, residualComponents);
     return res;
 }
 
@@ -549,6 +591,247 @@ bool InterpolateScalarFieldsFrom_py(ccPointCloud* destCloud,
 {
     CCTRACE("InterpolateScalarFieldsFrom_py");
     return ccPointCloudInterpolator::InterpolateScalarFieldsFrom(destCloud, srcCloud, sfIndexes, params, nullptr, octreeLevel);
+}
+
+// from MainWindow::AddToRemoveList helper for MergePy
+void AddToRemoveListPy(ccHObject* toRemove, ccHObject::Container& toBeRemovedList)
+{
+    // is a parent or sibling already in the "toBeRemoved" list?
+    size_t count = toBeRemovedList.size();
+    for (size_t j = 0; j < count;)
+    {
+        if (toBeRemovedList[j]->isAncestorOf(toRemove))
+        {
+            // nothing to do, we already have an ancestor
+            return;
+        }
+        else if (toRemove->isAncestorOf(toBeRemovedList[j]))
+        {
+            // we don't need to keep the children
+            toBeRemovedList[j] = toBeRemovedList.back();
+            toBeRemovedList.pop_back();
+            count--;
+        }
+        else
+        {
+            // forward
+            ++j;
+        }
+    }
+
+    toBeRemovedList.push_back(toRemove);
+}
+
+//! from MainWindow::doActionMerge
+ccHObject* MergeEntitiesPy(std::vector<ccHObject*> entities,
+                           bool deleteOriginalClouds=false,
+                           bool createSFcloudIndex=false,
+                           bool createSubMeshes=false)
+{
+    CCTRACE("MergeEntitiesPy");
+    //let's look for clouds or meshes (warning: we don't mix them)
+    std::vector<ccPointCloud*> clouds;
+    std::vector<ccMesh*> meshes;
+
+    try
+    {
+        for ( ccHObject *entity : entities )
+        {
+            if (!entity)
+                continue;
+
+            if (entity->isA(CC_TYPES::POINT_CLOUD))
+            {
+                ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(entity);
+                clouds.push_back(cloud);
+
+                // check whether this cloud is an ancestor of the first cloud in the selection
+                if (clouds.size() > 1)
+                {
+                    if (clouds.back()->isAncestorOf(clouds.front()))
+                    {
+                        // this way we are sure that the first cloud is not below any other cloud
+                        std::swap(clouds.front(), clouds.back());
+                    }
+                }
+            }
+            else if (entity->isKindOf(CC_TYPES::MESH))
+            {
+                ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
+                //this is a purely theoretical test for now!
+                if (mesh && mesh->getAssociatedCloud() && mesh->getAssociatedCloud()->isA(CC_TYPES::POINT_CLOUD))
+                {
+                    meshes.push_back(mesh);
+                }
+                else
+                {
+                    CCTRACE("Only meshes with standard vertices are handled for now! Can't merge entity " << entity->getName().toStdString());
+                }
+            }
+            else
+            {
+                CCTRACE("Entity " << entity->getName().toStdString() << " is neither a cloud nor a mesh, can't merge it!");
+            }
+        }
+    }
+    catch (const std::bad_alloc&)
+    {
+        CCTRACE("Not enough memory!");
+        return nullptr;
+    }
+
+    if (clouds.empty() && meshes.empty())
+    {
+        CCTRACE("Select only clouds or meshes!");
+        return nullptr;
+    }
+    if (!clouds.empty() && !meshes.empty())
+    {
+        CCTRACE("Can't mix point clouds and meshes!");
+    }
+
+    //merge clouds?
+    if (!clouds.empty())
+    {
+        CCTRACE("clouds");
+
+        //we will remove the useless clouds/meshes later
+        ccHObject::Container toBeRemoved;
+
+        ccPointCloud* firstCloud = nullptr;
+
+        //whether to generate the 'original cloud index' scalar field or not
+        CCCoreLib::ScalarField* ocIndexSF = nullptr;
+        size_t cloudIndex = 0;
+        int sfIdx = -1;
+
+        for (size_t i = 0; i < clouds.size(); ++i)
+        {
+            CCTRACE("cloud: " << i);
+            ccPointCloud* pc = clouds[i];
+            if (!firstCloud)
+            {
+                if (deleteOriginalClouds)
+                {
+                    firstCloud = pc;
+                }
+                else
+                {
+                    firstCloud = pc->cloneThis();
+                }
+
+                if (createSFcloudIndex)
+                {
+                    sfIdx = firstCloud->getScalarFieldIndexByName(CC_ORIGINAL_CLOUD_INDEX_SF_NAME);
+                    if (sfIdx < 0)
+                    {
+                        sfIdx = firstCloud->addScalarField(CC_ORIGINAL_CLOUD_INDEX_SF_NAME);
+                    }
+                    if (sfIdx < 0)
+                    {
+                        CCTRACE("Couldn't allocate a new scalar field for storing the original cloud index! Try to free some memory ...");
+                        return nullptr;
+                    }
+                    else
+                    {
+                        ocIndexSF = firstCloud->getScalarField(sfIdx);
+                        ocIndexSF->fill(0);
+                        firstCloud->setCurrentDisplayedScalarField(sfIdx);
+                        CCTRACE("NumberOfScalarFields: " << firstCloud->getNumberOfScalarFields());
+                        CCTRACE("SF name: " << ocIndexSF->getName());
+                    }
+                }
+            }
+            else
+            {
+                unsigned countBefore = firstCloud->size();
+                unsigned countAdded = pc->size();
+                if (deleteOriginalClouds)
+                    *firstCloud += pc;
+                else
+                    *firstCloud += pc->cloneThis();
+                CCTRACE("  new size: " << firstCloud->size());
+                //success?
+                if (firstCloud->size() == countBefore + countAdded)
+                {
+                    ccHObject* toRemove = nullptr;
+                    //if the entity to remove is inside a group with a unique child, we can remove the group as well
+                    ccHObject* parent = pc->getParent();
+                    if (parent && parent->isA(CC_TYPES::HIERARCHY_OBJECT) && parent->getChildrenNumber() == 1 ) //&& parent != firstCloudContext.parent)
+                        toRemove = parent;
+                    else
+                        toRemove = pc;
+
+                    if (deleteOriginalClouds)
+                        AddToRemoveListPy(toRemove, toBeRemoved);
+
+                    if (ocIndexSF)
+                    {
+                        CCTRACE("  ocIndexSF")
+                        ocIndexSF->resizeSafe(firstCloud->size());
+                        ScalarType index = static_cast<ScalarType>(++cloudIndex);
+                        for (unsigned i = 0; i < countAdded; ++i)
+                        {
+                            ocIndexSF->setValue(countBefore + i, index);
+                        }
+                        CCTRACE("  ocIndexSF")
+                    }
+                }
+                else
+                {
+                    CCTRACE("Fusion failed! (not enough memory?)");
+                    break;
+                }
+                pc = nullptr;
+            }
+        }
+
+        if (ocIndexSF)
+        {
+            CCTRACE("SF computeMinAndMax SF: " << sfIdx);
+            CCTRACE("NumberOfScalarFields: " << firstCloud->getNumberOfScalarFields());
+            ocIndexSF->computeMinAndMax();
+            firstCloud->setCurrentDisplayedScalarField(sfIdx);
+            firstCloud->showSF(true);
+        }
+
+        //something to remove?
+        if (deleteOriginalClouds)
+        {
+        for (ccHObject* toRemove : toBeRemoved)
+            {
+                if (toRemove->getParent())
+                    toRemove->getParent()->removeChild(toRemove);
+                else
+                    delete toRemove;
+            }
+            toBeRemoved.clear();
+        }
+        return firstCloud;
+    }
+    //merge meshes?
+    else if (!meshes.empty())
+    {
+        //meshes are merged
+        ccPointCloud* baseVertices = new ccPointCloud("vertices");
+        ccMesh* baseMesh = new ccMesh(baseVertices);
+        baseMesh->setName("Merged mesh");
+        baseMesh->addChild(baseVertices);
+        baseVertices->setEnabled(false);
+
+        for (ccMesh *mesh : meshes)
+        {
+            if (!baseMesh->merge(mesh, createSubMeshes))
+            {
+                CCTRACE("Fusion failed! (not enough memory?)");
+                break;
+            }
+        }
+        baseMesh->setDisplay_recursive(meshes.front()->getDisplay());
+        baseMesh->setVisible(true);
+        return baseMesh;
+    }
+    return nullptr;
 }
 
 PYBIND11_MODULE(_cloudComPy, m0)
@@ -847,6 +1130,13 @@ PYBIND11_MODULE(_cloudComPy, m0)
             py::arg("projectOnBestFitPlane")=false,
             py::arg("generateRandomColors")=false,
             cloudComPy_ExtractSlicesAndContours_doc);
+
+    m0.def("MergeEntities", &MergeEntitiesPy,
+           py::arg("entities"),
+           py::arg("deleteOriginalClouds")=false,
+           py::arg("createSFcloudIndex")=false,
+           py::arg("createSubMeshes")=false,
+           cloudComPy_MergeEntities_doc);
 
     m0.def("RasterizeToCloud", &RasterizeToCloud,
            py::arg("cloud"),

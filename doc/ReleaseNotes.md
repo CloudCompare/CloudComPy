@@ -2,6 +2,14 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## March 25, 2023  CloudComPy release:
+
+ - update to CloudCompare master (March 25, 2023)
+ - (issue #95) merge clouds and meshes. (test048.py)
+   In ExtractConnectedComponents, collect the residual points (not in connected components) in a separate cloud
+ - (issue #94) retrieve time shift applied automatically on scalar field (test020.py)
+ - new cork version on Windows
+
 ## February 27, 2023 CloudComPy release:
 
  - update to CloudCompare master (tag v2.13.alpha.230227, February 27, 2023)

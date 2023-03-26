@@ -395,7 +395,24 @@ General information and statistics are available with:
    :end-before:  #---sfNumpy02-end
    :literal:
    :code: python
+
+The above code snippets are from :download:`test002.py <../tests/test002.py>`.
+
+Some scalar fields may be shifted to prevent a loss of accuracy.
+This is the case, for instance, for GPS time in some lidar files in las format.
  
+To get the global shift, use:
+
+ - :py:meth:`~.cloudComPy.ccScalarField.getGlobalShift`
+
+.. include:: ../tests/test020.py
+   :start-after: #---LASTimeShift002-begin
+   :end-before:  #---LASTimeShift002-end
+   :literal:
+   :code: python
+
+The above code snippets is from :download:`test020.py <../tests/test020.py>`.
+
 To change the scalar field name, set a value on a point, fill the scalar field with a uniform value, use:
 
  - :py:meth:`~.cloudComPy.ScalarField.setName`
@@ -408,7 +425,7 @@ To change the scalar field name, set a value on a point, fill the scalar field w
    :literal:
    :code: python
 
-The above code snippets are from :download:`test002.py <../tests/test002.py>`.
+The above code snippet is from :download:`test002.py <../tests/test002.py>`.
 
 Scalar fields can be built from normals or colors, and can be used to define colors:
 see :ref:`Cloud_Normals` and :ref:`Cloud_Colors`.
