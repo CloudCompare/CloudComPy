@@ -85,6 +85,24 @@ the gap is roughly d/2**n.
 :rtype: tuple
 )";
 
+const char* cloudComPy_LabelConnectedComponents_doc= R"(
+Label connected components in a set of clouds.
+
+This tool segments the selected cloud(s) in smaller parts separated by a minimum distance. 
+Each part is a connected component (i.e. a set of 'connected' points). 
+CloudCompare uses a 3D grid to extract the connected components.
+This grid is deduced from the octree structure. 
+By selecting on octree level you define how small is the minimum gap between two components.
+If n is the octree level and d the dimension of the clouds (Bounding box side),
+the gap is roughly d/2**n.
+
+:param list[ccPointCloud] clouds: the set of clouds
+:param int,optional octreeLevel: the octree level used to define the connection between nodes, default 8.
+
+:return: number of found connected components
+:rtype: int
+)";
+
 const char* cloudComPy_ExtractSlicesAndContours_doc= R"(
 Extract slices, envelopes and contours from a set of clouds and meshes (Cross section).
 

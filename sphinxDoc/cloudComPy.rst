@@ -15,6 +15,7 @@ cloudComPy module, functions
 .. autofunction:: ComputeVolume25D
 .. autofunction:: deleteEntity
 .. autofunction:: ExtractConnectedComponents
+.. autofunction:: LabelConnectedComponents
 .. autofunction:: ExtractSlicesAndContours
 .. autofunction:: filterBySFValue
 .. autofunction:: GetPointCloudRadius

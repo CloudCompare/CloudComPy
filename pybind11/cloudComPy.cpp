@@ -571,6 +571,71 @@ py::tuple ExtractConnectedComponents_py(std::vector<ccHObject*> entities,
     return res;
 }
 
+int LabelConnectedComponents_py(std::vector<ccHObject*> entities,
+                                        int octreeLevel=8)
+{
+    CCTRACE("LabelConnectedComponents_py");
+    int totalComponentCount = 0;
+    int nbCloudDone = 0;
+
+    std::vector<ccGenericPointCloud*> clouds;
+    {
+        for ( ccHObject *entity : entities )
+        {
+            if (entity->isKindOf(CC_TYPES::POINT_CLOUD))
+                clouds.push_back(ccHObjectCaster::ToGenericPointCloud(entity));
+        }
+    }
+
+    size_t count = clouds.size();
+    if (count == 0)
+        return 0;
+
+    for ( ccGenericPointCloud *cloud : clouds )
+    {
+        if (cloud && cloud->isA(CC_TYPES::POINT_CLOUD))
+        {
+            CCTRACE("cloud");
+            ccPointCloud* pc = static_cast<ccPointCloud*>(cloud);
+
+            ccOctree::Shared theOctree = cloud->getOctree();
+            if (!theOctree)
+            {
+                theOctree = cloud->computeOctree(nullptr);
+                if (!theOctree)
+                {
+                    CCTRACE("Couldn't compute octree for cloud " <<cloud->getName().toStdString());
+                    break;
+                }
+            }
+
+            //we create/activate CCs label scalar field
+            int sfIdx = pc->getScalarFieldIndexByName(CC_CONNECTED_COMPONENTS_DEFAULT_LABEL_NAME);
+            if (sfIdx < 0)
+            {
+                sfIdx = pc->addScalarField(CC_CONNECTED_COMPONENTS_DEFAULT_LABEL_NAME);
+            }
+            if (sfIdx < 0)
+            {
+                CCTRACE("Couldn't allocate a new scalar field for computing CC labels! Try to free some memory ...");
+                break;
+            }
+            pc->setCurrentScalarField(sfIdx);
+
+            //we try to label all CCs
+            CCTRACE("---");
+            CCCoreLib::ReferenceCloudContainer components;
+            int componentCount = CCCoreLib::AutoSegmentationTools::labelConnectedComponents(cloud,
+                                                                                        static_cast<unsigned char>(octreeLevel),
+                                                                                        false,
+                                                                                        nullptr,
+                                                                                        theOctree.data());
+            totalComponentCount += componentCount;
+        }
+    }
+    return totalComponentCount;
+}
+
 //struct interpolatorParameters: public ccPointCloudInterpolator::Parameters
 //{
 //}
@@ -1109,6 +1174,11 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::arg("maxNumberComponents")=100,
            py::arg("randomColors")=false,
            cloudComPy_ExtractConnectedComponents_doc);
+
+    m0.def("LabelConnectedComponents", &LabelConnectedComponents_py,
+           py::arg("clouds"),
+           py::arg("octreeLevel")=8,
+           cloudComPy_LabelConnectedComponents_doc);
 
     m0.def("ExtractSlicesAndContours", &ExtractSlicesAndContours_py,
             py::arg("entities"),
