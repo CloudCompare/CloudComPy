@@ -27,7 +27,7 @@ conda update -y -n base -c defaults conda
 If your environment CloudComPy310 does not exist:
 ```
 conda create --name CloudComPy310 python=3.10
-   # --- erase previous env if existing
+   # --- erase previous env with the same name if existing
 ```
 Add or update the packages:
 ```
