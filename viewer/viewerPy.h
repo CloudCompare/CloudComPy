@@ -65,7 +65,7 @@ public:
 
     void doActionRenderToFile();
 
-protected:
+//protected:
 
 	//! Shows display parameters dialog
 	void showDisplayParameters();

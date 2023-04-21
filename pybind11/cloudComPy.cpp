@@ -659,10 +659,18 @@ void renderPy(ccPointCloud* cloud)
 	if (!app)
 	{
 		CCTRACE("cannot find viewerPyApplication!");
+		return;
 	}
 	viewerPy* w = app->getViewer();
+	w->resize(1500+46, 1000+114);
+
 	w->addToDB(cloud);
 	w->show();
+
+	w->selectEntity(cloud);
+	w->toggleScalarShown(true);
+	cloud->setSelected(false);
+
 	w->doActionRenderToFile();
 	app->exec();
 }
