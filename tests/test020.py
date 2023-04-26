@@ -135,9 +135,9 @@ if cloud14SFlas.size() != 10000:
     raise RuntimeError
 dic = cloud14SFlas.getScalarFieldDic()
 sf = cloud14SFlas.getScalarField(dic['Coord. Z'])
-sfmin = sf.getMin()             # -0.6520000
+sfmin = sf.getMin()             # -0.6516870
 sfmax = sf.getMax()             #  3.0
-if not math.isclose(sfmin, -0.6520000, rel_tol=1e-06):
+if not math.isclose(sfmin, -0.6516870, rel_tol=1e-06):
     raise RuntimeError
 if not math.isclose(sfmax, 3.0, rel_tol=1e-06):
     raise RuntimeError
@@ -147,9 +147,9 @@ if cloud14SFlaz.size() != 10000:
     raise RuntimeError
 dic = cloud14SFlaz.getScalarFieldDic()
 sf = cloud14SFlaz.getScalarField(dic['Coord. Z'])
-sfmin = sf.getMin()             # -0.6520000
+sfmin = sf.getMin()             # -0.6516870
 sfmax = sf.getMax()             #  3.0
-if not math.isclose(sfmin, -0.6520000, rel_tol=1e-06):
+if not math.isclose(sfmin, -0.6516870, rel_tol=1e-06):
     raise RuntimeError
 if not math.isclose(sfmax, 3.0, rel_tol=1e-06):
     raise RuntimeError
