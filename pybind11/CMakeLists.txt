@@ -169,6 +169,34 @@ if(WIN32)
 	    install( FILES ${OCCT_DLL_FILES} DESTINATION CloudCompare )
     endif()
 
+    if( PLUGIN_STANDARD_QPCL )
+        set( PCL_LIBRARIES_DIR ${PCL_DIR}/../bin )
+        message( STATUS PCL_LIBRARIES_DIR ${PCL_LIBRARIES_DIR} )
+        set ( PCL_DLL_FILES
+            ${PCL_LIBRARIES_DIR}/pcl_common.dll
+            ${PCL_LIBRARIES_DIR}/pcl_features.dll
+            ${PCL_LIBRARIES_DIR}/pcl_filters.dll
+            ${PCL_LIBRARIES_DIR}/pcl_io.dll
+            ${PCL_LIBRARIES_DIR}/pcl_io_ply.dll
+            ${PCL_LIBRARIES_DIR}/pcl_kdtree.dll
+            ${PCL_LIBRARIES_DIR}/pcl_keypoints.dll
+            ${PCL_LIBRARIES_DIR}/pcl_ml.dll
+            ${PCL_LIBRARIES_DIR}/pcl_octree.dll
+            ${PCL_LIBRARIES_DIR}/pcl_outofcore.dll
+            ${PCL_LIBRARIES_DIR}/pcl_people.dll
+            ${PCL_LIBRARIES_DIR}/pcl_recognition.dll
+            ${PCL_LIBRARIES_DIR}/pcl_registration.dll
+            ${PCL_LIBRARIES_DIR}/pcl_sample_consensus.dll
+            ${PCL_LIBRARIES_DIR}/pcl_search.dll
+            ${PCL_LIBRARIES_DIR}/pcl_segmentation.dll
+            ${PCL_LIBRARIES_DIR}/pcl_stereo.dll
+            ${PCL_LIBRARIES_DIR}/pcl_surface.dll
+            ${PCL_LIBRARIES_DIR}/pcl_tracking.dll
+            ${PCL_LIBRARIES_DIR}/pcl_visualization.dll
+        )
+	    install( FILES ${PCL_DLL_FILES} DESTINATION CloudCompare )
+    endif()
+
   endif()
 endif()
 
