@@ -154,7 +154,7 @@ TODO List
 * DONE: (issue #94) retrieve time shift applied automatically on scalar field 
 * DONE: (issue #95) merge components (from ExtractConnectedComponents), retrieve small components not listed
 * DONE: merge label components development
-* DONE: (issue100) build with a fix on pcl library to export large clouds, pcd format. Add an optional test
+* DONE: (issue #100) build with a fix on pcl library to export large clouds, pcd format. Add an optional test
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -164,6 +164,9 @@ TODO List
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 - TODO: Fix documentation on building on Windows
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
-- TODO: (issue103) extract section feature
-- TODO: (issue104) CloudComPy for Mac
+- TODO: (issue #103) extract section feature
+- TODO: (issue #104) CloudComPy for Mac
+- TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display)
+- TODO: (issue #109) add missing features in Rasterize function (SF cell statistics, percentile)
+- TODO: (issue #111) resampleCloudSpatially modParams parameter should be optional
 
