@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env python3
 
 ##########################################################################
 #                                                                        #
@@ -21,21 +21,16 @@
 #                                                                        #
 ##########################################################################
 
-usage()
-{
-    echo "usage: $0 test<xxx>.py"
-}
+import os, sys
 
-if [ "$1" == "" ]; then
-    usage
-    exit 1
-fi
+os.environ["_CCTRACE_"] = "ON"  # only if you want C++ debug traces
 
-SCRIPT_PATH=$(readlink -f "${BASH_SOURCE[0]}")
-SCRIPT_DIR=$(dirname "${SCRIPT_PATH}")
-CLOUDCOMPY_ROOT=$(realpath "${SCRIPT_DIR}/../..")
-export PYTHONPATH=${CLOUDCOMPY_ROOT}/lib/cloudcompare:${PYTHONPATH}
-export PYTHONPATH=${CLOUDCOMPY_ROOT}/doc/PythonAPI_test:${PYTHONPATH}
-export LD_LIBRARY_PATH=${CLOUDCOMPY_ROOT}/lib/cloudcompare/plugins:${LD_LIBRARY_PATH}
-export LC_NUMERIC=C
-python3 $1
+from gendata import dataDir, dataExtDir
+import cloudComPy as cc
+
+if not os.path.isfile(os.path.join(dataExtDir, "testIssue100.e57")):
+    print("Test skipped")
+    sys.exit()
+    
+cloud = cc.loadPointCloud(os.path.join(dataExtDir, "testIssue100.e57"))
+cc.SavePointCloud(cloud, os.path.join(dataExtDir, "testIssue100.pcd"))

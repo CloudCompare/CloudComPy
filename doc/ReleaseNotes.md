@@ -2,7 +2,15 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
-## March 25, 2023  CloudComPy release:
+## May 11, 2023 CloudComPy release:
+
+ - update to CloudCompare master (April 26, 2023)
+ - LabelConnectedComponents function
+ - (issue #100) bug on saving large cloud with pcd format: bug in pcl library, add an optional test
+ - behavior of LAS IO filter write is modified, adaptation
+ - Various small fixes.
+
+## March 25, 2023 CloudComPy release:
 
  - update to CloudCompare master (March 25, 2023)
  - (issue #95) merge clouds and meshes. (test048.py)
