@@ -17,10 +17,14 @@
 //#                                                                        #
 //##########################################################################
 
+#include "viewerPy.h"
+#include "viewerPyApplication.h"
+
+//Qt
 #include <QMessageBox>
 
 //qCC_glWindow
-#include <ccGLWindow.h>
+#include <ccGLWindowInterface.h>
 
 //common dialogs
 #include <ccCameraParamEditDlg.h>
@@ -37,12 +41,14 @@
 #include "ccIOPluginInterface.h"
 #include "ccPluginManager.h"
 
-#include "viewerPy.h"
-#include "viewerPyApplication.h"
-
 //3D mouse handler
 #ifdef CC_3DXWARE_SUPPORT
 #include "Mouse3DInput.h"
+#endif
+
+//Gamepads
+#ifdef CC_GAMEPAD_SUPPORT
+#include "ccGamepadManager.h"
 #endif
 
 //Camera parameters dialog
@@ -53,6 +59,7 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 	, m_glWindow(nullptr)
 	, m_selectedObject(nullptr)
 	, m_3dMouseInput(nullptr)
+    , m_gamepadManager(nullptr)
 {
 	ui.setupUi(this);
 
@@ -71,10 +78,10 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 		const int margin = 10;
 		verticalLayout->setContentsMargins(margin, margin, margin, margin);
 
-		bool stereoMode = QSurfaceFormat::defaultFormat().stereo();
+        bool stereoMode = ccGLWindowInterface::TestStereoSupport();
 
 		QWidget* glWidget = nullptr;
-		CreateGLWindow(m_glWindow, glWidget, stereoMode);
+        ccGLWindowInterface::Create(m_glWindow, glWidget, stereoMode);
 		assert(m_glWindow && glWidget);
 
 		verticalLayout->addWidget(glWidget);
@@ -97,10 +104,15 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 	ui.actionEnable3DMouse->setEnabled(false);
 #endif
 
-	//Signals & slots connection
-	connect(m_glWindow,								&ccGLWindow::filesDropped,				this,	qOverload<QStringList>(&viewerPy::addToDB), Qt::QueuedConnection);
-	connect(m_glWindow,								&ccGLWindow::entitySelectionChanged,	this,	&viewerPy::selectEntity);
-	connect(m_glWindow,								&ccGLWindow::exclusiveFullScreenToggled,this,	&viewerPy::onExclusiveFullScreenToggled);
+#ifdef CC_GAMEPAD_SUPPORT
+    m_gamepadManager = new ccGamepadManager(this, this);
+    ui.menuOptions->insertMenu(ui.menu3DMouse->menuAction(), m_gamepadManager->menu());
+#endif
+
+    //Signals & slots connection
+    connect(m_glWindow->signalEmitter(),            &ccGLWindowSignalEmitter::filesDropped,             this,   qOverload<QStringList>(&viewerPy::addToDB), Qt::QueuedConnection);
+    connect(m_glWindow->signalEmitter(),            &ccGLWindowSignalEmitter::entitySelectionChanged,   this,   &viewerPy::selectEntity);
+    connect(m_glWindow->signalEmitter(),            &ccGLWindowSignalEmitter::exclusiveFullScreenToggled,this,  &viewerPy::onExclusiveFullScreenToggled);
 
 	//"Options" menu
 	connect(ui.actionDisplayParameters,				&QAction::triggered,					this,	&viewerPy::showDisplayParameters);
@@ -159,6 +171,11 @@ viewerPy::~viewerPy()
 {
 	release3DMouse();
 
+#ifdef CC_GAMEPAD_SUPPORT
+	delete m_gamepadManager;
+	m_gamepadManager = nullptr;
+#endif
+
 	if (s_cpeDlg)
 	{
 		delete s_cpeDlg;
@@ -172,9 +189,6 @@ viewerPy::~viewerPy()
 		//m_glWindow->redraw();
 		delete currentRoot;
 	}
-#ifdef CC_GL_WINDOW_USE_QWINDOW
-	m_glWindow->setParent(0);
-#endif
 }
 
 void viewerPy::loadPlugins()
@@ -396,11 +410,11 @@ void viewerPy::selectEntity(ccHObject* toSelect)
 bool viewerPy::checkForLoadedEntities()
 {
 	bool loadedEntities = true;
-	m_glWindow->displayNewMessage(QString(),ccGLWindow::SCREEN_CENTER_MESSAGE); //clear (any) message in the middle area
+	m_glWindow->displayNewMessage(QString(),ccGLWindowInterface::SCREEN_CENTER_MESSAGE); //clear (any) message in the middle area
 
 	if (!m_glWindow->getSceneDB())
 	{
-		m_glWindow->displayNewMessage("Drag & drop files on the 3D window to load them!",ccGLWindow::SCREEN_CENTER_MESSAGE,true,3600);
+		m_glWindow->displayNewMessage("Drag & drop files on the 3D window to load them!",ccGLWindowInterface::SCREEN_CENTER_MESSAGE,true,3600);
 		loadedEntities = false;
 	}
 
@@ -441,7 +455,7 @@ void viewerPy::updateGLFrameGradient()
 	ui.GLframe->setStyleSheet(styleSheet);
 }
 
-void viewerPy::addToDB(QStringList filenames)
+ccHObject* viewerPy::addToDB(QStringList filenames)
 {
 	ccHObject* currentRoot = m_glWindow->getSceneDB();
 	if (currentRoot)
@@ -462,6 +476,8 @@ void viewerPy::addToDB(QStringList filenames)
 
 	const ccOptions& options = ccOptions::Instance();
 	FileIOFilter::ResetSesionCounter();
+
+    ccHObject* firstLoadedEntity = nullptr;
 
 	for (int i = 0; i < filenames.size(); ++i)
 	{
@@ -514,6 +530,11 @@ void viewerPy::addToDB(QStringList filenames)
 					}
 				}
 			}
+
+            if (!firstLoadedEntity)
+            {
+                firstLoadedEntity = newGroup;
+            }
 		}
 		
 		if (result == CC_FERR_CANCELED_BY_USER)
@@ -524,9 +545,15 @@ void viewerPy::addToDB(QStringList filenames)
 	}
 
 	checkForLoadedEntities();
+
+    return firstLoadedEntity;
 }
 
-void viewerPy::addToDB(ccHObject* entity)
+void viewerPy::addToDB(	ccHObject* entity,
+						bool updateZoom/*=false*/,
+						bool autoExpandDBTree/*=true*/,
+						bool checkDimensions/*=false*/,
+						bool autoRedraw/*=true*/)
 {
 	assert(entity && m_glWindow);
 
@@ -554,6 +581,28 @@ void viewerPy::addToDB(ccHObject* entity)
 	}
 
 	checkForLoadedEntities();
+}
+
+void viewerPy::removeFromDB(ccHObject* obj, bool autoDelete/*=true*/)
+{
+    ccHObject* currentRoot = m_glWindow->getSceneDB();
+    if (currentRoot)
+    {
+        if (currentRoot == obj)
+        {
+            m_glWindow->setSceneDB(nullptr);
+            if (autoDelete)
+            {
+                delete currentRoot;
+            }
+        }
+        else
+        {
+            currentRoot->removeChild(obj);
+        }
+    }
+
+    m_glWindow->redraw();
 }
 
 void viewerPy::showDisplayParameters()
@@ -651,18 +700,18 @@ void viewerPy::reflectPivotVisibilityState()
 	if ( m_glWindow == nullptr )
 		return;
 	
-	ccGLWindow::PivotVisibility vis = m_glWindow->getPivotVisibility();
+	ccGLWindowInterface::PivotVisibility vis = m_glWindow->getPivotVisibility();
 
-	ui.actionSetPivotAlwaysOn->setChecked(vis == ccGLWindow::PIVOT_ALWAYS_SHOW);
-	ui.actionSetPivotRotationOnly->setChecked(vis == ccGLWindow::PIVOT_SHOW_ON_MOVE);
-	ui.actionSetPivotOff->setChecked(vis == ccGLWindow::PIVOT_HIDE);
+	ui.actionSetPivotAlwaysOn->setChecked(vis == ccGLWindowInterface::PIVOT_ALWAYS_SHOW);
+	ui.actionSetPivotRotationOnly->setChecked(vis == ccGLWindowInterface::PIVOT_SHOW_ON_MOVE);
+	ui.actionSetPivotOff->setChecked(vis == ccGLWindowInterface::PIVOT_HIDE);
 }
 
 void viewerPy::setPivotAlwaysOn()
 {
 	if (m_glWindow)
 	{
-		m_glWindow->setPivotVisibility(ccGLWindow::PIVOT_ALWAYS_SHOW);
+		m_glWindow->setPivotVisibility(ccGLWindowInterface::PIVOT_ALWAYS_SHOW);
 		m_glWindow->redraw();
 	}
 	reflectPivotVisibilityState();
@@ -672,7 +721,7 @@ void viewerPy::setPivotRotationOnly()
 {
 	if (m_glWindow)
 	{
-		m_glWindow->setPivotVisibility(ccGLWindow::PIVOT_SHOW_ON_MOVE);
+		m_glWindow->setPivotVisibility(ccGLWindowInterface::PIVOT_SHOW_ON_MOVE);
 		m_glWindow->redraw();
 	}
 	reflectPivotVisibilityState();
@@ -682,7 +731,7 @@ void viewerPy::setPivotOff()
 {
 	if (m_glWindow)
 	{
-		m_glWindow->setPivotVisibility(ccGLWindow::PIVOT_HIDE);
+		m_glWindow->setPivotVisibility(ccGLWindowInterface::PIVOT_HIDE);
 		m_glWindow->redraw();
 	}
 	reflectPivotVisibilityState();
@@ -732,8 +781,8 @@ void viewerPy::toggleStereoMode(bool state)
 	if (isActive)
 	{
 		m_glWindow->disableStereoMode();
-		if (	m_glWindow->getStereoParams().glassType == ccGLWindow::StereoParams::NVIDIA_VISION
-			||	m_glWindow->getStereoParams().glassType == ccGLWindow::StereoParams::GENERIC_STEREO_DISPLAY)
+		if (	m_glWindow->getStereoParams().glassType == ccGLWindowInterface::StereoParams::NVIDIA_VISION
+			||	m_glWindow->getStereoParams().glassType == ccGLWindowInterface::StereoParams::GENERIC_STEREO_DISPLAY)
 		{
 			//disable full screen
 			ui.actionFullScreen->setChecked(false);
@@ -753,18 +802,16 @@ void viewerPy::toggleStereoMode(bool state)
 			return;
 		}
 
-		ccGLWindow::StereoParams params = smDlg.getParameters();
-#ifndef CC_GL_WINDOW_USE_QWINDOW
-		if (!params.isAnaglyph())
-		{
-			ccLog::Error("This version doesn't handle stereo glasses and headsets.\nUse the 'Stereo' version instead.");
-			//activation of the stereo mode failed: cancel selection
-			ui.actionEnableStereo->blockSignals(true);
-			ui.actionEnableStereo->setChecked(false);
-			ui.actionEnableStereo->blockSignals(false);
-			return;
-		}
-#endif
+        ccGLWindowInterface::StereoParams params = smDlg.getParameters();
+        if (!ccGLWindowInterface::StereoSupported() && !params.isAnaglyph())
+        {
+            ccLog::Error(tr("It seems your graphic card doesn't support Quad Buffered Stereo rendering"));
+            //activation of the stereo mode failed: cancel selection
+            ui.actionEnableStereo->blockSignals(true);
+            ui.actionEnableStereo->setChecked(false);
+            ui.actionEnableStereo->blockSignals(false);
+            return;
+        }
 
 		//force perspective state!
 		if (!m_glWindow->getViewportParameters().perspectiveView)
@@ -773,8 +820,8 @@ void viewerPy::toggleStereoMode(bool state)
 			reflectPerspectiveState();
 		}
 
-		if (	params.glassType == ccGLWindow::StereoParams::NVIDIA_VISION
-			||	params.glassType == ccGLWindow::StereoParams::GENERIC_STEREO_DISPLAY)
+		if (	params.glassType == ccGLWindowInterface::StereoParams::NVIDIA_VISION
+			||	params.glassType == ccGLWindowInterface::StereoParams::GENERIC_STEREO_DISPLAY)
 		{
 			//force full screen
 			ui.actionFullScreen->setChecked(true);
@@ -797,8 +844,8 @@ void viewerPy::toggleFullScreen(bool state)
 	if (m_glWindow)
 	{
 		if (	m_glWindow->stereoModeIsEnabled()
-			&&	(	m_glWindow->getStereoParams().glassType == ccGLWindow::StereoParams::NVIDIA_VISION
-				||	m_glWindow->getStereoParams().glassType == ccGLWindow::StereoParams::GENERIC_STEREO_DISPLAY)
+			&&	(	m_glWindow->getStereoParams().glassType == ccGLWindowInterface::StereoParams::NVIDIA_VISION
+				||	m_glWindow->getStereoParams().glassType == ccGLWindowInterface::StereoParams::GENERIC_STEREO_DISPLAY)
 			)
 		{
 			//auto disable stereo mode as NVidia Vision only works in full screen mode!
@@ -818,8 +865,8 @@ void viewerPy::onExclusiveFullScreenToggled(bool state)
 	if (	!state
 		&&	m_glWindow
 		&&	m_glWindow->stereoModeIsEnabled()
-		&&	(	m_glWindow->getStereoParams().glassType == ccGLWindow::StereoParams::NVIDIA_VISION
-			||	m_glWindow->getStereoParams().glassType == ccGLWindow::StereoParams::GENERIC_STEREO_DISPLAY)
+		&&	(	m_glWindow->getStereoParams().glassType == ccGLWindowInterface::StereoParams::NVIDIA_VISION
+			||	m_glWindow->getStereoParams().glassType == ccGLWindowInterface::StereoParams::GENERIC_STEREO_DISPLAY)
 		)
 	{
 		//auto disable stereo mode as NVidia Vision only works in full screen mode!
@@ -843,11 +890,11 @@ void viewerPy::toggleRotationAboutVertAxis()
 
 	if (isLocked)
 	{
-		m_glWindow->displayNewMessage(QString("[ROTATION LOCKED]"), ccGLWindow::UPPER_CENTER_MESSAGE, false, 24 * 3600, ccGLWindow::ROTAION_LOCK_MESSAGE);
+		m_glWindow->displayNewMessage(QString("[ROTATION LOCKED]"), ccGLWindowInterface::UPPER_CENTER_MESSAGE, false, 24 * 3600, ccGLWindowInterface::ROTAION_LOCK_MESSAGE);
 	}
 	else
 	{
-		m_glWindow->displayNewMessage(QString(), ccGLWindow::UPPER_CENTER_MESSAGE, false, 0, ccGLWindow::ROTAION_LOCK_MESSAGE);
+		m_glWindow->displayNewMessage(QString(), ccGLWindowInterface::UPPER_CENTER_MESSAGE, false, 0, ccGLWindowInterface::ROTAION_LOCK_MESSAGE);
 	}
 	m_glWindow->redraw();
 }
@@ -1299,10 +1346,106 @@ void viewerPy::on3DMouseMove(std::vector<float>& vec)
 void viewerPy::on3DMouseReleased()
 {
 	//active window?
-	if (m_glWindow && m_glWindow->getPivotVisibility() == ccGLWindow::PIVOT_SHOW_ON_MOVE)
+	if (m_glWindow && m_glWindow->getPivotVisibility() == ccGLWindowInterface::PIVOT_SHOW_ON_MOVE)
 	{
 		//we have to hide the pivot symbol!
 		m_glWindow->showPivotSymbol(false);
 		m_glWindow->redraw();
 	}
 }
+
+
+void viewerPy::dispToConsole(QString message, ConsoleMessageLevel level)
+{
+    printf("%s\n", qPrintable(message));
+}
+
+ccHObject* viewerPy::dbRootObject()
+{
+    return m_glWindow->getSceneDB();
+}
+
+void viewerPy::redrawAll(bool only2D/*=false*/)
+{
+    m_glWindow->redraw(only2D);
+}
+
+void viewerPy::refreshAll(bool only2D/*=false*/)
+{
+    m_glWindow->refresh(only2D);
+}
+
+void viewerPy::enableAll()
+{
+    m_glWindow->asWidget()->setEnabled(true);
+}
+
+void viewerPy::disableAll()
+{
+    m_glWindow->asWidget()->setEnabled(false);
+}
+
+void viewerPy::disableAllBut(ccGLWindowInterface* win)
+{
+    if (win != m_glWindow)
+    {
+        m_glWindow->asWidget()->setEnabled(false);
+    }
+}
+
+void viewerPy::setView(CC_VIEW_ORIENTATION view)
+{
+    m_glWindow->setView(view, true);
+}
+
+void viewerPy::toggleActiveWindowCustomLight()
+{
+    ui.actionToggleCustomLight->setChecked(!ui.actionToggleCustomLight->isChecked());
+}
+
+void viewerPy::toggleActiveWindowSunLight()
+{
+    ui.actionToggleSunLight->setChecked(!ui.actionToggleSunLight->isChecked());
+}
+
+void viewerPy::toggleActiveWindowCenteredPerspective()
+{
+    if (ui.actionSetCenteredPerspectiveView->isChecked())
+    {
+        ui.actionSetOrthoView->trigger();
+    }
+    else
+    {
+        ui.actionSetCenteredPerspectiveView->trigger();
+    }
+}
+
+void viewerPy::toggleActiveWindowViewerBasedPerspective()
+{
+    if (ui.actionSetViewerPerspectiveView->isChecked())
+    {
+        ui.actionSetOrthoView->trigger();
+    }
+    else
+    {
+        ui.actionSetViewerPerspectiveView->trigger();
+    }
+}
+
+void viewerPy::increasePointSize()
+{
+    m_glWindow->setPointSize(m_glWindow->getViewportParameters().defaultPointSize + 1);
+    m_glWindow->redraw();
+}
+
+void viewerPy::decreasePointSize()
+{
+    m_glWindow->setPointSize(m_glWindow->getViewportParameters().defaultPointSize - 1);
+    m_glWindow->redraw();
+}
+
+ccUniqueIDGenerator::Shared viewerPy::getUniqueIDGenerator()
+{
+    return ccObject::GetUniqueIDGenerator();
+}
+
