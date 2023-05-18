@@ -19,6 +19,7 @@
 
 #include "viewerPy.h"
 #include "viewerPyApplication.h"
+#include <pyccTrace.h>
 
 //Qt
 #include <QMessageBox>
@@ -61,6 +62,7 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 	, m_3dMouseInput(nullptr)
     , m_gamepadManager(nullptr)
 {
+    CCTRACE("viewerPy");
 	ui.setupUi(this);
 
 #ifdef Q_OS_LINUX
@@ -70,6 +72,7 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 #endif
 	
 	setWindowTitle(QString("viewerPy v%1").arg(ccApp->versionLongStr( false )));
+    CCTRACE("---");
 
 	//insert GL window in a vertical layout
 	{
@@ -86,6 +89,7 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 
 		verticalLayout->addWidget(glWidget);
 	}
+    CCTRACE("---");
 
 	updateGLFrameGradient();
 
@@ -97,6 +101,7 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 	reflectLightsState();
 	reflectPerspectiveState();
 	reflectPivotVisibilityState();
+    CCTRACE("---");
 
 #ifdef CC_3DXWARE_SUPPORT
 	enable3DMouse(true);
@@ -108,6 +113,7 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
     m_gamepadManager = new ccGamepadManager(this, this);
     ui.menuOptions->insertMenu(ui.menu3DMouse->menuAction(), m_gamepadManager->menu());
 #endif
+    CCTRACE("---");
 
     //Signals & slots connection
     connect(m_glWindow->signalEmitter(),            &ccGLWindowSignalEmitter::filesDropped,             this,   qOverload<QStringList>(&viewerPy::addToDB), Qt::QueuedConnection);
@@ -163,8 +169,10 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 	//"Help" menu
 	connect(ui.actionAbout,							&QAction::triggered,					this,	&viewerPy::doActionAbout);
 	connect(ui.actionHelpShortcuts,					&QAction::triggered,					this,	&viewerPy::doActionDisplayShortcuts);
+    CCTRACE("---");
 
 	loadPlugins();
+    CCTRACE("---");
 }
 
 viewerPy::~viewerPy()
@@ -629,6 +637,15 @@ void viewerPy::doActionEditCamera()
 void viewerPy::doActionRenderToFile()
 {
     m_glWindow->renderToFile("/tmp/capture.png");
+    CCTRACE("renderToFile done");
+    QCoreApplication *coreApp = QCoreApplication::instance();
+    viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+    if (app)
+    {
+        CCTRACE("call app->exit()");
+        connect(this, SIGNAL(exitRequested()), app, SLOT(closeAllWindows()), Qt::QueuedConnection);
+        exitRequested();
+    }
 }
 
 void viewerPy::reflectPerspectiveState()
@@ -1354,6 +1371,11 @@ void viewerPy::on3DMouseReleased()
 	}
 }
 
+const ccHObject::Container& viewerPy::getSelectedEntities() const
+{
+    static ccHObject::Container Empty;
+    return Empty;
+}
 
 void viewerPy::dispToConsole(QString message, ConsoleMessageLevel level)
 {

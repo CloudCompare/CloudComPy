@@ -203,7 +203,11 @@ protected: //members
     //! Gamepad handler
     ccGamepadManager* m_gamepadManager;
 
+signals:
+    void exitRequested();
+
 private:
 	//! Associated GUI
 	Ui::ccViewerClass ui;
+
 };

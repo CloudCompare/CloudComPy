@@ -239,12 +239,12 @@ pyCC* initCloudCompare()
     if (!s_pyCCInternals)
     {
         CCTRACE("initCloudCompare");
-    	viewerPyApplication::InitOpenGL();
+    	//viewerPyApplication::InitOpenGL();
         QDir appDir = initCC::moduleDir;
         appDir.cdUp();
         appDir.cdUp();
         QString appliDir = appDir.absolutePath() + "/bin";
-    	viewerPyApplication* app = new viewerPyApplication(pyCC_argc, pyCC_argv, false, appliDir);
+    	viewerPyApplication* app = new viewerPyApplication(pyCC_argc, pyCC_argv, true, appliDir);
     	//QApplication* app = new QApplication(pyCC_argc, pyCC_argv);
         s_pyCCInternals = new pyCC;
         s_pyCCInternals->m_silentMode = false;
@@ -264,8 +264,10 @@ pyCC* initCloudCompare()
         for (int i = 0; i < s_pyCCInternals->m_PluginPaths.size(); ++i)
             CCTRACE("pluginPath: " << s_pyCCInternals->m_PluginPaths.at(i).toStdString());
         ccPluginManager::Get().loadPlugins();
-    	viewerPy* w = new viewerPy();
-    	app->setViewer(w);
+        //CCTRACE("initialize viewerPy");
+    	//viewerPy* w = new viewerPy();
+    	//CCTRACE("viewerPy initialized");
+    	//app->setViewer(w);
     	//w->show();
     }
     return s_pyCCInternals;

@@ -23,6 +23,7 @@
 
 #include "viewerPy.h"
 #include "viewerPyApplication.h"
+#include <pyccTrace.h>
 
 
 viewerPyApplication::viewerPyApplication( int &argc, char **argv, bool isCommandLine, QString appPath )
@@ -30,15 +31,18 @@ viewerPyApplication::viewerPyApplication( int &argc, char **argv, bool isCommand
 {
 	mViewer=nullptr;
 	setApplicationName( "CloudCompareViewer" );
+	CCTRACE("viewerPyApplication");
 }
 
 void viewerPyApplication::setViewer(viewerPy *inViewer)
 {
+    CCTRACE("setViewer");
 	mViewer = inViewer;
 }
 
 bool viewerPyApplication::event(QEvent *inEvent)
 {
+    CCTRACE("---event");
 #ifdef Q_OS_MAC
 	switch ( inEvent->type() )
 	{
