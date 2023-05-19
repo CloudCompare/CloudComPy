@@ -639,19 +639,142 @@ int LabelConnectedComponents_py(std::vector<ccHObject*> entities,
     return totalComponentCount;
 }
 
-//struct interpolatorParameters: public ccPointCloudInterpolator::Parameters
-//{
-//}
+viewerPy* getOrInitializeViewer()
+{
+	CCTRACE("getOrInitializeViewer");
+	QCoreApplication *coreApp = QCoreApplication::instance();
+	viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+	if (!app)
+	{
+		CCTRACE("cannot find viewerPyApplication!");
+		return nullptr;
+	}
+	viewerPy* w = app->getViewer();
+	if (!w)
+	{
+	    CCTRACE("initialize viewerPy");
+        w = new viewerPy();
+        app->setViewer(w);
+        CCTRACE("viewerPy initialized");
+	}
+    CCTRACE("--- w " << w);
+	return w;
+}
 
-//{
-//    ccPointCloudInterpolator::Parameters::Method method = ccPointCloudInterpolator::Parameters::Method::NEAREST_NEIGHBOR;
-//    ccPointCloudInterpolator::Parameters::Algo algo = ccPointCloudInterpolator::Parameters::Algo::AVERAGE;
-//    unsigned knn = 0;
-//    float radius = 0;
-//    double sigma = 0;
-//};
+void setOrthoView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setOrthoView();
+}
 
-void renderPy(ccPointCloud* cloud)
+void setCenteredPerspectiveView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setCenteredPerspectiveView();
+}
+
+void setViewerPerspectiveView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setViewerPerspectiveView();
+}
+
+void setGlobalZoom()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setGlobalZoom();
+}
+
+void zoomOnSelectedEntity()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->zoomOnSelectedEntity();
+}
+
+void setFrontView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setFrontView();
+}
+
+void setBottomView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setBottomView();
+}
+
+void setTopView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setTopView();
+}
+
+void setBackView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setBackView();
+}
+
+void setLeftView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setLeftView();
+}
+
+void setRightView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setRightView();
+}
+
+void setIsoView1()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setIsoView1();
+}
+
+void setIsoView2()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setIsoView2();
+}
+
+void addToRenderScene(ccHObject* obj, bool showScalar=true)
+{
+	CCTRACE("addToRenderScene");
+	QCoreApplication *coreApp = QCoreApplication::instance();
+	viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+	if (!app)
+	{
+		CCTRACE("cannot find viewerPyApplication!");
+		return;
+	}
+	viewerPy* w = getOrInitializeViewer();
+
+	w->addToDB(obj);
+	w->show();
+
+	w->selectEntity(obj);
+	w->toggleScalarShown(showScalar);
+	obj->setSelected(false);
+}
+
+void removeFromRenderScene(ccHObject* obj)
+{
+	CCTRACE("removeFromRenderScene");
+	QCoreApplication *coreApp = QCoreApplication::instance();
+	viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+	if (!app)
+	{
+		CCTRACE("cannot find viewerPyApplication!");
+		return;
+	}
+	viewerPy* w = getOrInitializeViewer();
+	w->removeFromDB(obj);
+	w->show();
+}
+
+void renderPy(QString filename, int width=1500, int height=1000)
 {
 	CCTRACE("renderPy");
 	QCoreApplication *coreApp = QCoreApplication::instance();
@@ -661,27 +784,11 @@ void renderPy(ccPointCloud* cloud)
 		CCTRACE("cannot find viewerPyApplication!");
 		return;
 	}
-	CCTRACE("---");
-	viewerPy* w = app->getViewer();
-	if (!w)
-	{
-	    CCTRACE("initialize viewerPy");
-        w = new viewerPy();
-        CCTRACE("viewerPy initialized");
-        app->setViewer(w);
-        w = app->getViewer();
-	}
-    CCTRACE("--- w " << w);
-	w->resize(1500+46, 1000+114);
-
-	w->addToDB(cloud);
+	viewerPy* w = getOrInitializeViewer();
+	w->resize(width+46, height+88);
 	w->show();
 
-	w->selectEntity(cloud);
-	w->toggleScalarShown(true);
-	cloud->setSelected(false);
-
-	w->doActionRenderToFile();
+	w->doActionRenderToFile(filename);
 	app->exec();
 }
 
@@ -1320,6 +1427,26 @@ PYBIND11_MODULE(_cloudComPy, m0)
            cloudComPy_RasterizeGeoTiffOnly_doc,
            py::return_value_policy::reference);
 
-    m0.def("render", &renderPy);
+    m0.def("addToRenderScene", &addToRenderScene,
+    		py::arg("obj"), py::arg("showScalar")=true);
+
+    m0.def("removeFromRenderScene", &removeFromRenderScene);
+
+    m0.def("render", &renderPy,
+    		py::arg("filename"), py::arg("width")=1500, py::arg("height")=1000);
+
+    m0.def("setOrthoView", &setOrthoView);
+    m0.def("setCenteredPerspectiveView", &setCenteredPerspectiveView);
+    m0.def("setViewerPerspectiveView", &setViewerPerspectiveView);
+    m0.def("setGlobalZoom", &setGlobalZoom);
+    m0.def("zoomOnSelectedEntity", &zoomOnSelectedEntity);
+    m0.def("setFrontView", &setFrontView);
+    m0.def("setBottomView", &setBottomView);
+    m0.def("setTopView", &setTopView);
+    m0.def("setBackView", &setBackView);
+    m0.def("setLeftView", &setLeftView);
+    m0.def("setRightView", &setRightView);
+    m0.def("setIsoView1", &setIsoView1);
+    m0.def("setIsoView2", &setIsoView2);
 
 }

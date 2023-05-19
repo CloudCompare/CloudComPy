@@ -72,7 +72,6 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 #endif
 	
 	setWindowTitle(QString("viewerPy v%1").arg(ccApp->versionLongStr( false )));
-    CCTRACE("---");
 
 	//insert GL window in a vertical layout
 	{
@@ -89,7 +88,6 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 
 		verticalLayout->addWidget(glWidget);
 	}
-    CCTRACE("---");
 
 	updateGLFrameGradient();
 
@@ -101,7 +99,6 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 	reflectLightsState();
 	reflectPerspectiveState();
 	reflectPivotVisibilityState();
-    CCTRACE("---");
 
 #ifdef CC_3DXWARE_SUPPORT
 	enable3DMouse(true);
@@ -113,7 +110,6 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
     m_gamepadManager = new ccGamepadManager(this, this);
     ui.menuOptions->insertMenu(ui.menu3DMouse->menuAction(), m_gamepadManager->menu());
 #endif
-    CCTRACE("---");
 
     //Signals & slots connection
     connect(m_glWindow->signalEmitter(),            &ccGLWindowSignalEmitter::filesDropped,             this,   qOverload<QStringList>(&viewerPy::addToDB), Qt::QueuedConnection);
@@ -164,15 +160,12 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 
 	//"Shaders" menu
 	connect(ui.actionNoFilter,						&QAction::triggered,					this,	&viewerPy::doDisableGLFilter);
-    connect(ui.actionRenderToFile,                  &QAction::triggered,                    this,   &viewerPy::doActionRenderToFile);
 
 	//"Help" menu
 	connect(ui.actionAbout,							&QAction::triggered,					this,	&viewerPy::doActionAbout);
 	connect(ui.actionHelpShortcuts,					&QAction::triggered,					this,	&viewerPy::doActionDisplayShortcuts);
-    CCTRACE("---");
 
 	loadPlugins();
-    CCTRACE("---");
 }
 
 viewerPy::~viewerPy()
@@ -598,6 +591,7 @@ void viewerPy::removeFromDB(ccHObject* obj, bool autoDelete/*=true*/)
     {
         if (currentRoot == obj)
         {
+        	CCTRACE("removeFromDB: currentRoot == obj")
             m_glWindow->setSceneDB(nullptr);
             if (autoDelete)
             {
@@ -606,6 +600,7 @@ void viewerPy::removeFromDB(ccHObject* obj, bool autoDelete/*=true*/)
         }
         else
         {
+        	CCTRACE("removeFromDB: currentRoot != obj")
             currentRoot->removeChild(obj);
         }
     }
@@ -634,10 +629,10 @@ void viewerPy::doActionEditCamera()
 	s_cpeDlg->show();
 }
 
-void viewerPy::doActionRenderToFile()
+void viewerPy::doActionRenderToFile(QString filename)
 {
-    m_glWindow->renderToFile("/tmp/capture.png");
-    CCTRACE("renderToFile done");
+    m_glWindow->renderToFile(filename);
+    CCTRACE("renderToFile done: " << filename.toStdString());
     QCoreApplication *coreApp = QCoreApplication::instance();
     viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
     if (app)

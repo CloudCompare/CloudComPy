@@ -99,7 +99,7 @@ public: // ccMainInterface compliance
     void decreasePointSize() override;
     ccUniqueIDGenerator::Shared getUniqueIDGenerator() override;
 
-    void doActionRenderToFile();
+    void doActionRenderToFile(QString filename="capture.png");
 
 //protected:
 

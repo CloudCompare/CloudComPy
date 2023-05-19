@@ -264,11 +264,6 @@ pyCC* initCloudCompare()
         for (int i = 0; i < s_pyCCInternals->m_PluginPaths.size(); ++i)
             CCTRACE("pluginPath: " << s_pyCCInternals->m_PluginPaths.at(i).toStdString());
         ccPluginManager::Get().loadPlugins();
-        //CCTRACE("initialize viewerPy");
-    	//viewerPy* w = new viewerPy();
-    	//CCTRACE("viewerPy initialized");
-    	//app->setViewer(w);
-    	//w->show();
     }
     return s_pyCCInternals;
 }
