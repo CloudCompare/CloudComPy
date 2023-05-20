@@ -90,6 +90,8 @@ public: // ccMainInterface compliance
     void updateUI() override {}
     void freezeUI(bool state) override {}
     void setView(CC_VIEW_ORIENTATION view) override;
+    void setCustomView(const CCVector3d& forward, const CCVector3d& up);
+    void setCameraPos(const CCVector3d& P);
     void toggleActiveWindowCenteredPerspective() override;
     void toggleActiveWindowCustomLight() override;
     void toggleActiveWindowSunLight() override;

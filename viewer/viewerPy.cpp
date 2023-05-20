@@ -1415,6 +1415,16 @@ void viewerPy::setView(CC_VIEW_ORIENTATION view)
     m_glWindow->setView(view, true);
 }
 
+void viewerPy::setCustomView(const CCVector3d& forward, const CCVector3d& up)
+{
+	m_glWindow->setCustomView(forward, up);
+}
+
+void viewerPy::setCameraPos(const CCVector3d& P)
+{
+	m_glWindow->setCameraPos(P);
+}
+
 void viewerPy::toggleActiveWindowCustomLight()
 {
     ui.actionToggleCustomLight->setChecked(!ui.actionToggleCustomLight->isChecked());

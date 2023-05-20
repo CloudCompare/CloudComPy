@@ -739,6 +739,19 @@ void setIsoView2()
 	if (w) w->setIsoView2();
 }
 
+void setCustomView(const CCVector3d& forward, const CCVector3d& up)
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setCustomView(forward, up);
+}
+
+void setCameraPos(const CCVector3d& P)
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setCameraPos(P);
+
+}
+
 void addToRenderScene(ccHObject* obj, bool showScalar=true)
 {
 	CCTRACE("addToRenderScene");
@@ -1448,5 +1461,8 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("setRightView", &setRightView);
     m0.def("setIsoView1", &setIsoView1);
     m0.def("setIsoView2", &setIsoView2);
+    m0.def("setCustomView", &setCustomView);
+    m0.def("setCameraPos", &setCameraPos);
+
 
 }
