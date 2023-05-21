@@ -1,6 +1,6 @@
 project( viewerPy VERSION 1.38.0 )
 
-add_library( ${PROJECT_NAME} SHARED )
+add_library( ${PROJECT_NAME} STATIC )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
@@ -45,15 +45,4 @@ target_link_libraries( ${PROJECT_NAME}
 if (WIN32)
    target_link_libraries( ${PROJECT_NAME} Qt5::WinMain)
 endif()
-    
-# --- install
-
-if( WIN32 OR APPLE)
-	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare )
-else()
-    set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare )
-    message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})
-    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON} )
-endif()
-
     
