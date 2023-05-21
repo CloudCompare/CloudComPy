@@ -42,7 +42,6 @@ void viewerPyApplication::setViewer(viewerPy *inViewer)
 
 bool viewerPyApplication::event(QEvent *inEvent)
 {
-    CCTRACE("---event");
 #ifdef Q_OS_MAC
 	switch ( inEvent->type() )
 	{

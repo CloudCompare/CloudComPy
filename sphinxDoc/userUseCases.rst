@@ -1234,5 +1234,57 @@ To avoid the memory leak:
 
 The above code snippets are from :download:`test042.py <../tests/test042.py>`.
 
+Render a 3D scene to an image file
+----------------------------------
+
+In order to create a 3D view of one or more entities and write a 2D file image (png, jpeg,...), 
+the entities can be added to the scene with the :py:func:`cloudComPy.addToRenderScene` function.
+
+The :py:func:`cloudComPy.render` function renders and writes the image.
+
+.. include:: ../tests/test051.py
+   :start-after: #---render001-begin
+   :end-before:  #---render001-end
+   :literal:
+   :code: python
+
+The :py:func:`cloudComPy.removeFromRenderScene` function allows to remove an entity from the scene, but it deletes the C++ object.
+Thus, the Python object becomes invalid.
+
+.. include:: ../tests/test051.py
+   :start-after: #---render002-begin
+   :end-before:  #---render002-end
+   :literal:
+   :code: python
+
+Several functions allow to define a standard point of view for the scene:
+
+ - :py:func:`cloudComPy.setFrontView`
+ - :py:func:`cloudComPy.setBottomView`
+ - :py:func:`cloudComPy.setTopView`
+ - :py:func:`cloudComPy.setBackView`
+ - :py:func:`cloudComPy.setLeftView`
+ - :py:func:`cloudComPy.setRightView`
+ - :py:func:`cloudComPy.setIsoView1`
+ - :py:func:`cloudComPy.setIsoView2`
+
+Different modes of perspective are available:
+
+ - :py:func:`cloudComPy.setOrthoView`
+ - :py:func:`cloudComPy.setCenteredPerspectiveView`
+ - :py:func:`cloudComPy.setViewerPerspectiveView`
+ 
+ To define a zoom on the whole scene or on selected entities, use the :py:func:`cloudComPy.setGlobalZoom` and :py:func:`cloudComPy.zoomOnSelectedEntity` functions.
+
+The :py:func:`cloudComPy.setCustomView` and py:func:`cloudComPy.setCameraPos` functions are used to define a custom point of view:
+
+.. include:: ../tests/test051.py
+   :start-after: #---render003-begin
+   :end-before:  #---render003-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test051.py <../tests/test051.py>`.
+
 
 

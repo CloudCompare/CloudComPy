@@ -45,6 +45,25 @@ cloudComPy module, functions
 .. autofunction:: SavePointCloud
 .. autofunction:: setTraces
 
+.. autofunction:: addToRenderScene
+.. autofunction:: removeFromRenderScene
+.. autofunction:: render
+.. autofunction:: setOrthoView
+.. autofunction:: setCenteredPerspectiveView
+.. autofunction:: setViewerPerspectiveView
+.. autofunction:: setGlobalZoom
+.. autofunction:: zoomOnSelectedEntity
+.. autofunction:: setFrontView
+.. autofunction:: setBottomView
+.. autofunction:: setTopView
+.. autofunction:: setBackView
+.. autofunction:: setLeftView
+.. autofunction:: setRightView
+.. autofunction:: setIsoView1
+.. autofunction:: setIsoView2
+.. autofunction:: setCustomView
+.. autofunction:: setCameraPos
+
 .. autoclass:: ccBBox
    :members:
    :undoc-members:

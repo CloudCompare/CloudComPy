@@ -1441,28 +1441,27 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::return_value_policy::reference);
 
     m0.def("addToRenderScene", &addToRenderScene,
-    		py::arg("obj"), py::arg("showScalar")=true);
+    		py::arg("obj"), py::arg("showScalar")=true, cloudComPy_addToRenderScene_doc);
 
-    m0.def("removeFromRenderScene", &removeFromRenderScene);
+    m0.def("removeFromRenderScene", &removeFromRenderScene, cloudComPy_removeFromRenderScene_doc);
 
     m0.def("render", &renderPy,
-    		py::arg("filename"), py::arg("width")=1500, py::arg("height")=1000);
+    		py::arg("filename"), py::arg("width")=1500, py::arg("height")=1000, cloudComPy_render_doc);
 
-    m0.def("setOrthoView", &setOrthoView);
-    m0.def("setCenteredPerspectiveView", &setCenteredPerspectiveView);
-    m0.def("setViewerPerspectiveView", &setViewerPerspectiveView);
-    m0.def("setGlobalZoom", &setGlobalZoom);
-    m0.def("zoomOnSelectedEntity", &zoomOnSelectedEntity);
-    m0.def("setFrontView", &setFrontView);
-    m0.def("setBottomView", &setBottomView);
-    m0.def("setTopView", &setTopView);
-    m0.def("setBackView", &setBackView);
-    m0.def("setLeftView", &setLeftView);
-    m0.def("setRightView", &setRightView);
-    m0.def("setIsoView1", &setIsoView1);
-    m0.def("setIsoView2", &setIsoView2);
-    m0.def("setCustomView", &setCustomView);
-    m0.def("setCameraPos", &setCameraPos);
-
+    m0.def("setOrthoView", &setOrthoView, cloudComPy_setOrthoView_doc);
+    m0.def("setCenteredPerspectiveView", &setCenteredPerspectiveView, cloudComPy_setCenteredPerspectiveView_doc);
+    m0.def("setViewerPerspectiveView", &setViewerPerspectiveView, cloudComPy_setViewerPerspectiveView_doc);
+    m0.def("setGlobalZoom", &setGlobalZoom, cloudComPy_setGlobalZoom_doc);
+    m0.def("zoomOnSelectedEntity", &zoomOnSelectedEntity, cloudComPy_zoomOnSelectedEntity_doc);
+    m0.def("setFrontView", &setFrontView, cloudComPy_setFrontView_doc);
+    m0.def("setBottomView", &setBottomView, cloudComPy_setBottomView_doc);
+    m0.def("setTopView", &setTopView, cloudComPy_setTopView_doc);
+    m0.def("setBackView", &setBackView, cloudComPy_setBackView_doc);
+    m0.def("setLeftView", &setLeftView, cloudComPy_setLeftView_doc);
+    m0.def("setRightView", &setRightView, cloudComPy_setRightView_doc);
+    m0.def("setIsoView1", &setIsoView1, cloudComPy_setIsoView1_doc);
+    m0.def("setIsoView2", &setIsoView2, cloudComPy_setIsoView2_doc);
+    m0.def("setCustomView", &setCustomView, cloudComPy_setCustomView_doc);
+    m0.def("setCameraPos", &setCameraPos, cloudComPy_setCameraPos_doc);
 
 }

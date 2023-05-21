@@ -715,4 +715,83 @@ Activate or deactivate trace system.
 :param bool isActive: whether to activate or deactivate the trace system.
 )";
 
+const char* cloudComPy_addToRenderScene_doc= R"(
+RenderViewToFile: add an entity to the scene view.
+
+:param ccHObject entity: the entity to display
+)";
+
+const char* cloudComPy_removeFromRenderScene_doc= R"(
+RenderViewToFile: remove an entity from the scene view.
+
+**WARNING**: the entity is deleted! The Python variable is no more usable (set it to None)
+
+:param ccHObject entity: the entity to remove
+)";
+
+const char* cloudComPy_render_doc= R"(
+RenderViewToFile: write the image file from the 3D scene.
+
+:param string filename: the filename with it's path and extension. The extension defines the image format (.png, .jpg, ...)
+:param int,optional width: the width of the image (pixels), default 1500
+:param int,optional height: the height of the image (pixels), default 1000
+)";
+
+const char* cloudComPy_setOrthoView_doc= R"(
+RenderViewToFile: set the type of view to ortho (no perspective)
+)";
+
+const char* cloudComPy_setCenteredPerspectiveView_doc= R"(
+RenderViewToFile: set the type of perspective to object centered)";
+
+const char* cloudComPy_setViewerPerspectiveView_doc= R"(
+RenderViewToFile: set the type of perspective to viewer centered)";
+
+const char* cloudComPy_setGlobalZoom_doc= R"(
+RenderViewToFile: zoom to the whole scene)";
+
+const char* cloudComPy_zoomOnSelectedEntity_doc= R"(
+RenderViewToFile: zoom on the selected entity)";
+
+const char* cloudComPy_setFrontView_doc= R"(
+RenderViewToFile: set front view)";
+
+const char* cloudComPy_setBottomView_doc= R"(
+RenderViewToFile: set bottom view)";
+
+
+const char* cloudComPy_setTopView_doc= R"(
+RenderViewToFile: set top view)";
+
+
+const char* cloudComPy_setBackView_doc= R"(
+RenderViewToFile: set back view)";
+
+
+const char* cloudComPy_setLeftView_doc= R"(
+RenderViewToFile: set left view)";
+
+const char* cloudComPy_setRightView_doc= R"(
+RenderViewToFile: set right view)";
+
+const char* cloudComPy_setIsoView1_doc= R"(
+RenderViewToFile: set iso view, first type)";
+
+const char* cloudComPy_setIsoView2_doc= R"(
+RenderViewToFile: set iso view, second type)";
+
+const char* cloudComPy_setCustomView_doc= R"(
+RenderViewToFile: set a custom view, defining a look vector and an up direction
+
+:param CCVector3d forward: direction of view
+:param CCVector3d up: up direction (to define "up" in the image
+)";
+
+const char* cloudComPy_setCameraPos_doc= R"(
+RenderViewToFile: define a camera position.
+
+:param CCVector3d P: camera position
+)";
+
+
 #endif /* CLOUDCOMPY_DOCSTRINGS_HPP_ */
