@@ -120,7 +120,8 @@ void export_cloudSamplingTools(py::module &m0)
 
         .def_static("resampleCloudSpatially",
              &CCCoreLib::CloudSamplingTools::resampleCloudSpatially,
-             py::arg("cloud"), py::arg("minDistance"), py::arg("modParams"),
+             py::arg("cloud"), py::arg("minDistance"),
+			 py::arg("modParams")=CCCoreLib::CloudSamplingTools::SFModulationParams(false),
              py::arg("octree")=nullptr,
              py::arg("progressCb")=nullptr,
              CloudSamplingToolsPy_resampleCloudSpatially_doc, py::return_value_policy::reference)
