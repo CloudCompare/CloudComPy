@@ -15,7 +15,7 @@ cloudComPy module, functions
 .. autofunction:: ComputeVolume25D
 .. autofunction:: deleteEntity
 .. autofunction:: ExtractConnectedComponents
-.. autofunction:: LabelConnectedComponents
+.. autofunction:: extractPointsAlongSections
 .. autofunction:: ExtractSlicesAndContours
 .. autofunction:: filterBySFValue
 .. autofunction:: GetPointCloudRadius
@@ -33,6 +33,7 @@ cloudComPy module, functions
 .. autofunction:: isPluginMeshBoolean
 .. autofunction:: isPluginPCV
 .. autofunction:: isPluginRANSAC_SD
+.. autofunction:: LabelConnectedComponents
 .. autofunction:: loadMesh
 .. autofunction:: loadPointCloud
 .. autofunction:: loadPolyline
@@ -44,6 +45,7 @@ cloudComPy module, functions
 .. autofunction:: SaveMesh
 .. autofunction:: SavePointCloud
 .. autofunction:: setTraces
+.. autofunction:: unfoldPointsAlongPolylines
 
 .. autofunction:: addToRenderScene
 .. autofunction:: removeFromRenderScene

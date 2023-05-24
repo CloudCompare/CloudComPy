@@ -46,6 +46,17 @@ Computes the polyline length.
 :return: sum of segments length
 :rtype: float )";
 
+const char* ccPolyline_generateOrthoSections_doc= R"(
+Generate orthogonal sections (lines) along a polyline.
+
+:param double orthoSectionStep: distance between two sections
+:param double orthoSectionWidth: length of the section
+:param int,optional vertDim: vertical direction, value in O (oX), 1, (oY), 2 (oZ), default 2
+
+:return: list of sections
+:rtype: list of ccPolyline
+)";
+
 const char* ccPolylinePy_getName_doc= R"(
 Get the name of the polyline.
 

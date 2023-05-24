@@ -1133,6 +1133,36 @@ the function returns a tuple(list of slices, list of envelopes, list of contours
 
 The above code snippets are from :download:`test036.py <../tests/test036.py>`.
 
+Extract Sections (generate cloud slices and profiles)
+-----------------------------------------------------
+
+The concepts are presented in the 
+`CloudCompare wiki - Extract Sections <https://www.cloudcompare.org/doc/wiki/index.php/Extract_Sections#Generating_cloud_slices_and_profiles>`_.
+
+This set of tools allows the user to import poylines on top of a point cloud so as to extract sections and profiles. 
+
+For the test, we use a cloud representing the altimetry around a river, and a 2D polyline giving the river axis.
+The :py:meth:`~.cloudComPy.ccPolyline.generateOrthoSections` method automatically generate orthogonal sections with a given polyline at regular intervals. 
+
+.. include:: ../tests/test052.py
+   :start-after: #---extractSections01-begin
+   :end-before:  #---extractSections01-end
+   :literal:
+   :code: python
+
+With clouds and polylines, the :py:func:`~.cloudComPy.extractPointsAlongSections` function allows to extract either cloud slices along the polylines,
+or to define vertical profiles (polylines) built on the clouds.
+The :py:func:`~.cloudComPy.unfoldPointsAlongPolylines` function unfolds a polyline and the clouds points near the polyline (with a given thickness).
+The result is a new cloud.
+
+.. include:: ../tests/test052.py
+   :start-after: #---extractSections02-begin
+   :end-before:  #---extractSections02-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test052.py <../tests/test052.py>`.
+
 Extract Connected Components
 ----------------------------
 

@@ -85,6 +85,41 @@ the gap is roughly d/2**n.
 :rtype: tuple
 )";
 
+const char* cloudComPy_extractPointsAlongSections_doc= R"(
+Extract clouds slices along sections or generate vertical profiles.
+
+Either the points are kept where they are (result are clouds slices), or the points
+are projected on a plane formed by section and the vertical direction (result are polylines).
+
+:param list[ccPointCloud] clouds: list of clouds
+:param list[ccPolyline] sections: list of sections
+:param double,optional defaultSectionThickness: point are kept if distance from section < defaultSectionThickness/2
+                                                default -1, meaning clouds bounding box / 500
+:param double,optional envelopeMaxEdgeLength: maximum edge length for split edges operation
+                                              default 0 meaning clouds bounding box / 500
+:param bool,optional extractSectionsAsClouds: get the result as clouds, default False
+:param bool,optional extractSectionsAsEnvelopes: get the result as polylines, default True
+:param bool,optional multipass: default False
+:param bool,optional splitEnvelope: default false, split envelope following clouds
+:param int,optional EnvelopeType: from fCloudComPy.EnvelopeType, default ENV_LOWER
+:param int,optional vertDim: vertical direction, value in O (oX), 1 (oY), 2 (oZ), default 2
+ 
+:return: list of entities (cloud or polyline)
+:rtype: list of ccPointClouds or ccPolylines
+)";
+
+const char* cloudComPy_unfoldPointsAlongPolylines_doc= R"(
+Unfold the polylines and the clouds along the polylines, with a given thickness.
+
+:param list[ccPointCloud] clouds: list of clouds
+:param list[ccPolyline] polylines: list of polylines
+:param double thickness: only points within the given distance to the polyline are kept
+:param int,optional vertDim: vertical direction, value in O (oX), 1 (oY), 2 (oZ), default 2
+
+:return: list of clouds
+:rtype: list of ccPointClouds
+)";
+
 const char* cloudComPy_LabelConnectedComponents_doc= R"(
 Label connected components in a set of clouds.
 
