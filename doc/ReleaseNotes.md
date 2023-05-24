@@ -4,7 +4,7 @@ These release notes start with the October 18, 2021 CloudComPy release.
 
 ## May 24, 2023 CloudComPy release:
 
- - update to CloudCompare master (April 26, 2023)
+ - update to CloudCompare master (May 24, 2023)
  - issue #49 - render a 3D scene on an image file: documentation and tests
  - issue #103 - extract section feature
  - issue #109 -  add missing features in Rasterize function (SF cell statistics, percentile)
