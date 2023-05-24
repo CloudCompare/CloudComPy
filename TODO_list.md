@@ -157,6 +157,7 @@ TODO List
 * DONE: merge label components development
 * DONE: (issue #100) build with a fix on pcl library to export large clouds, pcd format. Add an optional test
 * DONE: (issue #103) extract section feature
+* DONE: (issue #109) add missing features in Rasterize function (SF cell statistics, percentile)
 * DONE: (issue #111) resampleCloudSpatially modParams parameter should be optional
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
@@ -168,5 +169,4 @@ TODO List
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
 - TODO: (issue #104) CloudComPy for Mac
 - TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display)
-- TODO: (issue #109) add missing features in Rasterize function (SF cell statistics, percentile)
 

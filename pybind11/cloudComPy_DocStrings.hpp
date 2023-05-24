@@ -670,13 +670,17 @@ GeoTiff files are only available with the GDAL plugin.
 :param double,optional DelaunayMaxEdgeLength: used when EmptyCellFillOption is INTERPOLATE_DELAUNAY: maximum edge length, default 1.0 
 :param int,optional KrigingParamsKNN: used when EmptyCellFillOption is KRIGING: number of neighbour nodes, default 8
 :param float,optional customHeight: default float('nan')
-:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
-:param bool export_perCellCount: export scalarField, default False
-:param bool export_perCellMinHeight: export scalarField, default False
-:param bool export_perCellMaxHeight: export scalarField, default False
-:param bool export_perCellAvgHeight: export scalarField, default False
-:param bool export_perCellHeightStdDev: export scalarField, default False
-:param bool export_perCellHeightRange: export scalarField, default False
+:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box
+:param float,optional percentile: the percentile value to use for export percentile statistics, default 50.
+:param bool,optional export_perCellCount: export scalarField, default False
+:param bool,optional export_perCellMinHeight: export scalarField, default False
+:param bool,optional export_perCellMaxHeight: export scalarField, default False
+:param bool,optional export_perCellAvgHeight: export scalarField, default False
+:param bool,optional export_perCellHeightStdDev: export scalarField, default False
+:param bool,optional export_perCellHeightRange: export scalarField, default False
+:param bool,optional export_perCellMedian: export scalarField, default False
+:param bool,optional export_perCellPercentile: export scalarField, default False
+:param bool,optional export_perCellUniqueCount: export scalarField, default False
 
 :return: the raster cloud
 :rtype: ccPointCloud
@@ -701,13 +705,17 @@ GeoTiff files are only available with the GDAL plugin.
 :param double,optional DelaunayMaxEdgeLength: used when EmptyCellFillOption is INTERPOLATE_DELAUNAY: maximum edge length, default 1.0 
 :param int,optional KrigingParamsKNN: used when EmptyCellFillOption is KRIGING: number of neighbour nodes, default 8
 :param float,optional customHeight: default float('nan')
-:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
-:param bool export_perCellCount: export scalarField, default False
-:param bool export_perCellMinHeight: export scalarField, default False
-:param bool export_perCellMaxHeight: export scalarField, default False
-:param bool export_perCellAvgHeight: export scalarField, default False
-:param bool export_perCellHeightStdDev: export scalarField, default False
-:param bool export_perCellHeightRange: export scalarField, default False
+:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box
+:param float,optional percentile: the percentile value to use for export percentile statistics, default 50.
+:param bool,optional export_perCellCount: export scalarField, default False
+:param bool,optional export_perCellMinHeight: export scalarField, default False
+:param bool,optional export_perCellMaxHeight: export scalarField, default False
+:param bool,optional export_perCellAvgHeight: export scalarField, default False
+:param bool,optional export_perCellHeightStdDev: export scalarField, default False
+:param bool,optional export_perCellHeightRange: export scalarField, default False
+:param bool,optional export_perCellMedian: export scalarField, default False
+:param bool,optional export_perCellPercentile: export scalarField, default False
+:param bool,optional export_perCellUniqueCount: export scalarField, default False
 
 :return: the raster mesh
 :rtype: ccMesh
@@ -732,13 +740,17 @@ GeoTiff files are only available with the GDAL plugin.
 :param double,optional DelaunayMaxEdgeLength: used when EmptyCellFillOption is INTERPOLATE_DELAUNAY: maximum edge length, default 1.0 
 :param int,optional KrigingParamsKNN: used when EmptyCellFillOption is KRIGING: number of neighbour nodes, default 8
 :param float,optional customHeight: default float('nan')
-:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
-:param bool export_perCellCount: export scalarField, default False
-:param bool export_perCellMinHeight: export scalarField, default False
-:param bool export_perCellMaxHeight: export scalarField, default False
-:param bool export_perCellAvgHeight: export scalarField, default False
-:param bool export_perCellHeightStdDev: export scalarField, default False
-:param bool export_perCellHeightRange: export scalarField, default False
+:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box
+:param float,optional percentile: the percentile value to use for export percentile statistics, default 50.
+:param bool,optional export_perCellCount: export scalarField, default False
+:param bool,optional export_perCellMinHeight: export scalarField, default False
+:param bool,optional export_perCellMaxHeight: export scalarField, default False
+:param bool,optional export_perCellAvgHeight: export scalarField, default False
+:param bool,optional export_perCellHeightStdDev: export scalarField, default False
+:param bool,optional export_perCellHeightRange: export scalarField, default False
+:param bool,optional export_perCellMedian: export scalarField, default False
+:param bool,optional export_perCellPercentile: export scalarField, default False
+:param bool,optional export_perCellUniqueCount: export scalarField, default False
 
 :return: None
 :rtype: None

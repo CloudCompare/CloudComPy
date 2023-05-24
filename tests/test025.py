@@ -55,6 +55,7 @@ res = cloud.exportCoordToSF(False, False, True)
 
 #---resterize01-begin
 rcloud = cc.RasterizeToCloud(cloud, 0.01)
+rcloud.setName("raster_0")
 #---resterize01-end
 
 #---resterize02-begin
@@ -69,6 +70,7 @@ rcloud1 = cc.RasterizeToCloud(cloud,
                           emptyCellFillStrategy = cc.EmptyCellFillOption.FILL_CUSTOM_HEIGHT,
                           customHeight = 1.,
                           export_perCellCount = True)
+rcloud1.setName("raster_1")
 #---resterize03-end
 
 #---resterize04-begin
@@ -79,7 +81,10 @@ rcloud2 = cc.RasterizeToCloud(cloud,
                           pathToImages = dataDir,
                           emptyCellFillStrategy = cc.EmptyCellFillOption.INTERPOLATE_DELAUNAY,
                           export_perCellCount = True,
-                          export_perCellAvgHeight = True)
+                          export_perCellAvgHeight = True,
+                          export_perCellMedian = True,
+                          export_perCellPercentile = True)
+rcloud2.setName("raster_2")
 #---resterize04-end
 
 #---resterize05-begin
