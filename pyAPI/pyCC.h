@@ -267,12 +267,16 @@ ccPointCloud* RasterizeToCloud(
     int KrigingParamsKNN = 8,
 	double customHeight = std::numeric_limits<double>::quiet_NaN(),
 	ccBBox gridBBox = ccBBox(),
+    double percentile=50.0,
 	bool export_perCellCount = false,
 	bool export_perCellMinHeight = false,
 	bool export_perCellMaxHeight = false,
 	bool export_perCellAvgHeight = false,
 	bool export_perCellHeightStdDev = false,
-	bool export_perCellHeightRange = false);
+	bool export_perCellHeightRange = false,
+    bool export_perCellMedian = false,
+    bool export_perCellPercentile = false,
+    bool export_perCellUniqueCount = false);
 
 ccMesh* RasterizeToMesh(
 	ccGenericPointCloud* cloud,
@@ -290,12 +294,16 @@ ccMesh* RasterizeToMesh(
     int KrigingParamsKNN = 8,
 	double customHeight = std::numeric_limits<double>::quiet_NaN(),
 	ccBBox gridBBox = ccBBox(),
+    double percentile=50.0,
     bool export_perCellCount = false,
     bool export_perCellMinHeight = false,
     bool export_perCellMaxHeight = false,
     bool export_perCellAvgHeight = false,
     bool export_perCellHeightStdDev = false,
-    bool export_perCellHeightRange = false);
+    bool export_perCellHeightRange = false,
+    bool export_perCellMedian = false,
+    bool export_perCellPercentile = false,
+    bool export_perCellUniqueCount = false);
 
 ccHObject* RasterizeGeoTiffOnly(
 	ccGenericPointCloud* cloud,
@@ -313,12 +321,16 @@ ccHObject* RasterizeGeoTiffOnly(
     int KrigingParamsKNN = 8,
 	double customHeight = std::numeric_limits<double>::quiet_NaN(),
 	ccBBox gridBBox = ccBBox(),
+	double percentile=50.0,
     bool export_perCellCount = false,
     bool export_perCellMinHeight = false,
     bool export_perCellMaxHeight = false,
     bool export_perCellAvgHeight = false,
     bool export_perCellHeightStdDev = false,
-    bool export_perCellHeightRange = false);
+    bool export_perCellHeightRange = false,
+    bool export_perCellMedian = false,
+    bool export_perCellPercentile = false,
+    bool export_perCellUniqueCount = false);
 
 // --- internal functions (not wrapped in the Python API) ---------------------
 
@@ -364,6 +376,7 @@ ccHObject* Rasterize_(
 	int KrigingParamsKNN = 8,
 	double customHeight = std::numeric_limits<double>::quiet_NaN(),
 	ccBBox gridBBox = ccBBox(),
+	double percentile= 50.0,
 	const std::vector<ccRasterGrid::ExportableFields>& extraScalarFields= {});
 
 //! Loaded polyline description (not in ccCommandLineInterface.h)

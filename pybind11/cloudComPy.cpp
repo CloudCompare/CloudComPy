@@ -39,13 +39,18 @@
 #include <ParallelSort.h>
 #include <ccPointCloudInterpolator.h>
 #include <ReferenceCloud.h>
+#include <PointProjectionTools.h>
 
 //#include <ccMainAppInterface.h>
+#include <viewerPy.h>
+#include <viewerPyApplication.h>
 
 #include <QString>
 #include <QSharedPointer>
+#include <QApplication>
 #include <vector>
 #include <tuple>
+#include <set>
 
 #include "optdefines.h"
 
@@ -636,17 +641,171 @@ int LabelConnectedComponents_py(std::vector<ccHObject*> entities,
     return totalComponentCount;
 }
 
-//struct interpolatorParameters: public ccPointCloudInterpolator::Parameters
-//{
-//}
+viewerPy* getOrInitializeViewer()
+{
+	CCTRACE("getOrInitializeViewer");
+	QCoreApplication *coreApp = QCoreApplication::instance();
+	viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+	if (!app)
+	{
+		CCTRACE("cannot find viewerPyApplication!");
+		return nullptr;
+	}
+	viewerPy* w = app->getViewer();
+	if (!w)
+	{
+	    CCTRACE("initialize viewerPy");
+        w = new viewerPy();
+        app->setViewer(w);
+        CCTRACE("viewerPy initialized");
+	}
+    CCTRACE("--- w " << w);
+	return w;
+}
 
-//{
-//    ccPointCloudInterpolator::Parameters::Method method = ccPointCloudInterpolator::Parameters::Method::NEAREST_NEIGHBOR;
-//    ccPointCloudInterpolator::Parameters::Algo algo = ccPointCloudInterpolator::Parameters::Algo::AVERAGE;
-//    unsigned knn = 0;
-//    float radius = 0;
-//    double sigma = 0;
-//};
+void setOrthoView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setOrthoView();
+}
+
+void setCenteredPerspectiveView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setCenteredPerspectiveView();
+}
+
+void setViewerPerspectiveView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setViewerPerspectiveView();
+}
+
+void setGlobalZoom()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setGlobalZoom();
+}
+
+void zoomOnSelectedEntity()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->zoomOnSelectedEntity();
+}
+
+void setFrontView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setFrontView();
+}
+
+void setBottomView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setBottomView();
+}
+
+void setTopView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setTopView();
+}
+
+void setBackView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setBackView();
+}
+
+void setLeftView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setLeftView();
+}
+
+void setRightView()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setRightView();
+}
+
+void setIsoView1()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setIsoView1();
+}
+
+void setIsoView2()
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setIsoView2();
+}
+
+void setCustomView(const CCVector3d& forward, const CCVector3d& up)
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setCustomView(forward, up);
+}
+
+void setCameraPos(const CCVector3d& P)
+{
+	viewerPy* w = getOrInitializeViewer();
+	if (w) w->setCameraPos(P);
+
+}
+
+void addToRenderScene(ccHObject* obj, bool showScalar=true)
+{
+	CCTRACE("addToRenderScene");
+	QCoreApplication *coreApp = QCoreApplication::instance();
+	viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+	if (!app)
+	{
+		CCTRACE("cannot find viewerPyApplication!");
+		return;
+	}
+	viewerPy* w = getOrInitializeViewer();
+
+	w->addToDB(obj);
+	w->show();
+
+	w->selectEntity(obj);
+	w->toggleScalarShown(showScalar);
+	obj->setSelected(false);
+}
+
+void removeFromRenderScene(ccHObject* obj)
+{
+	CCTRACE("removeFromRenderScene");
+	QCoreApplication *coreApp = QCoreApplication::instance();
+	viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+	if (!app)
+	{
+		CCTRACE("cannot find viewerPyApplication!");
+		return;
+	}
+	viewerPy* w = getOrInitializeViewer();
+	w->removeFromDB(obj);
+	w->show();
+}
+
+void renderPy(QString filename, int width=1500, int height=1000)
+{
+	CCTRACE("renderPy");
+	QCoreApplication *coreApp = QCoreApplication::instance();
+	viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+	if (!app)
+	{
+		CCTRACE("cannot find viewerPyApplication!");
+		return;
+	}
+	viewerPy* w = getOrInitializeViewer();
+	w->resize(width+46, height+88);
+	w->show();
+
+	w->doActionRenderToFile(filename);
+	app->exec();
+}
 
 bool InterpolateScalarFieldsFrom_py(ccPointCloud* destCloud,
                                     ccPointCloud* srcCloud,
@@ -899,6 +1058,1453 @@ ccHObject* MergeEntitiesPy(std::vector<ccHObject*> entities,
     return nullptr;
 }
 
+// ----------------------------------------------------------------------------
+// following adapted from qCC for extract sections...
+
+struct Segment2D
+{
+    Segment2D() : s(0), lAB(0) {}
+
+    CCVector2 A, B, uAB;
+    PointCoordinateType lAB;
+    PointCoordinateType s; //curvilinear coordinate
+};
+
+enum EnvelopeType { ENV_LOWER, ENV_UPPER, ENV_FULL };
+enum HullPointFlags {   POINT_NOT_USED  = 0,
+                        POINT_USED      = 1,
+                        POINT_IGNORED   = 2,
+                        POINT_FROZEN    = 3,
+};
+
+using Vertex2D = CCCoreLib::PointProjectionTools::IndexedCCVector2;
+using Hull2D = std::list<Vertex2D *>;
+using VertexIterator = std::list<Vertex2D *>::iterator;
+using ConstVertexIterator = std::list<Vertex2D *>::const_iterator;
+
+namespace
+{
+    struct Edge
+    {
+        Edge() : nearestPointIndex(0), nearestPointSquareDist(-1.0f) {}
+
+        Edge(const VertexIterator& A, unsigned _nearestPointIndex, float _nearestPointSquareDist)
+            : itA(A)
+            , nearestPointIndex(_nearestPointIndex)
+            , nearestPointSquareDist(_nearestPointSquareDist)
+        {}
+
+        //operator
+        inline bool operator< (const Edge& e) const { return nearestPointSquareDist < e.nearestPointSquareDist; }
+
+        VertexIterator itA;
+        unsigned nearestPointIndex;
+        float nearestPointSquareDist;
+    };
+}
+
+struct Segment
+{
+    Segment()
+        : A(0, 0)
+        , B(0, 0)
+        , u(0, 0)
+        , d(0)
+        , curvPos(0)
+    {}
+
+    CCVector2 A, B, u;
+    PointCoordinateType d, curvPos;
+};
+
+
+//! from ccEnvelopeExtractor
+//! from Finds the nearest (available) point to an edge
+/** \return The nearest point distance (or -1 if no point was found!)
+**/
+PointCoordinateType FindNearestCandidate(unsigned& minIndex,
+                                                const VertexIterator& itA,
+                                                const VertexIterator& itB,
+                                                const std::vector<Vertex2D>& points,
+                                                const std::vector<HullPointFlags>& pointFlags,
+                                                PointCoordinateType minSquareEdgeLength,
+                                                bool allowLongerChunks = false,
+                                                double minCosAngle = -1.0)
+{
+    //look for the nearest point in the input set
+    PointCoordinateType minDist2 = -1;
+    const CCVector2 AB = **itB-**itA;
+    const PointCoordinateType squareLengthAB = AB.norm2();
+    const unsigned pointCount = static_cast<unsigned>(points.size());
+
+#ifdef CC_CORE_LIB_USES_TBB
+#else
+    for (unsigned i = 0; i < pointCount; ++i)
+    {
+        const Vertex2D& P = points[i];
+        if (pointFlags[P.index] != POINT_NOT_USED)
+            continue;
+
+        //skip the edge vertices!
+        if (P.index == (*itA)->index || P.index == (*itB)->index)
+        {
+            continue;
+        }
+
+        //we only consider 'inner' points
+        CCVector2 AP = P - **itA;
+        if (AB.x * AP.y - AB.y * AP.x < 0)
+        {
+            continue;
+        }
+
+        //check the angle
+        if (minCosAngle > -1.0)
+        {
+            CCVector2 PB = **itB - P;
+            PointCoordinateType dotProd = AP.x * PB.x + AP.y * PB.y;
+            PointCoordinateType minDotProd = static_cast<PointCoordinateType>(minCosAngle * std::sqrt(AP.norm2() * PB.norm2()));
+            if (dotProd < minDotProd)
+            {
+                continue;
+            }
+        }
+
+        PointCoordinateType dot = AB.dot(AP); // = cos(PAB) * ||AP|| * ||AB||
+        if (dot >= 0 && dot <= squareLengthAB)
+        {
+            CCVector2 HP = AP - AB * (dot / squareLengthAB);
+            PointCoordinateType dist2 = HP.norm2();
+            if (minDist2 < 0 || dist2 < minDist2)
+            {
+                //the 'nearest' point must also be a valid candidate
+                //(i.e. at least one of the created edges is smaller than the original one
+                //and we don't create too small edges!)
+                PointCoordinateType squareLengthAP = AP.norm2();
+                PointCoordinateType squareLengthBP = (P - **itB).norm2();
+                if (    squareLengthAP >= minSquareEdgeLength
+                    &&  squareLengthBP >= minSquareEdgeLength
+                    &&  (allowLongerChunks || (squareLengthAP < squareLengthAB || squareLengthBP < squareLengthAB))
+                    )
+                {
+                    minDist2 = dist2;
+                    minIndex = i;
+                }
+            }
+        }
+    }
+#endif
+
+    return (minDist2 < 0 ? minDist2 : minDist2/squareLengthAB);
+}
+
+//! from ccEnvelopeExtractor::ExtractConcaveHull2D
+bool ExtractConcaveHull2D(  std::vector<Vertex2D>& points,
+                            std::list<Vertex2D*>& hullPoints,
+                            EnvelopeType envelopeType,
+                            bool allowMultiPass,
+                            PointCoordinateType maxSquareEdgeLength/*=0*/,
+                            double maxAngleDeg/*=0.0*/)
+{
+    //first compute the Convex hull
+    if (!CCCoreLib::PointProjectionTools::extractConvexHull2D(points,hullPoints))
+        return false;
+
+    //do we really need to compute the concave hull?
+    if (hullPoints.size() < 2 || maxSquareEdgeLength < 0)
+        return true;
+
+    unsigned pointCount = static_cast<unsigned>(points.size());
+
+    std::vector<HullPointFlags> pointFlags;
+    try
+    {
+        pointFlags.resize(pointCount, POINT_NOT_USED);
+    }
+    catch(...)
+    {
+        //not enough memory
+        return false;
+    }
+
+    double minCosAngle = maxAngleDeg <= 0 ? -1.0 : std::cos(maxAngleDeg * M_PI / 180.0);
+
+    //hack: compute the theoretical 'minimal' edge length
+    PointCoordinateType minSquareEdgeLength = 0;
+    {
+        CCVector2 minP;
+        CCVector2 maxP;
+        for (size_t i=0; i<pointCount; ++i)
+        {
+            const Vertex2D& P = points[i];
+            if (i)
+            {
+                minP.x = std::min(P.x,minP.x);
+                minP.y = std::min(P.y,minP.y);
+                maxP.x = std::max(P.x,maxP.x);
+                maxP.y = std::max(P.y,maxP.y);
+            }
+            else
+            {
+                minP = maxP = P;
+            }
+        }
+        minSquareEdgeLength = (maxP - minP).norm2() / static_cast<PointCoordinateType>(1.0e7); //10^-7 of the max bounding rectangle side
+        minSquareEdgeLength = std::min(minSquareEdgeLength, maxSquareEdgeLength / 10);
+
+        //we remove very small edges
+        for (VertexIterator itA = hullPoints.begin(); itA != hullPoints.end(); ++itA)
+        {
+            VertexIterator itB = itA; ++itB;
+            if (itB == hullPoints.end())
+                itB = hullPoints.begin();
+            if ((**itB-**itA).norm2() < minSquareEdgeLength)
+            {
+                pointFlags[(*itB)->index] = POINT_FROZEN;
+                hullPoints.erase(itB);
+            }
+        }
+
+        if (envelopeType != ENV_FULL)
+        {
+            //we will now try to determine which part of the envelope is the 'upper' one and which one is the 'lower' one
+
+            //search for the min and max vertices
+            VertexIterator itLeft = hullPoints.begin();
+            VertexIterator itRight = hullPoints.begin();
+            {
+                for (VertexIterator it = hullPoints.begin(); it != hullPoints.end(); ++it)
+                {
+                    if ((*it)->x < (*itLeft)->x || ((*it)->x == (*itLeft)->x && (*it)->y < (*itLeft)->y))
+                    {
+                        itLeft = it;
+                    }
+                    if ((*it)->x > (*itRight)->x || ((*it)->x == (*itRight)->x && (*it)->y < (*itRight)->y))
+                    {
+                        itRight = it;
+                    }
+                }
+            }
+            assert(itLeft != itRight);
+            //find the right way to go
+            {
+                VertexIterator itBefore = itLeft;
+                if (itBefore == hullPoints.begin())
+                    itBefore = hullPoints.end(); --itBefore;
+                VertexIterator itAfter = itLeft; ++itAfter;
+                if (itAfter == hullPoints.end())
+                    itAfter = hullPoints.begin();
+
+                bool forward = ((**itBefore - **itLeft).cross(**itAfter - **itLeft) < 0 && envelopeType == ENV_LOWER);
+                if (!forward)
+                    std::swap(itLeft,itRight);
+            }
+
+            //copy the right part
+            std::list<Vertex2D*> halfHullPoints;
+            try
+            {
+                for (VertexIterator it = itLeft; ; ++it)
+                {
+                    if (it == hullPoints.end())
+                        it = hullPoints.begin();
+                    halfHullPoints.push_back(*it);
+                    if (it == itRight)
+                        break;
+                }
+            }
+            catch (const std::bad_alloc&)
+            {
+                //not enough memory
+                return false;
+            }
+            //replace the input hull by the selected part
+            hullPoints = halfHullPoints;
+        }
+
+        if (hullPoints.size() < 2)
+        {
+            //no more edges?!
+            return false;
+        }
+    }
+
+    //Warning: high STL containers usage ahead ;)
+    unsigned step = 0;
+    bool somethingHasChanged = true;
+    while (somethingHasChanged)
+    {
+        try
+        {
+            somethingHasChanged = false;
+            ++step;
+
+            //build the initial edge list & flag the convex hull points
+            std::multiset<Edge> edges;
+            //initial number of edges
+            assert(hullPoints.size() >= 2);
+            size_t initEdgeCount = hullPoints.size();
+            if (envelopeType != ENV_FULL)
+                --initEdgeCount;
+
+            VertexIterator itB = hullPoints.begin();
+            for (size_t i = 0; i < initEdgeCount; ++i)
+            {
+                VertexIterator itA = itB; ++itB;
+                if (itB == hullPoints.end())
+                    itB = hullPoints.begin();
+
+                //we will only process the edges that are longer than the maximum specified length
+                if ((**itB - **itA).norm2() > maxSquareEdgeLength)
+                {
+                    unsigned nearestPointIndex = 0;
+                    PointCoordinateType minSquareDist = FindNearestCandidate(
+                        nearestPointIndex,
+                        itA,
+                        itB,
+                        points,
+                        pointFlags,
+                        minSquareEdgeLength,
+                        step > 1,
+                        minCosAngle);
+
+                    if (minSquareDist >= 0)
+                    {
+                        Edge e(itA, nearestPointIndex, minSquareDist);
+                        edges.insert(e);
+                    }
+                }
+
+                pointFlags[(*itA)->index] = POINT_USED;
+            }
+
+            //flag the last vertex as well for non closed envelopes!
+            if (envelopeType != ENV_FULL)
+                pointFlags[(*hullPoints.rbegin())->index] = POINT_USED;
+
+            while (!edges.empty())
+            {
+                //current edge (AB)
+                //this should be the edge with the nearest 'candidate'
+                Edge e = *edges.begin();
+                edges.erase(edges.begin());
+
+                VertexIterator itA = e.itA;
+                VertexIterator itB = itA; ++itB;
+                if (itB == hullPoints.end())
+                {
+                    assert(envelopeType == ENV_FULL);
+                    itB = hullPoints.begin();
+                }
+
+                //nearest point
+                const Vertex2D& P = points[e.nearestPointIndex];
+                assert(pointFlags[P.index] == POINT_NOT_USED); //we don't consider already used points!
+
+                //last check: the new segments must not intersect with the actual hull!
+                bool intersect = false;
+                //if (false)
+                {
+                    for (VertexIterator itJ = hullPoints.begin(), itI = itJ++; itI != hullPoints.end(); ++itI, ++itJ)
+                    {
+                        if (itJ == hullPoints.end())
+                        {
+                            if (envelopeType == ENV_FULL)
+                                itJ = hullPoints.begin();
+                            else
+                                break;
+                        }
+
+                        if (    ((*itI)->index != (*itA)->index && (*itJ)->index != (*itA)->index && CCCoreLib::PointProjectionTools::segmentIntersect(**itI,**itJ,**itA,P))
+                            ||  ((*itI)->index != (*itB)->index && (*itJ)->index != (*itB)->index && CCCoreLib::PointProjectionTools::segmentIntersect(**itI,**itJ,P,**itB)) )
+                        {
+                            intersect = true;
+                            break;
+                        }
+                    }
+                }
+                if (!intersect)
+                {
+                    //add point to concave hull
+                    VertexIterator itP = hullPoints.insert(itB == hullPoints.begin() ? hullPoints.end() : itB, &points[e.nearestPointIndex]);
+
+                    //we won't use P anymore!
+                    pointFlags[P.index] = POINT_USED;
+
+                    somethingHasChanged = true;
+
+                    //update all edges that were having 'P' as their nearest candidate as well
+                    if (!edges.empty())
+                    {
+                        std::vector<VertexIterator> removed;
+                        std::multiset<Edge>::const_iterator lastValidIt = edges.end();
+                        for (std::multiset<Edge>::const_iterator it = edges.begin(); it != edges.end(); ++it)
+                        {
+                            if ((*it).nearestPointIndex == e.nearestPointIndex)
+                            {
+                                //we'll have to put them back afterwards!
+                                removed.push_back((*it).itA);
+
+                                edges.erase(it);
+                                if (edges.empty())
+                                    break;
+                                if (lastValidIt != edges.end())
+                                    it = lastValidIt;
+                                else
+                                    it = edges.begin();
+                            }
+                            else
+                            {
+                                lastValidIt = it;
+                            }
+                        }
+
+                        //update the removed edges info and put them back in the main list
+                        for (size_t i = 0; i < removed.size(); ++i)
+                        {
+                            VertexIterator itC = removed[i];
+                            VertexIterator itD = itC; ++itD;
+                            if (itD == hullPoints.end())
+                                itD = hullPoints.begin();
+
+                            unsigned nearestPointIndex = 0;
+                            PointCoordinateType minSquareDist = FindNearestCandidate(
+                                nearestPointIndex,
+                                itC,
+                                itD,
+                                points,
+                                pointFlags,
+                                minSquareEdgeLength,
+                                false,
+                                minCosAngle);
+
+                            if (minSquareDist >= 0)
+                            {
+                                Edge e(itC, nearestPointIndex, minSquareDist);
+                                edges.insert(e);
+                            }
+                        }
+                    }
+
+                    //we'll inspect the two new segments later (if necessary)
+                    if ((P-**itA).norm2() > maxSquareEdgeLength)
+                    {
+                        unsigned nearestPointIndex = 0;
+                        PointCoordinateType minSquareDist = FindNearestCandidate(
+                            nearestPointIndex,
+                            itA,
+                            itP,
+                            points,
+                            pointFlags,
+                            minSquareEdgeLength,
+                            false,
+                            minCosAngle);
+
+                        if (minSquareDist >= 0)
+                        {
+                            Edge e(itA,nearestPointIndex,minSquareDist);
+                            edges.insert(e);
+                        }
+                    }
+                    if ((**itB-P).norm2() > maxSquareEdgeLength)
+                    {
+                        unsigned nearestPointIndex = 0;
+                        PointCoordinateType minSquareDist = FindNearestCandidate(
+                            nearestPointIndex,
+                            itP,
+                            itB,
+                            points,
+                            pointFlags,
+                            minSquareEdgeLength,
+                            false,
+                            minCosAngle);
+
+                        if (minSquareDist >= 0)
+                        {
+                            Edge e(itP,nearestPointIndex,minSquareDist);
+                            edges.insert(e);
+                        }
+                    }
+                }
+            }
+        }
+        catch (...)
+        {
+            //not enough memory
+            return false;
+        }
+
+        if (!allowMultiPass)
+            break;
+    }
+
+    return true;
+}
+
+//! from ccEnvelopeExtractor::ExtractFlatEnvelope
+ccPolyline* ExtractFlatEnvelope(CCCoreLib::GenericIndexedCloudPersist* points,
+                                bool allowMultiPass,
+                                PointCoordinateType maxEdgeLength/*=0*/,
+                                const PointCoordinateType* preferredNormDim/*=nullptr*/,
+                                const PointCoordinateType* preferredUpDir/*=nullptr*/,
+                                EnvelopeType envelopeType/*=ENV_FULL*/,
+                                std::vector<unsigned>* originalPointIndexes/*=nullptr*/,
+                                double maxAngleDeg=0.0)
+{
+    assert(points);
+
+    if (!points)
+        return nullptr;
+
+    unsigned ptsCount = points->size();
+
+    if (ptsCount < 3)
+        return nullptr;
+
+    CCCoreLib::Neighbourhood Yk(points);
+
+    //local base
+    CCVector3 O;
+    CCVector3 X;
+    CCVector3 Y;
+
+    CCCoreLib::Neighbourhood::InputVectorsUsage vectorsUsage = CCCoreLib::Neighbourhood::None;
+
+    //we project the input points on a plane
+    std::vector<Vertex2D> points2D;
+    PointCoordinateType* planeEq = nullptr;
+
+    if (preferredUpDir != nullptr)
+    {
+        Y = CCVector3(preferredUpDir);
+        vectorsUsage = CCCoreLib::Neighbourhood::UseYAsUpDir;
+    }
+
+    //if the user has specified a default direction, we'll use it as 'projecting plane'
+    PointCoordinateType preferredPlaneEq[4] = { 0, 0, 1, 0 };
+
+    if (preferredNormDim != nullptr)
+    {
+        const CCVector3* G = points->getPoint(0); //any point through which the plane passes is ok
+        preferredPlaneEq[0] = preferredNormDim[0];
+        preferredPlaneEq[1] = preferredNormDim[1];
+        preferredPlaneEq[2] = preferredNormDim[2];
+        CCVector3::vnormalize(preferredPlaneEq);
+        preferredPlaneEq[3] = CCVector3::vdot(G->u, preferredPlaneEq);
+        planeEq = preferredPlaneEq;
+
+        if (preferredUpDir != nullptr)
+        {
+            O = *G;
+            //Y = CCVector3(preferredUpDir); //already done above
+            X = Y.cross(CCVector3(preferredNormDim));
+            vectorsUsage = CCCoreLib::Neighbourhood::UseOXYasBase;
+        }
+    }
+
+    if (!Yk.projectPointsOn2DPlane<Vertex2D>(points2D, planeEq, &O, &X, &Y, vectorsUsage))
+    {
+        CCTRACE("[ExtractFlatEnvelope] Failed to project the points on the LS plane (not enough memory?)!");
+        return nullptr;
+    }
+
+    //update the points indexes (not done by Neighbourhood::projectPointsOn2DPlane)
+    {
+        for (unsigned i = 0; i < ptsCount; ++i)
+        {
+            points2D[i].index = i;
+        }
+    }
+
+    //try to get the points on the convex/concave hull to build the envelope and the polygon
+    Hull2D hullPoints;
+    if (!ExtractConcaveHull2D(  points2D,
+                                hullPoints,
+                                envelopeType,
+                                allowMultiPass,
+                                maxEdgeLength*maxEdgeLength,
+                                maxAngleDeg))
+    {
+        ccLog::Warning("[ExtractFlatEnvelope] Failed to compute the convex hull of the input points!");
+        return nullptr;
+    }
+
+    if (originalPointIndexes)
+    {
+        try
+        {
+            originalPointIndexes->resize(hullPoints.size(), 0);
+        }
+        catch (const std::bad_alloc&)
+        {
+            //not enough memory
+            ccLog::Error("[ExtractFlatEnvelope] Not enough memory!");
+            return nullptr;
+        }
+
+        unsigned i = 0;
+        for (Hull2D::const_iterator it = hullPoints.begin(); it != hullPoints.end(); ++it, ++i)
+        {
+            (*originalPointIndexes)[i] = (*it)->index;
+        }
+    }
+
+    unsigned hullPtsCount = static_cast<unsigned>(hullPoints.size());
+
+    //create vertices
+    ccPointCloud* envelopeVertices = new ccPointCloud();
+    {
+        if (!envelopeVertices->reserve(hullPtsCount))
+        {
+            delete envelopeVertices;
+            envelopeVertices = nullptr;
+            ccLog::Error("[ExtractFlatEnvelope] Not enough memory!");
+            return nullptr;
+        }
+
+        //projection on the LS plane (in 3D)
+        for (Hull2D::const_iterator it = hullPoints.begin(); it != hullPoints.end(); ++it)
+        {
+            envelopeVertices->addPoint(O + X*(*it)->x + Y*(*it)->y);
+        }
+
+        envelopeVertices->setName("vertices");
+        envelopeVertices->setEnabled(false);
+    }
+
+    //we create the corresponding (3D) polyline
+    ccPolyline* envelopePolyline = new ccPolyline(envelopeVertices);
+    if (envelopePolyline->reserve(hullPtsCount))
+    {
+        envelopePolyline->addPointIndex(0, hullPtsCount);
+        envelopePolyline->setClosed(envelopeType == ENV_FULL);
+        envelopePolyline->setVisible(true);
+        envelopePolyline->setName("envelope");
+        envelopePolyline->addChild(envelopeVertices);
+    }
+    else
+    {
+        delete envelopePolyline;
+        envelopePolyline = nullptr;
+        ccLog::Warning("[ExtractFlatEnvelope] Not enough memory to create the envelope polyline!");
+    }
+
+    return envelopePolyline;
+}
+
+//! from ccSectionExtractionTool::extractSectionEnvelope
+std::vector<ccPolyline*> extractSectionEnvelope(const ccPolyline* originalSection,
+                                                const ccPointCloud* originalSectionCloud,
+                                                ccPointCloud* unrolledSectionCloud,
+                                                unsigned sectionIndex,
+                                                EnvelopeType envelopeType,
+                                                PointCoordinateType maxEdgeLength,
+                                                bool multiPass,
+                                                bool splitEnvelope,
+                                                bool& envelopeGenerated,
+                                                bool& error)
+{
+    envelopeGenerated = false;
+    error = false;
+    std::vector<ccPolyline*> results;
+
+    if (!originalSectionCloud || !unrolledSectionCloud)
+    {
+        CCTRACE("[ccSectionExtractionTool][extract envelope] Internal error: invalid input parameter(s)");
+        error = true;
+        return results;
+    }
+
+    if (originalSectionCloud->size() < 2)
+    {
+        //nothing to do
+        CCTRACE("[ccSectionExtractionTool][extract envelope] Section #" << sectionIndex << " contains less than 2 points and will be ignored");
+        error = true;
+        return results;
+    }
+
+    //by default, the points in 'unrolledSectionCloud' are 2D (X = curvilinear coordinate, Y = height, Z = 0)
+    CCVector3 N(0, 0, 1);
+    CCVector3 Y(0, 1, 0);
+
+    std::vector<unsigned> vertIndexes;
+    ccPolyline* envelope = ExtractFlatEnvelope( unrolledSectionCloud,
+                                                multiPass,
+                                                maxEdgeLength,
+                                                N.u,
+                                                Y.u,
+                                                envelopeType,
+                                                &vertIndexes);
+
+    if (envelope)
+    {
+        //update vertices (to replace 'unrolled' points by 'original' ones
+        {
+            CCCoreLib::GenericIndexedCloud* vertices = envelope->getAssociatedCloud();
+            if (vertIndexes.size() == static_cast<size_t>(vertices->size()))
+            {
+                for (unsigned i = 0; i < vertices->size(); ++i)
+                {
+                    const CCVector3* P = vertices->getPoint(i);
+                    assert(vertIndexes[i] < originalSectionCloud->size());
+                    *const_cast<CCVector3*>(P) = *originalSectionCloud->getPoint(vertIndexes[i]);
+                }
+
+                ccPointCloud* verticesAsPC = dynamic_cast<ccPointCloud*>(vertices);
+                if (verticesAsPC)
+                    verticesAsPC->refreshBB();
+                //if (!splitEnvelope) results.push_back(envelope);
+            }
+            else
+            {
+                ccLog::Warning("[ccSectionExtractionTool][extract envelope] Internal error (couldn't fetch original points indexes?!)");
+                delete envelope;
+                error = true;
+                return results;
+            }
+        }
+
+        std::vector<ccPolyline*> parts;
+        if (splitEnvelope)
+        {
+#ifdef QT_DEBUG
+            //compute some stats on the envelope
+            {
+                double minLength = 0;
+                double maxLength = 0;
+                double sumLength = 0;
+                unsigned count = envelope->size();
+                if (!envelope->isClosed())
+                    --count;
+                for (unsigned i = 0; i < count; ++i)
+                {
+                    const CCVector3* A = envelope->getPoint(i);
+                    const CCVector3* B = envelope->getPoint((i+1) % envelope->size());
+                    CCVector3 e = *B - *A;
+                    double l = e.norm();
+                    if (i != 0)
+                    {
+                        minLength = std::min(minLength,l);
+                        maxLength = std::max(maxLength,l);
+                        sumLength += l;
+                    }
+                    else
+                    {
+                        minLength = maxLength = sumLength = l;
+                    }
+                }
+                ccLog::PrintDebug(QString("Envelope: min = %1 / avg = %2 / max = %3").arg(minLength).arg(sumLength/count).arg(maxLength));
+            }
+#endif
+
+            /*bool success = */envelope->split(maxEdgeLength, parts);
+            delete envelope;
+            envelope = nullptr;
+        }
+        else
+        {
+            parts.push_back(envelope);
+        }
+
+        for (size_t p = 0; p < parts.size(); ++p)
+        {
+            ccPolyline* envelopePart = parts[p];
+            QString name = QString("Section envelope #%1").arg(sectionIndex);
+            if (parts.size() > 1)
+            {
+                name += QString("(part %1/%2)").arg(p + 1).arg(parts.size());
+            }
+            envelopePart->setName(name);
+            envelopePart->copyGlobalShiftAndScale(*originalSectionCloud);
+            envelopePart->setColor(ccColor::green);
+            envelopePart->showColors(true);
+            //copy meta-data (import for Mascaret export!)
+            {
+                const QVariantMap& metaData = originalSection->metaData();
+                for (QVariantMap::const_iterator it = metaData.begin(); it != metaData.end(); ++it)
+                {
+                    envelopePart->setMetaData(it.key(), it.value());
+                }
+            }
+            results.push_back(envelopePart);
+        }
+
+        envelopeGenerated = true;
+    }
+    return results;
+}
+
+//! from ccSectionExtractionTool::extractSectionCloud
+ccPointCloud* extractSectionCloud(  const std::vector<CCCoreLib::ReferenceCloud*>& refClouds,
+                                    std::vector<ccGenericPointCloud*> clouds,
+                                    unsigned sectionIndex,
+                                    bool& cloudGenerated,
+                                    bool& error)
+{
+    cloudGenerated = false;
+    error = false;
+
+    ccPointCloud* sectionCloud = nullptr;
+    for (int i = 0; i < static_cast<int>(refClouds.size()); ++i)
+    {
+        if (!refClouds[i])
+            continue;
+        assert(clouds[i]); //a valid ref. cloud must have a valid counterpart!
+
+        //extract part/section from each cloud
+        ccPointCloud* part = nullptr;
+
+        //if the cloud is a ccPointCloud, we can keep a lot more information
+        //when extracting the section cloud
+        ccPointCloud* pc = dynamic_cast<ccPointCloud*>(clouds[i]);
+        if (pc)
+        {
+            part = pc->partialClone(refClouds[i]);
+        }
+        else
+        {
+            part = ccPointCloud::From(refClouds[i], clouds[i]);
+        }
+
+        if (part)
+        {
+            if (i == 0)
+            {
+                //we simply use this 'part' cloud as the section cloud
+                sectionCloud = part;
+            }
+            else
+            {
+                //fuse it with the global cloud
+                unsigned cloudSizeBefore = sectionCloud->size();
+                unsigned partSize = part->size();
+                sectionCloud->append(part, cloudSizeBefore, true);
+
+                //don't need it anymore
+                delete part;
+                part = nullptr;
+                //check that it actually worked!
+                if (sectionCloud->size() != cloudSizeBefore + partSize)
+                {
+                    //not enough memory
+                    CCTRACE("[ccSectionExtractionTool][extract cloud] Not enough memory");
+                    delete sectionCloud;
+                    error = true;
+                    return nullptr;
+                }
+            }
+        }
+        else
+        {
+            //not enough memory
+            CCTRACE("[ccSectionExtractionTool][extract cloud] Not enough memory");
+            delete sectionCloud;
+            error = true;
+            return nullptr;
+        }
+    }
+
+    if (sectionCloud)
+    {
+        sectionCloud->setName(QString("Section cloud #%1").arg(sectionIndex));
+        cloudGenerated = true;
+    }
+
+    return sectionCloud;
+}
+
+//! from ccSectionExtractionTool::extractPoints
+std::vector<ccHObject*> extractPointsAlongSections( std::vector<ccGenericPointCloud*> clouds,
+                                                    std::vector<ccPolyline*> sections,
+                                                    double defaultSectionThickness = -1.0,
+                                                    double envelopeMaxEdgeLength = 0,
+                                                    bool extractSectionsAsClouds = false,
+                                                    bool extractSectionsAsEnvelopes = true,
+                                                    bool multipass = false,
+                                                    bool splitEnvelope = false,
+                                                    EnvelopeType s_extractSectionsType = ENV_LOWER,
+                                                    int vertDim = 2)
+{
+    std::vector<ccHObject*> results;
+    //number of eligible sections
+    unsigned sectionCount = 0;
+    {
+        for (auto & section : sections)
+        {
+            if (section && section->size() > 1)
+                ++sectionCount;
+        }
+    }
+    if (sectionCount == 0)
+    {
+        CCTRACE("No (valid) section!");
+        return results;
+    }
+
+    //compute loaded clouds bounding-box
+    ccBBox box;
+    unsigned pointCount = 0;
+
+    for (auto & cloud : clouds)
+    {
+        if (cloud)
+        {
+            box += cloud->getOwnBB();
+            pointCount += cloud->size();
+        }
+    }
+
+    if (defaultSectionThickness <= 0)
+    {
+        defaultSectionThickness = box.getMaxBoxDim() / 500.0;
+    }
+    if (envelopeMaxEdgeLength <= 0)
+    {
+        envelopeMaxEdgeLength = box.getMaxBoxDim() / 500.0;
+    }
+
+    int xDim = (vertDim < 2 ? vertDim + 1 : 0);
+    int yDim = (xDim < 2 ? xDim + 1 : 0);
+
+    //we consider half of the total thickness as points can be on both sides!
+    double sectionThicknessSq = std::pow(defaultSectionThickness / 2.0, 2.0);
+    bool error = false;
+
+    unsigned generatedEnvelopes = 0;
+    unsigned generatedClouds = 0;
+
+    try
+    {
+        //for each slice
+        for (int s = 0; s < sections.size(); ++s)
+        {
+            ccPolyline* poly = sections[s];
+            if (poly)
+            {
+                unsigned polyVertCount = poly->size();
+                if (polyVertCount < 2)
+                {
+                    CCTRACE("polyVertCount < 2");
+                    continue;
+                }
+                unsigned polySegmentCount = poly->isClosed() ? polyVertCount : polyVertCount - 1;
+
+                //project the section in '2D'
+                std::vector<Segment2D> polySegments2D;
+                {
+                    polySegments2D.reserve(polySegmentCount);
+                    PointCoordinateType s = 0;
+                    for (unsigned j = 0; j < polySegmentCount; ++j)
+                    {
+                        Segment2D seg2D;
+                        const CCVector3* A = poly->getPoint(j);
+                        const CCVector3* B = poly->getPoint((j + 1) % polyVertCount);
+                        seg2D.A = CCVector2(A->u[xDim], A->u[yDim]);
+                        seg2D.B = CCVector2(B->u[xDim], B->u[yDim]);
+                        seg2D.uAB = seg2D.B - seg2D.A; //(unit) direction
+                        seg2D.lAB = seg2D.uAB.norm(); //length
+                        seg2D.s = s;
+                        s += seg2D.lAB;
+
+                        if (CCCoreLib::LessThanEpsilon(seg2D.lAB))
+                        {
+                            //ignore too small segments
+                            continue;
+                        }
+
+                        seg2D.uAB /= seg2D.lAB;
+                        polySegments2D.push_back(seg2D);
+                    }
+
+                    if (polySegments2D.empty())
+                    {
+                        CCTRACE("polySegments2D.empty");
+                        continue;
+                    }
+                    polySegments2D.shrink_to_fit();
+                }
+
+                int cloudCount = clouds.size();
+                std::vector<CCCoreLib::ReferenceCloud*> refClouds;
+                if (extractSectionsAsClouds)
+                {
+                    refClouds.resize(cloudCount, nullptr);
+                }
+
+                //for envelope extraction as a polyline
+                ccPointCloud* originalSlicePoints = nullptr;
+                ccPointCloud* unrolledSlicePoints = nullptr;
+                if (extractSectionsAsEnvelopes)
+                {
+                    originalSlicePoints = new ccPointCloud("section.orig");
+                    unrolledSlicePoints = new ccPointCloud("section.unroll");
+
+                    //assign them the default (first!) global shift & scale info
+                    if (clouds.empty())
+                        {
+                        CCTRACE("no clouds!");
+                        return results;
+                        }
+                    ccGenericPointCloud* cloud = clouds.front();
+                    originalSlicePoints->copyGlobalShiftAndScale(*cloud);
+                }
+
+                //for each cloud
+                for (int c = 0; c < cloudCount; ++c)
+                {
+                    ccGenericPointCloud* cloud = clouds[c];
+                    if (cloud)
+                    {
+                        //for envelope extraction as a cloud
+                        CCCoreLib::ReferenceCloud* refCloud = nullptr;
+                        if (extractSectionsAsClouds)
+                        {
+                            refCloud = new CCCoreLib::ReferenceCloud(cloud);
+                        }
+
+                        //compute the distance of each point to the current polyline segment
+                        for (unsigned i = 0; i < cloud->size(); ++i)
+                        {
+                            const CCVector3* P = cloud->getPoint(i);
+                            CCVector2 P2D(P->u[xDim], P->u[yDim]);
+
+                            //for each vertex
+                            PointCoordinateType minSquareDist = -CCCoreLib::PC_ONE;
+                            PointCoordinateType curvilinearPos = 0.0;
+                            size_t minIndex = 0;
+                            for (size_t j = 0; j < polySegments2D.size(); ++j)
+                            {
+                                const Segment2D& seg2D = polySegments2D[j];
+                                CCVector2 AP2D = P2D - seg2D.A;
+
+                                //square distance to the polyline
+                                PointCoordinateType squareDist = 0;
+
+                                //longitudinal 'distance'
+                                double dotprod = seg2D.uAB.dot(AP2D);
+                                if (dotprod < 0)
+                                {
+                                    if (j == 0 && !poly->isClosed())
+                                        continue;
+                                    squareDist = AP2D.norm2();
+                                }
+                                else if (dotprod > seg2D.lAB)
+                                {
+                                    if (j + 1 == polySegments2D.size() && !poly->isClosed())
+                                        continue;
+                                    squareDist = (P2D - seg2D.B).norm2();
+                                }
+                                else
+                                {
+                                    //orthogonal distance
+                                    squareDist = (AP2D - seg2D.uAB * dotprod).norm2();
+                                }
+
+                                if (minSquareDist < 0 || squareDist < minSquareDist)
+                                {
+                                    minSquareDist = squareDist;
+                                    curvilinearPos = dotprod;
+                                    minIndex = j;
+                                }
+                            }
+
+                            //elligible point?
+                            if (minSquareDist >= 0 && minSquareDist < sectionThicknessSq)
+                            {
+                                //if we extract the section as cloud(s), we add the point to the (current) ref. cloud
+                                if (extractSectionsAsClouds)
+                                {
+                                    assert(refCloud);
+                                    unsigned refCloudSize = refCloud->size();
+                                    if (refCloudSize == refCloud->capacity())
+                                    {
+                                        refCloudSize += (refCloudSize / 2 + 1);
+                                        if (!refCloud->reserve(refCloudSize))
+                                        {
+                                            //not enough memory
+                                            CCTRACE("[ccSectionExtractionTool] Not enough memory");
+                                            error = true;
+                                            break;
+                                        }
+                                    }
+                                    refCloud->addPointIndex(i);
+                                }
+
+                                //if we extract the section as envelope(s), we add it to the 2D points set
+                                if (extractSectionsAsEnvelopes)
+                                {
+                                    assert(originalSlicePoints && unrolledSlicePoints);
+                                    assert(originalSlicePoints->size() == unrolledSlicePoints->size());
+
+                                    unsigned cloudSize = originalSlicePoints->size();
+                                    if (cloudSize == originalSlicePoints->capacity())
+                                    {
+                                        cloudSize += (cloudSize / 2 + 1);
+                                        if (!originalSlicePoints->reserve(cloudSize)
+                                            || !unrolledSlicePoints->reserve(cloudSize))
+                                        {
+                                            //not enough memory
+                                            CCTRACE("[ccSectionExtractionTool] Not enough memory");
+                                            error = true;
+                                            break;
+                                        }
+                                    }
+
+                                    const Segment2D& seg2D = polySegments2D[minIndex];
+
+                                    //we project the 'real' 3D point in the section plane
+                                    CCVector3 Pproj3D;
+                                    {
+                                        Pproj3D.u[xDim] = seg2D.A.x + seg2D.uAB.x * curvilinearPos;
+                                        Pproj3D.u[yDim] = seg2D.A.y + seg2D.uAB.y * curvilinearPos;
+                                        Pproj3D.u[vertDim] = P->u[vertDim];
+                                    }
+                                    originalSlicePoints->addPoint(Pproj3D);
+                                    unrolledSlicePoints->addPoint(CCVector3(seg2D.s + curvilinearPos, P->u[vertDim], 0));
+                                }
+                            }
+
+                            if (error)
+                            {
+                                break;
+                            }
+
+                        } //for each point
+
+                        if (refCloud)
+                        {
+                            assert(extractSectionsAsClouds);
+                            if (error || refCloud->size() == 0)
+                            {
+                                delete refCloud;
+                                refCloud = nullptr;
+                            }
+                            else
+                            {
+                                refClouds[c] = refCloud;
+                            }
+                        }
+
+                    }
+
+                    if (error)
+                    {
+                        break;
+                    }
+
+                } //for each cloud
+
+                if (!error)
+                {
+                    //Extract sections as (polyline) envelopes
+                    if (/*!error && */extractSectionsAsEnvelopes)
+                    {
+                        assert(originalSlicePoints && unrolledSlicePoints);
+                        bool envelopeGenerated = false;
+                        std::vector<ccPolyline*> pls = extractSectionEnvelope(  poly,
+                                                                                originalSlicePoints,
+                                                                                unrolledSlicePoints,
+                                                                                s + 1,
+                                                                                s_extractSectionsType,
+                                                                                envelopeMaxEdgeLength,
+                                                                                multipass,
+                                                                                splitEnvelope,
+                                                                                envelopeGenerated,
+                                                                                error);
+                        if (!error)
+                        {
+                            for (auto pl : pls)
+                                results.push_back(pl);
+                        }
+
+                        if (envelopeGenerated)
+                        {
+                            ++generatedEnvelopes;
+                        }
+                    }
+
+                    //Extract sections as clouds
+                    if (!error && extractSectionsAsClouds)
+                    {
+                        assert(static_cast<int>(refClouds.size()) == cloudCount);
+                        bool cloudGenerated = false;
+                        ccPointCloud* cl = extractSectionCloud(refClouds, clouds, s + 1, cloudGenerated, error);
+                        if (!error) results.push_back(cl);
+                        if (cloudGenerated)
+                            ++generatedClouds;
+                    }
+                }
+
+                //release memory
+                for (auto & refCloud : refClouds)
+                {
+                    delete refCloud;
+                    refCloud = nullptr;
+                }
+
+                delete originalSlicePoints;
+                originalSlicePoints = nullptr;
+
+                delete unrolledSlicePoints;
+                unrolledSlicePoints = nullptr;
+            } //if (poly)
+
+            if (error)
+                break;
+        } //for (int s=0; s<m_sections.size(); ++s)
+    }
+    catch (const std::bad_alloc&)
+    {
+        error = true;
+    }
+
+    if (error)
+    {
+        CCTRACE("An error occurred in extractPointsFromClouds!");
+    }
+    else
+    {
+        CCTRACE("[ccSectionExtractionTool] Job done (" << generatedEnvelopes << " envelope(s) and "<< generatedClouds << " cloud(s) were generated)");
+    }
+    return results;
+}
+
+//! from ccSectionExtractionTool::unfoldPoints
+std::vector<ccPointCloud*> unfoldPointsAlongPolylines(std::vector<ccGenericPointCloud*> clouds,
+                                                      std::vector<ccPolyline*> polylines,
+                                                      double thickness,
+                                                      int vertDim =2)
+{
+    std::vector<ccPointCloud*> unfoldedClouds;
+    //compute loaded clouds bounding-box
+    ccBBox box;
+    unsigned totalPointCount = 0;
+    {
+        for (auto & cloud : clouds)
+        {
+            if (cloud)
+            {
+                box += cloud->getOwnBB();
+                totalPointCount += cloud->size();
+            }
+        }
+    }
+
+    static double s_defaultThickness = -1.0;
+    if (s_defaultThickness <= 0)
+    {
+        s_defaultThickness = box.getMaxBoxDim() / 10.0;
+    }
+
+    s_defaultThickness = thickness;
+
+    //projection direction
+    int xDim = (vertDim < 2 ? vertDim + 1 : 0);
+    int yDim = (xDim < 2 ? xDim + 1 : 0);
+
+    //we consider half of the total thickness as points can be on both sides!
+    double maxSquareDistToPolyline = (thickness / 2) * (thickness / 2);
+
+    unsigned exportedClouds = 0;
+
+    for (ccPolyline* poly : polylines)
+    {
+        unsigned polyVertCount = poly->size();
+        if (polyVertCount < 2)
+        {
+            assert(false);
+            CCTRACE("Invalid polyline (less than 2 vertices)");
+            continue;
+        }
+
+        //prepare the computation of 2D distances
+        std::vector<Segment> segments;
+        unsigned polySegmentCount = poly->isClosed() ? polyVertCount : polyVertCount - 1;
+        {
+            try
+            {
+                segments.reserve(polySegmentCount);
+            }
+            catch (const std::bad_alloc&)
+            {
+                //not enough memory
+                ccLog::Error("Not enough memory");
+                return unfoldedClouds;
+            }
+
+            PointCoordinateType curvPos = 0;
+            for (unsigned j = 0; j < polySegmentCount; ++j)
+            {
+                //current polyline segment
+                const CCVector3* A = poly->getPoint(j);
+                const CCVector3* B = poly->getPoint((j + 1) % polyVertCount);
+
+                Segment s;
+                {
+                    s.A = CCVector2(A->u[xDim], A->u[yDim]);
+                    s.B = CCVector2(B->u[xDim], B->u[yDim]);
+                    s.u = s.B - s.A;
+                    s.d = s.u.norm();
+                    if (CCCoreLib::GreaterThanEpsilon(s.d))
+                    {
+                        s.curvPos = curvPos;
+                        s.u /= s.d;
+                        segments.push_back(s);
+                    }
+                }
+
+                //update curvilinear pos
+                curvPos += (*B - *A).norm();
+            }
+        }
+
+        //for each cloud
+        for (auto & pc : clouds)
+        {
+            ccGenericPointCloud* cloud = pc;
+            if (!cloud)
+            {
+                assert(false);
+                continue;
+            }
+
+            CCCoreLib::ReferenceCloud unfoldedIndexes(cloud);
+            if (!unfoldedIndexes.reserve(cloud->size()))
+            {
+                ccLog::Error("Not enough memory");
+                return unfoldedClouds;
+            }
+            std::vector<CCVector3> unfoldedPoints;
+            try
+            {
+                unfoldedPoints.reserve(cloud->size());
+            }
+            catch (const std::bad_alloc&)
+            {
+                ccLog::Error("Not enough memory");
+                return unfoldedClouds;
+            }
+
+            //now test each point and see if it's close to the current polyline (in 2D)
+            for (unsigned i = 0; i < cloud->size(); ++i)
+            {
+                const CCVector3* P = cloud->getPoint(i);
+                CCVector2 P2D(P->u[xDim], P->u[yDim]);
+
+                //test each segment
+                int closestSegment = -1;
+                PointCoordinateType minSquareDist = -CCCoreLib::PC_ONE;
+                for (unsigned j = 0; j < polySegmentCount; ++j)
+                {
+                    const Segment& s = segments[j];
+                    CCVector2 AP2D = P2D - s.A;
+
+                    //longitudinal 'distance'
+                    PointCoordinateType dotprod = s.u.dot(AP2D);
+
+                    PointCoordinateType squareDist = 0;
+                    if (dotprod < 0.0f)
+                    {
+                        //dist to nearest vertex
+                        squareDist = AP2D.norm2();
+                    }
+                    else if (dotprod > s.d)
+                    {
+                        //dist to nearest vertex
+                        squareDist = (P2D - s.B).norm2();
+                    }
+                    else
+                    {
+                        //orthogonal distance
+                        squareDist = (AP2D - s.u*dotprod).norm2();
+                    }
+
+                    if (squareDist <= maxSquareDistToPolyline)
+                    {
+                        if (closestSegment < 0 || squareDist < minSquareDist)
+                        {
+                            minSquareDist = squareDist;
+                            closestSegment = static_cast<int>(j);
+                        }
+                    }
+                }
+
+                if (closestSegment >= 0)
+                {
+                    const Segment& s = segments[closestSegment];
+
+                    //we use the curvilinear position of the point in the X dimension (and Y is 0)
+                    CCVector3 Q;
+                    {
+                        CCVector2 AP2D = P2D - s.A;
+                        PointCoordinateType dotprod = s.u.dot(AP2D);
+                        PointCoordinateType d = (AP2D - s.u*dotprod).norm();
+
+                        //compute the sign of 'minDist'
+                        PointCoordinateType crossprod = AP2D.y * s.u.x - AP2D.x * s.u.y;
+
+                        Q.u[xDim] = s.curvPos + dotprod;
+                        Q.u[yDim] = crossprod < 0 ? -d : d; //signed orthogonal distance to the polyline
+                        Q.u[vertDim] = P->u[vertDim];
+                    }
+
+                    unfoldedIndexes.addPointIndex(i);
+                    unfoldedPoints.push_back(Q);
+                }
+
+            } //for each point
+
+            if (unfoldedIndexes.size() != 0)
+            {
+                //assign the default global shift & scale info
+                ccPointCloud* unfoldedCloud = nullptr;
+                {
+                    if (cloud->isA(CC_TYPES::POINT_CLOUD))
+                        unfoldedCloud = static_cast<ccPointCloud*>(cloud)->partialClone(&unfoldedIndexes);
+                    else
+                        unfoldedCloud = ccPointCloud::From(&unfoldedIndexes, cloud);
+                }
+                if (!unfoldedCloud)
+                {
+                    CCTRACE("Not enough memory");
+                    return unfoldedClouds;
+                }
+
+                assert(unfoldedCloud->size() == unfoldedPoints.size());
+                CCVector3 C = box.minCorner();
+                C.u[vertDim] = 0;
+                C.u[xDim] = box.minCorner().u[xDim]; //we start at the bounding-box limit
+                for (unsigned i = 0; i < unfoldedCloud->size(); ++i)
+                {
+                    //update the points positions
+                    *const_cast<CCVector3*>(unfoldedCloud->getPoint(i)) = unfoldedPoints[i] + C;
+                }
+                unfoldedCloud->invalidateBoundingBox();
+
+                unfoldedCloud->setName(cloud->getName() + ".unfolded");
+                unfoldedCloud->copyGlobalShiftAndScale(*cloud);
+
+                unfoldedCloud->shrinkToFit();
+
+                unfoldedClouds.push_back(unfoldedCloud);
+                ++exportedClouds;
+            }
+            else
+            {
+                CCTRACE("[Unfold] No point of the cloud " << cloud->getName().toStdString() << " were unfolded (check parameters)");
+            }
+
+        } //for each cloud
+    }
+
+    CCTRACE("[Unfold] " << exportedClouds << " cloud(s) exported");
+    return unfoldedClouds;
+}
+
+// end of adapted from qCC for extract sections...
+// ----------------------------------------------------------------------------
+
+
 PYBIND11_MODULE(_cloudComPy, m0)
 {
     export_colors(m0);
@@ -1023,6 +2629,12 @@ PYBIND11_MODULE(_cloudComPy, m0)
         .value("AVERAGE", ccPointCloudInterpolator::Parameters::Algo::AVERAGE)
         .value("MEDIAN", ccPointCloudInterpolator::Parameters::Algo::MEDIAN)
         .value("NORMAL_DIST", ccPointCloudInterpolator::Parameters::Algo::NORMAL_DIST)
+        .export_values();
+
+    py::enum_<EnvelopeType>(m0, "EnvelopeType")
+        .value("ENV_LOWER", EnvelopeType::ENV_LOWER)
+        .value("ENV_UPPER", EnvelopeType::ENV_UPPER)
+        .value("ENV_FULL", EnvelopeType::ENV_FULL)
         .export_values();
 
     m0.def("importFile", &importFilePy,
@@ -1224,12 +2836,16 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::arg("KrigingParamsKNN")=8,
            py::arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
            py::arg("gridBBox")=ccBBox(),
+           py::arg("percentile")=50.0,
            py::arg("export_perCellCount")=false,
            py::arg("export_perCellMinHeight")=false,
            py::arg("export_perCellMaxHeight")=false,
            py::arg("export_perCellAvgHeight")=false,
            py::arg("export_perCellHeightStdDev")=false,
            py::arg("export_perCellHeightRange")=false,
+           py::arg("export_perCellMedian")=false,
+           py::arg("export_perCellPercentile")=false,
+           py::arg("export_perCellUniqueCount")=false,
            cloudComPy_RasterizeToCloud_doc,
            py::return_value_policy::reference);
 
@@ -1249,12 +2865,16 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::arg("KrigingParamsKNN")=8,
            py::arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
            py::arg("gridBBox")=ccBBox(),
+           py::arg("percentile")=50.0,
            py::arg("export_perCellCount")=false,
            py::arg("export_perCellMinHeight")=false,
            py::arg("export_perCellMaxHeight")=false,
            py::arg("export_perCellAvgHeight")=false,
            py::arg("export_perCellHeightStdDev")=false,
            py::arg("export_perCellHeightRange")=false,
+           py::arg("export_perCellMedian")=false,
+           py::arg("export_perCellPercentile")=false,
+           py::arg("export_perCellUniqueCount")=false,
            cloudComPy_RasterizeToMesh_doc,
            py::return_value_policy::reference);
 
@@ -1274,13 +2894,61 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::arg("KrigingParamsKNN")=8,
            py::arg("customHeight")=std::numeric_limits<double>::quiet_NaN(),
            py::arg("gridBBox")=ccBBox(),
+           py::arg("percentile")=50.0,
            py::arg("export_perCellCount")=false,
            py::arg("export_perCellMinHeight")=false,
            py::arg("export_perCellMaxHeight")=false,
            py::arg("export_perCellAvgHeight")=false,
            py::arg("export_perCellHeightStdDev")=false,
            py::arg("export_perCellHeightRange")=false,
+           py::arg("export_perCellMedian")=false,
+           py::arg("export_perCellPercentile")=false,
+           py::arg("export_perCellUniqueCount")=false,
            cloudComPy_RasterizeGeoTiffOnly_doc,
            py::return_value_policy::reference);
+
+    m0.def("extractPointsAlongSections", &extractPointsAlongSections,
+           py::arg("clouds"),
+           py::arg("sections"),
+           py::arg("defaultSectionThickness")=-1.0,
+           py::arg("envelopeMaxEdgeLength")=0,
+           py::arg("extractSectionsAsClouds")=false,
+           py::arg("extractSectionsAsEnvelopes")=true,
+           py::arg("multipass")=false,
+           py::arg("splitEnvelope")=false,
+           py::arg("s_extractSectionsType")=EnvelopeType::ENV_LOWER,
+           py::arg("vertDim")=2,
+           cloudComPy_extractPointsAlongSections_doc);
+
+    m0.def("unfoldPointsAlongPolylines", &unfoldPointsAlongPolylines,
+           py::arg("clouds"),
+           py::arg("polylines"),
+           py::arg("thickness"),
+           py::arg("vertDim")=2,
+           cloudComPy_unfoldPointsAlongPolylines_doc);
+
+    m0.def("addToRenderScene", &addToRenderScene,
+    		py::arg("obj"), py::arg("showScalar")=true, cloudComPy_addToRenderScene_doc);
+
+    m0.def("removeFromRenderScene", &removeFromRenderScene, cloudComPy_removeFromRenderScene_doc);
+
+    m0.def("render", &renderPy,
+    		py::arg("filename"), py::arg("width")=1500, py::arg("height")=1000, cloudComPy_render_doc);
+
+    m0.def("setOrthoView", &setOrthoView, cloudComPy_setOrthoView_doc);
+    m0.def("setCenteredPerspectiveView", &setCenteredPerspectiveView, cloudComPy_setCenteredPerspectiveView_doc);
+    m0.def("setViewerPerspectiveView", &setViewerPerspectiveView, cloudComPy_setViewerPerspectiveView_doc);
+    m0.def("setGlobalZoom", &setGlobalZoom, cloudComPy_setGlobalZoom_doc);
+    m0.def("zoomOnSelectedEntity", &zoomOnSelectedEntity, cloudComPy_zoomOnSelectedEntity_doc);
+    m0.def("setFrontView", &setFrontView, cloudComPy_setFrontView_doc);
+    m0.def("setBottomView", &setBottomView, cloudComPy_setBottomView_doc);
+    m0.def("setTopView", &setTopView, cloudComPy_setTopView_doc);
+    m0.def("setBackView", &setBackView, cloudComPy_setBackView_doc);
+    m0.def("setLeftView", &setLeftView, cloudComPy_setLeftView_doc);
+    m0.def("setRightView", &setRightView, cloudComPy_setRightView_doc);
+    m0.def("setIsoView1", &setIsoView1, cloudComPy_setIsoView1_doc);
+    m0.def("setIsoView2", &setIsoView2, cloudComPy_setIsoView2_doc);
+    m0.def("setCustomView", &setCustomView, cloudComPy_setCustomView_doc);
+    m0.def("setCameraPos", &setCameraPos, cloudComPy_setCameraPos_doc);
 
 }

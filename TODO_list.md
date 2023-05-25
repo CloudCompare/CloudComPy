@@ -126,6 +126,7 @@ TODO List
 * DONE: (issue #59) implement sensors and scattering angles calculation
 * DONE: (issue #60) implement GuessBestParams for M2C2 plugin
 * DONE: (issue #40) build examples of loop with objects created and destroyed for a stable memory usage
+* DONE: (issue #49) evaluate the feasibility of a virtual 3D view snapshot
 * DONE: (issue #62) fix or document memory leak problem
 * DONE: (issue #61) add CSF filter
 * DONE: Try PyBind11 as a replacement for boost.python : potentially faster and lighter.
@@ -155,18 +156,17 @@ TODO List
 * DONE: (issue #95) merge components (from ExtractConnectedComponents), retrieve small components not listed
 * DONE: merge label components development
 * DONE: (issue #100) build with a fix on pcl library to export large clouds, pcd format. Add an optional test
+* DONE: (issue #103) extract section feature
+* DONE: (issue #109) add missing features in Rasterize function (SF cell statistics, percentile)
+* DONE: (issue #111) resampleCloudSpatially modParams parameter should be optional
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
 - TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
 - TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
-- TODO: (issue #49) evaluate the feasibility of a virtual 3D view snapshot
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 - TODO: Fix documentation on building on Windows
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
-- TODO: (issue #103) extract section feature
 - TODO: (issue #104) CloudComPy for Mac
 - TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display)
-- TODO: (issue #109) add missing features in Rasterize function (SF cell statistics, percentile)
-- TODO: (issue #111) resampleCloudSpatially modParams parameter should be optional
 

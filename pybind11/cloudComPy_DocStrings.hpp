@@ -85,6 +85,41 @@ the gap is roughly d/2**n.
 :rtype: tuple
 )";
 
+const char* cloudComPy_extractPointsAlongSections_doc= R"(
+Extract clouds slices along sections or generate vertical profiles.
+
+Either the points are kept where they are (result are clouds slices), or the points
+are projected on a plane formed by section and the vertical direction (result are polylines).
+
+:param list[ccPointCloud] clouds: list of clouds
+:param list[ccPolyline] sections: list of sections
+:param double,optional defaultSectionThickness: point are kept if distance from section < defaultSectionThickness/2
+                                                default -1, meaning clouds bounding box / 500
+:param double,optional envelopeMaxEdgeLength: maximum edge length for split edges operation
+                                              default 0 meaning clouds bounding box / 500
+:param bool,optional extractSectionsAsClouds: get the result as clouds, default False
+:param bool,optional extractSectionsAsEnvelopes: get the result as polylines, default True
+:param bool,optional multipass: default False
+:param bool,optional splitEnvelope: default false, split envelope following clouds
+:param int,optional EnvelopeType: from fCloudComPy.EnvelopeType, default ENV_LOWER
+:param int,optional vertDim: vertical direction, value in O (oX), 1 (oY), 2 (oZ), default 2
+ 
+:return: list of entities (cloud or polyline)
+:rtype: list of ccPointClouds or ccPolylines
+)";
+
+const char* cloudComPy_unfoldPointsAlongPolylines_doc= R"(
+Unfold the polylines and the clouds along the polylines, with a given thickness.
+
+:param list[ccPointCloud] clouds: list of clouds
+:param list[ccPolyline] polylines: list of polylines
+:param double thickness: only points within the given distance to the polyline are kept
+:param int,optional vertDim: vertical direction, value in O (oX), 1 (oY), 2 (oZ), default 2
+
+:return: list of clouds
+:rtype: list of ccPointClouds
+)";
+
 const char* cloudComPy_LabelConnectedComponents_doc= R"(
 Label connected components in a set of clouds.
 
@@ -635,13 +670,17 @@ GeoTiff files are only available with the GDAL plugin.
 :param double,optional DelaunayMaxEdgeLength: used when EmptyCellFillOption is INTERPOLATE_DELAUNAY: maximum edge length, default 1.0 
 :param int,optional KrigingParamsKNN: used when EmptyCellFillOption is KRIGING: number of neighbour nodes, default 8
 :param float,optional customHeight: default float('nan')
-:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
-:param bool export_perCellCount: export scalarField, default False
-:param bool export_perCellMinHeight: export scalarField, default False
-:param bool export_perCellMaxHeight: export scalarField, default False
-:param bool export_perCellAvgHeight: export scalarField, default False
-:param bool export_perCellHeightStdDev: export scalarField, default False
-:param bool export_perCellHeightRange: export scalarField, default False
+:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box
+:param float,optional percentile: the percentile value to use for export percentile statistics, default 50.
+:param bool,optional export_perCellCount: export scalarField, default False
+:param bool,optional export_perCellMinHeight: export scalarField, default False
+:param bool,optional export_perCellMaxHeight: export scalarField, default False
+:param bool,optional export_perCellAvgHeight: export scalarField, default False
+:param bool,optional export_perCellHeightStdDev: export scalarField, default False
+:param bool,optional export_perCellHeightRange: export scalarField, default False
+:param bool,optional export_perCellMedian: export scalarField, default False
+:param bool,optional export_perCellPercentile: export scalarField, default False
+:param bool,optional export_perCellUniqueCount: export scalarField, default False
 
 :return: the raster cloud
 :rtype: ccPointCloud
@@ -666,13 +705,17 @@ GeoTiff files are only available with the GDAL plugin.
 :param double,optional DelaunayMaxEdgeLength: used when EmptyCellFillOption is INTERPOLATE_DELAUNAY: maximum edge length, default 1.0 
 :param int,optional KrigingParamsKNN: used when EmptyCellFillOption is KRIGING: number of neighbour nodes, default 8
 :param float,optional customHeight: default float('nan')
-:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
-:param bool export_perCellCount: export scalarField, default False
-:param bool export_perCellMinHeight: export scalarField, default False
-:param bool export_perCellMaxHeight: export scalarField, default False
-:param bool export_perCellAvgHeight: export scalarField, default False
-:param bool export_perCellHeightStdDev: export scalarField, default False
-:param bool export_perCellHeightRange: export scalarField, default False
+:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box
+:param float,optional percentile: the percentile value to use for export percentile statistics, default 50.
+:param bool,optional export_perCellCount: export scalarField, default False
+:param bool,optional export_perCellMinHeight: export scalarField, default False
+:param bool,optional export_perCellMaxHeight: export scalarField, default False
+:param bool,optional export_perCellAvgHeight: export scalarField, default False
+:param bool,optional export_perCellHeightStdDev: export scalarField, default False
+:param bool,optional export_perCellHeightRange: export scalarField, default False
+:param bool,optional export_perCellMedian: export scalarField, default False
+:param bool,optional export_perCellPercentile: export scalarField, default False
+:param bool,optional export_perCellUniqueCount: export scalarField, default False
 
 :return: the raster mesh
 :rtype: ccMesh
@@ -697,13 +740,17 @@ GeoTiff files are only available with the GDAL plugin.
 :param double,optional DelaunayMaxEdgeLength: used when EmptyCellFillOption is INTERPOLATE_DELAUNAY: maximum edge length, default 1.0 
 :param int,optional KrigingParamsKNN: used when EmptyCellFillOption is KRIGING: number of neighbour nodes, default 8
 :param float,optional customHeight: default float('nan')
-:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box);
-:param bool export_perCellCount: export scalarField, default False
-:param bool export_perCellMinHeight: export scalarField, default False
-:param bool export_perCellMaxHeight: export scalarField, default False
-:param bool export_perCellAvgHeight: export scalarField, default False
-:param bool export_perCellHeightStdDev: export scalarField, default False
-:param bool export_perCellHeightRange: export scalarField, default False
+:param ccBBox,optional gridBBox: default ccBBox() the bounding box used for the raster is by default the cloud bounding box
+:param float,optional percentile: the percentile value to use for export percentile statistics, default 50.
+:param bool,optional export_perCellCount: export scalarField, default False
+:param bool,optional export_perCellMinHeight: export scalarField, default False
+:param bool,optional export_perCellMaxHeight: export scalarField, default False
+:param bool,optional export_perCellAvgHeight: export scalarField, default False
+:param bool,optional export_perCellHeightStdDev: export scalarField, default False
+:param bool,optional export_perCellHeightRange: export scalarField, default False
+:param bool,optional export_perCellMedian: export scalarField, default False
+:param bool,optional export_perCellPercentile: export scalarField, default False
+:param bool,optional export_perCellUniqueCount: export scalarField, default False
 
 :return: None
 :rtype: None
@@ -714,5 +761,84 @@ Activate or deactivate trace system.
 
 :param bool isActive: whether to activate or deactivate the trace system.
 )";
+
+const char* cloudComPy_addToRenderScene_doc= R"(
+RenderViewToFile: add an entity to the scene view.
+
+:param ccHObject entity: the entity to display
+)";
+
+const char* cloudComPy_removeFromRenderScene_doc= R"(
+RenderViewToFile: remove an entity from the scene view.
+
+**WARNING**: the entity is deleted! The Python variable is no more usable (set it to None)
+
+:param ccHObject entity: the entity to remove
+)";
+
+const char* cloudComPy_render_doc= R"(
+RenderViewToFile: write the image file from the 3D scene.
+
+:param string filename: the filename with it's path and extension. The extension defines the image format (.png, .jpg, ...)
+:param int,optional width: the width of the image (pixels), default 1500
+:param int,optional height: the height of the image (pixels), default 1000
+)";
+
+const char* cloudComPy_setOrthoView_doc= R"(
+RenderViewToFile: set the type of view to ortho (no perspective)
+)";
+
+const char* cloudComPy_setCenteredPerspectiveView_doc= R"(
+RenderViewToFile: set the type of perspective to object centered)";
+
+const char* cloudComPy_setViewerPerspectiveView_doc= R"(
+RenderViewToFile: set the type of perspective to viewer centered)";
+
+const char* cloudComPy_setGlobalZoom_doc= R"(
+RenderViewToFile: zoom to the whole scene)";
+
+const char* cloudComPy_zoomOnSelectedEntity_doc= R"(
+RenderViewToFile: zoom on the selected entity)";
+
+const char* cloudComPy_setFrontView_doc= R"(
+RenderViewToFile: set front view)";
+
+const char* cloudComPy_setBottomView_doc= R"(
+RenderViewToFile: set bottom view)";
+
+
+const char* cloudComPy_setTopView_doc= R"(
+RenderViewToFile: set top view)";
+
+
+const char* cloudComPy_setBackView_doc= R"(
+RenderViewToFile: set back view)";
+
+
+const char* cloudComPy_setLeftView_doc= R"(
+RenderViewToFile: set left view)";
+
+const char* cloudComPy_setRightView_doc= R"(
+RenderViewToFile: set right view)";
+
+const char* cloudComPy_setIsoView1_doc= R"(
+RenderViewToFile: set iso view, first type)";
+
+const char* cloudComPy_setIsoView2_doc= R"(
+RenderViewToFile: set iso view, second type)";
+
+const char* cloudComPy_setCustomView_doc= R"(
+RenderViewToFile: set a custom view, defining a look vector and an up direction
+
+:param CCVector3d forward: direction of view
+:param CCVector3d up: up direction (to define "up" in the image
+)";
+
+const char* cloudComPy_setCameraPos_doc= R"(
+RenderViewToFile: define a camera position.
+
+:param CCVector3d P: camera position
+)";
+
 
 #endif /* CLOUDCOMPY_DOCSTRINGS_HPP_ */

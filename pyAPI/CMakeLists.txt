@@ -52,6 +52,7 @@ target_include_directories( PYCC_LIB PUBLIC
     ${CC_FBO_LIB_SOURCE_DIR}/include
     ${CCCoreLib_SOURCE_DIR}/include
     ${QCC_DB_LIB_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/ccViewer
     )
     
 if( MSVC )
@@ -67,14 +68,17 @@ target_include_directories( PYCC_LIB PUBLIC
     ${CloudComparePlugins_SOURCE_DIR} 
     ${CloudCompare_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../viewer
     ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/CCAppCommon/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/CCPluginAPI/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/CCPluginStub/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/qCC_glWindow/include
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}/../viewer
     )
 
 target_link_libraries( PYCC_LIB
+    viewerPy
     CCAppCommon
     )
 

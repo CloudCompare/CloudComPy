@@ -48,8 +48,7 @@ if res != 0:
 #---partialClone01-end
 
 #---resampleCloudSpatially01-begin
-params = cc.SFModulationParams()
-refCloud = cc.CloudSamplingTools.resampleCloudSpatially(cloud, 0.05, params)
+refCloud = cc.CloudSamplingTools.resampleCloudSpatially(cloud, 0.05)
 (spatialCloud, res) = cloud.partialClone(refCloud)
 spatialCloud.setName("spatialCloud")
 

@@ -45,10 +45,7 @@
 #include <SimpleMesh.h>
 #include <ccMaterialSet.h>
 #include <ccHObject.h>
-//#include <ccObject.h>
-
-//libs/qCC_io
-#include<AsciiFilter.h>
+#include <AsciiFilter.h>
 #include <pyccTrace.h>
 
 //libs/CCPluginStub
@@ -77,6 +74,8 @@
 #include <QObject>
 #include <QMessageBox>
 
+#include <viewerPy.h>
+#include <viewerPyApplication.h>
 #include "optdefines.h"
 
 #ifdef PLUGIN_IO_QFBX
@@ -240,7 +239,13 @@ pyCC* initCloudCompare()
     if (!s_pyCCInternals)
     {
         CCTRACE("initCloudCompare");
-        QApplication* app = new QApplication(pyCC_argc, pyCC_argv);
+    	//viewerPyApplication::InitOpenGL();
+        QDir appDir = initCC::moduleDir;
+        appDir.cdUp();
+        appDir.cdUp();
+        QString appliDir = appDir.absolutePath() + "/bin";
+    	viewerPyApplication* app = new viewerPyApplication(pyCC_argc, pyCC_argv, true, appliDir);
+    	//QApplication* app = new QApplication(pyCC_argc, pyCC_argv);
         s_pyCCInternals = new pyCC;
         s_pyCCInternals->m_silentMode = false;
         s_pyCCInternals->m_autoSaveMode = true;
@@ -345,6 +350,7 @@ void pyCC_setupPaths(pyCC* capi)
         }
     }
 }
+
 ccPolyline* loadPolyline(
     const char* filename, CC_SHIFT_MODE mode, int skip, double x, double y, double z)
 {
@@ -1999,12 +2005,16 @@ ccPointCloud* RasterizeToCloud(
     int KrigingParamsKNN,
 	double customHeight,
 	ccBBox gridBBox,
+    double percentile,
     bool export_perCellCount,
     bool export_perCellMinHeight,
     bool export_perCellMaxHeight,
     bool export_perCellAvgHeight,
     bool export_perCellHeightStdDev,
-    bool export_perCellHeightRange)
+    bool export_perCellHeightRange,
+    bool export_perCellMedian,
+    bool export_perCellPercentile,
+    bool export_perCellUniqueCount)
 {
 	CCTRACE("RasterizeToCloud");
     std::vector<ccRasterGrid::ExportableFields> extraScalarFields = {};
@@ -2014,11 +2024,14 @@ ccPointCloud* RasterizeToCloud(
     if (export_perCellAvgHeight) extraScalarFields.push_back(ccRasterGrid::PER_CELL_AVG_VALUE);
     if (export_perCellHeightStdDev) extraScalarFields.push_back(ccRasterGrid::PER_CELL_VALUE_STD_DEV);
     if (export_perCellHeightRange) extraScalarFields.push_back(ccRasterGrid::PER_CELL_VALUE_RANGE);
+    if (export_perCellMedian) extraScalarFields.push_back(ccRasterGrid::PER_CELL_MEDIAN_VALUE);
+    if (export_perCellPercentile) extraScalarFields.push_back(ccRasterGrid::PER_CELL_PERCENTILE_VALUE);
+    if (export_perCellUniqueCount) extraScalarFields.push_back(ccRasterGrid::PER_CELL_UNIQUE_COUNT_VALUE);
 	ccHObject* entity = Rasterize_(cloud, gridStep, vertDir, 1,
 			outputRasterZ, outputRasterSFs, outputRasterRGB, pathToImages, resample,
 			projectionType, sfProjectionType, emptyCellFillStrategy,
 			DelaunayMaxEdgeLength, KrigingParamsKNN,
-			customHeight, gridBBox, extraScalarFields);
+			customHeight, gridBBox, percentile, extraScalarFields);
 	CCTRACE("entity:" << entity);
 	ccPointCloud* rcloud = ccHObjectCaster::ToPointCloud(entity);
 	return rcloud;
@@ -2040,12 +2053,16 @@ ccMesh* RasterizeToMesh(
     int KrigingParamsKNN,
 	double customHeight,
 	ccBBox gridBBox,
+    double percentile,
     bool export_perCellCount,
     bool export_perCellMinHeight,
     bool export_perCellMaxHeight,
     bool export_perCellAvgHeight,
     bool export_perCellHeightStdDev,
-    bool export_perCellHeightRange)
+    bool export_perCellHeightRange,
+    bool export_perCellMedian,
+    bool export_perCellPercentile,
+    bool export_perCellUniqueCount)
 {
     CCTRACE("RasterizeToMesh");
     std::vector<ccRasterGrid::ExportableFields> extraScalarFields = {};
@@ -2055,11 +2072,14 @@ ccMesh* RasterizeToMesh(
     if (export_perCellAvgHeight) extraScalarFields.push_back(ccRasterGrid::PER_CELL_AVG_VALUE);
     if (export_perCellHeightStdDev) extraScalarFields.push_back(ccRasterGrid::PER_CELL_VALUE_STD_DEV);
     if (export_perCellHeightRange) extraScalarFields.push_back(ccRasterGrid::PER_CELL_VALUE_RANGE);
+    if (export_perCellMedian) extraScalarFields.push_back(ccRasterGrid::PER_CELL_MEDIAN_VALUE);
+    if (export_perCellPercentile) extraScalarFields.push_back(ccRasterGrid::PER_CELL_PERCENTILE_VALUE);
+    if (export_perCellUniqueCount) extraScalarFields.push_back(ccRasterGrid::PER_CELL_UNIQUE_COUNT_VALUE);
 	ccHObject* entity = Rasterize_(cloud, gridStep, vertDir, 2,
 			outputRasterZ, outputRasterSFs, outputRasterRGB, pathToImages, resample,
 			projectionType, sfProjectionType, emptyCellFillStrategy,
             DelaunayMaxEdgeLength, KrigingParamsKNN,
-			customHeight, gridBBox, extraScalarFields);
+			customHeight, gridBBox, percentile, extraScalarFields);
 	CCTRACE("entity:" << entity);
 	ccMesh* mesh = ccHObjectCaster::ToMesh(entity);
 	return mesh;
@@ -2081,12 +2101,16 @@ ccHObject* RasterizeGeoTiffOnly(
     int KrigingParamsKNN,
 	double customHeight,
 	ccBBox gridBBox,
+    double percentile,
     bool export_perCellCount,
     bool export_perCellMinHeight,
     bool export_perCellMaxHeight,
     bool export_perCellAvgHeight,
     bool export_perCellHeightStdDev,
-    bool export_perCellHeightRange)
+    bool export_perCellHeightRange,
+    bool export_perCellMedian,
+    bool export_perCellPercentile,
+    bool export_perCellUniqueCount)
 {
     CCTRACE("RasterizeGeoTiffOnly");
     std::vector<ccRasterGrid::ExportableFields> extraScalarFields = {};
@@ -2096,11 +2120,14 @@ ccHObject* RasterizeGeoTiffOnly(
     if (export_perCellAvgHeight) extraScalarFields.push_back(ccRasterGrid::PER_CELL_AVG_VALUE);
     if (export_perCellHeightStdDev) extraScalarFields.push_back(ccRasterGrid::PER_CELL_VALUE_STD_DEV);
     if (export_perCellHeightRange) extraScalarFields.push_back(ccRasterGrid::PER_CELL_VALUE_RANGE);
+    if (export_perCellMedian) extraScalarFields.push_back(ccRasterGrid::PER_CELL_MEDIAN_VALUE);
+    if (export_perCellPercentile) extraScalarFields.push_back(ccRasterGrid::PER_CELL_PERCENTILE_VALUE);
+    if (export_perCellUniqueCount) extraScalarFields.push_back(ccRasterGrid::PER_CELL_UNIQUE_COUNT_VALUE);
 	ccHObject* entity = Rasterize_(cloud, gridStep, vertDir, 2,
 			outputRasterZ, outputRasterSFs, outputRasterRGB, pathToImages, resample,
 			projectionType, sfProjectionType, emptyCellFillStrategy,
             DelaunayMaxEdgeLength, KrigingParamsKNN,
-			customHeight, gridBBox, extraScalarFields);
+			customHeight, gridBBox, percentile, extraScalarFields);
 	return nullptr; // only image files created, no object returned
 }
 
@@ -2498,6 +2525,7 @@ ccHObject* Rasterize_(
     int KrigingParamsKNN,
 	double customHeight,
 	ccBBox gridBBox,
+	double percentile,
     const std::vector<ccRasterGrid::ExportableFields>& extraScalarFields)
 {
 	CCTRACE("Rasterize_");
@@ -2599,6 +2627,13 @@ ccHObject* Rasterize_(
                 //we always compute the default 'height' layer
                 std::vector<ccRasterGrid::ExportableFields> exportedStatistics(1);
                 exportedStatistics.back() = ccRasterGrid::PER_CELL_VALUE;
+                for(auto & item : extraScalarFields)
+                {
+                    if (item != ccRasterGrid::PER_CELL_VALUE)
+                        exportedStatistics.push_back(item);
+                    if (item == ccRasterGrid::PER_CELL_COUNT)
+                        isCellCount = true;
+                }
 
                 rasterCloud = grid.convertToCloud(  true,
                                                     false,
@@ -2610,44 +2645,17 @@ ccHObject* Rasterize_(
                                                     cloud,
                                                     vertDir,
                                                     gridBBox,
-                                                    0.0,
+                                                    percentile,
                                                     true,
                                                     nullptr
                                                 );
 
             }
             catch (const std::bad_alloc&)
-//			std::vector<ccRasterGrid::ExportableFields> exportedFields;
-//			try
-//			{
-//				//we always compute the default 'height' layer
-//				exportedFields.push_back(ccRasterGrid::PER_CELL_VALUE);
-//				for(auto & item : extraScalarFields)
-//				{
-//				    exportedFields.push_back(item);
-//				    if (item == ccRasterGrid::PER_CELL_COUNT)
-//				        isCellCount = true;
-//				}
-//			}
-//			catch (const std::bad_alloc&)
-			{
-				CCTRACE("Not enough memory");
-				return nullptr;
-			}
-
-//			ccPointCloud* rasterCloud = grid.convertToCloud(
-//			                                exportedFields,
-//			                                true,
-//			                                true,
-//			                                resample,
-//			                                resample,
-//			                                cloud,
-//			                                vertDir,
-//			                                gridBBox,
-//			                                emptyCellFillStrategy == ccRasterGrid::FILL_CUSTOM_HEIGHT,
-//			                                customHeight,
-//			                                true
-//			                                );
+            {
+                CCTRACE("Not enough memory");
+                return nullptr;
+            }
 
 			if (!rasterCloud)
 			{

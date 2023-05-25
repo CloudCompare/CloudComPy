@@ -78,6 +78,7 @@ if( PLUGIN_STANDARD_QM3C2 )
 endif()
 
 add_subdirectory( CloudCompare )
+add_subdirectory( viewer )
 add_subdirectory( pyAPI )
 add_subdirectory( pybind11 )
 add_subdirectory( tests )
