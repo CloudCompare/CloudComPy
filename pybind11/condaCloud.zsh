@@ -37,9 +37,10 @@ activate()
         export PATH_SAVED=${PATH}
         export LD_LIBRARY_PATH=${CONDA_ENV_ROOT}/lib:${LD_LIBRARY_PATH}
         export PATH=${CLOUDCOMPY_ROOT}/bin:${PATH}
-        export PYTHONPATH=${CLOUDCOMPY_ROOT}/lib/cloudcompare:${PYTHONPATH}
+        export PYTHONPATH=${CLOUDCOMPY_ROOT}/CloudCompare:${PYTHONPATH}
+        export PYTHONPATH=${CLOUDCOMPY_ROOT}/lib:${PYTHONPATH}
         export PYTHONPATH=${CLOUDCOMPY_ROOT}/doc/PythonAPI_test:${PYTHONPATH}
-        export LD_LIBRARY_PATH=${CLOUDCOMPY_ROOT}/lib/cloudcompare:${CLOUDCOMPY_ROOT}/lib/cloudcompare/plugins:${LD_LIBRARY_PATH}
+        export LD_LIBRARY_PATH=${CLOUDCOMPY_ROOT}/lib:${CLOUDCOMPY_ROOT}/CloudCompare/CloudCompare.app/Contents/Frameworks:${LD_LIBRARY_PATH}
         export CONDACLOUD_ACTIVATED=1
         export LC_NUMERIC=C
     fi
@@ -96,8 +97,8 @@ else
     echo ${CLOUDCOMPY_ROOT}
     PROG=$(basename $0)
     echo ${PROG}
-    CONDA_ROOT=$(conda info | grep "env location"|awk '{print $NF}')
-    . ${CONDA_ROOT}/etc/profile.d/conda.sh                                       # required to have access to conda commands in a shell script
+    CONDA_ROOT=$(conda info | grep "envs directories"|awk '{print $NF}')
+    . ${CONDA_ROOT}/../etc/profile.d/conda.sh                                       # required to have access to conda commands in a shell script
     
     case $# in
         1 ) if [ "$1" = "deactivate" ]; then

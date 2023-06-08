@@ -142,6 +142,8 @@ endif()
 
 if(WIN32)
   set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _cloudComPy_d RELEASE_OUTPUT_NAME _cloudComPy)
+elseif(APPLE)
+  set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".cpython-310-darwin.so" DEBUG_OUTPUT_NAME _cloudComPy_d RELEASE_OUTPUT_NAME _cloudComPy)
 else()
   set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 endif()
