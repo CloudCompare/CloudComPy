@@ -49,6 +49,7 @@
 #include <AsciiFilter.h>
 #include <pyccTrace.h>
 
+#include <ccContourLinesGenerator.h>
 //libs/CCPluginStub
 #include "ccPluginInterface.h"
 
@@ -286,7 +287,7 @@ void pyCC_setupPaths(pyCC* capi)
         bundleDir.cdUp();
     }
 
-    m_PluginPaths << (bundleDir.absolutePath() + "/PlugIns/ccPlugins");
+    capi->m_PluginPaths << (bundleDir.absolutePath() + "/PlugIns/ccPlugins");
 
 #if defined(CC_MAC_DEV_PATHS)
     // Used for development only - this is the path where the plugins are built

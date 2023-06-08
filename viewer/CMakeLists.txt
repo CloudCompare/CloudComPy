@@ -1,6 +1,6 @@
 project( viewerPy VERSION 1.38.0 )
 
-add_library( ${PROJECT_NAME} STATIC )
+	add_library( ${PROJECT_NAME} STATIC )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 

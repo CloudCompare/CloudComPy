@@ -108,7 +108,11 @@ endif()
 
 # --- environment scripts, with conda
 
-set (ENV_SCRIPTS condaCloud.sh)
+if (APPLE)
+	set (ENV_SCRIPTS condaCloud.zsh)
+else()
+	set (ENV_SCRIPTS condaCloud.sh)
+endif()
 option(USE_CONDA_PACKAGES "Use Conda packages and environment for build: add commands for set/unset run environment" OFF)
 
 # --- Python scripts with added functions
@@ -128,6 +132,9 @@ else()
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON} )
     install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON}/cloudComPy)
+endif()
+
+if(NOT WIN32)
     if (USE_CONDA_PACKAGES)
         install(PROGRAMS ${ENV_SCRIPTS} DESTINATION ${CMAKE_INSTALL_BINDIR})
     endif()
