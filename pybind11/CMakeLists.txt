@@ -25,9 +25,12 @@ message(STATUS "Python3 and pybind11 processing")
 
 set(PYTHON_PREFERED_VERSION "3.9" CACHE STRING "Select a Python version: it should be installed with all packages required for CloudCompare (pyqt, sip, numpy)")
 set_property(CACHE PYTHON_PREFERED_VERSION PROPERTY STRINGS "3.6" "3.7" "3.8" "3.9" "3.10")
+
 message(STATUS "  python prefered version: " ${PYTHON_PREFERED_VERSION})
+
 set(Python_ADDITIONAL_VERSIONS ${PYTHON_PREFERED_VERSION}) # priority to this version 
 find_package (Python3 COMPONENTS Interpreter Development)
+
 message(STATUS "  python executable: " ${Python3_EXECUTABLE})
 message(STATUS "  python version: " ${Python3_VERSION})
 message(STATUS "  check match for ${PYTHON_PREFERED_VERSION}.x")
@@ -40,7 +43,8 @@ else()
 endif()
 
 # --- pybind11 detection
-find_package(pybind11 REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
+
 message( STATUS "pybind11_VERSION: ${pybind11_VERSION}")
 message( STATUS "pybind11_LIBRARIES: ${pybind11_LIBRARIES}")
 message( STATUS "pybind11_DEFINITIONS: ${pybind11_DEFINITIONS}")
@@ -50,10 +54,21 @@ message( STATUS "pybind11_INCLUDE_DIRS: ${pybind11_INCLUDE_DIRS}")
 # --- ----------------------------------------------------------
 # --- target pybind11 library: Python module cloudComPy
 
-project( _cloudComPy VERSION 2.12.0 )
+project( _cloudComPy LANGUAGES CXX VERSION 2.12.0 )
 
-add_library( ${PROJECT_NAME} SHARED )
+add_library( ${PROJECT_NAME} MODULE )
+target_link_libraries( ${PROJECT_NAME}
+	PUBLIC pybind11::module
+    PYCC_LIB
+    CCAppCommon
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::OpenGL
+    Qt5::PrintSupport
+	)
 
+#pybind11_add_module( ${PROJECT_NAME} MODULE )
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
 target_sources( ${PROJECT_NAME}
@@ -77,34 +92,45 @@ target_sources( ${PROJECT_NAME}
     )
 
 target_include_directories( ${PROJECT_NAME} PRIVATE
-    ${pybind11_INCLUDE_DIR}
-    ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../pyAPI
     ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/ccViewer
     ${CCCoreLib_SOURCE_DIR}/include
     ${QCC_DB_LIB_SOURCE_DIR}
     )
+#    ${pybind11_INCLUDE_DIR}
+#    ${Python3_INCLUDE_DIRS}
 
-target_link_libraries( ${PROJECT_NAME}
-    PYCC_LIB
-    CCAppCommon
-    ${Python3_LIBRARIES}
-    )
+#target_link_libraries( ${PROJECT_NAME} PRIVATE pybind11::module pybind11::lto pybind11::windows_extras )
+
+#target_link_libraries( ${PROJECT_NAME}
+#    PYCC_LIB
+#    CCAppCommon
+#    )
 
 # Qt libraries
 
-target_link_libraries( ${PROJECT_NAME}
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::OpenGL
-    Qt5::PrintSupport
-    )
+#target_link_libraries( ${PROJECT_NAME}
+#    Qt5::Core
+#    Qt5::Gui
+#    Qt5::Widgets
+#    Qt5::OpenGL
+#    Qt5::PrintSupport
+#    )
 
 if (WIN32)
    target_link_libraries( ${PROJECT_NAME} Qt5::WinMain)
 endif()
+
+pybind11_extension( ${PROJECT_NAME} )
+
+if(NOT MSVC AND NOT ${CMAKE_BUILD_TYPE} MATCHES Debug|RelWithDebInfo)
+    # Strip unnecessary sections of the binary on Linux/macOS
+    pybind11_strip( ${PROJECT_NAME} )
+endif()
+
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET "hidden"
+                                      		  	 CUDA_VISIBILITY_PRESET "hidden")
 
 # --- environment scripts, with conda
 
@@ -125,7 +151,7 @@ set(PYTHONAPI_SCRIPTS
 # --- install
 
 if( WIN32 OR APPLE)
-	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare )
+	install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION CloudCompare )
 	install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy )
 else()
     set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare )
@@ -140,13 +166,13 @@ if(NOT WIN32)
     endif()
 endif()
 
-if(WIN32)
-  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _cloudComPy_d RELEASE_OUTPUT_NAME _cloudComPy)
-elseif(APPLE)
-  set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".cpython-310-darwin.so" DEBUG_OUTPUT_NAME _cloudComPy_d RELEASE_OUTPUT_NAME _cloudComPy)
-else()
-  set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
-endif()
+#if(WIN32)
+#  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _cloudComPy_d RELEASE_OUTPUT_NAME _cloudComPy)
+#elseif(APPLE)
+#  set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".cpython-310-darwin.so" DEBUG_OUTPUT_NAME _cloudComPy_d RELEASE_OUTPUT_NAME _cloudComPy)
+#else()
+#  set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
+#endif()
 
 if(WIN32)
   if( NOT INSTALL_PREREQUISITE_LIBRARIES )
