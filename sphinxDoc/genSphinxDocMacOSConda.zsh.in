@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+. @CMAKE_INSTALL_PREFIX@/bin/condaCloud.zsh activate CloudComPy310
+rm @SPHINXDOCTREES@/*.doctree
+@SPHINXBUILD@ -c @CMAKE_BINARY_DIR@/sphinxDoc -b html -d @SPHINXDOCTREES@ @ALLSPHINXOPTS@ @CMAKE_INSTALL_PREFIX@/doc/html 
