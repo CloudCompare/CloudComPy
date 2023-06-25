@@ -164,9 +164,8 @@ TODO List
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
 - TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
-- TODO: importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
-- TODO: Fix documentation on building on Windows
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
 - TODO: (issue #104) CloudComPy for Mac
-- TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display)
+- TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display) 
+- TODO: (issue #114) importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
