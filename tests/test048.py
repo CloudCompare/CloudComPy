@@ -43,9 +43,15 @@ if not os.path.isfile(os.path.join(dataExtDir,"pumpARowColumnIndexNoInvalidPoint
 #---extractCC01-begin
 cloud = cc.loadPointCloud(os.path.join(dataExtDir, "pumpARowColumnIndexNoInvalidPoints.e57"))
 res = cc.ExtractConnectedComponents(clouds=[cloud], randomColors=True)
+cloud01 = cc.MergeEntities(res[1], createSFcloudIndex=True)
+cloud01.setName("pump_Extract_Components")
+cloud02 = cc.MergeEntities(res[2], createSFcloudIndex=True)
+cloud02.setName("pump_residual_Components")
 res2 = res[1] + res[2] # connected components plus regrouped residual components
 cloud2 = cc.MergeEntities(res2, createSFcloudIndex=True)
+cloud2.setName("pump_extract_Residual_Components")
 cloud3 = cc.MergeEntities(res2, deleteOriginalClouds=True)
+cloud3.setName("pump_extract_Residual_Components")
 res = None
 #---extractCC01-end
 
@@ -67,4 +73,4 @@ mesh1 = cc.MergeEntities([box, cone, cylinder])
 mesh2 = cc.MergeEntities([box, cone, cylinder], createSubMeshes=True)
 #---merge02-end
 
-cc.SaveEntities([cloud, cloud2, cloud3, box, cone, cylinder, mesh1, mesh2], os.path.join(dataDir, "merge.bin"))
+cc.SaveEntities([cloud, cloud01, cloud02, cloud2, cloud3, box, cone, cylinder, mesh1, mesh2], os.path.join(dataDir, "merge.bin"))

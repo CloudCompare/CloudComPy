@@ -409,7 +409,7 @@ createComponentsClouds_(ccGenericPointCloud* cloud,
                 for (unsigned i = 0; i < numberOfPoints; ++i)
                 {
                     //add the point to the current component
-                    if (!refCloud->addPointIndex(i))
+                    if (!refCloud->addPointIndex(compIndexes->getPointGlobalIndex(i)))
                     {
                         //not enough memory
                         CCTRACE("not enough memory!");
