@@ -38,6 +38,6 @@ HPR is a submodule of cloudCompy:
       import cloudComPy.HPR
       cc.HPR.computeHPR(...)
 """
-from ._HPR import *
+from _HPR import *
 initTrace_HPR()
 

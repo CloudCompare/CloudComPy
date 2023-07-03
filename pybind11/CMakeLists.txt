@@ -24,7 +24,7 @@ message(STATUS "Python3 and pybind11 processing")
 # --- Python detection: if several versions installed, select one with all the required packages installed
 
 set(PYTHON_PREFERED_VERSION "3.9" CACHE STRING "Select a Python version: it should be installed with all packages required for CloudCompare (pyqt, sip, numpy)")
-set_property(CACHE PYTHON_PREFERED_VERSION PROPERTY STRINGS "3.6" "3.7" "3.8" "3.9" "3.10")
+set_property(CACHE PYTHON_PREFERED_VERSION PROPERTY STRINGS "3.6" "3.7" "3.8" "3.9" "3.10" "3.11")
 
 message(STATUS "  python prefered version: " ${PYTHON_PREFERED_VERSION})
 
@@ -57,6 +57,7 @@ message( STATUS "pybind11_INCLUDE_DIRS: ${pybind11_INCLUDE_DIRS}")
 project( _cloudComPy LANGUAGES CXX VERSION 2.12.0 )
 
 add_library( ${PROJECT_NAME} MODULE )
+
 target_link_libraries( ${PROJECT_NAME}
 	PUBLIC pybind11::module
     PYCC_LIB
@@ -150,9 +151,13 @@ set(PYTHONAPI_SCRIPTS
 
 # --- install
 
-if( WIN32 OR APPLE)
+if( WIN32 )
 	install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION CloudCompare )
 	install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy )
+elseif( APPLE )
+	message( STATUS "install MacOS PYTHON : ${CMAKE_INSTALL_PREFIX}/CloudCompare/CloudCompare.app/Contents/Frameworks" )
+	install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/CloudCompare/CloudCompare.app/Contents/Frameworks )
+	install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy )	
 else()
     set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare )
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})

@@ -38,5 +38,5 @@ CSF is a submodule of cloudCompy:
       import cloudComPy.CSF
       cc.CSF.computeCSF(...)
 """
-from ._CSF import *
+from _CSF import *
 initTrace_CSF()

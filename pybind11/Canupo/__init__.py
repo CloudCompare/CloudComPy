@@ -38,5 +38,5 @@ Canupo is a submodule of cloudCompy:
       import cloudComPy.Canupo
       cc.Canupo.computeCanupo(...)
 """
-from ._Canupo import *
+from _Canupo import *
 initTrace_Canupo()

@@ -26,18 +26,28 @@ message(STATUS "Plugin SRA pybind11 processing")
 
 project( _SRA VERSION 0.1 )
 
-add_library( ${PROJECT_NAME} SHARED )
+add_library( ${PROJECT_NAME} MODULE )
+
+target_link_libraries( ${PROJECT_NAME}
+	PUBLIC pybind11::module
+    QSRA_PLUGIN
+    PYCC_LIB
+    CCAppCommon
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::OpenGL
+    Qt5::PrintSupport
+    )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
-    target_sources( ${PROJECT_NAME}
+target_sources( ${PROJECT_NAME}
     PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/SRAPy.cpp
     )
 
 target_include_directories( ${PROJECT_NAME} PRIVATE
-    ${pybind11_INCLUDE_DIR}
-    ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../pybind11
@@ -47,36 +57,43 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
     ${QCC_DB_LIB_SOURCE_DIR}
     )
 
-target_link_libraries( ${PROJECT_NAME}
-    PYCC_LIB
-    CCAppCommon
-    ${Python3_LIBRARIES}
-    )
+#    ${pybind11_INCLUDE_DIR}
+#    ${Python3_INCLUDE_DIRS}
 
-if ( UNIX )
-    target_link_libraries( ${PROJECT_NAME}
-        QSRA_PLUGIN
-        )
-endif()
-if ( MSVC )
-    target_link_libraries( ${PROJECT_NAME}
-        QSRA_PLUGIN
-        )
-endif()
+#if ( UNIX )
+#    target_link_libraries( ${PROJECT_NAME}
+#        QSRA_PLUGIN
+#        )
+#endif()
+#if ( MSVC )
+#    target_link_libraries( ${PROJECT_NAME}
+#        QSRA_PLUGIN
+#        )
+#endif()
 
 # Qt libraries
 
-target_link_libraries( ${PROJECT_NAME}
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::OpenGL
-    Qt5::PrintSupport
-    )
+#target_link_libraries( ${PROJECT_NAME}
+#    Qt5::Core
+#    Qt5::Gui
+#    Qt5::Widgets
+#    Qt5::OpenGL
+#    Qt5::PrintSupport
+#    )
 
 if (WIN32)
    target_link_libraries( ${PROJECT_NAME} Qt5::WinMain)
 endif()
+
+pybind11_extension( ${PROJECT_NAME} )
+
+if(NOT MSVC AND NOT ${CMAKE_BUILD_TYPE} MATCHES Debug|RelWithDebInfo)
+    # Strip unnecessary sections of the binary on Linux/macOS
+    pybind11_strip( ${PROJECT_NAME} )
+endif()
+
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET "hidden"
+                                      		  	 CUDA_VISIBILITY_PRESET "hidden")
 
 # --- Python scripts with added functions
 
@@ -86,9 +103,12 @@ set(PYTHONAPI_SCRIPTS
 
 # --- install
 
-if( WIN32 OR APPLE)
+if( WIN32 )
     install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare/cloudComPy/SRA )
     install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/SRA )
+elseif( APPLE )
+    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/CloudCompare/CloudCompare.app/Contents/Frameworks )
+    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy/SRA )
 else()
     set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare/cloudComPy/SRA)
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})
@@ -96,9 +116,9 @@ else()
     install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
 endif()
 
-if(WIN32)
-  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _SRA_d RELEASE_OUTPUT_NAME _SRA)
-else()
-  set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
-endif()
+#if(WIN32)
+#  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _SRA_d RELEASE_OUTPUT_NAME _SRA)
+#else()
+#  set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
+#endif()
 

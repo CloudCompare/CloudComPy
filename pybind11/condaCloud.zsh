@@ -32,15 +32,12 @@ activate()
     if [[ $ret == "0" ]] && [[ x${CONDACLOUD_ACTIVATED} != "x1" ]]; then
         echo "setenv"
         CONDA_ENV_ROOT=$(realpath "$(dirname $(which python))/..")
-        export LD_LIBRARY_PATH_SAVED=${LD_LIBRARY_PATH}
         export PYTHONPATH_SAVED=${PYTHONPATH}
         export PATH_SAVED=${PATH}
-        export LD_LIBRARY_PATH=${CONDA_ENV_ROOT}/lib:${LD_LIBRARY_PATH}
         export PATH=${CLOUDCOMPY_ROOT}/bin:${PATH}
-        export PYTHONPATH=${CLOUDCOMPY_ROOT}/CloudCompare:${PYTHONPATH}
-        export PYTHONPATH=${CLOUDCOMPY_ROOT}/lib:${PYTHONPATH}
+        export PYTHONPATH=${CLOUDCOMPY_ROOT}:${PYTHONPATH}
+        export PYTHONPATH=${CLOUDCOMPY_ROOT}/CloudCompare/CloudCompare.app/Contents/Frameworks:${PYTHONPATH}
         export PYTHONPATH=${CLOUDCOMPY_ROOT}/doc/PythonAPI_test:${PYTHONPATH}
-        export LD_LIBRARY_PATH=${CLOUDCOMPY_ROOT}/lib:${CLOUDCOMPY_ROOT}/CloudCompare/CloudCompare.app/Contents/Frameworks:${LD_LIBRARY_PATH}
         export CONDACLOUD_ACTIVATED=1
         export LC_NUMERIC=C
     fi
@@ -52,8 +49,6 @@ deactivate()
     CONDA_ENV_ROOT=$(realpath "$(dirname $(which python))/..")
     conda deactivate
     if [[ x${CONDACLOUD_ACTIVATED} == "x1" ]]; then
-        export LD_LIBRARY_PATH=${LD_LIBRARY_PATH_SAVED}
-        export LD_LIBRARY_PATH_SAVED=
         export PYTHONPATH=${PYTHONPATH_SAVED}
         export PYTHONPATH_SAVED=
         export PATH=${PATH_SAVED}
@@ -117,8 +112,6 @@ else
     esac
 fi
 
-export LD_LIBRARY_PATH
-export LD_LIBRARY_PATH_SAVED
 export PYTHONPATH
 export PYTHONPATH_SAVED
 export PATH

@@ -41,6 +41,6 @@ PCL is a submodule of cloudCompy:
       fgr.setParameters(...)
       fgr.compute()
 """
-from ._PCL import *
+from _PCL import *
 initTrace_PCL()
 
