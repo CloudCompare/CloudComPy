@@ -2,6 +2,17 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## July 05, 2023 CloudComPy release:
+
+ - update to CloudCompare master (July 05, 2023)
+ - issue #114 - importFile method: extend to all ccHObject types known to CloudComPy
+ - issue #116 - in ExtractConnectedComponents, when the actual number of components is larger than the maxNumberComponents parameter, return the truncated result.
+ - fix a bug in ExtractConnectedComponents: residual points are not correctly selected (following issue #95)
+ - various small fixes.
+ 
+ ** Note** Work in progress on MacOS port: signing a bundle containing pyBind11 libraries seems quite a challenge!
+    (I am still learning a lot about development in the MacOS environment...)
+
 ## May 24, 2023 CloudComPy release:
 
  - update to CloudCompare master (May 24, 2023)

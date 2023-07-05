@@ -37,6 +37,7 @@
 #include <ccScalarField.h>
 #include <ccSensor.h>
 #include <ccMesh.h>
+#include <ccFacet.h>
 #include <ccGLMatrix.h>
 #include <ccRasterGrid.h>
 #include <ccRasterizeTool.h>
@@ -195,6 +196,9 @@ struct pyCC
 
     //! Currently opened meshes and their filename
     std::vector<CLMeshDesc> m_meshes;
+
+    //! Currently opened facets and their filename
+    //std::vector<CLEntityDesc> m_facets;
 
     //! Currently opened polys and their filename
     std::vector<CLPolyDesc> m_polys;
@@ -585,6 +589,56 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode,
                     assert(false);
                 }
             }
+        }
+    }
+    // look for facets inside loaded DB
+    {
+        ccHObject::Container facets;
+        db->filterChildren(facets, true, CC_TYPES::FACET);
+        size_t count = facets.size();
+        CCTRACE("number of facets: " << count);
+        for (size_t i = 0; i < count; ++i)
+        {
+            ccFacet* pc = static_cast<ccFacet*>(facets[i]);
+            if (pc->getParent())
+            {
+                pc->getParent()->detachChild(pc);
+            }
+
+            //if the cloud is a set of vertices, we ignore it!
+            if (verticesIDs.find(pc->getUniqueID()) != verticesIDs.end())
+            {
+                capi->m_orphans.addChild(pc);
+                continue;
+            }
+            CCTRACE("Found one facet");
+            //capi->m_facets.emplace_back(pc, filename, count == 1 ? -1 : static_cast<int>(i));
+            entities.push_back(pc);
+        }
+    }
+    // look for polylines inside loaded DB
+    {
+        ccHObject::Container polys;
+        db->filterChildren(polys, true, CC_TYPES::POLY_LINE);
+        size_t count = polys.size();
+        CCTRACE("number of polys: " << count);
+        for (size_t i = 0; i < count; ++i)
+        {
+            ccPolyline* pc = static_cast<ccPolyline*>(polys[i]);
+            if (pc->getParent())
+            {
+                pc->getParent()->detachChild(pc);
+            }
+
+            //if the cloud is a set of vertices, we ignore it!
+            if (verticesIDs.find(pc->getUniqueID()) != verticesIDs.end())
+            {
+                capi->m_orphans.addChild(pc);
+                continue;
+            }
+            CCTRACE("Found one poly with " << pc->size() << " points");
+            capi->m_polys.emplace_back(pc, filename, count == 1 ? -1 : static_cast<int>(i));
+            entities.push_back(pc);
         }
     }
 
