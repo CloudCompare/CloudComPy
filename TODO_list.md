@@ -159,6 +159,7 @@ TODO List
 * DONE: (issue #103) extract section feature
 * DONE: (issue #109) add missing features in Rasterize function (SF cell statistics, percentile)
 * DONE: (issue #111) resampleCloudSpatially modParams parameter should be optional
+* DONE: (issue #114) importFile method: extend to all ccHObject types known to CloudComPy
 * DONE: (issue #116) in ExtractConnectedComponents, when the actual number of components is larger than the maxNumberComponents parameter, return the truncated result.
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
@@ -168,4 +169,3 @@ TODO List
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
 - TODO: (issue #104) CloudComPy for Mac
 - TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display) 
-- TODO: (issue #114) importFile method: extend to all ccHObject types known to CloudComPy (see branch importBin)
