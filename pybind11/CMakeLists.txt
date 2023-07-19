@@ -28,6 +28,7 @@ set_property(CACHE PYTHON_PREFERED_VERSION PROPERTY STRINGS "3.6" "3.7" "3.8" "3
 
 message(STATUS "  python prefered version: " ${PYTHON_PREFERED_VERSION})
 
+cmake_policy(SET CMP0094 NEW)
 set(Python_ADDITIONAL_VERSIONS ${PYTHON_PREFERED_VERSION}) # priority to this version 
 find_package (Python3 COMPONENTS Interpreter Development)
 
