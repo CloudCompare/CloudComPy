@@ -287,7 +287,7 @@ void pyCC_setupPaths(pyCC* capi)
         bundleDir.cdUp();
     }
 
-    capi->m_PluginPaths << (bundleDir.absolutePath() + "/PlugIns/ccPlugins");
+    capi->m_PluginPaths << (bundleDir.absolutePath() + "/CloudCompare/CloudCompare.app/Contents/PlugIns/ccPlugins");
 
 #if defined(CC_MAC_DEV_PATHS)
     // Used for development only - this is the path where the plugins are built
@@ -301,8 +301,8 @@ void pyCC_setupPaths(pyCC* capi)
     capi->m_ShaderPath = (bundleDir.absolutePath() + "/shaders");
     capi->m_TranslationPath = (bundleDir.absolutePath() + "/qCC/translations");
 #else
-    capi->m_ShaderPath = (bundleDir.absolutePath() + "/Shaders");
-    capi->m_TranslationPath = (bundleDir.absolutePath() + "/translations");
+    capi->m_ShaderPath = (bundleDir.absolutePath() + "/CloudCompare/CloudCompare.app/Contents/Shaders");
+    capi->m_TranslationPath = (bundleDir.absolutePath() + "/CloudCompare/CloudCompare.app/Contents/translations");
 #endif
 #elif defined(Q_OS_WIN)
     capi->m_PluginPaths << (appDir.absolutePath() + "/plugins");

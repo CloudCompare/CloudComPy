@@ -25,6 +25,7 @@ import os
 import sys
 import math
 import requests
+import urllib.request
 
 os.environ["_CCTRACE_"] = "ON"  # only if you want C++ debug traces
 
@@ -40,9 +41,9 @@ if not os.path.isfile(os.path.join(dataExtDir,"recombi_10.txt")):
     if not os.path.exists(dataExtDir):
         os.makedirs(dataExtDir)
     url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/38-recombi-10-txt"
-    r = requests.get(url)
     with open(os.path.join(dataExtDir,"recombi_10.txt"), 'wb') as f:
-        f.write(r.content)
+        for line in urllib.request.urlopen(url):
+            f.write(line)
         
 if not os.path.isfile(os.path.join(dataExtDir,"vegetTidal.prm")):
     if not os.path.exists(dataExtDir):

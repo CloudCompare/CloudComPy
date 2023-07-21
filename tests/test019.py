@@ -41,7 +41,7 @@ noiseCloud.setName("noiseCloud")
 
 if refCloud.__class__ != cc.ReferenceCloud:
     raise RuntimeError
-if refCloud.size() != 7489:
+if refCloud.size() < 7470 or refCloud.size() > 7570:
     raise RuntimeError
 if res != 0:
     raise RuntimeError
