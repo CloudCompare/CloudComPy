@@ -85,13 +85,13 @@ if [[ ${sourced} == 0 ]]; then
     echo "this script must be sourced (with source or '.')"
 else
     SCRIPT_PATH=${0:a}
-    echo ${SCRIPT_PATH}
+    #echo ${SCRIPT_PATH}
     SCRIPT_NAME=$(basename "${SCRIPT_PATH}")
-    echo ${SCRIPT_NAME}
+    #echo ${SCRIPT_NAME}
     CLOUDCOMPY_ROOT=${0:a:h:h}
-    echo ${CLOUDCOMPY_ROOT}
+    #echo ${CLOUDCOMPY_ROOT}
     PROG=$(basename $0)
-    echo ${PROG}
+    #echo ${PROG}
     CONDA_ROOT=$(conda info | grep "envs directories"|awk '{print $NF}')
     . ${CONDA_ROOT}/../etc/profile.d/conda.sh                                       # required to have access to conda commands in a shell script
     
