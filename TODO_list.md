@@ -168,4 +168,5 @@ TODO List
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
 - TODO: (issue #104) CloudComPy for Mac
-- TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display) 
+- TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display)
+- TODO: (issue #120) Interactive display pop up using cloudComPy.addToRenderScene()
