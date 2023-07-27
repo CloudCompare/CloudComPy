@@ -170,3 +170,5 @@ TODO List
 - TODO: (issue #104) CloudComPy for Mac
 - TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display)
 - TODO: (issue #120) Interactive display pop up using cloudComPy.addToRenderScene()
+- TODO: (issue #118) Build a version with double precision scalar field.
+
