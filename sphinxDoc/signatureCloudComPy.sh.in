@@ -9,10 +9,9 @@ ARCHIVE="@CMAKE_INSTALL_PREFIX@"
 # Note we use `-R`, not `-r`, to preserve symlinks.
 #WORKDIR="CloudComPy-`date '+%Y-%m-%d_%H.%M.%S'`"
 WORKDIR="${ARCHIVE}"
-DMGROOT="${WORKDIR}/CloudCompare"
 APP="${WORKDIR}/CloudCompare/CloudCompare.app"
-DMG="${WORKDIR}/../CloudCompare.dmg"
-SIGNATURE="paul.rascle@openfields.fr"
+DMG="${WORKDIR}/../CloudComPy.dmg"
+SIGNATURE="5XUC29Y5KK"
 #cp -R "${ARCHIVE}" "${WORKDIR}"
 #mv "${ARCHIVE}" "${ARCHIVE}_moved" 
 # Create various entitlement files from 'here' documents.
@@ -46,12 +45,12 @@ EOF
 #
 echo "--- signature dylib ---"
 find "${APP}" -name "*.dylib" -print -exec codesign -s ${SIGNATURE} -f --timestamp {} \;
-find "${APP}" -name "*.so" -print -exec codesign -s ${SIGNATURE} -f --timestamp -i fr.openfields.CloudCompare -o runtime --entitlements "${WORKDIR}/app.entitlements" {} \;
+find "${APP}" -name "*.so" -print -exec codesign -s ${SIGNATURE} -f --timestamp -i fr.openfields.CloudComPy -o runtime --entitlements "${WORKDIR}/app.entitlements" {} \;
 
 echo "--- signature app---"
-codesign -s ${SIGNATURE} -f --timestamp -i fr.openfields.CloudCompare -o runtime --entitlements "${WORKDIR}/app.entitlements"   "${APP}"
+codesign -s ${SIGNATURE} -f --timestamp -i fr.openfields.CloudComPy -o runtime --entitlements "${WORKDIR}/app.entitlements"   "${APP}"
 # Create a disk image from our disk image root directory.
-hdiutil create -srcFolder "${DMGROOT}" -quiet -o "${DMG}"
+hdiutil create -ov -srcFolder "${WORKDIR}" -quiet -o "${DMG}"
 # Sign that.
-codesign -s ${SIGNATURE} --timestamp -i fr.openfields.CloudCompare.DiskImage "${DMG}"
+codesign -s ${SIGNATURE} --timestamp -i fr.openfields.CloudComPy.DiskImage "${DMG}"
 echo "${DMG}"
