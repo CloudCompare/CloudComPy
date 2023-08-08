@@ -100,25 +100,6 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
     ${CCCoreLib_SOURCE_DIR}/include
     ${QCC_DB_LIB_SOURCE_DIR}
     )
-#    ${pybind11_INCLUDE_DIR}
-#    ${Python3_INCLUDE_DIRS}
-
-#target_link_libraries( ${PROJECT_NAME} PRIVATE pybind11::module pybind11::lto pybind11::windows_extras )
-
-#target_link_libraries( ${PROJECT_NAME}
-#    PYCC_LIB
-#    CCAppCommon
-#    )
-
-# Qt libraries
-
-#target_link_libraries( ${PROJECT_NAME}
-#    Qt5::Core
-#    Qt5::Gui
-#    Qt5::Widgets
-#    Qt5::OpenGL
-#    Qt5::PrintSupport
-#    )
 
 if (WIN32)
    target_link_libraries( ${PROJECT_NAME} Qt5::WinMain)
@@ -171,14 +152,6 @@ if(NOT WIN32)
         install(PROGRAMS ${ENV_SCRIPTS} DESTINATION ${CMAKE_INSTALL_BINDIR})
     endif()
 endif()
-
-#if(WIN32)
-#  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _cloudComPy_d RELEASE_OUTPUT_NAME _cloudComPy)
-#elseif(APPLE)
-#  set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".cpython-310-darwin.so" DEBUG_OUTPUT_NAME _cloudComPy_d RELEASE_OUTPUT_NAME _cloudComPy)
-#else()
-#  set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
-#endif()
 
 if(WIN32)
   if( NOT INSTALL_PREREQUISITE_LIBRARIES )

@@ -47,10 +47,6 @@ target_sources( ${PROJECT_NAME}
     ${CMAKE_CURRENT_LIST_DIR}/HPRPy.cpp
     )
 
-#qt5_wrap_ui( generated_ui_list ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qHPR/ui/qHPRDialog.ui )
-#message(STATUS "generated_ui_list: ${generated_ui_list}")
-#target_sources( ${PROJECT_NAME} PRIVATE ${generated_ui_list} )
-
 target_include_directories( ${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -60,30 +56,6 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
     ${CCCoreLib_SOURCE_DIR}/include
     ${QCC_DB_LIB_SOURCE_DIR}
     )
-
-#    ${pybind11_INCLUDE_DIR}
-#    ${Python3_INCLUDE_DIRS}
-
-#if ( UNIX )
-#    target_link_libraries( ${PROJECT_NAME}
-#        QHPR_PLUGIN
-#        )
-#endif()
-#if ( MSVC )
-#    target_link_libraries( ${PROJECT_NAME}
-#        QHPR_PLUGIN
-#        )
-#endif()
-
-# Qt libraries
-
-#target_link_libraries( ${PROJECT_NAME}
-#    Qt5::Core
-#    Qt5::Gui
-#    Qt5::Widgets
-#    Qt5::OpenGL
-#    Qt5::PrintSupport
-#    )
 
 if (WIN32)
    target_link_libraries( ${PROJECT_NAME} Qt5::WinMain)
@@ -119,10 +91,3 @@ else()
     install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON})
 endif()
-
-#if(WIN32)
-#  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _HPR_d RELEASE_OUTPUT_NAME _HPR)
-#else()
-#  set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
-#endif()
-
