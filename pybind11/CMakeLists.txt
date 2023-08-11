@@ -57,9 +57,27 @@ message( STATUS "pybind11_INCLUDE_DIRS: ${pybind11_INCLUDE_DIRS}")
 
 project( _cloudComPy LANGUAGES CXX VERSION 2.12.0 )
 
-add_library( ${PROJECT_NAME} MODULE )
+if (WIN32)
+    add_library( ${PROJECT_NAME} SHARED)
+else()
+    add_library( ${PROJECT_NAME} MODULE)
+endif()
 
-target_link_libraries( ${PROJECT_NAME}
+if (WIN32)
+    target_link_libraries( ${PROJECT_NAME}
+	PUBLIC pybind11::module
+    PRIVATE
+    PYCC_LIB
+    CCAppCommon
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::OpenGL
+    Qt5::PrintSupport
+    Qt5::WinMain
+	)
+else()
+    target_link_libraries( ${PROJECT_NAME}
 	PUBLIC pybind11::module
     PYCC_LIB
     CCAppCommon
@@ -69,8 +87,8 @@ target_link_libraries( ${PROJECT_NAME}
     Qt5::OpenGL
     Qt5::PrintSupport
 	)
+endif()
 
-#pybind11_add_module( ${PROJECT_NAME} MODULE )
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
 target_sources( ${PROJECT_NAME}
@@ -101,10 +119,6 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
     ${QCC_DB_LIB_SOURCE_DIR}
     )
 
-if (WIN32)
-   target_link_libraries( ${PROJECT_NAME} Qt5::WinMain)
-endif()
-
 pybind11_extension( ${PROJECT_NAME} )
 
 if(NOT MSVC AND NOT ${CMAKE_BUILD_TYPE} MATCHES Debug|RelWithDebInfo)
@@ -134,7 +148,7 @@ set(PYTHONAPI_SCRIPTS
 # --- install
 
 if( WIN32 )
-	install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION CloudCompare )
+	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare )
 	install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy )
 elseif( APPLE )
 	message( STATUS "install MacOS PYTHON : ${CMAKE_INSTALL_PREFIX}/CloudCompare/CloudCompare.app/Contents/Frameworks" )
@@ -197,8 +211,6 @@ if(WIN32)
             ${PCL_LIBRARIES_DIR}/pcl_keypoints.dll
             ${PCL_LIBRARIES_DIR}/pcl_ml.dll
             ${PCL_LIBRARIES_DIR}/pcl_octree.dll
-            ${PCL_LIBRARIES_DIR}/pcl_outofcore.dll
-            ${PCL_LIBRARIES_DIR}/pcl_people.dll
             ${PCL_LIBRARIES_DIR}/pcl_recognition.dll
             ${PCL_LIBRARIES_DIR}/pcl_registration.dll
             ${PCL_LIBRARIES_DIR}/pcl_sample_consensus.dll
@@ -207,7 +219,6 @@ if(WIN32)
             ${PCL_LIBRARIES_DIR}/pcl_stereo.dll
             ${PCL_LIBRARIES_DIR}/pcl_surface.dll
             ${PCL_LIBRARIES_DIR}/pcl_tracking.dll
-            ${PCL_LIBRARIES_DIR}/pcl_visualization.dll
         )
 	    install( FILES ${PCL_DLL_FILES} DESTINATION CloudCompare )
     endif()

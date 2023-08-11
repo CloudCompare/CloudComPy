@@ -28,7 +28,22 @@ project( _SRA VERSION 0.1 )
 
 add_library( ${PROJECT_NAME} MODULE )
 
-target_link_libraries( ${PROJECT_NAME}
+if (WIN32)
+    target_link_libraries( ${PROJECT_NAME}
+	PUBLIC pybind11::module
+    PRIVATE
+    QSRA_PLUGIN
+    PYCC_LIB
+    CCAppCommon
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::OpenGL
+    Qt5::PrintSupport
+    Qt5::WinMain
+    )
+else()
+    target_link_libraries( ${PROJECT_NAME}
 	PUBLIC pybind11::module
     QSRA_PLUGIN
     PYCC_LIB
@@ -39,6 +54,7 @@ target_link_libraries( ${PROJECT_NAME}
     Qt5::OpenGL
     Qt5::PrintSupport
     )
+endif()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
@@ -56,10 +72,6 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
     ${CCCoreLib_SOURCE_DIR}/include
     ${QCC_DB_LIB_SOURCE_DIR}
     )
-
-if (WIN32)
-   target_link_libraries( ${PROJECT_NAME} Qt5::WinMain)
-endif()
 
 pybind11_extension( ${PROJECT_NAME} )
 
@@ -80,7 +92,7 @@ set(PYTHONAPI_SCRIPTS
 # --- install
 
 if( WIN32 )
-    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare )
+    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION CloudCompare )
     install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/SRA )
 elseif( APPLE )
     install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/CloudCompare/CloudCompare.app/Contents/Frameworks )
