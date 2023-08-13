@@ -73,6 +73,7 @@ target_include_directories( PYCC_LIB PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/CCPluginAPI/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/CCPluginStub/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/libs/qCC_glWindow/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/qCC
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/../viewer
     )

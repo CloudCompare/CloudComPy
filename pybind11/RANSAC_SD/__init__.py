@@ -39,6 +39,6 @@ RANSAC_SD is a submodule of cloudCompy:
       params = cc.RANSAC_SD.RansacParams()
       results = cc.RANSAC_SD.computeRANSAC_SD(cloud, params)
 """
-from ._RANSAC_SD import *
+from _RANSAC_SD import *
 initTrace_RANSAC_SD()
 

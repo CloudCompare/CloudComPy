@@ -161,11 +161,14 @@ TODO List
 * DONE: (issue #111) resampleCloudSpatially modParams parameter should be optional
 * DONE: (issue #114) importFile method: extend to all ccHObject types known to CloudComPy
 * DONE: (issue #116) in ExtractConnectedComponents, when the actual number of components is larger than the maxNumberComponents parameter, return the truncated result.
+- DONE: (issue #104) CloudComPy for Mac
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
 - TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
 - TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
-- TODO: (issue #104) CloudComPy for Mac
-- TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display) 
+- TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display)
+- TODO: (issue #120) Interactive display pop up using cloudComPy.addToRenderScene()
+- TODO: (issue #118) Build a version with double precision scalar field.
+

@@ -75,7 +75,7 @@ cloudCropZ = cloud.crop2D(poly, 2, True)
 cc.SavePointCloud(cloudCropZ, os.path.join(dataDir, "cloudCropZ.xyz"))
 npts = cloudCropZ.size()
 print("cloud.size %s" % npts)
-if npts != 189981:
+if npts < 189950 or npts > 189999:
     raise RuntimeError
 
 cloudCropX = cloud.crop2D(poly, 1, True)

@@ -69,6 +69,8 @@ The binary are available [here](https://www.simulation.openfields.fr/index.php/d
 
  - To install and use a **Linux** binary, consult the [Linux installation documentation](doc/UseLinuxCondaBinary.md) in the doc directory.
 
+ - Experimental: To install and use a **macOS** binary, consult the [macOS installation documentation](doc/UseMacOSCondaBinary.md) in the doc directory.
+
  - Experimental: to test and run a Linux Conda binary in a docker container, see the [docker configuration documentation](doc/UseDockerLinuxConda.md) in the doc directory.
 
 # CloudComPy: building

@@ -2,6 +2,11 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## August 12, 2023 CloudComPy release (only macOS):
+
+ - first macOS version, Apple architecture (not for Intel processors)
+ - update to CloudCompare master (July 13, 2023)
+
 ## July 05, 2023 CloudComPy release:
 
  - update to CloudCompare master (July 05, 2023)

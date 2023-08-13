@@ -24,10 +24,14 @@ message(STATUS "Python3 and pybind11 processing")
 # --- Python detection: if several versions installed, select one with all the required packages installed
 
 set(PYTHON_PREFERED_VERSION "3.9" CACHE STRING "Select a Python version: it should be installed with all packages required for CloudCompare (pyqt, sip, numpy)")
-set_property(CACHE PYTHON_PREFERED_VERSION PROPERTY STRINGS "3.6" "3.7" "3.8" "3.9" "3.10")
+set_property(CACHE PYTHON_PREFERED_VERSION PROPERTY STRINGS "3.6" "3.7" "3.8" "3.9" "3.10" "3.11")
+
 message(STATUS "  python prefered version: " ${PYTHON_PREFERED_VERSION})
+
+cmake_policy(SET CMP0094 NEW)
 set(Python_ADDITIONAL_VERSIONS ${PYTHON_PREFERED_VERSION}) # priority to this version 
 find_package (Python3 COMPONENTS Interpreter Development)
+
 message(STATUS "  python executable: " ${Python3_EXECUTABLE})
 message(STATUS "  python version: " ${Python3_VERSION})
 message(STATUS "  check match for ${PYTHON_PREFERED_VERSION}.x")
@@ -40,7 +44,8 @@ else()
 endif()
 
 # --- pybind11 detection
-find_package(pybind11 REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
+
 message( STATUS "pybind11_VERSION: ${pybind11_VERSION}")
 message( STATUS "pybind11_LIBRARIES: ${pybind11_LIBRARIES}")
 message( STATUS "pybind11_DEFINITIONS: ${pybind11_DEFINITIONS}")
@@ -50,9 +55,39 @@ message( STATUS "pybind11_INCLUDE_DIRS: ${pybind11_INCLUDE_DIRS}")
 # --- ----------------------------------------------------------
 # --- target pybind11 library: Python module cloudComPy
 
-project( _cloudComPy VERSION 2.12.0 )
+project( _cloudComPy LANGUAGES CXX VERSION 2.12.0 )
 
-add_library( ${PROJECT_NAME} SHARED )
+if (WIN32)
+    add_library( ${PROJECT_NAME} SHARED)
+else()
+    add_library( ${PROJECT_NAME} MODULE)
+endif()
+
+if (WIN32)
+    target_link_libraries( ${PROJECT_NAME}
+	PUBLIC pybind11::module
+    PRIVATE
+    PYCC_LIB
+    CCAppCommon
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::OpenGL
+    Qt5::PrintSupport
+    Qt5::WinMain
+	)
+else()
+    target_link_libraries( ${PROJECT_NAME}
+	PUBLIC pybind11::module
+    PYCC_LIB
+    CCAppCommon
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::OpenGL
+    Qt5::PrintSupport
+	)
+endif()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
@@ -77,8 +112,6 @@ target_sources( ${PROJECT_NAME}
     )
 
 target_include_directories( ${PROJECT_NAME} PRIVATE
-    ${pybind11_INCLUDE_DIR}
-    ${Python3_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../pyAPI
     ${CMAKE_CURRENT_SOURCE_DIR}/../CloudCompare/ccViewer
@@ -86,29 +119,23 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
     ${QCC_DB_LIB_SOURCE_DIR}
     )
 
-target_link_libraries( ${PROJECT_NAME}
-    PYCC_LIB
-    CCAppCommon
-    ${Python3_LIBRARIES}
-    )
+pybind11_extension( ${PROJECT_NAME} )
 
-# Qt libraries
-
-target_link_libraries( ${PROJECT_NAME}
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::OpenGL
-    Qt5::PrintSupport
-    )
-
-if (WIN32)
-   target_link_libraries( ${PROJECT_NAME} Qt5::WinMain)
+if(NOT MSVC AND NOT ${CMAKE_BUILD_TYPE} MATCHES Debug|RelWithDebInfo)
+    # Strip unnecessary sections of the binary on Linux/macOS
+    pybind11_strip( ${PROJECT_NAME} )
 endif()
+
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET "hidden"
+                                      		  	 CUDA_VISIBILITY_PRESET "hidden")
 
 # --- environment scripts, with conda
 
-set (ENV_SCRIPTS condaCloud.sh)
+if (APPLE)
+	set (ENV_SCRIPTS condaCloud.zsh)
+else()
+	set (ENV_SCRIPTS condaCloud.sh)
+endif()
 option(USE_CONDA_PACKAGES "Use Conda packages and environment for build: add commands for set/unset run environment" OFF)
 
 # --- Python scripts with added functions
@@ -120,23 +147,24 @@ set(PYTHONAPI_SCRIPTS
 
 # --- install
 
-if( WIN32 OR APPLE)
+if( WIN32 )
 	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare )
 	install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy )
+elseif( APPLE )
+	message( STATUS "install MacOS PYTHON : ${CMAKE_INSTALL_PREFIX}/CloudCompare/CloudCompare.app/Contents/Frameworks" )
+	install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/CloudCompare/CloudCompare.app/Contents/Frameworks )
+	install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy )	
 else()
     set(INSTALL_CLOUDCOMPARE_PYTHON ${CMAKE_INSTALL_LIBDIR}/cloudcompare )
     message(STATUS "INSTALL_CLOUDCOMPARE_PYTHON: " ${INSTALL_CLOUDCOMPARE_PYTHON})
     install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON} )
     install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${INSTALL_CLOUDCOMPARE_PYTHON}/cloudComPy)
+endif()
+
+if(NOT WIN32)
     if (USE_CONDA_PACKAGES)
         install(PROGRAMS ${ENV_SCRIPTS} DESTINATION ${CMAKE_INSTALL_BINDIR})
     endif()
-endif()
-
-if(WIN32)
-  set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pyd" DEBUG_OUTPUT_NAME _cloudComPy_d RELEASE_OUTPUT_NAME _cloudComPy)
-else()
-  set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 endif()
 
 if(WIN32)
@@ -183,8 +211,6 @@ if(WIN32)
             ${PCL_LIBRARIES_DIR}/pcl_keypoints.dll
             ${PCL_LIBRARIES_DIR}/pcl_ml.dll
             ${PCL_LIBRARIES_DIR}/pcl_octree.dll
-            ${PCL_LIBRARIES_DIR}/pcl_outofcore.dll
-            ${PCL_LIBRARIES_DIR}/pcl_people.dll
             ${PCL_LIBRARIES_DIR}/pcl_recognition.dll
             ${PCL_LIBRARIES_DIR}/pcl_registration.dll
             ${PCL_LIBRARIES_DIR}/pcl_sample_consensus.dll
@@ -193,7 +219,6 @@ if(WIN32)
             ${PCL_LIBRARIES_DIR}/pcl_stereo.dll
             ${PCL_LIBRARIES_DIR}/pcl_surface.dll
             ${PCL_LIBRARIES_DIR}/pcl_tracking.dll
-            ${PCL_LIBRARIES_DIR}/pcl_visualization.dll
         )
 	    install( FILES ${PCL_DLL_FILES} DESTINATION CloudCompare )
     endif()

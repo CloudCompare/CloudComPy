@@ -885,7 +885,7 @@ The algorithm filters out the points of a cloud that wouldn't be seen
 (by the current 3D camera) if the cloud was a closed surface. 
 Therefore it tries to remove the points that should be hidden in the current viewport configuration.
 
-Without GUI, in CloudComPy, we have to explitely provide the coordinates of the viewpoint
+Without GUI, in CloudComPy, we have to explicitely provide the coordinates of the viewpoint
 in :py:func:`~.cloudComPy.HPR.computeHPR`.
 
 .. include:: ../tests/test033.py

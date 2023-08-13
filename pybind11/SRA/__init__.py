@@ -38,5 +38,5 @@ SRA is a submodule of cloudCompy:
       import cloudComPy.SRA
       cc.SRA.loadProfile(...)
 """
-from ._SRA import *
+from _SRA import *
 initTrace_SRA()

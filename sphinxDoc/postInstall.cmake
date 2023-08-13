@@ -19,11 +19,22 @@
 #                                                                        #
 ##########################################################################
 
-message( STATUS "genere Sphinx doc ...")
+message( STATUS "post install process ...")
 if (WIN32)
+message( STATUS "generate documentation ...")
 execute_process( COMMAND sphinxDoc\genSphinxDoc.bat )
+elseif( APPLE )
+execute_process( COMMAND pwd )
+message( STATUS "add libraries to bundle ...")
+execute_process( COMMAND python sphinxDoc/libBundleCloudComPy.py )
+message( STATUS "signature ...")
+execute_process( COMMAND bash sphinxDoc/signatureCloudComPy.sh )
+message( STATUS "generate documentation ...")
+execute_process( COMMAND chmod +x sphinxDoc/genSphinxDoc.zsh )
+execute_process( COMMAND zsh sphinxDoc/genSphinxDoc.zsh ERROR_QUIET )
 else()
 execute_process( COMMAND pwd )
+message( STATUS "generate documentation ...")
 execute_process( COMMAND bash sphinxDoc/genSphinxDoc.sh )
 endif()
 message( STATUS "... Done")
