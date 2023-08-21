@@ -172,4 +172,6 @@ TODO List
 - TODO: (issue #120) Interactive display pop up using cloudComPy.addToRenderScene()
 - TODO: (issue #118) Build a version with double precision scalar field.
 - TODO: add the CSF mesh to the output (follow issue #61)
+- TODO: (issue #125) ComputeVolume25D: parameters (Empty Cell, Max Edge Length, Grid Cell Height)
+
 
