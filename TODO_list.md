@@ -173,5 +173,6 @@ TODO List
 - TODO: (issue #118) Build a version with double precision scalar field.
 - TODO: add the CSF mesh to the output (follow issue #61)
 - TODO: (issue #125) ComputeVolume25D: parameters (Empty Cell, Max Edge Length, Grid Cell Height)
-
+- TODO: (issue #128) implement PoissonReconstruction
+- TODO: (issue #129) Check the behavior of macOS version of CloudCompare/CloudComPy on CloudCompare bug #1646
 
