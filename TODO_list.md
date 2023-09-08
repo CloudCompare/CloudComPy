@@ -173,6 +173,9 @@ TODO List
 - TODO: (issue #118) Build a version with double precision scalar field.
 - TODO: add the CSF mesh to the output (follow issue #61)
 - TODO: (issue #125) ComputeVolume25D: parameters (Empty Cell, Max Edge Length, Grid Cell Height)
+- TODO: (issue #127) Set background color when rendering images
 - TODO: (issue #128) implement PoissonReconstruction
 - TODO: (issue #129) Check the behavior of macOS version of CloudCompare/CloudComPy on CloudCompare bug #1646
+- TODO: (issue #130) Specify which e57 scans to import from a multi-scan e57 file
+- TODO: allow installation path with space (like "c:\program files\xxx") (follow issue #72)
 
