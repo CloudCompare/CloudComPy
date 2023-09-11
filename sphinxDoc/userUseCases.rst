@@ -1306,7 +1306,14 @@ Different modes of perspective are available:
  
  To define a zoom on the whole scene or on selected entities, use the :py:func:`cloudComPy.setGlobalZoom` and :py:func:`cloudComPy.zoomOnSelectedEntity` functions.
 
-The :py:func:`cloudComPy.setCustomView` and py:func:`cloudComPy.setCameraPos` functions are used to define a custom point of view:
+The :py:func:`cloudComPy.setCustomView` and py:func:`cloudComPy.setCameraPos` functions are used to define a custom point of view.
+
+Several functions and methods can be used to set the background color, display the scalar bar...
+
+ - :py:func:`cloudComPy.setBackgroundColor`
+ - :py:func:`cloudComPy.setTextDefaultCol`
+ - :py:func:`cloudComPy.setColorScaleShowHistogram`
+ - :py:meth:`~.cloudComPy.ccPointCloud.showSFColorsScale`
 
 .. include:: ../tests/test051.py
    :start-after: #---render003-begin

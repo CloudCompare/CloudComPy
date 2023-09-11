@@ -65,6 +65,9 @@ cloudComPy module, functions
 .. autofunction:: setIsoView2
 .. autofunction:: setCustomView
 .. autofunction:: setCameraPos
+.. autofunction:: setBackgroundColor
+.. autofunction:: setTextDefaultCol
+.. autofunction:: setColorScaleShowHistogram
 
 .. autoclass:: ccBBox
    :members:

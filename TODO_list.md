@@ -161,7 +161,8 @@ TODO List
 * DONE: (issue #111) resampleCloudSpatially modParams parameter should be optional
 * DONE: (issue #114) importFile method: extend to all ccHObject types known to CloudComPy
 * DONE: (issue #116) in ExtractConnectedComponents, when the actual number of components is larger than the maxNumberComponents parameter, return the truncated result.
-- DONE: (issue #104) CloudComPy for Mac
+* DONE: (issue #104) CloudComPy for Mac
+* DONE: (issue #127) Set background color when rendering images
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -173,7 +174,6 @@ TODO List
 - TODO: (issue #118) Build a version with double precision scalar field.
 - TODO: add the CSF mesh to the output (follow issue #61)
 - TODO: (issue #125) ComputeVolume25D: parameters (Empty Cell, Max Edge Length, Grid Cell Height)
-- TODO: (issue #127) Set background color when rendering images
 - TODO: (issue #128) implement PoissonReconstruction
 - TODO: (issue #129) Check the behavior of macOS version of CloudCompare/CloudComPy on CloudCompare bug #1646
 - TODO: (issue #130) Specify which e57 scans to import from a multi-scan e57 file

@@ -436,6 +436,36 @@ void viewerPy::updateDisplay()
 	m_glWindow->redraw();
 }
 
+void viewerPy::setBackgroundColor(bool gradient, unsigned char r, unsigned char g, unsigned char b)
+{
+    static const ccColor::Rgbub backgroundCol(r, g, b);
+    ccGui::ParamStruct params = m_glWindow->getDisplayParameters();
+    params.drawBackgroundGradient = gradient;
+    params.backgroundCol = backgroundCol;
+    m_glWindow->setDisplayParameters(params);
+
+    m_glWindow->redraw();
+}
+
+void viewerPy::setTextDefaultCol(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    static const ccColor::Rgba foregroundCol(r, g, b, a);
+    ccGui::ParamStruct params = m_glWindow->getDisplayParameters();
+    params.textDefaultCol = foregroundCol;
+    m_glWindow->setDisplayParameters(params);
+
+    m_glWindow->redraw();
+}
+
+void viewerPy::setColorScaleShowHistogram(bool showHist)
+{
+    ccGui::ParamStruct params = m_glWindow->getDisplayParameters();
+    params.colorScaleShowHistogram = showHist;
+    m_glWindow->setDisplayParameters(params);
+
+    m_glWindow->redraw();
+}
+
 void viewerPy::updateGLFrameGradient()
 {
 	//display parameters

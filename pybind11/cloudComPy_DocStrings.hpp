@@ -840,5 +840,29 @@ RenderViewToFile: define a camera position.
 :param CCVector3d P: camera position
 )";
 
+const char* cloudComPy_setBackgroundColor_doc= R"(
+RenderViewToFile: define a background color.
+
+:param bool,optional gradient: default false, draw a background gradient (between rgb and the opposite of foreground color) 
+:param int,optional r: red value (0..255), default 255
+:param int,optional g: green value (0..255), default 255
+:param int,optional b: blue value (0..255), default 255
+)";
+
+const char* cloudComPy_setTextDefaultCol_doc= R"(
+RenderViewToFile: define a text default (foreground) color.
+
+:param int,optional r: red value (0..255), default 0
+:param int,optional g: green value (0..255), default 0
+:param int,optional b: blue value (0..255), default 0
+:param int,optional a: alpha value (0..255), default 255
+)";
+
+const char* cloudComPy_setColorScaleShowHistogram_doc= R"(
+RenderViewToFile: show the color scale histogram, when the color scale itself is shown (see 'showSFColorsScale' method of 'ccPointCloud').
+
+:param bool,optional showHist: default true, whether to add the histogram to the color scale. 
+)";
+
 
 #endif /* CLOUDCOMPY_DOCSTRINGS_HPP_ */

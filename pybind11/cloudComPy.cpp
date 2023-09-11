@@ -803,6 +803,45 @@ void removeFromRenderScene(ccHObject* obj)
 	w->show();
 }
 
+void setBackgroundColor(bool gradient=false, unsigned char r=255, unsigned char g=255, unsigned char b=255)
+{
+    QCoreApplication *coreApp = QCoreApplication::instance();
+    viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+    if (!app)
+    {
+        CCTRACE("cannot find viewerPyApplication!");
+        return;
+    }
+    viewerPy* w = getOrInitializeViewer();
+    w->setBackgroundColor(gradient, r, g ,b);
+}
+
+void setTextDefaultCol(unsigned char r=0, unsigned char g=0, unsigned char b=0, unsigned char a=255)
+{
+    QCoreApplication *coreApp = QCoreApplication::instance();
+    viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+    if (!app)
+    {
+        CCTRACE("cannot find viewerPyApplication!");
+        return;
+    }
+    viewerPy* w = getOrInitializeViewer();
+    w->setTextDefaultCol(r, g, b, a);
+}
+
+void setColorScaleShowHistogram(bool showHist=true)
+{
+    QCoreApplication *coreApp = QCoreApplication::instance();
+    viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+    if (!app)
+    {
+        CCTRACE("cannot find viewerPyApplication!");
+        return;
+    }
+    viewerPy* w = getOrInitializeViewer();
+    w->setColorScaleShowHistogram(showHist);
+}
+
 void renderPy(QString filename, int width=1500, int height=1000)
 {
 	CCTRACE("renderPy");
@@ -2964,5 +3003,13 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("setIsoView2", &setIsoView2, cloudComPy_setIsoView2_doc);
     m0.def("setCustomView", &setCustomView, cloudComPy_setCustomView_doc);
     m0.def("setCameraPos", &setCameraPos, cloudComPy_setCameraPos_doc);
-
+    m0.def("setBackgroundColor", &setBackgroundColor,
+           py::arg("gradient")=false , py::arg("r")=255, py::arg("g")=255, py::arg("b")=255,
+           cloudComPy_setBackgroundColor_doc);
+    m0.def("setTextDefaultCol", &setTextDefaultCol,
+           py::arg("r")=0 , py::arg("g")=0, py::arg("b")=0, py::arg("a")=255,
+           cloudComPy_setTextDefaultCol_doc);
+    m0.def("setColorScaleShowHistogram", & setColorScaleShowHistogram,
+           py::arg("showHist")=true,
+           cloudComPy_setColorScaleShowHistogram_doc);
 }
