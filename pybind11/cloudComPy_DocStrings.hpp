@@ -782,6 +782,7 @@ RenderViewToFile: write the image file from the 3D scene.
 :param string filename: the filename with it's path and extension. The extension defines the image format (.png, .jpg, ...)
 :param int,optional width: the width of the image (pixels), default 1500
 :param int,optional height: the height of the image (pixels), default 1000
+:param bool,optional isInteractive: default False, whether to keep the IHM viewer active (and suspend Python script).
 )";
 
 const char* cloudComPy_setOrthoView_doc= R"(

@@ -61,6 +61,7 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 	, m_selectedObject(nullptr)
 	, m_3dMouseInput(nullptr)
     , m_gamepadManager(nullptr)
+    , m_filename("render.png")
 {
     CCTRACE("viewerPy");
 	ui.setupUi(this);
@@ -659,18 +660,31 @@ void viewerPy::doActionEditCamera()
 	s_cpeDlg->show();
 }
 
-void viewerPy::doActionRenderToFile(QString filename)
+void viewerPy::doActionRenderToFile(QString filename, bool isInteractive)
 {
-    m_glWindow->renderToFile(filename);
-    CCTRACE("renderToFile done: " << filename.toStdString());
+    m_filename = filename;
     QCoreApplication *coreApp = QCoreApplication::instance();
     viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
     if (app)
     {
-        CCTRACE("call app->exit()");
         connect(this, SIGNAL(exitRequested()), app, SLOT(closeAllWindows()), Qt::QueuedConnection);
-        exitRequested();
+        if (!isInteractive)
+        {
+            this->renderToFileAndClose();
+        } else
+        {
+            ui.actionResume_Python->setEnabled(true);
+            connect(ui.actionResume_Python, &QAction::triggered, this, &viewerPy::renderToFileAndClose);
+        }
     }
+}
+
+void viewerPy::renderToFileAndClose()
+{
+    m_glWindow->renderToFile(m_filename);
+    CCTRACE("renderToFile done: " << m_filename.toStdString());
+    CCTRACE("call app->exit()");
+    exitRequested();
 }
 
 void viewerPy::reflectPerspectiveState()

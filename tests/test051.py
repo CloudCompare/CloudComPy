@@ -121,5 +121,5 @@ cc.setCenteredPerspectiveView()
 for i in range(15):
     cc.setCustomView((0., math.cos(i*alphaRad), -math.sin(i*alphaRad)), (0., math.sin(i*alphaRad), math.cos(i*alphaRad)))
     cc.setGlobalZoom()
-    cc.render(os.path.join(dataDir, "renderangle_%d.png"%i), 2000,1500)
+    cc.render(os.path.join(dataDir, "renderangle_%d.png"%i), 2000,1500, False)
 #---render003-end

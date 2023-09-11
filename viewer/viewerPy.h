@@ -101,7 +101,8 @@ public: // ccMainInterface compliance
     void decreasePointSize() override;
     ccUniqueIDGenerator::Shared getUniqueIDGenerator() override;
 
-    void doActionRenderToFile(QString filename="capture.png");
+    void doActionRenderToFile(QString filename="capture.png", bool isInteractive=false);
+    void renderToFileAndClose();
 
 //protected:
 
@@ -213,6 +214,8 @@ protected: //members
 
     //! Gamepad handler
     ccGamepadManager* m_gamepadManager;
+
+    QString m_filename;
 
 signals:
     void exitRequested();

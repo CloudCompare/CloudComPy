@@ -842,7 +842,7 @@ void setColorScaleShowHistogram(bool showHist=true)
     w->setColorScaleShowHistogram(showHist);
 }
 
-void renderPy(QString filename, int width=1500, int height=1000)
+void renderPy(QString filename, int width=1500, int height=1000,bool isInteractive=false)
 {
 	CCTRACE("renderPy");
 	QCoreApplication *coreApp = QCoreApplication::instance();
@@ -856,7 +856,7 @@ void renderPy(QString filename, int width=1500, int height=1000)
 	w->resize(width+46, height+88);
 	w->show();
 
-	w->doActionRenderToFile(filename);
+	w->doActionRenderToFile(filename, isInteractive);
 	app->exec();
 }
 
@@ -2986,7 +2986,8 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("removeFromRenderScene", &removeFromRenderScene, cloudComPy_removeFromRenderScene_doc);
 
     m0.def("render", &renderPy,
-    		py::arg("filename"), py::arg("width")=1500, py::arg("height")=1000, cloudComPy_render_doc);
+    		py::arg("filename"), py::arg("width")=1500, py::arg("height")=1000, py::arg("isInteractive")=false,
+    		cloudComPy_render_doc);
 
     m0.def("setOrthoView", &setOrthoView, cloudComPy_setOrthoView_doc);
     m0.def("setCenteredPerspectiveView", &setCenteredPerspectiveView, cloudComPy_setCenteredPerspectiveView_doc);
