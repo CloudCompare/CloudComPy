@@ -51,8 +51,9 @@ See `CSF plugin <https://www.cloudcompare.org/doc/wiki/index.php/CSF_(plugin)>`_
 :param double,optional clothResolution: default 2.0
 :param double,optional classThreshold: default 0.5
 :param bool,optional csfPostprocessing: default false
+:param bool,optional computeMesh: default false, compute the cloth mesh
 
-:return: a list of clouds (ground, offground)
+:return: a list of clouds and mesh (ground, offground, optional cloth mesh)
 :rtype: list
 )";
 

@@ -164,6 +164,7 @@ TODO List
 * DONE: (issue #104) CloudComPy for Mac
 * DONE: (issue #120) Interactive display pop up using cloudComPy.render()
 * DONE: (issue #127) Set background color when rendering images
+* DONE: add the CSF mesh to the output (follow issue #61)
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -172,7 +173,6 @@ TODO List
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
 - TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display)
 - TODO: (issue #118) Build a version with double precision scalar field.
-- TODO: add the CSF mesh to the output (follow issue #61)
 - TODO: (issue #125) ComputeVolume25D: parameters (Empty Cell, Max Edge Length, Grid Cell Height)
 - TODO: (issue #128) implement PoissonReconstruction
 - TODO: (issue #129) Check the behavior of macOS version of CloudCompare/CloudComPy on CloudCompare bug #1646

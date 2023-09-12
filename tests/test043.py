@@ -43,7 +43,7 @@ if cc.isPluginCSF():
     if clouds[1].size() != 1000000 - clouds[0].size():
         raise RuntimeError
     #---CSF02-begin
-    clouds2 = cc.CSF.computeCSF(cloud, csfRigidness=1, clothResolution=1.0, classThreshold=0.3)
+    clouds2 = cc.CSF.computeCSF(cloud, csfRigidness=1, clothResolution=1.0, classThreshold=0.3, computeMesh=True)
     #---CSF02-end
 
 for cloud in clouds2:

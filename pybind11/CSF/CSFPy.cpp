@@ -47,7 +47,8 @@ PYBIND11_MODULE(_CSF, m7)
 
     m7.def("computeCSF", qCSF::computeCSF,
             py::arg("pc"), py::arg("csfRigidness")=2, py::arg("maxIteration")=500, py::arg("clothResolution")=2.0,
-            py::arg("classThreshold")=0.5, py::arg("csfPostprocessing")=false, CSF_computeCSF_doc);
+            py::arg("classThreshold")=0.5, py::arg("csfPostprocessing")=false, py::arg("computeMesh")=false,
+            CSF_computeCSF_doc);
     m7.def("initTrace_CSF", initTrace_CSF, CSF_initTrace_CSF_doc);
 }
 

@@ -968,7 +968,7 @@ The concepts are presented in the
 You have to import the The :py:mod:`~.cloudComPy.CSF` plugin.
 
 The :py:func:`~.cloudComPy.CSF.computeCSF` function takes a ccPointCloud in input and several optional parameters.
-The function produce two clouds: "ground points" and "off-ground points".
+The function produce two clouds: "ground points" and "off-ground points", plus optionally, the cloth mesh.
 
 A first example with default parameters:
 
