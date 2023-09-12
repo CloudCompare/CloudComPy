@@ -2647,7 +2647,9 @@ PYBIND11_MODULE(_cloudComPy, m0)
     py::enum_<ccRasterGrid::ProjectionType>(m0, "ProjectionType")
 		.value("PROJ_MINIMUM_VALUE", ccRasterGrid::PROJ_MINIMUM_VALUE)
 		.value("PROJ_AVERAGE_VALUE", ccRasterGrid::PROJ_AVERAGE_VALUE)
-		.value("PROJ_MAXIMUM_VALUE", ccRasterGrid::PROJ_MAXIMUM_VALUE)
+        .value("PROJ_MAXIMUM_VALUE", ccRasterGrid::PROJ_MAXIMUM_VALUE)
+        .value("PROJ_MEDIAN_VALUE", ccRasterGrid::PROJ_MEDIAN_VALUE)
+        .value("PROJ_INVERSE_VAR_VALUE", ccRasterGrid::PROJ_INVERSE_VAR_VALUE)
 		.value("INVALID_PROJECTION_TYPE", ccRasterGrid::INVALID_PROJECTION_TYPE)
         .export_values();
 
@@ -2828,6 +2830,11 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("ComputeVolume25D", &ComputeVolume25D,
            py::arg("reportInfo"), py::arg("ground"), py::arg("ceil"), py::arg("vertDim"),
            py::arg("gridStep"), py::arg("groundHeight"), py::arg("ceilHeight"),
+           py::arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+           py::arg("groundEmptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+           py::arg("groundMaxEdgeLength")=0.0,
+           py::arg("ceilEmptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+           py::arg("ceilMaxEdgeLength")=0,
            cloudComPy_ComputeVolume25D_doc);
 
     m0.def("invertNormals", &invertNormals, cloudComPy_invertNormals_doc);

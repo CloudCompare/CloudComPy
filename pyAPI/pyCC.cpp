@@ -2001,7 +2001,12 @@ bool ComputeVolume25D(  ReportInfoVol* reportInfo,
                         unsigned char vertDim,
                         double gridStep,
                         double groundHeight,
-                        double ceilHeight)
+                        double ceilHeight,
+                        ccRasterGrid::ProjectionType projectionType,
+                        ccRasterGrid::EmptyCellFillOption groundEmptyCellFillStrategy,
+                        double groundMaxEdgeLength,
+                        ccRasterGrid::EmptyCellFillOption ceilEmptyCellFillStrategy,
+                        double ceilMaxEdgeLength)
 {
     ccRasterGrid grid;
     ccBBox gridBBox = ceil ? ceil->getOwnBB() : ccBBox();
@@ -2026,11 +2031,11 @@ bool ComputeVolume25D(  ReportInfoVol* reportInfo,
                                gridStep,
                                gridWidth,
                                gridHeight,
-                               ccRasterGrid::PROJ_AVERAGE_VALUE,
-                               ccRasterGrid::LEAVE_EMPTY,
-                               0.0,
-                               ccRasterGrid::LEAVE_EMPTY,
-                               0.0,
+                               projectionType,
+                               groundEmptyCellFillStrategy,
+                               groundMaxEdgeLength,
+                               ceilEmptyCellFillStrategy,
+                               ceilMaxEdgeLength,
                                reportInfo,
                                groundHeight,
                                ceilHeight);

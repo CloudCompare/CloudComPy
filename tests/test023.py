@@ -69,27 +69,32 @@ cloud2.translate((1,2, -3)) # creates a translated floor,
 
 report = cc.ReportInfoVol()
 isOk = cc.ComputeVolume25D(report, ground=cloud2, ceil=cloud,
-                           vertDim=2, gridStep=0.05, groundHeight=0, ceilHeight=0) 
+                           vertDim=2, gridStep=0.05, groundHeight=0, ceilHeight=0,
+                           projectionType=cc.PROJ_MINIMUM_VALUE,
+                           groundEmptyCellFillStrategy=cc.INTERPOLATE_DELAUNAY,
+                           groundMaxEdgeLength=0,
+                           ceilEmptyCellFillStrategy=cc.INTERPOLATE_DELAUNAY,
+                           ceilMaxEdgeLength=0) 
 #---computeVol25D03-end
 
 #---computeVol25D04-begin
 if not isOk:
     raise RuntimeError
-if not math.isclose(report.volume, 216.609, rel_tol=1e-03):
+if not math.isclose(report.volume, 299.07, rel_tol=1e-03):
     raise RuntimeError
-if not math.isclose(report.surface, 72.852, rel_tol=1e-03):
+if not math.isclose(report.surface, 133.152, rel_tol=1e-03):
     raise RuntimeError
-if not math.isclose(report.addedVolume, 216.609, rel_tol=1e-03):
+if not math.isclose(report.addedVolume, 301.305, rel_tol=1e-03):
     raise RuntimeError
-if not math.isclose(report.removedVolume, 0., rel_tol=1e-03):
+if not math.isclose(report.removedVolume, 2.237, rel_tol=1e-03):
     raise RuntimeError
-if not math.isclose(report.matchingPercent, 56.4, rel_tol=1e-03):
+if not math.isclose(report.matchingPercent, 100., rel_tol=1e-03):
     raise RuntimeError
-if not math.isclose(report.ceilNonMatchingPercent, 21.8, rel_tol=1e-03):
+if not math.isclose(report.ceilNonMatchingPercent, 0, rel_tol=1e-03):
     raise RuntimeError
-if not math.isclose(report.groundNonMatchingPercent, 21.8, rel_tol=1e-03):
+if not math.isclose(report.groundNonMatchingPercent, 0., rel_tol=1e-03):
     raise RuntimeError
-if not math.isclose(report.averageNeighborsPerCell, 7.93, rel_tol=1e-03):
+if not math.isclose(report.averageNeighborsPerCell, 8.0, rel_tol=1e-03):
     raise RuntimeError
 #---computeVol25D04-end
 

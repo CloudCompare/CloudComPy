@@ -44,6 +44,11 @@ If only one cloud is given, the direction (X, Y or Z) defines the normal to the 
 :param float gridStep: size of the grid step
 :param float groundHeight: altitude of the ground plane along the direction, if ground is None
 :param float ceilHeight: altitude of the ceil plane along the direction, if ceil is None
+:param ProjectionType,optional projectionType: default PROJ_AVERAGE_VALUE
+:param EmptyCellFillOption,optional groundEmptyCellFillStrategy: default LEAVE_EMPTY
+:param float,optional groundMaxEdgeLength: default 0
+:param EmptyCellFillOption,optional ceilEmptyCellFillStrategy: default LEAVE_EMPTY
+:param float,optional ceilMaxEdgeLength: default 0
 
 :return: True if success, False if problem detected in parameters
 :rtype: bool
