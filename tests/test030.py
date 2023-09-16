@@ -89,7 +89,7 @@ if cc.isPluginM3C2():
         raise RuntimeError
     if not math.isclose(sf.getMax(), 0.71, rel_tol=0.01):
         raise RuntimeError
-    if not math.isclose(sf.getMin(), -0.70, rel_tol=0.01):
+    if not math.isclose(sf.getMin(), -0.71, rel_tol=0.01):
         raise RuntimeError
 
     cc.SaveEntities([cloud, cloud1, cloud2], os.path.join(dataDir, "M3C2.bin"))
