@@ -168,6 +168,12 @@ bool pyccPlugins::_isPluginCanupo = true;
 bool pyccPlugins::_isPluginCanupo = false;
 #endif
 
+#ifdef PLUGIN_STANDARD_QPOISSON_RECON
+bool pyccPlugins::_isPluginPoissonRecon = true;
+#else
+bool pyccPlugins::_isPluginPoissonRecon = false;
+#endif
+
 // --- internal struct
 
 //* Extended file loading parameters, from plugins/ccCommandLineInterface.h

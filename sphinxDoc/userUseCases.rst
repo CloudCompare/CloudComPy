@@ -1057,6 +1057,27 @@ and :py:func:`~.cloudComPy.SRA.exportMapAsMesh` functions:
 
 The above code snippets are from :download:`test045.py <../tests/test045.py>`.
 
+Surface Mesh reconstruction, with Poisson Reconstruction plugin
+---------------------------------------------------------------
+
+The concepts are presented in the 
+`CloudCompare wiki - Poisson Surface Reconstruction (plugin) <https://www.cloudcompare.org/doc/wiki/index.php/Poisson_Surface_Reconstruction_(plugin)>`_.
+
+You have to import the The :py:mod:`~.cloudComPy.PoissonRecon` plugin.
+
+To use this plugin, you have to provide a cloud with normals.
+
+The :py:meth:`~.cloudComPy.PoissonRecon.PR.PoissonReconstruction` static method of :py:class:`~.cloudComPy.PoissonRecon.PR` class
+computes the triangular mesh on the given cloud.
+
+.. include:: ../tests/test053.py
+   :start-after: #---PoissonRecon02-begin
+   :end-before:  #---PoissonRecon02-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test053.py <../tests/test053.py>`.
+
 Sclices and contours
 --------------------
 

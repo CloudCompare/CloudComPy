@@ -255,5 +255,8 @@ endif()
 if ( PLUGIN_STANDARD_QSRA )
     add_subdirectory( SRA )
 endif()
+if ( PLUGIN_STANDARD_QPOISSON_RECON )
+    add_subdirectory( PoissonRecon )
+endif()
 
 

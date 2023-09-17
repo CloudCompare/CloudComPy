@@ -55,6 +55,7 @@ cloudComPy: a Python interface for CloudCompare
    MeshBoolean.rst
    PCL.rst
    PCV.rst
+   PoissonRecon.rst
    RANSAC_SD.rst
    SRA.rst
    MinimalBoundingBox.rst

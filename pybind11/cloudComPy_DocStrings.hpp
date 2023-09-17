@@ -348,6 +348,12 @@ returns True if CloudComPy is built with the RANSAC_SD plugin.
 :return: True if CloudComPy is built with the RANSAC_SD plugin, False otherwise.
 :rtype: bool)";
 
+const char* cloudComPy_isPluginPoissonRecon_doc= R"(
+returns True if CloudComPy is built with the PoisssonRecon plugin.
+
+:return: True if CloudComPy is built with the PoissonRecon plugin, False otherwise.
+:rtype: bool)";
+
 const char* cloudComPy_loadPointCloud_doc= R"(
 Load a 3D cloud from a file.
 
