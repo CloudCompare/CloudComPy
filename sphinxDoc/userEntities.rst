@@ -68,7 +68,7 @@ There are methods to convert scalarField to colors and vice-versa.
         cloud.setCurrentScalarField(2)
         cloud.convertCurrentScalarFieldToColors()
 
-Normals can be computed with :py:meth:`~.cloudComPy.ccPointCloud.computeNormals`:
+Normals can be computed with :py:func:`~.cloudComPy.computeNormals`:
 ::
 
     if not cloud.hasNormals():
@@ -272,7 +272,8 @@ The above code snippet is from :download:`test019.py <../tests/test019.py>`.
 cloud normals
 ~~~~~~~~~~~~~
 
-Once computed, normals can be exported to scalar fields with :py:meth:`~.cloudComPy.ccPointCloud.exportNormalToSF`:
+Once computed (see :py:func:`~.cloudComPy.computeNormals`),
+normals can be exported to scalar fields with :py:meth:`~.cloudComPy.ccPointCloud.exportNormalToSF`:
 
 .. include:: ../tests/test014.py
    :start-after: #---normals01-begin
