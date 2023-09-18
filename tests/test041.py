@@ -108,4 +108,11 @@ for entity in entities[1]:
     if (sf.currentSize() > entity.size()):
         raise RuntimeError
 res = cc.SaveEntities(entities[1], os.path.join(dataDir, "manitou.bin"))
-    
+
+#---E57filter-begin
+entities = cc.importFile(os.path.join(dataExtDir,"manitouNoInvalidPoints.e57"), extraData="sp2.*_1")
+#---E57filter-end
+if len(entities[1]) != 2:
+    raise RuntimeError
+res = cc.SaveEntities(entities[1], os.path.join(dataDir, "manitou_filtered.bin"))
+

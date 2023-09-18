@@ -196,6 +196,9 @@ Optional string extraData can be used in ply file, for instance, to select extra
 for import as scalarFields (by default, all extra fields are imported as scalar fields).
 Here, the filter is a regular expression that works on the field name in uppercase.
 
+Optional string extraData can also be used to filter (regular expression) the scans to import in a ``.E57`` file
+(without the parameter, all the scans are imported).
+
 
 :param str filename: file Name
 :param CC_SHIFT_MODE,optional mode: default AUTO, value from AUTO, XYZ, FIRST_GLOBAL_SHIFT, NO_GLOBAL_SHIFT

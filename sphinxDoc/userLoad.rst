@@ -76,7 +76,7 @@ Loading a file containing several entities
 
 The :py:func:`cloudComPy.importFile` returns a tuple (list(mesh), list(cloud), file structure).
 The lists can be empty, depending on the content of the file.
-See see :ref:`loadStructure-label` below for file structure.
+See :ref:`loadStructure-label` below for file structure.
 For now, CloudComPy detects only meshes and clouds in a ``.bin`` file.
 For instance, polylines and facets are imported as clouds, primitives are imported as meshes. 
 ::
@@ -88,6 +88,26 @@ For instance, polylines and facets are imported as clouds, primitives are import
         print(mesh.getName())
     for cloud in clouds:
         print(cloud.getName())
+
+Select the scans to load in a ``.E57`` file
+-------------------------------------------
+
+The :py:func:`cloudComPy.importFile` accept an optional parameter, ``extraData`` which a regular expression
+(see `Qt RegExp <https://doc.qt.io/qt-6/qregexp.html#introduction>`_) used to filter the scans to load in a ``.E57`` file.
+
+In the example below, the file contains 5 scans named 'sp2_1', 'sp2_2', 'sp26_1', 'sp25_2', 'sp26_2'
+The regular expression ``sp2.*_1`` allows to select 'sp2_1' and 'sp26_1'
+(``.`` means any character, ``*`` means 0 occurence or more of the previous).
+
+.. include:: ../tests/test041.py
+   :start-after: #---E57filter-begin
+   :end-before:  #---E57filter-end
+   :literal:
+   :code: python
+
+With the  ``.E57`` file, you always get the structure of the file. You can load the structure first (see :ref:`loadStructure-label` below),
+with an ``extraData`` pattern excluding all the scans, to get the scan names, then select a pattern to load the scans you want,
+one or more at a time...
 
 .. _loadStructure-label:
 
