@@ -49,16 +49,52 @@ template <typename Real>
 class PointCloudWrapper : public PoissonReconLib::ICloud<Real>
 {
 public:
-    explicit PointCloudWrapper( const ccPointCloud& cloud ) : m_cloud(cloud) {}
+    explicit PointCloudWrapper(const ccPointCloud& cloud) : m_cloud(cloud) {}
 
     virtual size_t size() const { return m_cloud.size(); }
     virtual bool hasNormals() const { return m_cloud.hasNormals(); }
     virtual bool hasColors() const { return m_cloud.hasColors(); }
-    virtual void getPoint(size_t index, Real* coords) const;
+    virtual void getPoint(size_t index, Real* coords) const
+    {
+        if (index >= m_cloud.size())
+        {
+            assert(false);
+            return;
+        }
+        //point
+        const CCVector3* P = m_cloud.getPoint(static_cast<unsigned>(index));
+        coords[0] = static_cast<Real>(P->x);
+        coords[1] = static_cast<Real>(P->y);
+        coords[2] = static_cast<Real>(P->z);
+    }
 
-    virtual void getNormal(size_t index, Real* coords) const;
+    virtual void getNormal(size_t index, Real* coords) const
+    {
+        if (index >= m_cloud.size() || !m_cloud.hasNormals())
+        {
+            assert(false);
+            return;
+        }
 
-    virtual void getColor(size_t index, Real* rgb) const;
+        const CCVector3& N = m_cloud.getPointNormal(static_cast<unsigned>(index));
+        coords[0] = static_cast<Real>(N.x);
+        coords[1] = static_cast<Real>(N.y);
+        coords[2] = static_cast<Real>(N.z);
+    }
+
+    virtual void getColor(size_t index, Real* rgb) const
+    {
+        if (index >= m_cloud.size() || !m_cloud.hasColors())
+        {
+            assert(false);
+            return;
+        }
+
+        const ccColor::Rgb& color = m_cloud.getPointColor(static_cast<unsigned>(index));
+        rgb[0] = static_cast<Real>(color.r);
+        rgb[1] = static_cast<Real>(color.g);
+        rgb[2] = static_cast<Real>(color.b);
+    }
 
 protected:
     const ccPointCloud& m_cloud;
@@ -75,19 +111,102 @@ public:
         , m_error(false)
     {}
 
-    bool checkMeshCapacity();
+    bool checkMeshCapacity()
+    {
+        if (m_error)
+        {
+            //no need to go further
+            return false;
+        }
+        if (m_mesh.size() == m_mesh.capacity() && !m_mesh.reserve(m_mesh.size() + 1024))
+        {
+            m_error = true;
+            return false;
+        }
+        return true;
+    }
 
-    bool checkVertexCapacity();
+    bool checkVertexCapacity()
+    {
+        if (m_error)
+        {
+            //no need to go further
+            return false;
+        }
+        if (m_vertices.size() == m_vertices.capacity() && !m_vertices.reserve(m_vertices.size() + 4096))
+        {
+            m_error = true;
+            return false;
+        }
+        return true;
+    }
 
-    virtual void addVertex(const Real* coords) override;
+    virtual void addVertex(const Real* coords) override
+    {
+        if (!checkVertexCapacity())
+        {
+            return;
+        }
+        CCVector3 P = CCVector3::fromArray(coords);
+        m_vertices.addPoint(P);
+    }
 
-    virtual void addNormal(const Real* coords) override;
+    virtual void addNormal(const Real* coords) override
+    {
+        if (!checkVertexCapacity())
+        {
+            return;
+        }
+        if (!m_vertices.hasNormals() && !m_vertices.reserveTheNormsTable())
+        {
+            m_error = true;
+            return;
+        }
+        CCVector3 N = CCVector3::fromArray(coords);
+        m_vertices.addNorm(N);
+    }
 
-    virtual void addColor(const Real* rgb) override;
+    virtual void addColor(const Real* rgb) override
+    {
+        if (!checkVertexCapacity())
+        {
+            return;
+        }
+        if (!m_vertices.hasColors())
+        {
+            if (!m_vertices.reserveTheRGBTable())
+            {
+                m_error = true;
+                return;
+            }
+        }
+        m_vertices.addColor(static_cast<ColorCompType>(std::min((Real)255, std::max((Real)0, rgb[0]))),
+            static_cast<ColorCompType>(std::min((Real)255, std::max((Real)0, rgb[1]))),
+            static_cast<ColorCompType>(std::min((Real)255, std::max((Real)0, rgb[2]))));
+    }
 
-    virtual void addDensity(double d) override;
+    virtual void addDensity(double d) override
+    {
+        if (!m_densitySF)
+        {
+            return;
+        }
+        if (m_densitySF->size() == m_densitySF->capacity() && !m_densitySF->reserveSafe(m_densitySF->size() + 4096))
+        {
+            m_error = true;
+            return;
+        }
+        m_densitySF->addElement(static_cast<ScalarType>(d));
+    }
 
-    void addTriangle(size_t i1, size_t i2, size_t i3) override;
+    void addTriangle(size_t i1, size_t i2, size_t i3) override
+    {
+        if (!checkMeshCapacity())
+        {
+            return;
+        }
+        m_mesh.addTriangle(static_cast<unsigned>(i1), static_cast<unsigned>(i2), static_cast<unsigned>(i3));
+    }
 
     bool isInErrorState() const { return m_error; }
 

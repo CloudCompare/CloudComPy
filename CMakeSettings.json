@@ -5,7 +5,7 @@
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "home": "${env.USERPROFILE}",
+      "home": "C:/Users/paulr",
       "buildRoot": "${home}/CloudComPy/build2022/${name}",
       "installRoot": "${home}/CloudComPy/install/CloudComPy310",
       "condaBase": "${home}/miniconda3",
@@ -21,7 +21,7 @@
           "type": "STRING"
         },
         {
-          "name": "PYTHON_PREFERED_VERSION:STRING",
+          "name": "PYTHON_PREFERED_VERSION",
           "value": "3.10",
           "type": "STRING"
         },
@@ -36,24 +36,24 @@
           "type": "STRING"
         },
         {
-          "name": "PYTHONAPI_TRACES:BOOL",
+          "name": "PYTHONAPI_TRACES",
           "value": "ON",
-          "type": "STRING"
+          "type": "BOOL"
         },
         {
-          "name": "BUILD_PY_TESTING:BOOL",
+          "name": "BUILD_PY_TESTING",
           "value": "ON",
-          "type": "STRING"
+          "type": "BOOL"
         },
         {
-          "name": "BUILD_TESTING:BOOL",
+          "name": "BUILD_TESTING",
           "value": "ON",
-          "type": "STRING"
+          "type": "BOOL"
         },
         {
-          "name": "BUILD_REFERENCE_DOC:BOOL",
+          "name": "BUILD_REFERENCE_DOC",
           "value": "ON",
-          "type": "STRING"
+          "type": "BOOL"
         },
         {
           "name": "USE_CONDA_PACKAGES",
@@ -73,7 +73,7 @@
         {
           "name": "INSTALL_PREREQUISITE_LIBRARIES",
           "value": "OFF",
-          "type": "STRING"
+          "type": "BOOL"
         },
         {
           "name": "CCCORELIB_USE_CGAL",
@@ -91,14 +91,14 @@
           "type": "BOOL"
         },
         {
-          "name": "Boost_DEBUG:BOOL",
+          "name": "Boost_DEBUG",
           "value": "OFF",
-          "type": "STRING"
+          "type": "BOOL"
         },
         {
-          "name": "OPTION_SCALAR_DOUBLE:BOOL",
+          "name": "OPTION_SCALAR_DOUBLE",
           "value": "OFF",
-          "type": "STRING"
+          "type": "BOOL"
         },
         {
           "name": "OPTION_USE_GDAL",
@@ -306,6 +306,11 @@
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_STANDARD_QTREEISO",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "POISSON_RECON_WITH_OPEN_MP",
           "value": "True",
           "type": "BOOL"
@@ -375,7 +380,7 @@
           "value": "${condaRoot}/Library/lib/draco.lib",
           "type": "PATH"
         },
-       {
+        {
           "name": "EIGEN_ROOT_DIR",
           "value": "${condaRoot}/Library/include/eigen3",
           "type": "PATH"

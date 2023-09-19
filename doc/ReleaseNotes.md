@@ -2,9 +2,22 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## September 20, 2023 CloudComPy release:
+
+ - update to CloudCompare master (September 09, 2023)
+ - (issue #120) Interactive display pop up using cloudComPy.render()
+ - add the CSF mesh to the output (follow issue #61)
+ - (issue #125) ComputeVolume25D: parameters (Empty Cell, Max Edge Length, Grid Cell Height)
+ - (issue #127) Set background color when rendering images
+ - (issue #128) implement PoissonReconstruction
+ - (issue #130) Specify which e57 scans to import from a multi-scan e57 file
+ - remove some compilation warnings
+ - improve documentation
+ - various small fixes.
+
 ## August 12, 2023 CloudComPy release (only macOS):
 
- - first macOS version, Apple architecture (not for Intel processors)
+ - (issue #104) first macOS version, Apple architecture (not for Intel processors)
  - update to CloudCompare master (July 13, 2023)
 
 ## July 05, 2023 CloudComPy release:

@@ -39,7 +39,7 @@ if (WIN32)
     Qt5::Gui
     Qt5::Widgets
     Qt5::OpenGL
-    Qt5::QtConcurrent
+    Qt5::Concurrent
     Qt5::PrintSupport
     Qt5::WinMain
     )
@@ -58,7 +58,7 @@ else()
     )
 endif()
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
+#set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 
 target_sources( ${PROJECT_NAME}
     PRIVATE

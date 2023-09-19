@@ -45,14 +45,17 @@ find_package( Qt5
 #find_package( FLANN REQUIRED )
 
 # Testing
-option( BUILD_PY_TESTING "Build tests for CloudComPy" OFF )
+option( BUILD_PY_TESTING "Build tests for CloudComPy" ON )
 if ( BUILD_PY_TESTING )
 	include( CTest )
 endif()
 
 option(PYTHONAPI_TRACES "Activate console trace in the Python API" OFF)
 if (PYTHONAPI_TRACES)
+    message(STATUS "Python Api traces activated")
     add_definitions(-D_PYTHONAPI_DEBUG_)
+else()
+    message(STATUS "Python Api traces deactivated")
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
