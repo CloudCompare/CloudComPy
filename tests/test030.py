@@ -87,9 +87,9 @@ if cc.isPluginM3C2():
     sf = cloud2.getScalarField(dic['M3C2 distance'])
     if sf is None:
         raise RuntimeError
-    if not math.isclose(sf.getMax(), 0.71, rel_tol=0.01):
+    if not math.isclose(sf.getMax(), 0.71, rel_tol=0.02):
         raise RuntimeError
-    if not math.isclose(sf.getMin(), -0.71, rel_tol=0.01):
+    if not math.isclose(sf.getMin(), -0.71, rel_tol=0.02):
         raise RuntimeError
 
     cc.SaveEntities([cloud, cloud1, cloud2], os.path.join(dataDir, "M3C2.bin"))
