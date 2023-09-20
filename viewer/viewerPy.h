@@ -101,7 +101,8 @@ public: // ccMainInterface compliance
     void decreasePointSize() override;
     ccUniqueIDGenerator::Shared getUniqueIDGenerator() override;
 
-    void doActionRenderToFile(QString filename="capture.png");
+    void doActionRenderToFile(QString filename="capture.png", bool isInteractive=false);
+    void renderToFileAndClose();
 
 //protected:
 
@@ -110,6 +111,15 @@ public: // ccMainInterface compliance
 
 	//! Updates display to match display parameters
 	void updateDisplay();
+
+	//! setBackgroundColor
+    void setBackgroundColor(bool gradient=false, unsigned char r=255, unsigned char g=255, unsigned char b=255);
+
+    //! setTextDefaultColor
+    void setTextDefaultCol(unsigned char r=0, unsigned char g=0, unsigned char b=0, unsigned char a=255);
+
+    //! setColorScaleShowHistogram
+    void setColorScaleShowHistogram(bool showHist=true);
 
 	//! Selects entity
 	void selectEntity(ccHObject* entity);
@@ -204,6 +214,8 @@ protected: //members
 
     //! Gamepad handler
     ccGamepadManager* m_gamepadManager;
+
+    QString m_filename;
 
 signals:
     void exitRequested();

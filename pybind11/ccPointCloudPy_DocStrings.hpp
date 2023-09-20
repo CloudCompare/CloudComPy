@@ -511,6 +511,11 @@ Set the current 'out' ScalarField index. No validity check. Use -1 to set None.
 
 :param int index: index of the 'out' ScalarField)";
 
+const char* ccPointCloudPy_showSFColorsScale_doc= R"(
+Display or not the Color Scale ramp when render to a file.
+
+:param bool state: whether to display the Color Scale Ramp when render to a file)";
+
 const char* ccPointCloudPy_shrinkToFit_doc= R"(
 Removes unused capacity)";
 

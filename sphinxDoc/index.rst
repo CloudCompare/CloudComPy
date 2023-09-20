@@ -14,13 +14,19 @@ cloudComPy: a Python interface for CloudCompare
 .. toctree::
    :numbered:
    :maxdepth: 3
-   :caption: cloudComPy User Manual
+   :caption: cloudComPy User Manual: basics
    
    userIntro.rst
    userLoad.rst
    userSave.rst
    userEntities.rst
    userNumpy.rst
+
+.. toctree::
+   :numbered:
+   :maxdepth: 3
+   :caption: Some use cases
+   
    userUseCases.rst
 
 .. toctree::
@@ -55,6 +61,7 @@ cloudComPy: a Python interface for CloudCompare
    MeshBoolean.rst
    PCL.rst
    PCV.rst
+   PoissonRecon.rst
    RANSAC_SD.rst
    SRA.rst
    MinimalBoundingBox.rst

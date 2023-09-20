@@ -803,7 +803,46 @@ void removeFromRenderScene(ccHObject* obj)
 	w->show();
 }
 
-void renderPy(QString filename, int width=1500, int height=1000)
+void setBackgroundColor(bool gradient=false, unsigned char r=255, unsigned char g=255, unsigned char b=255)
+{
+    QCoreApplication *coreApp = QCoreApplication::instance();
+    viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+    if (!app)
+    {
+        CCTRACE("cannot find viewerPyApplication!");
+        return;
+    }
+    viewerPy* w = getOrInitializeViewer();
+    w->setBackgroundColor(gradient, r, g ,b);
+}
+
+void setTextDefaultCol(unsigned char r=0, unsigned char g=0, unsigned char b=0, unsigned char a=255)
+{
+    QCoreApplication *coreApp = QCoreApplication::instance();
+    viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+    if (!app)
+    {
+        CCTRACE("cannot find viewerPyApplication!");
+        return;
+    }
+    viewerPy* w = getOrInitializeViewer();
+    w->setTextDefaultCol(r, g, b, a);
+}
+
+void setColorScaleShowHistogram(bool showHist=true)
+{
+    QCoreApplication *coreApp = QCoreApplication::instance();
+    viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
+    if (!app)
+    {
+        CCTRACE("cannot find viewerPyApplication!");
+        return;
+    }
+    viewerPy* w = getOrInitializeViewer();
+    w->setColorScaleShowHistogram(showHist);
+}
+
+void renderPy(QString filename, int width=1500, int height=1000,bool isInteractive=false)
 {
 	CCTRACE("renderPy");
 	QCoreApplication *coreApp = QCoreApplication::instance();
@@ -817,7 +856,7 @@ void renderPy(QString filename, int width=1500, int height=1000)
 	w->resize(width+46, height+88);
 	w->show();
 
-	w->doActionRenderToFile(filename);
+	w->doActionRenderToFile(filename, isInteractive);
 	app->exec();
 }
 
@@ -2608,7 +2647,9 @@ PYBIND11_MODULE(_cloudComPy, m0)
     py::enum_<ccRasterGrid::ProjectionType>(m0, "ProjectionType")
 		.value("PROJ_MINIMUM_VALUE", ccRasterGrid::PROJ_MINIMUM_VALUE)
 		.value("PROJ_AVERAGE_VALUE", ccRasterGrid::PROJ_AVERAGE_VALUE)
-		.value("PROJ_MAXIMUM_VALUE", ccRasterGrid::PROJ_MAXIMUM_VALUE)
+        .value("PROJ_MAXIMUM_VALUE", ccRasterGrid::PROJ_MAXIMUM_VALUE)
+        .value("PROJ_MEDIAN_VALUE", ccRasterGrid::PROJ_MEDIAN_VALUE)
+        .value("PROJ_INVERSE_VAR_VALUE", ccRasterGrid::PROJ_INVERSE_VAR_VALUE)
 		.value("INVALID_PROJECTION_TYPE", ccRasterGrid::INVALID_PROJECTION_TYPE)
         .export_values();
 
@@ -2724,6 +2765,8 @@ PYBIND11_MODULE(_cloudComPy, m0)
 
     m0.def("isPluginRANSAC_SD", &pyccPlugins::isPluginRANSAC_SD, cloudComPy_isPluginRANSAC_SD_doc);
 
+    m0.def("isPluginPoissonRecon", &pyccPlugins::isPluginPoissonRecon, cloudComPy_isPluginPoissonRecon_doc);
+
     m0.def("computeCurvature", &computeCurvature, cloudComPy_computeCurvature_doc);
 
     m0.def("computeFeature", &computeFeature, cloudComPy_computeFeature_doc);
@@ -2789,6 +2832,11 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("ComputeVolume25D", &ComputeVolume25D,
            py::arg("reportInfo"), py::arg("ground"), py::arg("ceil"), py::arg("vertDim"),
            py::arg("gridStep"), py::arg("groundHeight"), py::arg("ceilHeight"),
+           py::arg("projectionType")=ccRasterGrid::PROJ_AVERAGE_VALUE,
+           py::arg("groundEmptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+           py::arg("groundMaxEdgeLength")=0.0,
+           py::arg("ceilEmptyCellFillStrategy")=ccRasterGrid::LEAVE_EMPTY,
+           py::arg("ceilMaxEdgeLength")=0,
            cloudComPy_ComputeVolume25D_doc);
 
     m0.def("invertNormals", &invertNormals, cloudComPy_invertNormals_doc);
@@ -2947,7 +2995,8 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("removeFromRenderScene", &removeFromRenderScene, cloudComPy_removeFromRenderScene_doc);
 
     m0.def("render", &renderPy,
-    		py::arg("filename"), py::arg("width")=1500, py::arg("height")=1000, cloudComPy_render_doc);
+    		py::arg("filename"), py::arg("width")=1500, py::arg("height")=1000, py::arg("isInteractive")=false,
+    		cloudComPy_render_doc);
 
     m0.def("setOrthoView", &setOrthoView, cloudComPy_setOrthoView_doc);
     m0.def("setCenteredPerspectiveView", &setCenteredPerspectiveView, cloudComPy_setCenteredPerspectiveView_doc);
@@ -2964,5 +3013,13 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("setIsoView2", &setIsoView2, cloudComPy_setIsoView2_doc);
     m0.def("setCustomView", &setCustomView, cloudComPy_setCustomView_doc);
     m0.def("setCameraPos", &setCameraPos, cloudComPy_setCameraPos_doc);
-
+    m0.def("setBackgroundColor", &setBackgroundColor,
+           py::arg("gradient")=false , py::arg("r")=255, py::arg("g")=255, py::arg("b")=255,
+           cloudComPy_setBackgroundColor_doc);
+    m0.def("setTextDefaultCol", &setTextDefaultCol,
+           py::arg("r")=0 , py::arg("g")=0, py::arg("b")=0, py::arg("a")=255,
+           cloudComPy_setTextDefaultCol_doc);
+    m0.def("setColorScaleShowHistogram", & setColorScaleShowHistogram,
+           py::arg("showHist")=true,
+           cloudComPy_setColorScaleShowHistogram_doc);
 }

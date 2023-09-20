@@ -44,6 +44,11 @@ If only one cloud is given, the direction (X, Y or Z) defines the normal to the 
 :param float gridStep: size of the grid step
 :param float groundHeight: altitude of the ground plane along the direction, if ground is None
 :param float ceilHeight: altitude of the ceil plane along the direction, if ceil is None
+:param ProjectionType,optional projectionType: default PROJ_AVERAGE_VALUE
+:param EmptyCellFillOption,optional groundEmptyCellFillStrategy: default LEAVE_EMPTY
+:param float,optional groundMaxEdgeLength: default 0
+:param EmptyCellFillOption,optional ceilEmptyCellFillStrategy: default LEAVE_EMPTY
+:param float,optional ceilMaxEdgeLength: default 0
 
 :return: True if success, False if problem detected in parameters
 :rtype: bool
@@ -190,6 +195,9 @@ in the GUI, shift parameters are likely not taken into account in CloudCompare.
 Optional string extraData can be used in ply file, for instance, to select extra fields
 for import as scalarFields (by default, all extra fields are imported as scalar fields).
 Here, the filter is a regular expression that works on the field name in uppercase.
+
+Optional string extraData can also be used to filter (regular expression) the scans to import in a ``.E57`` file
+(without the parameter, all the scans are imported).
 
 
 :param str filename: file Name
@@ -341,6 +349,12 @@ const char* cloudComPy_isPluginRANSAC_SD_doc= R"(
 returns True if CloudComPy is built with the RANSAC_SD plugin.
 
 :return: True if CloudComPy is built with the RANSAC_SD plugin, False otherwise.
+:rtype: bool)";
+
+const char* cloudComPy_isPluginPoissonRecon_doc= R"(
+returns True if CloudComPy is built with the PoisssonRecon plugin.
+
+:return: True if CloudComPy is built with the PoissonRecon plugin, False otherwise.
 :rtype: bool)";
 
 const char* cloudComPy_loadPointCloud_doc= R"(
@@ -782,6 +796,7 @@ RenderViewToFile: write the image file from the 3D scene.
 :param string filename: the filename with it's path and extension. The extension defines the image format (.png, .jpg, ...)
 :param int,optional width: the width of the image (pixels), default 1500
 :param int,optional height: the height of the image (pixels), default 1000
+:param bool,optional isInteractive: default False, whether to keep the IHM viewer active (and suspend Python script).
 )";
 
 const char* cloudComPy_setOrthoView_doc= R"(
@@ -838,6 +853,30 @@ const char* cloudComPy_setCameraPos_doc= R"(
 RenderViewToFile: define a camera position.
 
 :param CCVector3d P: camera position
+)";
+
+const char* cloudComPy_setBackgroundColor_doc= R"(
+RenderViewToFile: define a background color.
+
+:param bool,optional gradient: default false, draw a background gradient (between rgb and the opposite of foreground color) 
+:param int,optional r: red value (0..255), default 255
+:param int,optional g: green value (0..255), default 255
+:param int,optional b: blue value (0..255), default 255
+)";
+
+const char* cloudComPy_setTextDefaultCol_doc= R"(
+RenderViewToFile: define a text default (foreground) color.
+
+:param int,optional r: red value (0..255), default 0
+:param int,optional g: green value (0..255), default 0
+:param int,optional b: blue value (0..255), default 0
+:param int,optional a: alpha value (0..255), default 255
+)";
+
+const char* cloudComPy_setColorScaleShowHistogram_doc= R"(
+RenderViewToFile: show the color scale histogram, when the color scale itself is shown (see 'showSFColorsScale' method of 'ccPointCloud').
+
+:param bool,optional showHist: default true, whether to add the histogram to the color scale. 
 )";
 
 

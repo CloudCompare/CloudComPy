@@ -98,10 +98,14 @@ cloud = cc.loadPointCloud(getSampleCloud(5.0))
 cloud.exportCoordToSF(False, False, True)
 cloud.setCurrentScalarField(0)
 cloud.setCurrentDisplayedScalarField(0)
+cloud.showSFColorsScale(True)
 cc.addToRenderScene(cloud)
 
 cc.setOrthoView()
 cc.setGlobalZoom()
+cc.setBackgroundColor(False, 255, 255, 255)
+cc.setTextDefaultCol(0, 0, 0)
+cc.setColorScaleShowHistogram(True)
 cc.render(os.path.join(dataDir, "render0.png"), 2000,1500)
 
 cc.setCameraPos((0., 0., 20.))
@@ -117,5 +121,5 @@ cc.setCenteredPerspectiveView()
 for i in range(15):
     cc.setCustomView((0., math.cos(i*alphaRad), -math.sin(i*alphaRad)), (0., math.sin(i*alphaRad), math.cos(i*alphaRad)))
     cc.setGlobalZoom()
-    cc.render(os.path.join(dataDir, "renderangle_%d.png"%i), 2000,1500)
+    cc.render(os.path.join(dataDir, "renderangle_%d.png"%i), 2000,1500, False)
 #---render003-end

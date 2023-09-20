@@ -34,9 +34,9 @@ brotli-bin                1.0.9                h166bdaf_8    conda-forge
 brotlipy                  0.7.0           py310h5764c6d_1005    conda-forge
 bzip2                     1.0.8                h7f98852_4    conda-forge
 c-ares                    1.18.1               h7f98852_0    conda-forge
-ca-certificates           2023.5.7             hbcca054_0    conda-forge
+ca-certificates           2023.7.22            hbcca054_0    conda-forge
 cairo                     1.16.0            ha61ee94_1014    conda-forge
-certifi                   2023.5.7           pyhd8ed1ab_0    conda-forge
+certifi                   2023.7.22          pyhd8ed1ab_0    conda-forge
 cffi                      1.15.1          py310h255011f_3    conda-forge
 cfitsio                   4.1.0                hd9d235c_0    conda-forge
 cgal                      5.4             py310h769672d_0    conda-forge
@@ -257,7 +257,7 @@ opencv                    4.5.5           py310hff52083_13    conda-forge
 openh264                  2.3.1                hcb278e6_2    conda-forge
 openjpeg                  2.5.0                h7d73246_1    conda-forge
 openmp                    8.0.1                         0    conda-forge
-openssl                   1.1.1u               hd590300_0    conda-forge
+openssl                   1.1.1w               hd590300_0    conda-forge
 p11-kit                   0.24.1               hc5aa10d_0    conda-forge
 packaging                 23.0               pyhd8ed1ab_0    conda-forge
 pandoc                    2.19.2               h32600fe_1    conda-forge

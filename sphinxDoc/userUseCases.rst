@@ -1,8 +1,4 @@
 
-==================================
-Some use cases
-==================================
-
 Create a point cloud with numpy
 -------------------------------
 
@@ -968,7 +964,7 @@ The concepts are presented in the
 You have to import the The :py:mod:`~.cloudComPy.CSF` plugin.
 
 The :py:func:`~.cloudComPy.CSF.computeCSF` function takes a ccPointCloud in input and several optional parameters.
-The function produce two clouds: "ground points" and "off-ground points".
+The function produce two clouds: "ground points" and "off-ground points", plus optionally, the cloth mesh.
 
 A first example with default parameters:
 
@@ -1056,6 +1052,27 @@ and :py:func:`~.cloudComPy.SRA.exportMapAsMesh` functions:
    :code: python
 
 The above code snippets are from :download:`test045.py <../tests/test045.py>`.
+
+Surface Mesh reconstruction, with Poisson Reconstruction plugin
+---------------------------------------------------------------
+
+The concepts are presented in the 
+`CloudCompare wiki - Poisson Surface Reconstruction (plugin) <https://www.cloudcompare.org/doc/wiki/index.php/Poisson_Surface_Reconstruction_(plugin)>`_.
+
+You have to import the The :py:mod:`~.cloudComPy.PoissonRecon` plugin.
+
+To use this plugin, you have to provide a cloud with normals.
+
+The :py:meth:`~.cloudComPy.PoissonRecon.PR.PoissonReconstruction` static method of :py:class:`~.cloudComPy.PoissonRecon.PR` class
+computes the triangular mesh on the given cloud.
+
+.. include:: ../tests/test053.py
+   :start-after: #---PoissonRecon02-begin
+   :end-before:  #---PoissonRecon02-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test053.py <../tests/test053.py>`.
 
 Sclices and contours
 --------------------
@@ -1306,13 +1323,25 @@ Different modes of perspective are available:
  
  To define a zoom on the whole scene or on selected entities, use the :py:func:`cloudComPy.setGlobalZoom` and :py:func:`cloudComPy.zoomOnSelectedEntity` functions.
 
-The :py:func:`cloudComPy.setCustomView` and py:func:`cloudComPy.setCameraPos` functions are used to define a custom point of view:
+The :py:func:`cloudComPy.setCustomView` and py:func:`cloudComPy.setCameraPos` functions are used to define a custom point of view.
+
+Several functions and methods can be used to set the background color, display the scalar bar...
+
+ - :py:func:`cloudComPy.setBackgroundColor`
+ - :py:func:`cloudComPy.setTextDefaultCol`
+ - :py:func:`cloudComPy.setColorScaleShowHistogram`
+ - :py:meth:`~.cloudComPy.ccPointCloud.showSFColorsScale`
 
 .. include:: ../tests/test051.py
    :start-after: #---render003-begin
    :end-before:  #---render003-end
    :literal:
    :code: python
+
+By default, the :py:func:`cloudComPy.render` function returns immediately after rendering the image.
+It is possible to select an interactive mode by setting the last optional parameter (bool isInteractive) to True.
+In this mode, the Python script is suspended, it is possible to adjust the 3D view.When the vue is correct,
+you have to select the action "resume Python script" in the "options" menu to save the render and resume the Python script execution.
 
 The above code snippets are from :download:`test051.py <../tests/test051.py>`.
 

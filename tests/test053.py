@@ -27,25 +27,30 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import dataDir, getSampleCloud
+from gendata import getSampleCloud, dataDir, isCoordEqual
 import cloudComPy as cc
+import numpy as np
+import multiprocessing
 
-#---CSF01-begin
-if cc.isPluginCSF():
-    import cloudComPy.CSF
-    cloud = cc.loadPointCloud(getSampleCloud(5.0))
-    clouds = cc.CSF.computeCSF(cloud)
-    #---CSF01-end
-    if len(clouds) != 2:
-        raise RuntimeError
-    if not math.isclose(clouds[0].size(), 935000, rel_tol=1.e-2):
-        raise RuntimeError
-    if clouds[1].size() != 1000000 - clouds[0].size():
-        raise RuntimeError
-    #---CSF02-begin
-    clouds2 = cc.CSF.computeCSF(cloud, csfRigidness=1, clothResolution=1.0, classThreshold=0.3, computeMesh=True)
-    #---CSF02-end
+if not cc.isPluginPoissonRecon():
+    print("Test skipped")
+    sys.exit()
 
-for cloud in clouds2:
-    clouds.append(cloud)
-res = cc.SaveEntities(clouds, os.path.join(dataDir, "CSF.bin"))
+import cloudComPy.PoissonRecon
+
+npts = 300000
+x = np.float32(-5 +10*np.random.random((npts)))
+y = np.float32(-5 +10*np.random.random((npts)))
+f = np.sqrt(x*x + y*y)
+z = np.sin(3*f)
+coords = np.column_stack((x,y,z))
+cloud = cc.ccPointCloud("cloud")
+cloud.coordsFromNPArray_copy(coords)
+cloud.exportCoordToSF(False, False, True)
+cc.computeNormals([cloud])
+
+#---PoissonRecon02-begin
+mesh = cc.PoissonRecon.PR.PoissonReconstruction(pc=cloud, threads=multiprocessing.cpu_count(), density=True)
+#---PoissonRecon02-end
+
+cc.SaveEntities([cloud, mesh], os.path.join(dataDir, "PoissonRecon.bin"))

@@ -72,6 +72,8 @@ struct pyccPlugins
     static bool isPluginSRA() { return _isPluginSRA; };
     static bool _isPluginCanupo;
     static bool isPluginCanupo() { return _isPluginCanupo; };
+    static bool _isPluginPoissonRecon;
+    static bool isPluginPoissonRecon() { return _isPluginPoissonRecon; };
 };
 
 enum CC_DIRECTION
@@ -249,7 +251,12 @@ bool ComputeVolume25D(  ReportInfoVol* reportInfo,
                         unsigned char vertDim,
                         double gridStep,
                         double groundHeight,
-                        double ceilHeight);
+                        double ceilHeight,
+                        ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE,
+                        ccRasterGrid::EmptyCellFillOption groundEmptyCellFillStrategy  = ccRasterGrid::LEAVE_EMPTY,
+                        double groundMaxEdgeLength = 0.0,
+                        ccRasterGrid::EmptyCellFillOption ceilEmptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY,
+                        double ceilMaxEdgeLength = 0.0);
 
 ccPointCloud* RasterizeToCloud(
 	ccGenericPointCloud* cloud,
