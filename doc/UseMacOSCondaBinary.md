@@ -1,16 +1,20 @@
 ## Experimental: Installing, testing and using a CloudComPy binary on MacOS, with conda
 
-The binary *CloudComPy_Conda310_MacOS-date-.zip* available [here](https://www.simulation.openfields.fr/index.php/download-binaries) is built with a Conda environment
-(see [here](BuildLinuxConda.md) for the corresponding building instructions).
+The binary *CloudComPy_Conda310_MacOS-date-.zip* available [here](https://www.simulation.openfields.fr/index.php/download-binaries)
+ is built with a Conda environment.
 
-As CloudComPy is under development, these instructions and the link are subject to change from time to time...
-
-**This binary works only on macOS Apple architecture (not on Intel processors), on recent macOS versions, 
-with a Python configuration described below, not anywhere else!**
+**This binary works only on macOS Apple arm architecture (not on Intel processors), on recent macOS versions, not anywhere else!**
 
 **Built and tested on macOS VENTURA 13.4.1. Please post issues on CloudComPy GitHub in case of problem**
 
-You need a Python 3.10 configuration with at least the following packages, either with conda or not:
+The macOS binary provides **CloudCompare** and **CloudCompy** (same as binaries for Windows and Linux).
+
+As CloudComPy is under development, these instructions and the link are subject to change from time to time...
+
+**CloudCompare** works as it is (no specific environment).
+It is located in CloudComPy310/CloudCompare/CloudCompare.app and can be launched from the Finder.
+
+**CloudComPy** needs a Python 3.10 configuration with at least the following packages, either with conda or not:
 
 ```
 numpy
@@ -105,7 +109,9 @@ The files created with the tests are in your user space: `${HOME}/CloudComPy/Dat
 ### Current status and problems:
 
  - The RANSAC-SD plugin does not work (infinite loop).
+ - The PoissonRecon plugin aborts.
  - The plugins QRDB, QSTEP, QTREEISO are not available.
  - Jupyter and Spyder provided with conda are not yet working.
- - The signature and notarization of CloudComPy and CloudCompare should be OK but it will be confirmed by your feedback (execution of the code on your Mac is possible and does not require to modify protections).
+ - The signature and notarization of CloudComPy and CloudCompare should be OK but it will be confirmed by your feedback
+   (execution of the code on your Mac is possible and does not require to modify protections).
  
