@@ -50,9 +50,9 @@ RUN . /opt/conda/etc/profile.d/conda.sh && \
     conda install boost cgal cmake eigen ffmpeg gdal jupyterlab matplotlib mysql numpy opencv openmp pcl pdal psutil "qhull=2019.1" qt scipy sphinx_rtd_theme spyder tbb tbb-devel xerces-c
 
 RUN mkdir -p /opt/cloudcompy && \
-    wget "https://www.simulation.openfields.fr/index.php/download-binaries/send/2-cloudcompy-binaries/11-cloudcompy-conda39-linux64-20211208-tgz" && \
-    tar -xvzf "11-cloudcompy-conda39-linux64-20211208-tgz" -C /opt/cloudcompy && \
-    rm "11-cloudcompy-conda39-linux64-20211208-tgz"
+    wget "https://www.simulation.openfields.fr/phocadownload/cloudcompy_conda39_linux64_20211208.tgz" && \
+    tar -xvzf "cloudcompy_conda39_linux64_20211208.tgz" -C /opt/cloudcompy && \
+    rm "cloudcompy_conda39_linux64_20211208.tgz"
 
 RUN apt-get update && apt-get install -y libgl1 libomp5
 

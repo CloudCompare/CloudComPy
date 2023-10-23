@@ -37,7 +37,7 @@ import cloudComPy as cc
 if not os.path.isfile(os.path.join(dataExtDir,"manitouNoInvalidPoints.e57")):
     if not os.path.exists(dataExtDir):
         os.makedirs(dataExtDir)
-    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/30-manitounoinvalidpoints-e57"
+    url = "https://www.simulation.openfields.fr/phocadownload/manitouNoInvalidPoints.e57"
     r = requests.get(url)
     with open(os.path.join(dataExtDir,"manitouNoInvalidPoints.e57"), 'wb') as f:
         f.write(r.content)
@@ -95,7 +95,7 @@ res = cc.SaveEntities(entities[1], os.path.join(dataDir, "manitouNoInvalidPoints
 if not os.path.isfile(os.path.join(dataExtDir,"manitou.e57")):
     if not os.path.exists(dataExtDir):
         os.makedirs(dataExtDir)
-    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/31-manitou-e57"
+    url = "https://www.simulation.openfields.fr/phocadownload/manitou.e57"
     r = requests.get(url)
     with open(os.path.join(dataExtDir,"manitou.e57"), 'wb') as f:
         f.write(r.content)

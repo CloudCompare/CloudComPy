@@ -2,7 +2,7 @@
 Python wrapper for CloudCompare
 
 ## Project site 
-This [site](https://www.simulation.openfields.fr/index.php/projets/cloudcompy) in development already contains reference material,
+This [site](https://www.simulation.openfields.fr/index.php/projects/cloudcompy) in development already contains reference material,
 Linux and Windows 10 binaries for a Conda environment (see below).
 
 ## What is CloudComPy?
@@ -63,7 +63,7 @@ CloudComPy is built on Windows and Linux in a Conda environment, which facilitat
 
 The binary provision includes CloudCompare and its Python interface CloudComPy, the Conda environment provides the IDE [Spyder](https://www.spyder-ide.org/) and [Jupyter](https://jupyter.org/).
 
-The binary are available [here](https://www.simulation.openfields.fr/index.php/download-binaries). See the instructions below.
+The binary are available [here](https://www.simulation.openfields.fr/index.php/cloudcompy-downloads). See the instructions below.
 
  - To install and use a **Windows** binary, consult the [Windows installation documentation](doc/UseWindowsCondaBinary.md) in the doc directory.
 

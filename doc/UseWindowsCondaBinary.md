@@ -1,6 +1,6 @@
 ## Installing, testing and using a CloudComPy binary on Windows 10, with Conda
 
-The binary *CloudComPy\*_-date-.7z* available [here](https://www.simulation.openfields.fr/index.php/download-binaries) is built in a Conda environment.
+The binary *CloudComPy\*_-date-.7z* available [here](https://www.simulation.openfields.fr/index.php/cloudcompy-downloads) is built in a Conda environment.
 (see [here](BuildWindowsConda.md) for the corresponding building instructions).
 
 As CloudComPy is under development, these instructions and the link are subject to change from time to time...

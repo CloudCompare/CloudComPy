@@ -59,7 +59,7 @@ from the container prompt:
 
 On your host, on `~/CloudCompy/result`, get the files from the tests and the CloudComPy binary tarfile.
 This binary can be used in the same way as the linux binary available on the site 
-[simulation.openfields.fr](https://www.simulation.openfields.fr/index.php/download-binaries).
+[simulation.openfields.fr](https://www.simulation.openfields.fr/index.php/cloudcompy-downloads).
 
 **Remark**: shared results are root, change to current user:
 

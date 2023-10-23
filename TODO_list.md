@@ -180,3 +180,4 @@ TODO List
 - TODO: allow installation path with space (like "c:\program files\xxx") (follow issue #72)
 - TODO: (issue #134) normal access as a Numpy array
 - TODO: (issue #130) bug on the selection of scans to import in a multi-scan e57 file (should use QRegExp::exactMatch)
+- TODO: fix path related to CloudComPy web site changes, in documentation and tests

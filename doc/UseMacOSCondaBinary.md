@@ -1,6 +1,6 @@
 ## Experimental: Installing, testing and using a CloudComPy binary on MacOS, with conda
 
-The binary *CloudComPy_Conda310_MacOS-date-.zip* available [here](https://www.simulation.openfields.fr/index.php/download-binaries)
+The binary *CloudComPy_Conda310_MacOS-date-.zip* available [here](https://www.simulation.openfields.fr/index.php/cloudcompy-downloads)
  is built with a Conda environment.
 
 **This binary works only on macOS Apple arm architecture (not on Intel processors), on recent macOS versions, not anywhere else!**
