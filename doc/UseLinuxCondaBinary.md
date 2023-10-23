@@ -1,6 +1,6 @@
 ## Installing, testing and using a CloudComPy binary on Linux, with conda
 
-The binary *CloudComPy_Conda310_Linux64_-date-.tgz* available [here](https://www.simulation.openfields.fr/index.php/download-binaries) is built with a Conda environment
+The binary *CloudComPy_Conda310_Linux64_-date-.tgz* available [here](https://www.simulation.openfields.fr/index.php/cloudcompy-downloads) is built with a Conda environment
 (see [here](BuildLinuxConda.md) for the corresponding building instructions).
 
 As CloudComPy is under development, these instructions and the link are subject to change from time to time...

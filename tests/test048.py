@@ -35,7 +35,7 @@ import cloudComPy as cc
 if not os.path.isfile(os.path.join(dataExtDir,"pumpARowColumnIndexNoInvalidPoints.e57")):
     if not os.path.exists(dataExtDir):
         os.makedirs(dataExtDir)
-    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/44-pumparowcolumnindexnoinvalidpoints-e57"
+    url = "https://www.simulation.openfields.fr/phocadownload/pumpARowColumnIndexNoInvalidPoints.e57"
     r = requests.get(url)
     with open(os.path.join(dataExtDir,"pumpARowColumnIndexNoInvalidPoints.e57"), 'wb') as f:
         f.write(r.content)

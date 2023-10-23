@@ -30,9 +30,9 @@ RUN . /opt/conda/etc/profile.d/conda.sh && \
     conda install qt numpy psutil boost xerces-c pcl gdal cgal cmake pdal opencv ffmpeg mysql "qhull=2019.1" matplotlib "eigen=3.3.9" tbb openmp
 
 RUN mkdir -p /opt/cloudcompy && \
-    wget "https://www.simulation.openfields.fr/index.php/download-binaries/send/2-cloudcompy-binaries/8-cloudcompy-conda39-linux64-20211018-tgz" && \
-    tar -xvzf "8-cloudcompy-conda39-linux64-20211018-tgz" -C /opt/cloudcompy && \
-    rm "8-cloudcompy-conda39-linux64-20211018-tgz"
+    wget "https://www.simulation.openfields.fr/phocadownload/cloudcompy_conda39_linux64_20211018.tgz" && \
+    tar -xvzf "cloudcompy_conda39_linux64_20211018.tgz" -C /opt/cloudcompy && \
+    rm "cloudcompy_conda39_linux64_20211018.tgz"
 
 RUN apt-get update && apt-get install -y libgl1
 

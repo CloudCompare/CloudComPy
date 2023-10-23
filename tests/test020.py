@@ -317,7 +317,7 @@ if p_shp.size() != 7:
 if not os.path.isfile(os.path.join(dataExtDir,"PTS_LAMB93_IGN69_extract.las")):
     if not os.path.exists(dataExtDir):
         os.makedirs(dataExtDir)
-    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/45-pts-lamb93-ign69-extract-las"
+    url = "https://www.simulation.openfields.fr/phocadownload/PTS_LAMB93_IGN69_extract.las"
     r = requests.get(url)
     with open(os.path.join(dataExtDir,"PTS_LAMB93_IGN69_extract.las"), 'wb') as f:
         f.write(r.content)

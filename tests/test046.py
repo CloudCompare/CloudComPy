@@ -40,7 +40,7 @@ import cloudComPy as cc
 if not os.path.isfile(os.path.join(dataExtDir,"recombi_10.txt")):
     if not os.path.exists(dataExtDir):
         os.makedirs(dataExtDir)
-    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/38-recombi-10-txt"
+    url = "https://www.simulation.openfields.fr/phocadownload/recombi_10.txt"
     with open(os.path.join(dataExtDir,"recombi_10.txt"), 'wb') as f:
         for line in urllib.request.urlopen(url):
             f.write(line)
@@ -48,7 +48,7 @@ if not os.path.isfile(os.path.join(dataExtDir,"recombi_10.txt")):
 if not os.path.isfile(os.path.join(dataExtDir,"vegetTidal.prm")):
     if not os.path.exists(dataExtDir):
         os.makedirs(dataExtDir)
-    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/39-vegettidal-prm"
+    url = "https://www.simulation.openfields.fr/phocadownload/vegetTidal.prm"
     r = requests.get(url)
     with open(os.path.join(dataExtDir,"vegetTidal.prm"), 'wb') as f:
         f.write(r.content)

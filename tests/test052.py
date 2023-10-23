@@ -34,7 +34,7 @@ import cloudComPy as cc
 if not os.path.isfile(os.path.join(dataExtDir,"garonne_L93.xyz")):
     if not os.path.exists(dataExtDir):
         os.makedirs(dataExtDir)
-    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/50-garonne-l93-xyz"
+    url = "https://www.simulation.openfields.fr/phocadownload/garonne_L93.xyz"
     r = requests.get(url)
     with open(os.path.join(dataExtDir,"garonne_L93.xyz"), 'wb') as f:
         f.write(r.content)
@@ -42,7 +42,7 @@ if not os.path.isfile(os.path.join(dataExtDir,"garonne_L93.xyz")):
 if not os.path.isfile(os.path.join(dataExtDir,"ligne_eau.poly")):
     if not os.path.exists(dataExtDir):
         os.makedirs(dataExtDir)
-    url = "https://www.simulation.openfields.fr/index.php/download-binaries/send/3-cloudcompy-data-samples/51-ligne-eau-poly"
+    url = "https://www.simulation.openfields.fr/phocadownload/ligne_eau.poly"
     r = requests.get(url)
     with open(os.path.join(dataExtDir,"ligne_eau.poly"), 'wb') as f:
         f.write(r.content)
