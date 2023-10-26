@@ -284,7 +284,7 @@ postgresql                14.5                 h5bbe9e2_3    conda-forge
 proj                      9.0.1                h93bde94_1    conda-forge
 prometheus_client         0.16.0             pyhd8ed1ab_0    conda-forge
 prompt-toolkit            3.0.36             pyha770c72_0    conda-forge
-psutil                    5.9.5           py310h1fa729e_0    conda-forge
+psutil                    5.9.5           py310h2372a71_1    conda-forge
 pthread-stubs             0.4               h36c2ea0_1001    conda-forge
 ptyprocess                0.7.0              pyhd3deb0d_0    conda-forge
 pugixml                   1.11.4               h9c3ff4c_0    conda-forge

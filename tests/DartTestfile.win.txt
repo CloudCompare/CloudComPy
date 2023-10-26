@@ -53,5 +53,6 @@ add_test(PYCC_test051 "execTest.bat" "test051.py")
 add_test(PYCC_test052 "execTest.bat" "test052.py")
 add_test(PYCC_test053 "execTest.bat" "test053.py")
 set_tests_properties(PYCC_test053 PROPERTIES SKIP_REGULAR_EXPRESSION "Test skipped")
+add_test(PYCC_test054 "execTest.bat" "test054.py")
 
 

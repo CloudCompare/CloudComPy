@@ -1,8 +1,7 @@
 
-===================================================================
-operations on coordinates, scalar fields, colors, meshes with Numpy
-===================================================================
-
+============================================================================
+operations on coordinates, scalar fields, colors, normals, meshes with Numpy
+============================================================================
 .. _coordinates_Numpy:
 
 Read, modify or create cloud coordinates with Numpy
@@ -108,3 +107,30 @@ the method :py:meth:`~.cloudComPy.ccPointCloud.colorsToNpArrayCopy` creates a co
 
 The above code snippet is from :download:`test029.py <../tests/test029.py>`.
 
+Read, modify or create normals with Numpy
+-----------------------------------------
+
+Normals can  be exported as Numpy arrays with :py:meth:`~.cloudComPy.ccPointCloud.normalsToNpArrayCopy`.
+As normals are stored compressed in the CloudCompare cloud,
+the method decompress the values in a new Numpy array (owned by Python).
+In the example below, we check that this is the same as converting normals into scalar fields
+and exporting these scalar fields to Numpy arrays.
+
+.. include:: ../tests/test054.py
+   :start-after: #---normals01-begin
+   :end-before:  #---normals01-end
+   :literal:
+   :code: python
+
+It is also possible to import Numpy arrays as normals  with :py:meth:`~.cloudComPy.ccPointCloud.normalsFromNpArrayCopy`.
+The numpy array must have the right type, shape and size.
+During import, the normals are normalized and compressed.
+In the following example, whe invert and denormalize the numpy array of normals before import/
+
+.. include:: ../tests/test054.py
+   :start-after: #---normals02-begin
+   :end-before:  #---normals02-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test054.py <../tests/test054.py>`.
