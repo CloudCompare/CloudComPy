@@ -140,6 +140,9 @@ See `Strike and dip <https://en.wikipedia.org/wiki/Strike_and_dip>`_. Angles are
 const char* ccPointCloudPy_convertNormalToRGB_doc= R"(
 Converts normals to color.
 
+Converts the normals of a cloud to an HSV color field.
+H = dip direction, S = dip and V = 1. 
+
 :return: success
 :rtype: bool)";
 
@@ -358,6 +361,35 @@ Interpolate colors from another cloud (nearest neighbor only).
 
 :return: success
 :rtype: bool
+)";
+
+const char* ccPointCloudPy_normalsFromNpArrayCopy_doc= R"(
+Set cloud normals from a Numpy array (nbPoints,3).
+
+**WARNING** Be sure to have an array data in C-style contiguous order,
+for instance, a transpose operation do not reorder the data in memory.
+Check the boolean ``array.flags['C_CONTIGUOUS']`` and, if ``False``,
+reorder with ``array.copy(order='C')``.
+
+Normals array in cloud is created/rewrited automatically.
+Each normal is normalized automatically.
+Note: normals are stored in a compressed form inside the cloud.
+
+:param ndarray array: a Numpy array (nbPoints,3).
+)";
+
+const char* ccPointCloudPy_normalsToNpArrayCopy_doc= R"(
+Export the PointCloud normals into a numpy Array.
+
+returns a numpy Array of shape (number of Points, 3).
+Because the normals are stored in compressed way inside the cloud,
+the exported normals are decompressed in a new array: the numpy Array object owns its data.
+Ownership is transfered to Python:
+the numpy Array object and its data will be handled by the Python Garbage Collector.
+The normals must have been computed before.
+
+:return: numpy Array of shape (number of Points, 3)
+:rtype: ndarray
 )";
 
 const char* ccPointCloudPy_orientNormalsWithFM_doc= R"(

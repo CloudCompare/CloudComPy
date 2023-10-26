@@ -92,6 +92,30 @@ void coordsFromNPArray_copy(ccPointCloud &self, py::array_t<PointCoordinateType,
     CCTRACE("copied " << 3*nRows*sizeof(PointCoordinateType) << " bytes");
 }
 
+void normalsFromNPArray_copy(ccPointCloud &self, py::array_t<PointCoordinateType, py::array::c_style | py::array::forcecast> array)
+{
+    if (array.ndim() != 2)
+    {
+        throw std::runtime_error("Incorrect array dimension");
+    }
+    if ( array.shape(1) != 3 )
+      throw std::runtime_error("Input should have size [N,2]");
+    size_t nRows = array.shape(0);
+    if ( array.shape(0) != self.size() )
+        throw std::runtime_error("Input should have size [cloud.size(),2]");
+    if (!self.hasNormals())
+        self.reserveTheNormsTable();
+    const PointCoordinateType *s = reinterpret_cast<const PointCoordinateType*>(array.data());
+    for (size_t i=0; i<self.size(); ++i)
+    {
+        const CCVector3& N = reinterpret_cast<const CCVector3&>(s[3*i]);
+        CCVector3 NN = N;
+        NN.normalize();
+        self.setPointNormal(i, NN);
+    }
+    CCTRACE("normals: " << 3*nRows*sizeof(PointCoordinateType) << " bytes read, compressed to " << nRows*sizeof(int) << " bytes");
+}
+
 bool colorize_py(ccPointCloud &self, float r, float g, float b, float a=1.0f)
 {
     bool success = self.colorize(r, g, b, a);
@@ -189,6 +213,44 @@ py::array CoordsToNpArray_py(ccPointCloud &self)
                                      ndim,                                                 // number of dimensions
                                      shape,                                                // shape of the matrix
                                      strides),                                               // strides for each axis
+                     capsule);
+}
+
+py::array normalsToNpArray_copy(ccPointCloud &self)
+{
+    CCTRACE("normalsToNpArray with copy, ownership transfered to Python");
+    if (!self.hasNormals())
+    {
+        CCTRACE("This cloud does not have normals!");
+        // --- return a minimal nparray of only one value
+        std::vector<size_t> shape = { 1 };
+        std::vector<size_t> strides = { sizeof(PointCoordinateType) };
+        PointCoordinateType* s = (PointCoordinateType*) self.getPoint(0); // any value us OK here, not used
+        return py::array(py::buffer_info(s,                                                    // data as contiguous array
+                                         sizeof(PointCoordinateType),                          // size of one scalar
+                                         py::format_descriptor<PointCoordinateType>::format(), // data type
+                                         1,                                                    // number of dimensions
+                                         shape,                                                // shape of the matrix
+                                         strides                                               // strides for each axis
+                                         ));
+    }
+    size_t ndim = 2;
+    size_t nRows = self.size();
+    PointCoordinateType *s = new PointCoordinateType[3*nRows]; // array created here, ownership transfered to Python
+    for (size_t i=0; i<nRows; ++i)
+    {
+        const CCVector3& norm = self.getPointNormal(i);
+        for(size_t j=0; j<3; ++j) s[3*i+j] = norm[j];
+    }
+    std::vector<size_t> shape = { nRows, 3 };
+    std::vector<size_t> strides = { 3 * sizeof(PointCoordinateType), sizeof(PointCoordinateType) };
+    auto capsule = py::capsule(s, [](void *v) { CCTRACE("C++ array not deleted"); });
+    return py::array(py::buffer_info(s,                                                    // data as contiguous array
+                                     sizeof(PointCoordinateType),                          // size of one scalar
+                                     py::format_descriptor<PointCoordinateType>::format(), // data type
+                                     ndim,                                                 // number of dimensions
+                                     shape,                                                // shape of the matrix
+                                     strides),                                             // strides for each axis
                      capsule);
 }
 
@@ -631,6 +693,8 @@ void export_ccPointCloud(py::module &m0)
         .def("interpolateColorsFrom", &interpolateColorsFrom_py,
              py::arg("otherCloud"), py::arg("octreeLevel")=0,
              ccPointCloudPy_interpolateColorsFrom_doc)
+        .def("normalsFromNpArrayCopy", &normalsFromNPArray_copy, ccPointCloudPy_normalsFromNpArrayCopy_doc)
+        .def("normalsToNpArrayCopy", &normalsToNpArray_copy, ccPointCloudPy_normalsToNpArrayCopy_doc)
         .def("orientNormalsWithFM", orientNormalsWithFM_py,
              py::arg("octreeLevel")=6,
              ccPointCloudPy_orientNormalsWithFM_doc)

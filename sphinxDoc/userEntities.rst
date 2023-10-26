@@ -283,6 +283,8 @@ normals can be exported to scalar fields with :py:meth:`~.cloudComPy.ccPointClou
 
 Normals can also be converted to color with :py:meth:`~.cloudComPy.ccPointCloud.convertNormalToRGB`:
 
+The colors obtained are an HSV color field, with H = dip direction, S = dip and V = 1.
+
 .. include:: ../tests/test014.py
    :start-after: #---normals02-begin
    :end-before:  #---normals02-end

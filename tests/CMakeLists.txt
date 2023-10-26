@@ -109,6 +109,7 @@ set(PYTHONAPI_TEST_SCRIPTS
     test051.py
     test052.py
     test053.py
+    test054.py
     )
 
 # list of utilities

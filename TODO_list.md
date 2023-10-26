@@ -169,6 +169,7 @@ TODO List
 * DONE: (issue #128) implement PoissonReconstruction
 * DONE: (issue #130) Specify which e57 scans to import from a multi-scan e57 file
 * DONE: (issue #130) bug on the selection of scans to import in a multi-scan e57 file (should use QRegExp::exactMatch)
+* DONE: (issue #134) access to normals as a Numpy array
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -179,5 +180,4 @@ TODO List
 - TODO: (issue #118) Build a version with double precision scalar field.
 - TODO: (issue #129) Check the behavior of macOS version of CloudCompare/CloudComPy on CloudCompare bug #1646 (poisson)
 - TODO: allow installation path with space (like "c:\program files\xxx") (follow issue #72)
-- TODO: (issue #134) normal access as a Numpy array
 - TODO: fix path related to CloudComPy web site changes, in documentation and tests
