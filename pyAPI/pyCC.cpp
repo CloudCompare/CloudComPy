@@ -2713,6 +2713,7 @@ ccHObject* Rasterize_(
                                                     gridBBox,
                                                     percentile,
                                                     true,
+                                                    true,
                                                     nullptr
                                                 );
 
