@@ -140,6 +140,13 @@ std::vector<ccPolyline*> generateOrthoSections(ccPolyline& self, double orthoSec
     return orthoPolys;
 }
 
+ccPointCloud* samplePoints_py( ccPolyline& self,
+                               bool densityBased,
+                               double samplingParameter,
+                               bool withRGB=true)
+{
+    return self.samplePoints(densityBased, samplingParameter, withRGB);
+}
 
 void export_ccPolyline(py::module &m0)
 {
@@ -159,6 +166,11 @@ void export_ccPolyline(py::module &m0)
         .def("computeLength", &ccPolyline::computeLength, ccPolylinePy_computeLength_doc)
         .def("getName", &ccPolyline::getName, ccPolylinePy_getName_doc)
         .def("is2DMode", &ccPolyline::is2DMode, ccPolylinePy_is2DMode_doc)
+        .def("samplePoints", &samplePoints_py,
+             py::arg("densityBased"),
+             py::arg("samplingParameter"),
+             py::arg("withRGB")=true,
+             ccPolylinePy_samplePoints_doc, py::return_value_policy::reference)
         .def("segmentCount", &ccPolyline::segmentCount, ccPolylinePy_segmentCount_doc)
         .def("set2DMode", &ccPolyline::set2DMode, ccPolylinePy_set2DMode_doc)
         .def("setName", &ccPolyline::setName, ccPolylinePy_setName_doc)
