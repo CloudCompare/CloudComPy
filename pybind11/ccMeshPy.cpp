@@ -117,7 +117,7 @@ py::tuple computeMeshVolume_py(ccMesh* self)
     CCCoreLib::MeshSamplingTools::EdgeConnectivityStats stats;
     if (CCCoreLib::MeshSamplingTools::computeMeshEdgesConnectivity(self, stats))
     {
-        bool isWarning = stats.edgesSharedByMore || stats.edgesSharedByTwo || stats.edgesSharedByMore;
+        bool isWarning = stats.edgesNotShared || stats.edgesSharedByMore;
         py::tuple res = py::make_tuple(V, isWarning, stats);
         return res;
     }
@@ -194,7 +194,7 @@ void export_ccMesh(py::module &m0)
 
     py::class_<ccGenericMesh, CCCoreLib::GenericIndexedMesh, ccShiftedObject>(m0, "ccGenericMesh") //, no_init, boost::noncopyable
         .def("computeMeshArea", &computeMeshArea_py , ccGenericMeshPy_computeMeshArea_doc)
-        .def("flagVerticesByType_py", &flagVerticesByType_py, ccGenericMeshPy_flagVerticesByType_doc)
+        .def("flagVerticesByType", &flagVerticesByType_py, ccGenericMeshPy_flagVerticesByType_doc)
         .def("samplePoints",
              &mesh_samplePoints_py,
               py::arg("densityBased"), py::arg("samplingParameter"),

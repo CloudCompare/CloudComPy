@@ -314,6 +314,18 @@ and :py:meth:`~.cloudComPy.ccPointCloud.orientNormalsWithMST`.
 
 The above code snippets are from :download:`test014.py <../tests/test014.py>`.
 
+A cloud can be shifted along the normals with :py:meth:`~.cloudComPy.ccPointCloud.shiftPointsAlongNormals`.
+For instance: 
+
+.. include:: ../tests/test055.py
+   :start-after: #---normals01-begin
+   :end-before:  #---normals01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test055.py <../tests/test055.py>`.
+
+
 .. _Cloud_Colors:
 
 cloud colors
@@ -600,6 +612,31 @@ If you want to save meshes to reopen them with the CloudCompare GUI, with a pred
  - :py:meth:`~.cloudComPy.ccMesh.normalsShown`
  - :py:meth:`~.cloudComPy.ccMesh.sfShown`
 
+It is possible to compute the surface of a mesh (sum of the triangles surfaces), or the volume inside,
+with :py:meth:`~.cloudComPy.ccMesh.computeMeshArea` or :py:meth:`~.cloudComPy.ccMesh.computeMeshVolume`.
+
+The mesh is not necessarily closed: the object returned by :py:meth:`~.cloudComPy.ccMesh.computeMeshVolume` is a tuple,
+containing the volume, a boolean indicating if the mesh is not closed, and structure giving the number 
+of the different types of edges: (total, shared, not shared, and shared by more of 2 triangles).
+
+An example with a closed mesh:
+
+.. include:: ../tests/test055.py
+   :start-after: #---triangleEdges01-begin
+   :end-before:  #---triangleEdges01-end
+   :literal:
+   :code: python
+
+An example with an open mesh:
+
+.. include:: ../tests/test055.py
+   :start-after: #---triangleEdges01-begin
+   :end-before:  #---triangleEdges01-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test055.py <../tests/test055.py>`.
+
 meshes modifications
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -622,6 +659,16 @@ by moving the vertices slightly over several iterations:
    :code: python
 
 The above code snippets are from :download:`test011.py <../tests/test011.py>`.
+
+The mesh triangles can be reversed (invert the normals) with :py:meth:`~.cloudComPy.ccMesh.flipTriangles`.
+
+.. include:: ../tests/test055.py
+   :start-after: #---meshTriangles01-begin
+   :end-before:  #---meshTriangles01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test055.py <../tests/test055.py>`.
 
 Generate a cloud from a mesh
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
