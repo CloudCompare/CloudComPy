@@ -2,6 +2,12 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## December 19, 2023 CloudComPy release:
+
+ - update to CloudCompare master (December 18, 2023): a lot of fixes (RANSAC_SD, Poisson...)
+ - several missing methods for introspection or modification on clouds, meshes, polylines
+ - various small fixes.
+
 ## October 26, 2023 CloudComPy release:
 
  - update to CloudCompare master (October 26, 2023)

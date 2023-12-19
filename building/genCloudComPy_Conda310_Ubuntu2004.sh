@@ -21,8 +21,9 @@ if [ -d ${HOME}/projets/CloudComPy/Occ-740p3_opt ]; then
 elif [ -d ${HOME}/projets/hydro95/prerequisites/install/Occ-740p3_opt ]; then
     export OPENCASCADE_REP=${HOME}/projets/hydro95/prerequisites/install/Occ-740p3_opt
 else
-    export OPENCASCADE_REP=/home/paul/projets/hydro95/prerequisites/install/Occ-740p3EDFp1 
+    export OPENCASCADE_REP=${HOME}/projets/hydro95/prerequisites/install/Occ-740p3EDFp1
 fi
+export PCLLIB_REP=${HOME}/projets/CloudComPy/pcl/install                               # patch on pcl lib (issue #100): libpcl_common.so
 export NBTHREADS="$(grep -c processor /proc/cpuinfo)"                                  # number of threads for parallel make
 
 . ${CONDA_ROOT}/etc/profile.d/conda.sh                                                 # required to have access to conda commands in a shell script
@@ -152,10 +153,12 @@ cloudcompy_configure()
     -DPLUGIN_STANDARD_QPOISSON_RECON:BOOL="1" \
     -DPLUGIN_STANDARD_QRANSAC_SD:BOOL="1" \
     -DPLUGIN_STANDARD_QSRA:BOOL="1" \
+    -DPLUGIN_STANDARD_QTREEISO:BOOL="1" \
     -DPYTHONAPI_TEST_DIRECTORY:STRING="CloudComPy/Data" \
     -DPYTHONAPI_EXTDATA_DIRECTORY:STRING="CloudComPy/ExternalData" \
     -DPYTHONAPI_TRACES:BOOL="1" \
     -DPYTHON_PREFERED_VERSION:STRING="3.10" \
+    -DQANIMATION_WITH_FFMPEG_SUPPORT:BOOL="1" \
     -DTBB_DIR:PATH="${CONDA_PATH}/lib/cmake/TBB" \
     -DUSE_CONDA_PACKAGES:BOOL="1" \
     -DUSE_EXTERNAL_QHULL_FOR_QHPR:BOOL="0" \
@@ -174,6 +177,10 @@ cloudcompy_build()
     cp -f libTKSTEP.so.7 libTKSTEPBase.so.7 libTKSTEPAttr.so.7 libTKSTEP209.so.7 libTKShHealing.so.7 libTKTopAlgo.so.7 libTKBRep.so.7 \
     libTKGeomBase.so.7 libTKG3d.so.7 libTKG2d.so.7 libTKMath.so.7 libTKernel.so.7 libTKXSBase.so.7 libTKGeomAlgo.so.7 libTKMesh.so.7 \
     ${CLOUDCOMPY_INSTALL}/lib/cloudcompare/plugins
+    cd ${PCLLIB_REP}/lib && \
+    cp -f libpcl_common.so.1.12.1 ${CLOUDCOMPY_INSTALL}/lib/cloudcompare
+    cd ${CLOUDCOMPY_INSTALL}/lib/cloudcompare && \
+    ln -s libpcl_common.so.1.12.1 libpcl_common.so.1.12 && ln -s libpcl_common.so.1.12.1 libpcl_common.so
 }
 
 cloudcompy_tarfile()
