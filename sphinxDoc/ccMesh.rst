@@ -35,3 +35,7 @@ bases classes for Meshes
 .. autoclass:: TRIANGULATION_TYPES
    :members:
    :undoc-members:
+
+.. autoclass:: EdgeConnectivityStats
+   :members:
+

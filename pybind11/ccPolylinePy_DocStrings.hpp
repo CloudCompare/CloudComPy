@@ -77,6 +77,18 @@ Returns whether the polyline is closed or not.
 :rtype: bool
 )";
 
+const char* ccPolylinePy_samplePoints_doc= R"(
+Sample points on a polyline.
+
+:param bool densityBased: whether samplingParameter is used as a density 
+                          (number of points per length unit) or as the total number of points.
+:param double samplingParameter: number of points (density or total, following densityBased
+:param bool,optional withRGB: default True
+
+:return: a cloud of points
+:rtype: ccPointCloud
+)";
+
 const char* ccPolylinePy_segmentCount_doc= R"(
 Returns the number of segments.
 

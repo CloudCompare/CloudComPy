@@ -86,9 +86,9 @@ Compilation is done with CMake, minimum version 3.13 or newer.
 ## prerequisites versions
 The minimum required version of each prerequisite is not always precisely identified. Examples of constructions that work are given [here](doc/prerequisitesVersions.md).
 
-## Windows 10, with Anaconda3 or miniconda3
+## Windows 10 or 11, with Anaconda3 or miniconda3
 
-To build CloudComPy on Windows 10 with conda packages, consult the [Windows build documentation](doc/BuildWindowsConda.md) in the doc directory.
+To build CloudComPy on Windows 10 or 11 with conda packages, consult the [Windows build documentation](doc/BuildWindowsConda.md) in the doc directory.
 
 ## Linux64, with Anaconda3 or miniconda3
 

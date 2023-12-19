@@ -1,7 +1,7 @@
 
-## Build on Windows 10, with Anaconda3 or miniconda3
+## Build on Windows 10 or 11, with Anaconda3 or miniconda3
 
-There are several methods to install the prerequisites on Windows 10. 
+There are several methods to install the prerequisites on Windows 10 or 11. 
 I chose to install miniconda, which is a very complete and large Python-based tools environment. 
 There is a package system under miniconda, to select the products you need. It has all our prerequisites.
 

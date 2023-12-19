@@ -543,6 +543,16 @@ Set the current 'out' ScalarField index. No validity check. Use -1 to set None.
 
 :param int index: index of the 'out' ScalarField)";
 
+const char* ccPointCloudPy_shiftPointsAlongNormals_doc= R"(
+Shift Points along their normal.
+
+The point cloud must have normals, otherwise return False.
+
+:param float shift: the value of the shift to apply.
+:return: success
+:rtype: bool
+)";
+
 const char* ccPointCloudPy_showSFColorsScale_doc= R"(
 Display or not the Color Scale ramp when render to a file.
 

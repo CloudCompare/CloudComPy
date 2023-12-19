@@ -22,6 +22,22 @@
 #ifndef CCMESHPY_DOCSTRINGS_HPP_
 #define CCMESHPY_DOCSTRINGS_HPP_
 
+const char* ccGenericMeshPy_computeMeshArea_doc= R"(
+Compute the area of the mesh (sum of the triangles areas).
+
+:return: mesh area
+:rtype: float
+)";
+
+const char* ccGenericMeshPy_flagVerticesByType_doc= R"(
+Flag the vertices of a mesh by type (normal, border, non manifold)
+
+A new scalar field 'Vertex type' is created on the mesh associated cloud.
+
+:return: success
+:rtype: bool
+)";
+
 const char* ccGenericMeshPy_samplePoints_doc= R"(
 Samples points on a mesh.
 
@@ -44,6 +60,24 @@ Clones this entity.
 
 All the main features of the entity are cloned, except from the octree)";
 
+const char* ccMeshPy_computeMeshVolume_doc= R"(
+Compute the volume inside the mesh.
+
+If the mesh is not closed, with holes or non manifold, a warning is issued.
+Stats are available to get:
+
+edgesCount: Total number of edges
+
+edgesNotShared: Edges not shared (i.e. used by only one triangle) ==> hole or non closed
+
+edgesSharedByTwo: Edges shared by exactly two triangles           ==> non manifold
+
+edgesSharedByMore: Edges shared by more than two triangles        ==> non manifold
+
+:return: tuple (volume, isWarning, stats)
+:rtype: (float, bool, EdgeConnectivityStats)
+)";
+
 const char* ccMeshPy_crop2D_doc= R"(
 Crop the mesh using a 2D polyline.
 
@@ -53,6 +87,19 @@ Crop the mesh using a 2D polyline.
 
 :return: the cropped cloud. Points are copied, the original cloud is not modified.
 :rtype: ccPointCloud
+)";
+
+const char* ccMeshPy_EdgeConnectivityStats_doc= R"(
+Statistics on edge connectivity for the mesh.
+
+:ivar int edgesCount: Total number of edges
+:ivar int edgesNotShared: Edges not shared (i.e. used by only one triangle) ==> hole or non closed
+:ivar int edgesSharedByTwo: Edges shared by exactly two triangles           ==> non manifold
+:ivar int edgesSharedByMore: Edges shared by more than two triangles        ==> non manifold
+)";
+
+const char* ccMeshPy_flipTriangles_doc=R"(
+Flip the triangles of the mesh (reverse the node order).
 )";
 
 const char* ccMeshPy_getAssociatedCloud_doc= R"(
@@ -130,6 +177,16 @@ may present however several topological aberrations ;).
 :param bool,optional updateNormals: (default `False`)
 :param float,optional maxEdgeLength: max edge length for output triangles (default 0 = ignored)
 :param int,optional dim: projection dimension (for axis-aligned meshes) (default 2)
+
+:return: triangles mesh (if successful)
+:rtype: ccMesh )";
+
+const char* ccMeshPy_triangulateTwoPolylines_doc= R"(
+Creates a Delaunay 2.5D mesh from two polylines.
+
+:param ccPolyline p1: first polyline
+:param ccPolyline p2: second polyline
+:param CCVector3,optional projectionDir: projection direction, default None (use the best fit plane (normal)) 
 
 :return: triangles mesh (if successful)
 :rtype: ccMesh )";
