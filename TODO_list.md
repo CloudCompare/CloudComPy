@@ -204,4 +204,4 @@ TODO List
 - TODO: plugin Cloud Layers ?
 - TODO: plugin TreeIso ?
 - TODO: plugin 3DFin ?
-
+- TODO: (issue #48) add a polyline constructor taking a list of coordinates in argument (add Z=0 if 2D coordinates)
