@@ -27,6 +27,7 @@
 #include <ccShiftedObject.h>
 #include <GenericIndexedCloudPersist.h>
 #include <ccPointCloud.h>
+#include <CCGeom.h>
 #include "ccPolylinePy_DocStrings.hpp"
 
 #include <vector>
@@ -148,6 +149,56 @@ ccPointCloud* samplePoints_py( ccPolyline& self,
     return self.samplePoints(densityBased, samplingParameter, withRGB);
 }
 
+ccPolyline* createPolylineFromCoordinatesArray3(std::vector<CCVector3> points, bool isClosed)
+{
+    ccPointCloud* vertices = new ccPointCloud("vertices");
+    if (!vertices->reserve(points.size()))
+    {
+        delete vertices;
+        vertices = nullptr;
+        return nullptr;
+    }
+    for (auto point : points)
+    {
+        vertices->addPoint(point);
+    }
+    ccPolyline *polyline = new ccPolyline(vertices);
+    if (!polyline->reserve(vertices->size()))
+    {
+        delete polyline;
+        polyline = nullptr;
+        return polyline;
+    }
+    polyline->addPointIndex(0, vertices->size());
+    polyline->setClosed(isClosed);
+    return polyline;
+}
+
+ccPolyline* createPolylineFromCoordinatesArray2(std::vector<CCVector2> points, bool isClosed)
+{
+    ccPointCloud* vertices = new ccPointCloud("vertices");
+    if (!vertices->reserve(points.size()))
+    {
+        delete vertices;
+        vertices = nullptr;
+        return nullptr;
+    }
+    for (auto point : points)
+    {
+        vertices->addPoint(CCVector3(point[0], point[1], 0.));
+    }
+    ccPolyline *polyline = new ccPolyline(vertices);
+    if (!polyline->reserve(vertices->size()))
+    {
+        delete polyline;
+        polyline = nullptr;
+        return polyline;
+    }
+    polyline->addPointIndex(0, vertices->size());
+    polyline->setClosed(isClosed);
+    return polyline;
+}
+
 void export_ccPolyline(py::module &m0)
 {
 
@@ -163,6 +214,8 @@ void export_ccPolyline(py::module &m0)
                std::unique_ptr<ccPolyline, py::nodelete> >(m0, "ccPolyline",
     	       ccPolylinePy_ccPolyline_doc)
         .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>())
+        .def(py::init(&createPolylineFromCoordinatesArray2))
+        .def(py::init(&createPolylineFromCoordinatesArray3))
         .def("computeLength", &ccPolyline::computeLength, ccPolylinePy_computeLength_doc)
         .def("getName", &ccPolyline::getName, ccPolylinePy_getName_doc)
         .def("is2DMode", &ccPolyline::is2DMode, ccPolylinePy_is2DMode_doc)
