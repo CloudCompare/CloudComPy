@@ -50,12 +50,14 @@ const char* ccPolylinePy_ccPolylineCtor2_doc= R"(
 polyline Constructor from an array of 2D coordinates.
 
 :param list[tuple] points: array of 2D coordinates
+:param bool isClosed: whether the polyline is closed
 )";
 
 const char* ccPolylinePy_ccPolylineCtor3_doc= R"(
 polyline Constructor from an array of 3D coordinates.
 
 :param list[tuple] points: array of 3D coordinates
+:param bool isClosed: whether the polyline is closed
 )";
 
 const char* ccPolylinePy_computeLength_doc= R"(

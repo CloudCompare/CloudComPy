@@ -107,3 +107,4 @@ if not math.isclose(lg, 17.504, rel_tol=1e-04):
 if p2.segmentCount() != 112:
     raise RuntimeError
 
+
