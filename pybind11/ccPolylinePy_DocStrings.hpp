@@ -27,18 +27,36 @@ A simple polyline class (base class)
 
 The polyline is considered as a cloud of points
 (in a specific order) with a open/closed state information.
+)";
 
-Constructor:
+const char* ccPolylinePy_PolylineCtor1_doc= R"(
+polyline Constructor from a point cloud.
 
-:param GenericIndexedCloudPersist associatedCloud: the associated point cloud (i.e. the vertices))";
+:param GenericIndexedCloudPersist associatedCloud: the associated point cloud (i.e. the vertices)
+)";
 
 const char* ccPolylinePy_ccPolyline_doc= R"(
 The polyline is considered as a cloud of points
 (in a specific order) with a open/closed state information.
+)";
 
-Constructor:
+const char* ccPolylinePy_ccPolylineCtor1_doc= R"(
+polyline Constructor from a point cloud.
 
-:param GenericIndexedCloudPersist associatedCloud: the associated point cloud (i.e. the vertices))";
+:param GenericIndexedCloudPersist associatedCloud: the associated point cloud (i.e. the vertices)
+)";
+
+const char* ccPolylinePy_ccPolylineCtor2_doc= R"(
+polyline Constructor from an array of 2D coordinates.
+
+:param list[tuple] points: array of 2D coordinates
+)";
+
+const char* ccPolylinePy_ccPolylineCtor3_doc= R"(
+polyline Constructor from an array of 3D coordinates.
+
+:param list[tuple] points: array of 3D coordinates
+)";
 
 const char* ccPolylinePy_computeLength_doc= R"(
 Computes the polyline length.

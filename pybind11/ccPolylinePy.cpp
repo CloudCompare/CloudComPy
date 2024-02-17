@@ -205,7 +205,7 @@ void export_ccPolyline(py::module &m0)
 	py::class_<CCCoreLib::Polyline, CCCoreLib::ReferenceCloud,
                std::unique_ptr<CCCoreLib::Polyline, py::nodelete>> (m0, "Polyline",
 			   ccPolylinePy_Polyline_doc)
-		 .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>())
+		 .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>(), ccPolylinePy_PolylineCtor1_doc)
          .def("isClosed", &ccPolyline::isClosed, ccPolylinePy_isClosed_doc)
 	     .def("setClosed", &ccPolyline::setClosed, ccPolylinePy_setClosed_doc)
 		 ;
@@ -213,9 +213,9 @@ void export_ccPolyline(py::module &m0)
     py::class_<ccPolyline,CCCoreLib::Polyline, ccShiftedObject,
                std::unique_ptr<ccPolyline, py::nodelete> >(m0, "ccPolyline",
     	       ccPolylinePy_ccPolyline_doc)
-        .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>())
-        .def(py::init(&createPolylineFromCoordinatesArray2))
-        .def(py::init(&createPolylineFromCoordinatesArray3))
+        .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>(), ccPolylinePy_ccPolylineCtor1_doc)
+        .def(py::init(&createPolylineFromCoordinatesArray2), ccPolylinePy_ccPolylineCtor2_doc)
+        .def(py::init(&createPolylineFromCoordinatesArray3), ccPolylinePy_ccPolylineCtor3_doc)
         .def("computeLength", &ccPolyline::computeLength, ccPolylinePy_computeLength_doc)
         .def("getName", &ccPolyline::getName, ccPolylinePy_getName_doc)
         .def("is2DMode", &ccPolyline::is2DMode, ccPolylinePy_is2DMode_doc)
