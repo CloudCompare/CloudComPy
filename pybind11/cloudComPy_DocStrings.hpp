@@ -221,6 +221,10 @@ Parameters for scalar fields interpolation from a source cloud to a destination 
 :ivar float sigma: default 0
 )";
 
+const char* cloudComPy_interpolatorParameters_ctor_doc=R"(
+Default constructor
+)";
+
 const char* cloudComPy_interpolateScalarFieldsFrom_doc=R"(
 Interpolate scalar fields from a source cloud to a destination cloud.
 
@@ -242,6 +246,10 @@ Result values on ICP registration.
 :ivar float finalScale: calculated scale if rescale required
 :ivar float finalRMS: final error (RMS)
 :ivar int finalPointCount: number of points used to compute the final RMS
+)";
+
+const char* cloudComPy_ICPres_ctor_doc=R"(
+Default constructor
 )";
 
 const char* cloudComPy_ICP_doc=R"(
@@ -464,6 +472,10 @@ or between two point clouds.
 :ivar float ceilNonMatchingPercent: percentage of the ceil section non matching floor
 :ivar float groundNonMatchingPercent: percentage of the floor section non matching ceil
 :ivar int averageNeighborsPerCell: average Neighbor number per cell (see 'gridStep' in :py:meth`ComputeVolume25D`)
+)";
+
+const char* cloudComPy_ReportInfoVol_ctor_doc=R"(
+Default constructor
 )";
 
 const char* cloudComPy_SavePointCloud_doc= R"(

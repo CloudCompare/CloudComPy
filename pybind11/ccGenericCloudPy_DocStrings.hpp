@@ -27,6 +27,14 @@ BoundingBox object.
 
 Can be initialized with tuples of coordinates and a boolean (minCorner, maxCorner, True))";
 
+const char* ccBBox_ctor_doc= R"(
+BoundingBox constructor, with tuples of coordinates and a boolean (minCorner, maxCorner, True)
+
+:param tuple minCorner: min corner of the box
+:param tuple maxCorner: max corner of the box
+:param bool valid: use True
+)";
+
 const char* ccBBox_minCorner_doc= R"(
 Get the min corner of the bounding box
 
@@ -326,6 +334,13 @@ Several methods provide a ReferenceCloud as a result, which can be seen as a sel
 on an original ccPointCloud (the associatedCloud).
 The ReferenceCloud can be transformed in a ccPointCloud, using the partialClone method
 of the associated ccPointCloud.
+)";
+
+const char* ReferenceCloud_ctor_Doc= R"(
+Constructor, using a GenericIndexedCloudPersist object
+(GenericIndexedCloudPersist is a base class for cloud classes).
+
+:param GenericIndexedCloudPersist cloud: reference cloud
 )";
 
 const char* ReferenceCloud_addPointIndex_doc= R"(

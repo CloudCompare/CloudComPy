@@ -524,7 +524,7 @@ void export_distanceComputationTools(py::module &m0)
 
     py::class_<CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams>(m0, "Cloud2CloudDistancesComputationParams",
                                                                      distanceComputationToolsPy_Cloud2CloudDistancesComputationParams_doc)
-        .def(py::init<>())
+        .def(py::init<>(), distanceComputationToolsPy_Cloud2CloudDistancesComputationParams_ctor_doc)
         .def_readwrite("octreeLevel", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::octreeLevel,
                        distanceComputationToolsPy_octreeLevel_doc)
         .def_readwrite("maxSearchDist", &CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams::maxSearchDist,
@@ -557,7 +557,7 @@ void export_distanceComputationTools(py::module &m0)
 
     py::class_<CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams>(m0, "Cloud2MeshDistancesComputationParams",
                                                                    distanceComputationToolsPy_Cloud2MeshDistancesComputationParams_doc)
-        .def(py::init<>())
+        .def(py::init<>(), distanceComputationToolsPy_Cloud2MeshDistancesComputationParams_ctor_doc)
         .def_readwrite("octreeLevel", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams::octreeLevel,
                        distanceComputationToolsPy_octreeLevel_doc)
         .def_readwrite("maxSearchDist", &CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams::maxSearchDist,

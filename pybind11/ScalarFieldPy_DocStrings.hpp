@@ -28,6 +28,12 @@ A simple scalar field (to be associated to a point cloud).
 A monodimensional array of scalar values.
 Invalid values can be represented by CCCoreLib::NAN_VALUE.)";
 
+const char* ScalarFieldPy_ScalarField_ctor_doc= R"(
+Default constructor
+
+:param string,optional name: scalarField name
+)";
+
 const char* ScalarFieldPy_addElement_doc= R"(
 Add a value at the end of the vector.
 
@@ -170,6 +176,12 @@ the numpy array object and its data will be handled by the Python Garbage Collec
 const char* ccScalarFieldPy_ccScalarField_doc= R"(
 A scalar field associated to display-related parameters.
 Extends the CCCoreLib::ScalarField object.)";
+
+const char* ccScalarFieldPy_ccScalarField_ctor_doc= R"(
+Default constructor
+
+:param string,optional name: scalarField name
+)";
 
 const char* ccScalarFieldPy_getGlobalShift_doc= R"(
 Returns Global Shift if any.

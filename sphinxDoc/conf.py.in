@@ -98,8 +98,9 @@ pygments_style = 'sphinx'
 # -- Autodoc options -------------------------------------------------
 
 autodoc_default_options = {
-    'members': True,
     'special-members': '__init__',
+    'members': True,
+    'member-order': 'alphabetical',
     'undoc-members': True
 }
 # -- Options for HTML output -------------------------------------------------

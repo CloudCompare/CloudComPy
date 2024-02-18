@@ -62,6 +62,10 @@ const char* RANSAC_SD_RansacParams_doc=R"(
 RANSAC_SD parameters
 )";
 
+const char* RANSAC_SD_RansacParams_ctor_doc=R"(
+RANSAC_SD parameters default constructor
+)";
+
 const char* RANSAC_SD_RansacParams_epsilon_doc=R"(
 Maximum distance if the samples to the ideal shape, default 0.005.)";
 

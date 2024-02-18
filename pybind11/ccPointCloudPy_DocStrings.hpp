@@ -32,6 +32,16 @@ A point cloud can have multiple features:
 - an octree structure
 - other children objects (meshes, calibrated pictures, etc.) (TODO) )";
 
+const char* ccPointCloudPy_ccPointCloud_ctor_doc= R"(
+Default constructor
+Creates an empty cloud without any feature. Each of them should be
+specifically instantiated/created (once the points have been
+added to this cloud, at least partially).
+
+:param string,optional name: cloud name
+:param int,optional uniqueID: unique ID (handle with care)
+)";
+
 const char* ccPointCloudPy_addScalarField_doc= R"(
 Creates a new scalar field and registers it.
 

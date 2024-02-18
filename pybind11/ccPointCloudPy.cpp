@@ -37,6 +37,7 @@
 #include <ccSensor.h>
 #include <ccGBLSensor.h>
 #include <ccHObjectCaster.h>
+#include <PointCloudTpl.h>
 
 #include "PyScalarType.h"
 #include "ccPointCloudPy_DocStrings.hpp"
@@ -637,7 +638,8 @@ void export_ccPointCloud(py::module &m0)
 
     py::class_<ccPointCloud, CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>,
                std::unique_ptr<ccPointCloud, py::nodelete> >(m0, "ccPointCloud", ccPointCloudPy_ccPointCloud_doc)
-        .def(py::init<QString, unsigned>(), py::arg("name")=QString(), py::arg("uniqueID")=0xFFFFFFFF) // TODO optional<QString, unsigned> >())
+        .def(py::init<QString, unsigned>(), py::arg("name")=QString(), py::arg("uniqueID")=0xFFFFFFFF,
+             ccPointCloudPy_ccPointCloud_ctor_doc) // TODO optional<QString, unsigned> >())
         .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)
         .def("applyRigidTransformation", &applyRigidTransformationPy, ccPointCloudPy_applyRigidTransformation_doc)

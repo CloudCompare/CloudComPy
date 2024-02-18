@@ -42,11 +42,19 @@ value for 'level' (only once as it only depends on the radius value ;).
 :ivar tuple dimensions: dimensions of the box, default initialization (0, 0, 0)
 :ivar int level: subdivision level at which to apply the extraction process )";
 
+const char* DgmOctree_BoxNeighbourhood_ctor_doc= R"(
+Default constructor
+)";
+
 const char* DgmOctree_CellDescriptor_doc= R"(
 Structure used during nearest neighbour search.
 
 :ivar tuple center: Cell center coordinates
 :ivar int index: First point index in associated NeighboursSet)";
+
+const char* DgmOctree_CellDescriptor_ctor_doc= R"(
+Default constructor
+)";
 
 const char* DgmOctree_codeComp_doc= R"(
 Compares two IndexAndCode instances based on their code.
@@ -89,6 +97,10 @@ value for 'level' (only once as it only depends on the radius value).
 :ivar int level: subdivision level at which to apply the extraction process, default 0
 :ivar bool onlyPositiveDir: Whether to look in both directions
       or only along the positive direction (i.e. half cylinder), default  `False` )";
+
+const char* DgmOctree_CylindricalNeighbourhood_ctor_doc= R"(
+Default constructor
+)";
 
 const char* DgmOctree_findBestLevelForAGivenCellNumber_doc= R"(
 Determines the best subdivision level of the octree to match a given number of cells.
@@ -501,6 +513,10 @@ would correspond to the octree cell where the point lies.
 :ivar int index: the index
 :ivar int code: theCode )";
 
+const char* DgmOctree_IndexAndCode_ctor_doc= R"(
+Default constructor
+)";
+
 const char* DgmOctree_indexComp_doc= R"(
 Compares two IndexAndCode instances based on their index.
 
@@ -567,6 +583,10 @@ and only few informations need to be updated (the query point, etc.).
     (see :py:meth:`findTheNearestNeighborStartingFromCell`).
 )";
 
+const char* DgmOctree_NearestNeighboursSearchStruct_ctor_doc= R"(
+Default constructor
+)";
+
 const char* DgmOctree_PointDescriptor_doc= R"(
 Structure used during nearest neighbour search.
 
@@ -576,6 +596,10 @@ The structure is made persistent, by copying the coordinates.
 :ivar tuple point: point coordinates
 :ivar int index: point index
 :ivar float squareDistd: point associated distance value
+)";
+
+const char* DgmOctree_PointDescriptor_ctor_doc= R"(
+Default constructor
 )";
 
 const char* DgmOctree_ProgressiveCylindricalNeighbourhood_doc= R"(
@@ -593,6 +617,10 @@ See CylindricalNeighbourhood for generic data members.
     from its actual center.
 :ivar tuple prevMinCornerPos: Previous search box (min corner)
 :ivar tuple prevMaxCornerPos: Previous search box (max corner))";
+
+const char* DgmOctree_ProgressiveCylindricalNeighbourhood_ctor_doc= R"(
+Default constructor
+)";
 
 const char* NearestNeighboursSearchStruct_prepare_doc= R"(
 Initialize ready status (`False`), Updates maxD2 and minD2 with search radius and cellSize.)";

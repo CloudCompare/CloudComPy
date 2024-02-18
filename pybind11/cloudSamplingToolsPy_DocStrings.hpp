@@ -28,6 +28,9 @@ Several point cloud resampling algorithms (octree-based, random, etc.))";
 const char* CloudSamplingToolsPy_SFModulationParams_doc= R"(
 Parameters for the scalar-field based modulation of a parameter)";
 
+const char* CloudSamplingToolsPy_SFModulationParams_ctor_doc= R"(
+default constructor)";
+
 const char* CloudSamplingToolsPy_enabled_doc= R"(
 Whether the modulation is enabled or not, default False)";
 

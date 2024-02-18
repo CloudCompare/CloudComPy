@@ -44,6 +44,9 @@ const char* SRA_qSRA_doc = R"(
 We only use the static method doComputeRadialDists of this class.
 )";
 
+const char* SRA_qSRA_ctor_doc= R"(
+Default constructor)";
+
 const char* SRA_qSRA_doComputeRadialDists_doc = R"(
 Computes the radial distances between the cloud and the surface of revolution.
 A new scalarField named "Radial distance" is created.
