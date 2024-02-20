@@ -246,7 +246,7 @@ void export_ccGenericCloud(py::module &m0)
         ;
 
     py::class_<ccBBox>(m0, "ccBBox", ccBBox_doc)
-    		.def(py::init<const CCVector3&, const CCVector3&, bool>())
+    		.def(py::init<const CCVector3&, const CCVector3&, bool>(), ccBBox_ctor_doc)
 			.def("minCorner", &ccBBox_minCorner, ccBBox_minCorner_doc)
 			.def("maxCorner", &ccBBox_maxCorner, ccBBox_maxCorner_doc)
 		;
@@ -269,7 +269,7 @@ void export_ccGenericCloud(py::module &m0)
 
     py::class_<CCCoreLib::ReferenceCloud, CCCoreLib::GenericIndexedCloudPersist,
                std::unique_ptr<CCCoreLib::ReferenceCloud, py::nodelete>>(m0, "ReferenceCloud", ReferenceCloud_Doc)
-        .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>())
+        .def(py::init<CCCoreLib::GenericIndexedCloudPersist*>(), ReferenceCloud_ctor_Doc)
         .def("addPointIndexGlobal", addPointIndex1_py, ReferenceCloud_addPointIndexGlobal_doc)
         .def("addPointIndex", addPointIndex2_py, ReferenceCloud_addPointIndex_doc)
         .def("enableScalarField", &CCCoreLib::ReferenceCloud::enableScalarField, ReferenceCloud_enableScalarField_doc)

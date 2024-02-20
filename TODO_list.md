@@ -176,6 +176,7 @@ TODO List
 * DONE: shift points along normals on a cloud
 * DONE: Meshes: flip triangles, mesure surface, volume, flag vertices by type, Surface between 2 polylines
 * DONE: Polylines: sample points
+* DONE: (issue #48) add a polyline constructor taking a list of coordinates in argument (add Z=0 if 2D coordinates)
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -204,4 +205,5 @@ TODO List
 - TODO: plugin Cloud Layers ?
 - TODO: plugin TreeIso ?
 - TODO: plugin 3DFin ?
-
+- TODO: (issue #154) plugin MeshIO ?
+- TODO: study convergence with Python plugin

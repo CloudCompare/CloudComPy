@@ -74,7 +74,7 @@ void export_cloudSamplingTools(py::module &m0)
         ;
 
     py::class_<CCCoreLib::CloudSamplingTools::SFModulationParams>(m0, "SFModulationParams", CloudSamplingToolsPy_SFModulationParams_doc)
-        .def(py::init<>())
+        .def(py::init<>(), CloudSamplingToolsPy_SFModulationParams_ctor_doc)
         .def_readwrite("enabled", &CCCoreLib::CloudSamplingTools::SFModulationParams::enabled,
                        CloudSamplingToolsPy_enabled_doc)
         .def_readwrite("a", &CCCoreLib::CloudSamplingTools::SFModulationParams::a,

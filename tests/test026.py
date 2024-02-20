@@ -318,6 +318,7 @@ cloud1.coordsFromNPArray_copy(coords)
 cloud1.applyRigidTransformation(transform1)
 
 poly1 = cc.ccPolyline(cloud1)
+poly1.setName("poly1")
 poly1.addChild(cloud1)
 poly1.addPointIndex(0, cloud1.size())
 poly1.setClosed(True)
@@ -328,6 +329,7 @@ poly1.setClosed(True)
 #---polyFromCloud02-begin
 cloud2 = cc.ccPointCloud("boundingBox2")
 poly2 = cc.ccPolyline(cloud2)
+poly2.setName("poly2")
 poly2.addChild(child=cloud2, dependencyFlags = cc.DEPENDENCY_FLAGS.DP_NONE, insertIndex=-1)
 cloud2.reserve(cloud1.size())   # fill the cloud with ordered points
 for i in range(cloud1.size()):
@@ -337,6 +339,20 @@ poly2.addPointIndex(0, cloud2.size())
 poly2.setClosed(True)
 #---polyFromCloud02-end
 
-res = cc.SaveEntities([cloud, poly1, poly2], os.path.join(dataDir, "boundingBoxes.bin"))
+# --- polyline constructors from 2D or 3D arrays
+
+#---polyCtor-begin
+poly2d = cc.ccPolyline([(0., 0.), (0., 1.), (1., 1.), (1., 0.)], True)
+poly2d.setName("poly2d")
+poly3d = cc.ccPolyline([(0., 0., 0.), (0., 1., 0.1), (1., 1., 0.2), (1., 0., 0.3)], False)
+poly3d.setName("poly3d")
+# get the associated cloud and add it as child, in order to save the poly...
+cloud2d = poly2d.getAssociatedCloud()
+poly2d.addChild(cloud2d)
+cloud3d = poly3d.getAssociatedCloud()
+poly3d.addChild(cloud3d)
+#---polyCtor-end
+
+res = cc.SaveEntities([cloud, poly1, poly2, poly2d, poly3d], os.path.join(dataDir, "boundingBoxes.bin"))
 
 

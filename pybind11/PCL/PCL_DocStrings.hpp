@@ -54,6 +54,10 @@ Filter based on "Q.-Y. Zhou, J. Park, and V. Koltun, Fast Global Registration, E
 See https://github.com/isl-org/FastGlobalRegistration
 )";
 
+const char* PCL_FastGlobalRegistrationFilter_ctor_doc= R"(
+default constructor.
+)";
+
 const char* PCL_FGRFsetParameters_doc= R"(
 Defines the reference PointCloud, the list of PointCloud to align and the radius to use for registration.
 
@@ -91,6 +95,10 @@ A tool to compute normals and optionally curvature of a cloud, using the PCL lib
 See :py:meth:`NormalEstimation.setParameters` and :py:meth:`NormalEstimation.compute`.
 )";
 
+const char* PCL_NormalEstimation_ctor_doc= R"(
+default constructor
+)";
+
 const char* PCL_NEcompute_doc= R"(
 compute normals and optionally curvature of a cloud, using the PCL library.
 
@@ -111,6 +119,10 @@ Defines the parameters to use for normals and curvature calculation, using the P
 const char* PCL_MLSSmoothingUpsampling_doc= R"(
 Smoothing and normal estimation based on polynomial reconstruction, using the PCL library.
 See :py:meth:`MLSSmoothingUpsampling.setParameters` :py:meth:`MLSSmoothingUpsampling.compute` 
+)";
+
+const char* PCL_MLSSmoothingUpsampling_ctor_doc= R"(
+default constructor
 )";
 
 const char* PCL_MLScompute_doc= R"(

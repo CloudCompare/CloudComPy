@@ -2,6 +2,13 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## February 20, 2024 CloudCompy release:
+
+ - update to **CloudCompare 2.13** (February 14, 2024): official release.
+ - (issue #48) add a polyline constructor taking a list of coordinates in argument (add Z=0 if 2D coordinates)
+ - improve documentation on constructors
+ - various small fixes.
+
 ## December 19, 2023 CloudComPy release:
 
  - update to CloudCompare master (December 18, 2023): a lot of fixes (RANSAC_SD, Poisson...)

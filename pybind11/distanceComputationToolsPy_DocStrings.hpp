@@ -25,6 +25,9 @@
 const char* distanceComputationToolsPy_Cloud2CloudDistancesComputationParams_doc= R"(
 Cloud-to-cloud "Hausdorff" distance computation parameters)";
 
+const char* distanceComputationToolsPy_Cloud2CloudDistancesComputationParams_ctor_doc= R"(
+Default constructor)";
+
 const char* distanceComputationToolsPy_octreeLevel_doc= R"(
 Level of subdivision of the octree at witch to apply the distance computation algorithm.
 
@@ -100,6 +103,10 @@ reset before computing them again.)";
 
 const char* distanceComputationToolsPy_Cloud2MeshDistancesComputationParams_doc= R"(
 Cloud-to-mesh distances computation parameters.)";
+
+const char* distanceComputationToolsPy_Cloud2MeshDistancesComputationParams_ctor_doc= R"(
+Default constructor
+)";
 
 const char* distanceComputationToolsPy_useDistanceMap_doc= R"(
 Use distance map (acceleration).

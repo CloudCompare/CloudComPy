@@ -877,6 +877,15 @@ Another way (here, we simulate the cloud creation):
    :literal:
    :code: python
 
+It is also possible tor create a polyline directly from a list of 2d or 3d coordinates.
+With 2d coordinates, the Z coordinate is set to 0.
+
+.. include:: ../tests/test026.py
+   :start-after: #---polyCtor-begin
+   :end-before:  #---polyCtor-end
+   :literal:
+   :code: python
+
 The above code snippets are from :download:`test026.py <../tests/test026.py>`.
 
 A polyline can be imported from several formats (see :ref:`load_formats`).

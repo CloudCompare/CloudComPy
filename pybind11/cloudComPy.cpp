@@ -2697,7 +2697,7 @@ PYBIND11_MODULE(_cloudComPy, m0)
            cloudComPy_importFile_doc);
 
     py::class_<ccPointCloudInterpolator::Parameters>(m0, "interpolatorParameters", cloudComPy_interpolatorParameters_doc)
-        .def(py::init<>())
+        .def(py::init<>(), cloudComPy_interpolatorParameters_ctor_doc)
         .def_readwrite("method", &ccPointCloudInterpolator::Parameters::method,
                        cloudComPy_interpolatorParameters_doc)
         .def_readwrite("algos", &ccPointCloudInterpolator::Parameters::algo,
@@ -2789,7 +2789,7 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("getScalarType", &getScalarType, cloudComPy_getScalarType_doc);
 
     py::class_<ICPres>(m0, "ICPres", cloudComPy_ICPres_doc)
-       .def(py::init<>())
+       .def(py::init<>(), cloudComPy_ICPres_ctor_doc)
        .def_readonly("aligned", &ICPres::aligned, py::return_value_policy::reference_internal)
        .def_readwrite("transMat", &ICPres::transMat,
                        cloudComPy_ICPres_doc)
@@ -2818,7 +2818,7 @@ PYBIND11_MODULE(_cloudComPy, m0)
            cloudComPy_computeNormals_doc);
 
     py::class_<ReportInfoVol>(m0, "ReportInfoVol", cloudComPy_ReportInfoVol_doc)
-        .def(py::init<>())
+        .def(py::init<>(), cloudComPy_ReportInfoVol_ctor_doc)
 		.def_readonly("volume", &ReportInfoVol::volume)
 		.def_readonly("addedVolume", &ReportInfoVol::addedVolume)
 		.def_readonly("removedVolume", &ReportInfoVol::removedVolume)

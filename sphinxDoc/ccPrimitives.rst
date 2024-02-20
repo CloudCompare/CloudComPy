@@ -97,13 +97,15 @@ Rotation Translation Matrix
 ----------------------------
 
 .. autoclass:: ccGLMatrix
-   :members:
+   :special-members: __init__
    :inherited-members:
+   :members:
    :show-inheritance:
 
 .. autoclass:: ccGLMatrixd
-   :members:
+   :special-members: __init__
    :inherited-members:
+   :members:
    :show-inheritance:
    
 .. autoclass:: ccGLMatrixParams1_float

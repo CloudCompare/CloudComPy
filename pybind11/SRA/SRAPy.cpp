@@ -242,7 +242,7 @@ PYBIND11_MODULE(_SRA, m8)
         .export_values();
 
     py::class_<qSRA>(m8, "qSRA", SRA_qSRA_doc)
-        .def(py::init<>())
+        .def(py::init<>(), SRA_qSRA_ctor_doc)
         .def("doComputeRadialDists", &qSRA::doComputeRadialDists, SRA_qSRA_doComputeRadialDists_doc)
         ;
 

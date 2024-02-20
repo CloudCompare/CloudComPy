@@ -135,7 +135,7 @@ PYBIND11_MODULE(_RANSAC_SD, m5)
         ;
 
     py::class_<qRansacSD::RansacParams>(m5, "RansacParams", RANSAC_SD_RansacParams_doc)
-        .def(py::init<>())
+        .def(py::init<>(), RANSAC_SD_RansacParams_ctor_doc)
         .def_readwrite("epsilon", &qRansacSD::RansacParams::epsilon,
                        RANSAC_SD_RansacParams_epsilon_doc)
         .def_readwrite("bitmapEpsilon", &qRansacSD::RansacParams::bitmapEpsilon,

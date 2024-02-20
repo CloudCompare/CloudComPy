@@ -378,7 +378,8 @@ void export_ccPrimitives(py::module &m0)
         ;
 
     py::class_<ccGLMatrixTpl<float> >(m0, "ccGLMatrixTpl_float")
-    	.def(py::init<const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&>())
+    	.def(py::init<const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&>(),
+             ccPrimitivesPy_ccGLMatrix_ctor3_doc)
         .def_static("fromDouble", &fromDouble_py, ccPrimitivesPy_fromDouble_doc)
         .def("initFromParameters", initFromParameters1<float>, ccPrimitivesPy_initFromParameters1_doc)
         .def("initFromParameters", initFromParameters2<float>, ccPrimitivesPy_initFromParameters2_doc)
@@ -406,7 +407,8 @@ void export_ccPrimitives(py::module &m0)
       ;
 
     py::class_<ccGLMatrixTpl<double> >(m0, "ccGLMatrixTpl_double")
-    	.def(py::init<const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&>())
+    	.def(py::init<const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&>(),
+             ccPrimitivesPy_ccGLMatrix_ctor3_doc)
         .def("initFromParameters", initFromParameters1<double>, ccPrimitivesPy_initFromParameters1_doc)
         .def("initFromParameters", initFromParameters2<double>, ccPrimitivesPy_initFromParameters2_doc)
         .def("toString", &toString_def_py<double>, ccPrimitivesPy_toString_doc)
@@ -433,10 +435,11 @@ void export_ccPrimitives(py::module &m0)
         ;
 
     py::class_<ccGLMatrix, ccGLMatrixTpl<float> >(m0, "ccGLMatrix", ccPrimitivesPy_ccGLMatrix_doc)
-        .def(py::init<>())
-        .def(py::init<const ccGLMatrixTpl<float>&>())
-        .def(py::init<const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&>())
-        .def(py::init( &ccGLMatrixWrap::initWrapper1 ))
+        .def(py::init<>(), ccPrimitivesPy_ccGLMatrix_ctor1_doc)
+        .def(py::init<const ccGLMatrixTpl<float>&>(), ccPrimitivesPy_ccGLMatrix_ctor1_doc)
+        .def(py::init<const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&, const Vector3Tpl<float>&>(),
+             ccPrimitivesPy_ccGLMatrix_ctor3_doc)
+        .def(py::init( &ccGLMatrixWrap::initWrapper1 ), ccPrimitivesPy_ccGLMatrix_ctor4_doc)
         .def("FromToRotation", &FromToRotation_float, ccPrimitivesPy_FromToRotation_doc)
         .def("Interpolate", &Interpolate_float, ccPrimitivesPy_Interpolate_doc)
         .def("FromViewDirAndUpDir", &FromViewDirAndUpDir_float, ccPrimitivesPy_FromViewDirAndUpDir_doc)
@@ -448,10 +451,11 @@ void export_ccPrimitives(py::module &m0)
         ;
 
     py::class_<ccGLMatrixd, ccGLMatrixTpl<double> >(m0, "ccGLMatrixd", ccPrimitivesPy_ccGLMatrixd_doc)
-        .def(py::init<>())
-        .def(py::init<const ccGLMatrixTpl<double>&>())
-        .def(py::init<const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&>())
-        .def(py::init(&ccGLMatrixdWrap::initWrapper1 ))
+        .def(py::init<>(), ccPrimitivesPy_ccGLMatrix_ctor1_doc)
+        .def(py::init<const ccGLMatrixTpl<double>&>(), ccPrimitivesPy_ccGLMatrix_ctor1_doc)
+        .def(py::init<const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&, const Vector3Tpl<double>&>(),
+             ccPrimitivesPy_ccGLMatrix_ctor3_doc)
+        .def(py::init(&ccGLMatrixdWrap::initWrapper1 ), ccPrimitivesPy_ccGLMatrix_ctor4_doc)
         .def("FromToRotation", &FromToRotation_double, ccPrimitivesPy_FromToRotation_doc)
         .def("Interpolate", &Interpolate_double, ccPrimitivesPy_Interpolate_doc)
         .def("FromViewDirAndUpDir", &FromViewDirAndUpDir_double, ccPrimitivesPy_FromViewDirAndUpDir_doc)
@@ -471,21 +475,22 @@ void export_ccPrimitives(py::module &m0)
 
     py::class_<ccBox, ccGenericPrimitive, ccMesh,
                std::unique_ptr<ccBox, py::nodelete>>(m0, "ccBox", ccPrimitivesPy_ccBox_doc)
-        .def(py::init<QString>())
+        .def(py::init<QString>(), ccPrimitivesPy_ccBox_ctor1_doc)
         .def(py::init<const CCVector3&, const ccGLMatrix*, QString >(),
-             py::arg("dims"), py::arg("transMat")=nullptr, py::arg("name")=QString("Box"))
+             py::arg("dims"), py::arg("transMat")=nullptr, py::arg("name")=QString("Box"), ccPrimitivesPy_ccBox_ctor2_doc)
         .def("getDimensions", &ccBox::getDimensions, ccPrimitivesPy_ccBox_getDimensions_doc)
+        .def("setDimensions", &ccBox::setDimensions, ccPrimitivesPy_ccBox_setDimensions_doc)
         ;
 
     py::class_<ccCone, ccGenericPrimitive, ccMesh,
                std::unique_ptr<ccCone, py::nodelete>>(m0, "ccCone", ccPrimitivesPy_ccCone_doc)
-        .def(py::init<QString>())
+        .def(py::init<QString>(), ccPrimitivesPy_ccCone_ctor1_doc)
         .def(py::init<PointCoordinateType, PointCoordinateType, PointCoordinateType,
                       PointCoordinateType, PointCoordinateType, const ccGLMatrix*, QString, unsigned, unsigned>(),
                       py::arg("bottomRadius"), py::arg("topRadius"), py::arg("height"),
                       py::arg("xOff")=0, py::arg("xOff")=0,
                       py::arg("transMat")=nullptr, py::arg("name")=QString("Cone"),
-                      py::arg("precision")= 24, py::arg("uniqueID")= 0xFFFFFFFF)
+                      py::arg("precision")= 24, py::arg("uniqueID")= 0xFFFFFFFF, ccPrimitivesPy_ccCone_ctor2_doc)
         .def("getHeight", &ccCone::getHeight, ccPrimitivesPy_getHeight_doc)
         .def("getBottomRadius", &ccCone::getBottomRadius, ccPrimitivesPy_getBottomRadius_doc)
         .def("getTopRadius", &ccCone::getTopRadius, ccPrimitivesPy_getTopRadius_doc)
@@ -495,29 +500,35 @@ void export_ccPrimitives(py::module &m0)
         .def("getLargeCenter", &ccCone::getLargeCenter, ccPrimitivesPy_getLargeCenter_doc)
         .def("getSmallRadius", &ccCone::getSmallRadius, ccPrimitivesPy_getSmallRadius_doc)
         .def("getLargeRadius", &ccCone::getLargeRadius, ccPrimitivesPy_getLargeRadius_doc)
+        .def("setHeight", &ccCone::setHeight, ccPrimitivesPy_setHeight_doc)
+        .def("setBottomRadius", &ccCone::setBottomRadius, ccPrimitivesPy_setBottomRadius_doc)
+        .def("setTopRadius", &ccCone::setTopRadius, ccPrimitivesPy_setTopRadius_doc)
         ;
 
     py::class_<ccCylinder, ccCone,
                std::unique_ptr<ccCylinder, py::nodelete>>(m0,"ccCylinder", ccPrimitivesPy_ccCylinder_doc)
-        .def(py::init<QString>())
+        .def(py::init<QString>(), ccPrimitivesPy_ccCylinder_ctor1_doc)
         .def(py::init<PointCoordinateType, PointCoordinateType,
                       const ccGLMatrix*, QString, unsigned, unsigned>(),
                       py::arg("radius"), py::arg("height"),
                       py::arg("transMat")=nullptr, py::arg("name")=QString("Cylinder"),
-                      py::arg("precision")=24, py::arg("uniqueID")=0xFFFFFFFF)
+                      py::arg("precision")=24, py::arg("uniqueID")=0xFFFFFFFF, ccPrimitivesPy_ccCylinder_ctor2_doc)
+        .def("setRadius", &ccCylinder::setBottomRadius, ccPrimitivesPy_setRadius_doc)
         ;
 
     py::class_<ccPlane, ccGenericPrimitive, ccMesh,
                std::unique_ptr<ccPlane, py::nodelete>>(m0, "ccPlane", ccPrimitivesPy_ccPlane_doc)
-        .def(py::init<QString>())
+        .def(py::init<QString>(), ccPrimitivesPy_ccPlane_ctor1_doc)
         .def(py::init<PointCoordinateType, PointCoordinateType,
              const ccGLMatrix*, QString>(),
              py::arg("xWidth"), py::arg("yWidth"),
-             py::arg("transMat")=nullptr, py::arg("name")=QString("Plane"))
+             py::arg("transMat")=nullptr, py::arg("name")=QString("Plane"), ccPrimitivesPy_ccPlane_ctor2_doc)
         .def_static("Fit", &plane_Fit_py, ccPrimitivesPy_ccPlane_Fit_doc, py::return_value_policy::reference)
         .def("getEquation", &plane_getEquation_py, ccPrimitivesPy_ccPlane_getEquation_doc)
         .def("getCenter", &ccPlane::getCenter, ccPrimitivesPy_ccPlane_getCenter_doc)
         .def("getNormal", &ccPlane::getNormal, ccPrimitivesPy_ccPlane_getNormal_doc)
+        .def("setXWidth", &ccPlane::setXWidth, ccPrimitivesPy_ccPlane_setXWidth_doc)
+        .def("setYWidth", &ccPlane::setYWidth, ccPrimitivesPy_ccPlane_setYWidth_doc)
         ;
 
     py::class_<ccQuadric, ccGenericPrimitive, ccMesh,
@@ -525,40 +536,43 @@ void export_ccPrimitives(py::module &m0)
         .def(py::init(&ccQuadricWrap::initWrapper5),
             py::arg("minCorner"), py::arg("maxCorner"), py::arg("eqv"),
             py::arg("dims")=Tuple3ub(0,1,2), py::arg("transMat")=nullptr,
-            py::arg("name")=QString("Quadric"), py::arg("precision")= ccQuadric::DEFAULT_DRAWING_PRECISION )
+            py::arg("name")=QString("Quadric"), py::arg("precision")= ccQuadric::DEFAULT_DRAWING_PRECISION,
+            ccPrimitivesPy_ccQuadric_ctor_doc )
         ;
 
     py::class_<ccSphere, ccGenericPrimitive, ccMesh,
                std::unique_ptr<ccSphere, py::nodelete>>(m0, "ccSphere", ccPrimitivesPy_ccSphere_doc)
-        .def(py::init<QString>())
+        .def(py::init<QString>(), ccPrimitivesPy_ccSphere_ctor1_doc)
         .def(py::init<PointCoordinateType,
                       const ccGLMatrix*, QString, unsigned, unsigned>(),
                       py::arg("radius"),
                       py::arg("transMat")=nullptr, py::arg("name")=QString("Sphere"),
-                      py::arg("precision")=24, py::arg("uniqueID")=0xFFFFFFFF)
+                      py::arg("precision")=24, py::arg("uniqueID")=0xFFFFFFFF,
+                      ccPrimitivesPy_ccSphere_ctor2_doc)
         .def("getRadius", &ccSphere::getRadius, ccPrimitivesPy_ccSphere_getRadius_doc)
+        .def("setRadius", &ccSphere::setRadius, ccPrimitivesPy_ccSphere_setRadius_doc)
         ;
 
     py::class_<ccTorus, ccGenericPrimitive, ccMesh,
                std::unique_ptr<ccTorus, py::nodelete>>(m0, "ccTorus", ccPrimitivesPy_ccTorus_doc)
-        .def(py::init<QString>())
+        .def(py::init<QString>(), ccPrimitivesPy_ccTorus_ctor1_doc)
         .def(py::init<PointCoordinateType, PointCoordinateType,
              double, bool, PointCoordinateType, const ccGLMatrix*, QString, unsigned, unsigned>(),
              py::arg("insideRadius"), py::arg("outsideRadius"),
              py::arg("angle_rad")=2.0*M_PI, py::arg("rectangularSection")=false, py::arg("rectSectionHeight")=0,
              py::arg("transMat")=nullptr, py::arg("name")=QString("Torus"),
-             py::arg("precision")=24, py::arg("uniqueID")=0xFFFFFFFF)
+             py::arg("precision")=24, py::arg("uniqueID")=0xFFFFFFFF, ccPrimitivesPy_ccTorus_ctor2_doc)
         ;
 
     py::class_<ccDish, ccGenericPrimitive, ccMesh,
                std::unique_ptr<ccDish, py::nodelete>>(m0, "ccDish", ccPrimitivesPy_ccDish_doc)
-        .def(py::init<QString>())
+        .def(py::init<QString>(), ccPrimitivesPy_ccDish_ctor1_doc)
         .def(py::init<PointCoordinateType, PointCoordinateType,
              PointCoordinateType, const ccGLMatrix*, QString, unsigned>(),
              py::arg("radius"), py::arg("height"),
              py::arg("radius2")=0,
              py::arg("transMat")=nullptr, py::arg("name")=QString("Dish"),
-             py::arg("precision")=24)
+             py::arg("precision")=24, ccPrimitivesPy_ccDish_ctor2_doc)
         ;
 
 }

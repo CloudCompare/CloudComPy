@@ -33,7 +33,11 @@ only contains intrinsic parameters. They are also associated
 to a 'rigid transformation' (e.g. a rigid mechanical link between
 the sensor 'optical' center and the GPS/IMU center position).
 
-constructor:
+See __init__ method for constructor.
+)";
+
+const char* ccSensorPy_ccSensor_ctor_doc= R"(
+ccSensor constructor
 
 :param string name: sensor name.
 )";
@@ -89,16 +93,16 @@ Sets the sensor graphic representation scale
 
 :param float scale: graphic representation scale
 )";
-//const char* ccSensorPy_ccSensor__doc= R"()";
-//const char* ccSensorPy_ccSensor__doc= R"()";
 
 const char* ccSensorPy_ccGBLSensor_doc= R"(
 Ground-based Laser sensor
 An implementation of the ccSensor interface that can be used to represent a depth sensor
 relying on 2 rotations relatively to two perpendicular axes, such as ground based laser
 scanners typically.
+)";
 
-constructor:
+const char* ccSensorPy_ccGBLSensor_ctor_doc= R"(
+ccGBLSensor constructor:
 
 :param ROTATION_ORDER,optional rotOrder: default ROTATION_ORDER.YAW_THEN_PITCH
 )";
@@ -118,8 +122,5 @@ Possibles values are UNKNOWN_SENSOR or GROUND_BASED_LIDAR
 :return: Sensor type
 :rtype: :py:class:`CC_SENSOR_TYPE`
 )";
-
-//const char* ccSensorPy_ccGBLSensor__doc= R"()";
-//const char* ccSensorPy_ccGBLSensor__doc= R"()";
 
 #endif /* CCSENSORPY_DOCSTRINGS_HPP_ */

@@ -41,7 +41,7 @@ PYBIND11_MODULE(_PCL, m6)
     m6.doc() = PCL_doc;
 
     py::class_<FastGlobalRegistrationFilter>(m6, "FastGlobalRegistrationFilter", PCL_FastGlobalRegistrationFilter_doc)
-        .def(py::init<>())
+        .def(py::init<>(), PCL_FastGlobalRegistrationFilter_ctor_doc)
         .def("compute", &FastGlobalRegistrationFilter::compute, PCL_FGRFcompute_doc)
         .def("getTransformation", &FastGlobalRegistrationFilter::getTransformation, PCL_FGRFgetTransformation_doc)
         .def("getAutoRadius", &FastGlobalRegistrationFilter::getAutoRadius, PCL_FGRFgetAutoRadius_doc)
@@ -51,7 +51,7 @@ PYBIND11_MODULE(_PCL, m6)
         ;
 
     py::class_<NormalEstimation>(m6, "NormalEstimation", PCL_NormalEstimation_doc)
-        .def(py::init<>())
+        .def(py::init<>(), PCL_NormalEstimation_ctor_doc)
         .def("compute", &NormalEstimation::compute, PCL_NEcompute_doc)
         .def("setParameters", &NormalEstimation::setParameters,
              py::arg("cloud"), py::arg("useKnn")=false, py::arg("ovewriteCurvature")=true, py::arg("knn")=10, py::arg("radius")=0.,
@@ -59,7 +59,7 @@ PYBIND11_MODULE(_PCL, m6)
         ;
 
     py::class_<MLSSmoothingUpsampling>(m6, "MLSSmoothingUpsampling", PCL_MLSSmoothingUpsampling_doc)
-        .def(py::init<>())
+        .def(py::init<>(), PCL_MLSSmoothingUpsampling_ctor_doc)
         .def("compute", &MLSSmoothingUpsampling::compute, PCL_MLScompute_doc)
         .def("getOutputCloud", &MLSSmoothingUpsampling::getOutputCloud, py::return_value_policy::reference, PCL_MLSgetOutputCloud_doc)
         .def("setParameters", &MLSSmoothingUpsampling::setParameters,

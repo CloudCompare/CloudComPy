@@ -34,6 +34,10 @@ QRgba64 can be used as a replacement for QRgb when higher precision is needed.
 In particular a premultiplied QRgba64 can operate on unpremultiplied QRgb without loss of precision except for alpha 0.
 See Qt documentation.)";
 
+const char* Rgba64Py_QRgba64_ctor_doc= R"(
+Default constructor
+)";
+
 const char* Rgba64Py_alpha8_doc= R"(
 Returns the alpha channel as an 8-bit.
 See Qt documentation.
@@ -217,34 +221,41 @@ See Qt documentation.
 const char* colorsPy_QColor_doc= R"(
 The Qt QColor class provides colors based on RGB, HSV or CMYK values.
 See Qt documentation.
+)";
 
-**Constructors**:
+const char* colorsPy_QColor_ctor0_doc= R"(
+Default Constructor: invalid Color.
+)";
 
-- default Constructor: invalid Color.
-
-- copy Constructor
-
-- Constructs a color with the RGB value r, g, b, and the alpha-channel (transparency) value a.
+const char* colorsPy_QColor_ctor1_doc= R"(
+Constructs a color with the RGB value r, g, b, and the alpha-channel (transparency) value a.
 
 :param int r: red value (0 to 255)
 :param int g: green value (0 to 255)
 :param int b: blue value (0 to 255)
 :param int a: alpha value (0 to 255)
+)";
 
-- Constructs a color with the value color. The alpha component is ignored and set to solid.
+const char* colorsPy_QColor_ctor2_doc= R"(
+Constructs a color with the value color. The alpha component is ignored and set to solid.
 
 :param int rgb: an unsigned int equivalent to an ARGB quadruplet on the format #AARRGGBB.
+)";
 
-- Construct a Color with the value rgba64 (:py:class:`QRgba64`).
+const char* colorsPy_QColor_ctor3_doc= R"(
+Construct a Color with the value rgba64 (:py:class:`QRgba64`).
 
 :param QRgba64 rgba64: an rgba64 value.
+)";
 
-- Constructs a named color in the same way as :py:meth:`setNamedColor` using the given name.
+const char* colorsPy_QColor_ctor4_doc= R"(
+Constructs a named color in the same way as :py:meth:`setNamedColor` using the given name.
 
 The color is left invalid if the name cannot be parsed.
 
 :param string colorName: the color name following the syntax in :py:meth:`setNamedColor`.
 )";
+
 
 const char* colorsPy_alpha_doc= R"(
 Returns the alpha color component of this color.
