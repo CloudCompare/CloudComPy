@@ -201,6 +201,11 @@
           "type": "BOOL"
         },
         {
+          "name": "PLUGIN_STANDARD_3DMASC",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "PLUGIN_STANDARD_MASONRY_QAUTO_SEG",
           "value": "True",
           "type": "BOOL"
