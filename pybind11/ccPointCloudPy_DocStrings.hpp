@@ -63,6 +63,38 @@ Applies a GL transformation to the entity::
 
 :param ccGLMatrix trans: a ccGLMatrix structure)";
 
+const char* ccPointCloudPy_applyScalarFieldGaussianFilter_doc= R"(
+Computes a spatial gaussian filter on a scalar field associated to a point cloud.
+The "amplitude" of the gaussian filter must be precised (sigma).
+As 99% of the gaussian distribution is between -3*sigma and +3*sigma
+around the mean value, this filter will only look for neighbouring
+points (around each point) in a sphere of radius 3*sigma.
+
+:param int sfIndex: scalar field index in the cloud 
+:param float,optional sigma: filter variance, default 0 meaning using a cloud kernel size as a first guess.
+:param DgmOctree,optional theOctree: the octree, (default None) if it has already been computed
+
+:return: success
+:rtype: bool
+)";
+
+const char* ccPointCloudPy_sfBilateralFilter_doc= R"(
+Computes a spatial gaussian filter on a scalar field associated to a point cloud.
+The "amplitude" of the gaussian filter is defined by sigma (spatialSigma).
+As 99% of the gaussian distribution is between -3*sigma and +3*sigma
+around the mean value, this filter will only look for neighbouring
+points (around each point) in a sphere of radius 3*sigma.
+The filter is used here as a bilateral filter where the weights are computed also considering the
+distance of the neighbor's scalar value from the current point scalar value. (weighted with gaussian as distances are)
+
+:param int sfIndex: scalar field index in the cloud 
+:param float,optional spatialSigma: spatial sigma, default 0 meaning using a cloud kernel size as a first guess.
+:param float,optional scalarFieldSigma: weighted distance, default 0 meaning using 1/4 of the scalarField range: (max-min)/4
+
+:return: success
+:rtype: bool
+)";
+
 const char* ccPointCloudPy_cloneThis_doc= R"(
 Clones this entity.
 

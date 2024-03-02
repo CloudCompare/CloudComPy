@@ -177,6 +177,7 @@ TODO List
 * DONE: Meshes: flip triangles, mesure surface, volume, flag vertices by type, Surface between 2 polylines
 * DONE: Polylines: sample points
 * DONE: (issue #48) add a polyline constructor taking a list of coordinates in argument (add Z=0 if 2D coordinates)
+* DONE: ScalarFields: gaussian & bilateral filters
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -186,7 +187,7 @@ TODO List
 - TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display)
 - TODO: (issue #118) Build a version with double precision scalar field.
 - TODO: allow installation path with space (like "c:\program files\xxx") (follow issue #72)
-- TODO: ScalarFields: Show histogram, Compute Stat params, gradient, gaussian & bilateral filters
+- TODO: ScalarFields: compute histogram, Compute Stat params
 - TODO: ScalarFields: Convert to random RGB, add point indexes as SF, set SF as coordinate, split cloud
 - TODO: Registration: match bounding boxes, scales, align. Closest point set (CPSet doc, example)
 - TODO: Statistics: Local statistical test, stat params
@@ -207,4 +208,4 @@ TODO List
 - TODO: plugin 3DFin ?
 - TODO: (issue #154) plugin MeshIO ?
 - TODO: study convergence with Python plugin
-- TODO: (issue 156) improve documentation on LabelConnectedComponents. Fix the scalfield for display (compute min & max, set current)
+- TODO: (issue 156) improve documentation on LabelConnectedComponents. Fix the scalarfield for display (compute min & max, set current)

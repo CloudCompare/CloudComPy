@@ -38,6 +38,8 @@
 #include <ccGBLSensor.h>
 #include <ccHObjectCaster.h>
 #include <PointCloudTpl.h>
+#include <ccLibAlgorithms.h>
+#include <pyCC.h>
 
 #include "PyScalarType.h"
 #include "ccPointCloudPy_DocStrings.hpp"
@@ -380,6 +382,97 @@ bool computeScalarFieldGradient_py( ccPointCloud &self,
     return true;
 }
 
+bool applyScalarFieldGaussianFilter_py( ccPointCloud &self,
+                                        int SFindex,
+                                        PointCoordinateType sigma = 0.,
+                                        CCCoreLib::DgmOctree* theOctree = nullptr)
+{
+    double usedSigma = sigma;
+    if (usedSigma <= 0)
+        usedSigma = pyCC_GetDefaultCloudKernelSize(&self);
+    int nbSF = self.getNumberOfScalarFields();
+    if (SFindex < 0 || SFindex >= nbSF)
+    {
+        CCTRACE("applyScalarFieldGaussianFilter: Wrong Scalar Field index!");
+        return false;
+    }
+    self.setCurrentInScalarField(-1);
+    self.setCurrentOutScalarField(SFindex);
+    QString sfName = QString("%1.smooth(%2)").arg(self.getScalarFieldName(SFindex)).arg(usedSigma);
+    bool ret = CCCoreLib::ScalarFieldTools::applyScalarFieldGaussianFilter(usedSigma,
+                                                                           &self,
+                                                                           -1,
+                                                                           nullptr,
+                                                                           theOctree);
+    if (!ret)
+    {
+        CCTRACE("applyScalarFieldGaussianFilter: error");
+        return false;
+    }
+    nbSF = self.getNumberOfScalarFields();
+    self.getScalarField(nbSF-1)->computeMinAndMax();
+    self.getScalarField(nbSF-1)->setName(sfName.toStdString().c_str());
+    return true;
+}
+
+bool sfBilateralFilter_py(  ccPointCloud &self,
+                            int SFindex,
+                            double spatialSigma = 0.,
+                            double scalarFieldSigma = 0. )
+{
+    double usedSpatialSigma = spatialSigma;
+    if (usedSpatialSigma <= 0)
+        usedSpatialSigma = pyCC_GetDefaultCloudKernelSize(&self);
+
+    int nbSF = self.getNumberOfScalarFields();
+    if (SFindex < 0 || SFindex >= nbSF)
+    {
+        CCTRACE("sfBilateralFilter: Wrong Scalar Field index!");
+        return false;
+    }
+    double usedScalarFieldSigma = scalarFieldSigma;
+    if (usedScalarFieldSigma <=0)
+    {
+        CCCoreLib::ScalarField* sf = self.getScalarField(SFindex);
+        ScalarType range = sf->getMax() - sf->getMin();
+        usedScalarFieldSigma = range / 4; // using 1/4 of total range
+    }
+    bool lockedVertices = false;
+    ccPointCloud* pc = ccHObjectCaster::ToPointCloud(&self, &lockedVertices);
+    if (!pc || lockedVertices)
+    {
+        CCTRACE("the cloud vertices are locked (shared by multiple entities)")
+        return false;
+    }
+    self.setCurrentInScalarField(-1);
+    self.setCurrentOutScalarField(SFindex);
+    QString sfName = QString("%1.bilsmooth(%2,%3)").arg(self.getScalarFieldName(SFindex)).arg(usedSpatialSigma).arg(usedScalarFieldSigma);
+    ccOctree::Shared octree = pc->getOctree();
+    if (!octree)
+    {
+        octree = pc->computeOctree(nullptr);
+        if (!octree)
+        {
+            CCTRACE("Couldn't compute octree for cloud " << pc->getName().toStdString());
+            return false;
+        }
+    }
+    bool ret = CCCoreLib::ScalarFieldTools::applyScalarFieldGaussianFilter( usedSpatialSigma,
+                                                                            pc,
+                                                                            usedScalarFieldSigma,
+                                                                            nullptr,
+                                                                            octree.data());
+    if (!ret)
+    {
+        CCTRACE("applyScalarFieldGaussianFilter (bilateral): error");
+        return false;
+    }
+    nbSF = self.getNumberOfScalarFields();
+    self.getScalarField(nbSF-1)->computeMinAndMax();
+    self.getScalarField(nbSF-1)->setName(sfName.toStdString().c_str());
+    return true;
+}
+
 bool convertNormalToDipDirSFs_py(ccPointCloud &self)
 {
     // --- from ccEntityAction::convertNormalsTo
@@ -643,6 +736,12 @@ void export_ccPointCloud(py::module &m0)
         .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)
         .def("applyRigidTransformation", &applyRigidTransformationPy, ccPointCloudPy_applyRigidTransformation_doc)
+        .def("applyScalarFieldGaussianFilter", &applyScalarFieldGaussianFilter_py,
+             py::arg("SFindex"), py::arg("sigma")=0., py::arg("theOctree")=nullptr,
+             ccPointCloudPy_applyScalarFieldGaussianFilter_doc)
+        .def("sfBilateralFilter", &sfBilateralFilter_py,
+              py::arg("SFindex"), py::arg("spatialSigma")=0, py::arg("scalarFieldSigma")=0,
+              ccPointCloudPy_sfBilateralFilter_doc)
         .def("cloneThis", &ccPointCloud::cloneThis,
              py::arg("destCloud")=nullptr, py::arg("ignoreChildren")=false,
              ccPointCloudPy_cloneThis_doc, py::return_value_policy::reference)

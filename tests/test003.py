@@ -27,7 +27,7 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, dataDir
+from gendata import getSampleCloud, dataDir, dataExtDir
 import cloudComPy as cc
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
@@ -82,3 +82,33 @@ if not cloud.computeScalarFieldGradient(1, radius, True):
 #---cloudsf01-end
 
 res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud03.bin"))
+
+# example data available here: https://github.com/CloudCompare/CloudComPy/issues/94
+if not os.path.isfile(os.path.join(dataExtDir,"PTS_LAMB93_IGN69_extract.las")):
+    if not os.path.exists(dataExtDir):
+        os.makedirs(dataExtDir)
+    url = "https://www.simulation.openfields.fr/phocadownload/PTS_LAMB93_IGN69_extract.las"
+    r = requests.get(url)
+    with open(os.path.join(dataExtDir,"PTS_LAMB93_IGN69_extract.las"), 'wb') as f:
+        f.write(r.content)
+
+#---cloudsf02-begin
+cloud=cc.loadPointCloud(os.path.join(dataExtDir,"PTS_LAMB93_IGN69_extract.las"))
+dic = cloud.getScalarFieldDic()
+ret=cloud.applyScalarFieldGaussianFilter(dic["Intensity"])
+sf=cloud.getScalarField(cloud.getNumberOfScalarFields()-1)
+#---cloudsf02-end
+sfName = sf.getName()
+if "Intensity.smooth" not in sfName:
+    raise RuntimeError
+
+#---cloudsf03-begin
+ret=cloud.sfBilateralFilter(dic["Intensity"])
+sf=cloud.getScalarField(cloud.getNumberOfScalarFields()-1)
+#---cloudsf03-end
+sfName = sf.getName()
+if "Intensity.bilsmooth" not in sfName:
+    raise RuntimeError
+
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "PTS_LAMB93_IGN69_extract.bin"))
+
