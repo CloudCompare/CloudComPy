@@ -112,3 +112,12 @@ if "Intensity.bilsmooth" not in sfName:
 
 res = cc.SavePointCloud(cloud, os.path.join(dataDir, "PTS_LAMB93_IGN69_extract.bin"))
 
+#---cloudsf04-begin
+cloud = cc.loadPointCloud(getSampleCloud(5.0))
+res = cloud.exportCoordToSF(False, True, True)
+l = cloud.sfSplitCloud(cloud.getNumberOfScalarFields()-1)
+#---cloudsf04-end
+if len(l) != 7:
+    raise RuntimeError
+res = cc.SaveEntities(l, os.path.join(dataDir, "sfsplit.bin"))
+

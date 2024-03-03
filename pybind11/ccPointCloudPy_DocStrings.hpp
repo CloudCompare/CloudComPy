@@ -95,6 +95,16 @@ distance of the neighbor's scalar value from the current point scalar value. (we
 :rtype: bool
 )";
 
+const char* ccPointCloudPy_sfSplitCloud_doc= R"(
+Splits the cloud along integer values of the designated scalar field (the original cloud is kept)
+
+:param int sfIndex: scalar field index in the cloud 
+:param int,optional maxNbClouds: default 30, do not split the cloud if the expectet number of sclices is more than that value 
+
+:return: list of ccPointCloud
+:rtype: list
+)";
+
 const char* ccPointCloudPy_cloneThis_doc= R"(
 Clones this entity.
 
