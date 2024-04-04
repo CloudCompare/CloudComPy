@@ -1180,13 +1180,19 @@ The result is a new cloud.
 
 The above code snippets are from :download:`test052.py <../tests/test052.py>`.
 
-Extract Connected Components
-----------------------------
+Extract or Label Connected Components
+-------------------------------------
 
-The tool used here is described in
+The tools used here are described in
 `CloudCompare wiki - Label Connected Components <https://www.cloudcompare.org/doc/wiki/index.php/Label_Connected_Components>`_.
 
-This tool segments the selected cloud(s) in smaller parts separated by a minimum distance. 
+There are two tools relative to connected components: :py:func:`~.cloudComPy.ExtractConnectedComponents` 
+and :py:func:`~.cloudComPy.LabelConnectedComponents`.
+
+:py:func:`~.cloudComPy.ExtractConnectedComponents` Creates separate clouds and 
+:py:func:`~.cloudComPy.LabelConnectedComponents` creates a scalar field.
+
+These tools segment the cloud(s) in smaller parts separated by a minimum distance. 
 Each part is a connected component (i.e. a set of 'connected' points). 
 
 For the test, we create a cloud with clear gaps, using a sclice operation:
@@ -1197,8 +1203,8 @@ For the test, we create a cloud with clear gaps, using a sclice operation:
    :literal:
    :code: python
 
-The :py:func:`~.cloudComPy.ExtractConnectedComponents` function use the octree level 
-to define the size of the gap between the components. 
+Here, we take the :py:func:`~.cloudComPy.ExtractConnectedComponents` function.
+It uses the octree level to define the size of the gap between the components. 
 
 .. include:: ../tests/test037.py
    :start-after: #---extractCC02-begin
@@ -1214,6 +1220,7 @@ The "residual component" corresponds to all the remaining nodes of an input clou
    :end-before:  #---extractCC01-end
    :literal:
    :code: python
+
 
 The above code snippets are from :download:`test037.py <../tests/test037.py>` and  :download:`test048.py <../tests/test048.py>`.
 

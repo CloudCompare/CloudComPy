@@ -68,7 +68,9 @@ Delete an entity and its children (mesh, cloud...)
 const char* cloudComPy_ExtractConnectedComponents_doc= R"(
 Extracts connected components from a set of clouds.
 
-This tool segments the selected cloud(s) in smaller parts separated by a minimum distance. 
+There are 2 tools relative to connected components: ExtractConnectedComponents and LabelConnectedComponents.
+ExtractConnectedComponents Creates separate clouds and LabelConnectedComponents creates a scalar field.
+ExtractConnectedComponents segments the clouds in smaller parts separated by a minimum distance. 
 Each part is a connected component (i.e. a set of 'connected' points). 
 CloudCompare uses a 3D grid to extract the connected components.
 This grid is deduced from the octree structure. 
@@ -128,7 +130,11 @@ Unfold the polylines and the clouds along the polylines, with a given thickness.
 const char* cloudComPy_LabelConnectedComponents_doc= R"(
 Label connected components in a set of clouds.
 
-This tool segments the selected cloud(s) in smaller parts separated by a minimum distance. 
+There are 2 tools relative to connected components: ExtractConnectedComponents and LabelConnectedComponents.
+ExtractConnectedComponents Creates separate clouds and LabelConnectedComponents creates a scalar field 
+in each cloud examined, assigning an integer value to each node. 
+Nodes sharing the same value are connected and form a component. The function returns the number of components.
+The clouds are segmented in smaller parts separated by a minimum distance. 
 Each part is a connected component (i.e. a set of 'connected' points). 
 CloudCompare uses a 3D grid to extract the connected components.
 This grid is deduced from the octree structure. 

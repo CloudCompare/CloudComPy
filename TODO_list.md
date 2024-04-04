@@ -178,6 +178,7 @@ TODO List
 * DONE: Polylines: sample points
 * DONE: (issue #48) add a polyline constructor taking a list of coordinates in argument (add Z=0 if 2D coordinates)
 * DONE: ScalarFields: gaussian & bilateral filters
+* DONE: (issue #156) improve documentation on LabelConnectedComponents. Fix the scalarfield for display (compute min & max, set current)
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -208,4 +209,3 @@ TODO List
 - TODO: plugin 3DFin ?
 - TODO: (issue #154) plugin MeshIO ?
 - TODO: study convergence with Python plugin
-- TODO: (issue 156) improve documentation on LabelConnectedComponents. Fix the scalarfield for display (compute min & max, set current)

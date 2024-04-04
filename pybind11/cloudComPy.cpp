@@ -650,6 +650,9 @@ int LabelConnectedComponents_py(std::vector<ccHObject*> entities,
                                                                                         nullptr,
                                                                                         theOctree.data());
             totalComponentCount += componentCount;
+            CCCoreLib::ScalarField *sf = pc->getScalarField(sfIdx);
+            sf->computeMinAndMax();
+            pc->setCurrentDisplayedScalarField(sfIdx);
         }
     }
     return totalComponentCount;
