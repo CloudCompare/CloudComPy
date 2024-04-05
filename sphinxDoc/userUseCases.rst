@@ -892,15 +892,19 @@ in :py:func:`~.cloudComPy.HPR.computeHPR`.
 
 The above code snippet is from :download:`test033.py <../tests/test033.py>`.
 
-Boolean operations on meshes with plugin MeshBoolean
-----------------------------------------------------
+Boolean operations on meshes with plugin MeshBoolean or plugin Cork
+-------------------------------------------------------------------
 
 The MeshBoolean plugin is described in the
 `CloudCompare Plugins wiki - Mesh_Bolean <http://www.cloudcompare.org/doc/wiki/index.php/Mesh_Boolean_(plugin)>`_.
 
-This plugin can be used to perform Boolean operations on meshes (also called CSG = Constructive Solid Geometry). 
+The Cork plugin is described in the
+`CloudCompare Plugins wiki - Cork <https://www.cloudcompare.org/doc/wiki/index.php/Cork_(plugin)>`_.
 
-In the example, we try an intersection of two primitives, a sphere and a cylinder,
+These plugins can be used to perform Boolean operations on meshes (also called CSG = Constructive Solid Geometry). 
+The MeshBoolean plugin is slower but supposedly more robust.
+
+In the first example, we try an intersection of two primitives, a sphere and a cylinder,
  with :py:func:`~.cloudComPy.MeshBoolean.computeMeshBoolean`.
 
 .. include:: ../tests/test034.py
@@ -910,6 +914,17 @@ In the example, we try an intersection of two primitives, a sphere and a cylinde
    :code: python
 
 The above code snippet is from :download:`test034.py <../tests/test034.py>`.
+
+In the second example, we try an difference of two primitives, a cylinder and a sphere,
+ with :py:func:`~.cloudComPy.Cork.Cork.compute`.
+
+.. include:: ../tests/test056.py
+   :start-after: #---Cork01-begin
+   :end-before:  #---Cork01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test056.py <../tests/test056.py>`.
 
 Finding primitives on a cloud with plugin RANSAC-SD
 ---------------------------------------------------

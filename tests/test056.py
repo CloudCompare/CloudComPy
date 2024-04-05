@@ -31,22 +31,21 @@ from gendata import dataDir
 
 import cloudComPy as cc
 
-#---MeshBoolean01-begin
+#---Cork01-begin
 tr1 = cc.ccGLMatrix()
 tr1.initFromParameters(0.0, (0., 0., 0.), (1.0, 0.0, 0.0))
 sphere = cc.ccSphere(2, tr1, "aSphere")
 
 cylinder = cc.ccCylinder(2.0, 5.0)
 
-if not cc.isPluginMeshBoolean():
+if not cc.isPluginCork():
     print("Test skipped")
     sys.exit()
 
-import cloudComPy.MeshBoolean
-mesh = cc.MeshBoolean.computeMeshBoolean(sphere, cylinder, 
-                                         cc.MeshBoolean.CSG_OPERATION.INTERSECT)
-#---MeshBoolean01-end
-if mesh.size() != 1020:
+import cloudComPy.Cork
+mesh = cc.Cork.Cork.compute(cylinder, sphere, cc.Cork.DIFF)
+#---Cork01-end
+if (mesh.size() < 1100) or (mesh.size() > 1200):
     raise RuntimeError
 
-cc.SaveEntities([sphere, cylinder, mesh], os.path.join(dataDir, "MeshBoolean.bin"))
+cc.SaveEntities([sphere, cylinder, mesh], os.path.join(dataDir, "Cork.bin"))

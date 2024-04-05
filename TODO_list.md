@@ -179,6 +179,7 @@ TODO List
 * DONE: (issue #48) add a polyline constructor taking a list of coordinates in argument (add Z=0 if 2D coordinates)
 * DONE: ScalarFields: gaussian & bilateral filters
 * DONE: (issue #156) improve documentation on LabelConnectedComponents. Fix the scalarfield for display (compute min & max, set current)
+* DONE: plugin Cork (idem mesh boolean, faster)
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -196,7 +197,6 @@ TODO List
 - TODO: remove duplicate points
 - TODO: plugin animation
 - TODO: plugin hough normal
-- TODO: plugin Cork (idem mesh boolean, faster)
 - TODO: plugin Virtual broom ?
 - TODO: plugin compass ?
 - TODO: plugin 3Dmasc ?
