@@ -376,12 +376,12 @@
           "type": "FILEPATH"
         },
         {
-          "name": "DRACO_INCLUDE_DIR",
+          "name": "DRACO_INCLUDE_DIRS",
           "value": "${condaRoot}/Library/include",
           "type": "PATH"
         },
         {
-          "name": "DRACO_LIBRARY",
+          "name": "DRACO_LIBRARIES",
           "value": "${condaRoot}/Library/lib/draco.lib",
           "type": "PATH"
         },
