@@ -9,7 +9,10 @@ Linux and Windows 10 binaries for a Conda environment (see below).
 This project proposes a Python module to interface to CloudCompare, 
 of equivalent level to the command mode of CloudCompare.
 
-CloudComPy does not yet cover all the features of CloudCompare. Features are added according to the needs reported by users, feel free to post issues in [GitHub](https://github.com/CloudCompare/CloudComPy/issues).
+CloudComPy does not yet cover all the features of CloudCompare. 
+Features are added according to the needs reported by users,
+feel free to post issues, preferably in [GitLab](https://gitlab.com/openfields1/CloudComPy/-/issues)
+(There are access problems on [GitHub](https://github.com/CloudCompare/CloudComPy/issues), not yet solved...)
 
 Here is an example of a Python script:
 

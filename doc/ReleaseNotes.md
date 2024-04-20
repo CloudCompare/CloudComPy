@@ -2,6 +2,15 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## April 20, 2024 CloudCompy release:
+
+ - update to **CloudCompare 2.13.1** (March 20, 2024): official release.
+ - ScalarFields: gaussian & bilateral filters
+ - (issue #156) improve documentation on LabelConnectedComponents. Fix the scalarfield for display (compute min & max, set current)
+ - plugin Cork (idem mesh boolean, faster)
+ - repository cloned on [GitLab](https://gitlab.com/openfields1/CloudComPy) (problems with the GitHub account not yet solved).
+ - various small fixes.
+
 ## February 20, 2024 CloudCompy release:
 
  - update to **CloudCompare 2.13** (February 14, 2024): official release.

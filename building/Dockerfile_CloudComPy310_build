@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y gfortran g++ make libgl1 libgl-dev
 
 RUN . /opt/conda/etc/profile.d/conda.sh && \
     conda activate CloudComPy310 && \
-    cd && rm -rf CloudComPy && git clone --recurse-submodules https://github.com/prascle/CloudComPy.git && \
+    cd && rm -rf CloudComPy && git clone --recurse-submodules https://gitlab.com/openfields1/CloudComPy.git && \
     cd CloudComPy && git checkout CloudComPy_docker-20230216 --recurse-submodules
 
 ARG FBXINC=noplugin
