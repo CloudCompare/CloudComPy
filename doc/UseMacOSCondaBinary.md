@@ -6,7 +6,8 @@ The binary *CloudComPy_Conda310_MacOS-date-.zip* available [here](https://www.si
 **This binary works only on macOS Apple arm architecture (not on Intel processors), on recent macOS versions, not anywhere else!**
 
 **Built and tested on macOS VENTURA 13.4.1.
-Please post issues on CloudComPy [GitLab](https://gitlab.com/openfields1/CloudComPy/-/issues) in case of problem**
+Please post issues on CloudComPy [GitHub](https://github.com/CloudCompare/CloudComPy/issues)
+or [GitLab](https://gitlab.com/openfields1/CloudComPy/-/issues) in case of problem**
 
 The macOS binary provides **CloudCompare** and **CloudCompy** (same as binaries for Windows and Linux).
 
