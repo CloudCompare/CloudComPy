@@ -12,6 +12,7 @@ mainly the PATH and PYTHONPATH used by the different executables, library and Py
 
 You should read the installation instructions in your CloudComPy installation, in the doc directory,
 or on `GitHub <https://github.com/CloudCompare/CloudComPy#readme>`_.
+or on `GitLab <https://gitlab.com/openfields1/CloudComPy/-/blob/master/README.md>`_.
 
 Here, we suppose you are using a CloudComPy installation built on top of the Conda Packages.
 

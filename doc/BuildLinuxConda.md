@@ -5,7 +5,8 @@ The script [below](../building/genCloudComPy_Conda310_Ubuntu2004.sh) executes th
 
  - create or update the conda environment
  - activate the environment
- - build and install CloudComPy (Sources must be cloned from Github and up to date)
+ - build and install CloudComPy (Sources must be cloned from the [GitHub repository](https://github.com/CloudCompare/CloudComPy)
+   or the [GitLab repository](https://gitlab.com/openfields1/CloudComPy) and up to date)
  - create the tarfile
  - execute ctest
 

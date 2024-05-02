@@ -892,15 +892,19 @@ in :py:func:`~.cloudComPy.HPR.computeHPR`.
 
 The above code snippet is from :download:`test033.py <../tests/test033.py>`.
 
-Boolean operations on meshes with plugin MeshBoolean
-----------------------------------------------------
+Boolean operations on meshes with plugin MeshBoolean or plugin Cork
+-------------------------------------------------------------------
 
 The MeshBoolean plugin is described in the
 `CloudCompare Plugins wiki - Mesh_Bolean <http://www.cloudcompare.org/doc/wiki/index.php/Mesh_Boolean_(plugin)>`_.
 
-This plugin can be used to perform Boolean operations on meshes (also called CSG = Constructive Solid Geometry). 
+The Cork plugin is described in the
+`CloudCompare Plugins wiki - Cork <https://www.cloudcompare.org/doc/wiki/index.php/Cork_(plugin)>`_.
 
-In the example, we try an intersection of two primitives, a sphere and a cylinder,
+These plugins can be used to perform Boolean operations on meshes (also called CSG = Constructive Solid Geometry). 
+The MeshBoolean plugin is slower but supposedly more robust.
+
+In the first example, we try an intersection of two primitives, a sphere and a cylinder,
  with :py:func:`~.cloudComPy.MeshBoolean.computeMeshBoolean`.
 
 .. include:: ../tests/test034.py
@@ -910,6 +914,17 @@ In the example, we try an intersection of two primitives, a sphere and a cylinde
    :code: python
 
 The above code snippet is from :download:`test034.py <../tests/test034.py>`.
+
+In the second example, we try an difference of two primitives, a cylinder and a sphere,
+ with :py:func:`~.cloudComPy.Cork.Cork.compute`.
+
+.. include:: ../tests/test056.py
+   :start-after: #---Cork01-begin
+   :end-before:  #---Cork01-end
+   :literal:
+   :code: python
+
+The above code snippet is from :download:`test056.py <../tests/test056.py>`.
 
 Finding primitives on a cloud with plugin RANSAC-SD
 ---------------------------------------------------
@@ -1180,13 +1195,19 @@ The result is a new cloud.
 
 The above code snippets are from :download:`test052.py <../tests/test052.py>`.
 
-Extract Connected Components
-----------------------------
+Extract or Label Connected Components
+-------------------------------------
 
-The tool used here is described in
+The tools used here are described in
 `CloudCompare wiki - Label Connected Components <https://www.cloudcompare.org/doc/wiki/index.php/Label_Connected_Components>`_.
 
-This tool segments the selected cloud(s) in smaller parts separated by a minimum distance. 
+There are two tools relative to connected components: :py:func:`~.cloudComPy.ExtractConnectedComponents` 
+and :py:func:`~.cloudComPy.LabelConnectedComponents`.
+
+:py:func:`~.cloudComPy.ExtractConnectedComponents` Creates separate clouds and 
+:py:func:`~.cloudComPy.LabelConnectedComponents` creates a scalar field.
+
+These tools segment the cloud(s) in smaller parts separated by a minimum distance. 
 Each part is a connected component (i.e. a set of 'connected' points). 
 
 For the test, we create a cloud with clear gaps, using a sclice operation:
@@ -1197,8 +1218,8 @@ For the test, we create a cloud with clear gaps, using a sclice operation:
    :literal:
    :code: python
 
-The :py:func:`~.cloudComPy.ExtractConnectedComponents` function use the octree level 
-to define the size of the gap between the components. 
+Here, we take the :py:func:`~.cloudComPy.ExtractConnectedComponents` function.
+It uses the octree level to define the size of the gap between the components. 
 
 .. include:: ../tests/test037.py
    :start-after: #---extractCC02-begin
@@ -1214,6 +1235,7 @@ The "residual component" corresponds to all the remaining nodes of an input clou
    :end-before:  #---extractCC01-end
    :literal:
    :code: python
+
 
 The above code snippets are from :download:`test037.py <../tests/test037.py>` and  :download:`test048.py <../tests/test048.py>`.
 

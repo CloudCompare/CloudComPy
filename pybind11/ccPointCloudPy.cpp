@@ -38,6 +38,8 @@
 #include <ccGBLSensor.h>
 #include <ccHObjectCaster.h>
 #include <PointCloudTpl.h>
+#include <ccLibAlgorithms.h>
+#include <pyCC.h>
 
 #include "PyScalarType.h"
 #include "ccPointCloudPy_DocStrings.hpp"
@@ -45,6 +47,7 @@
 #include <map>
 #include <QColor>
 #include <QString>
+#include <math.h>
 
 struct color_exception : std::exception
 {
@@ -380,6 +383,168 @@ bool computeScalarFieldGradient_py( ccPointCloud &self,
     return true;
 }
 
+bool applyScalarFieldGaussianFilter_py( ccPointCloud &self,
+                                        int SFindex,
+                                        PointCoordinateType sigma = 0.,
+                                        CCCoreLib::DgmOctree* theOctree = nullptr)
+{
+    double usedSigma = sigma;
+    if (usedSigma <= 0)
+        usedSigma = pyCC_GetDefaultCloudKernelSize(&self);
+    int nbSF = self.getNumberOfScalarFields();
+    if (SFindex < 0 || SFindex >= nbSF)
+    {
+        CCTRACE("applyScalarFieldGaussianFilter: Wrong Scalar Field index!");
+        return false;
+    }
+    self.setCurrentInScalarField(-1);
+    self.setCurrentOutScalarField(SFindex);
+    QString sfName = QString("%1.smooth(%2)").arg(self.getScalarFieldName(SFindex)).arg(usedSigma);
+    bool ret = CCCoreLib::ScalarFieldTools::applyScalarFieldGaussianFilter(usedSigma,
+                                                                           &self,
+                                                                           -1,
+                                                                           nullptr,
+                                                                           theOctree);
+    if (!ret)
+    {
+        CCTRACE("applyScalarFieldGaussianFilter: error");
+        return false;
+    }
+    nbSF = self.getNumberOfScalarFields();
+    self.getScalarField(nbSF-1)->computeMinAndMax();
+    self.getScalarField(nbSF-1)->setName(sfName.toStdString().c_str());
+    return true;
+}
+
+bool sfBilateralFilter_py(  ccPointCloud &self,
+                            int SFindex,
+                            double spatialSigma = 0.,
+                            double scalarFieldSigma = 0. )
+{
+    double usedSpatialSigma = spatialSigma;
+    if (usedSpatialSigma <= 0)
+        usedSpatialSigma = pyCC_GetDefaultCloudKernelSize(&self);
+
+    int nbSF = self.getNumberOfScalarFields();
+    if (SFindex < 0 || SFindex >= nbSF)
+    {
+        CCTRACE("sfBilateralFilter: Wrong Scalar Field index!");
+        return false;
+    }
+    double usedScalarFieldSigma = scalarFieldSigma;
+    if (usedScalarFieldSigma <=0)
+    {
+        CCCoreLib::ScalarField* sf = self.getScalarField(SFindex);
+        ScalarType range = sf->getMax() - sf->getMin();
+        usedScalarFieldSigma = range / 4; // using 1/4 of total range
+    }
+    bool lockedVertices = false;
+    ccPointCloud* pc = ccHObjectCaster::ToPointCloud(&self, &lockedVertices);
+    if (!pc || lockedVertices)
+    {
+        CCTRACE("the cloud vertices are locked (shared by multiple entities)")
+        return false;
+    }
+    self.setCurrentInScalarField(-1);
+    self.setCurrentOutScalarField(SFindex);
+    QString sfName = QString("%1.bilsmooth(%2,%3)").arg(self.getScalarFieldName(SFindex)).arg(usedSpatialSigma).arg(usedScalarFieldSigma);
+    ccOctree::Shared octree = pc->getOctree();
+    if (!octree)
+    {
+        octree = pc->computeOctree(nullptr);
+        if (!octree)
+        {
+            CCTRACE("Couldn't compute octree for cloud " << pc->getName().toStdString());
+            return false;
+        }
+    }
+    bool ret = CCCoreLib::ScalarFieldTools::applyScalarFieldGaussianFilter( usedSpatialSigma,
+                                                                            pc,
+                                                                            usedScalarFieldSigma,
+                                                                            nullptr,
+                                                                            octree.data());
+    if (!ret)
+    {
+        CCTRACE("applyScalarFieldGaussianFilter (bilateral): error");
+        return false;
+    }
+    nbSF = self.getNumberOfScalarFields();
+    self.getScalarField(nbSF-1)->computeMinAndMax();
+    self.getScalarField(nbSF-1)->setName(sfName.toStdString().c_str());
+    return true;
+}
+
+std::list<ccPointCloud*> sfSplitCloud_py(ccPointCloud &self, int SFindex, int maxNbClouds=30)
+{
+    std::list<ccPointCloud*> cloudList;
+    std::list<ccPointCloud*> emptyList;
+    int nbSF = self.getNumberOfScalarFields();
+    if (SFindex < 0 || SFindex >= nbSF)
+    {
+        CCTRACE("sfSplitCloud: Wrong Scalar Field index!");
+        return emptyList;
+    }
+    CCCoreLib::ScalarField* sf = self.getScalarField(SFindex);
+    // count integer values
+    size_t N = sf->size();
+    std::set<int> classes;
+    for (ScalarType sfValue : *sf)
+    {
+        classes.insert(static_cast<int>(sfValue));
+    }
+    if (classes.size() > maxNbClouds)
+    {
+        CCTRACE("sfSplitCloud: too many splits! " << classes.size());
+        return emptyList;
+    }
+    if (classes.size() < 2)
+    {
+        CCTRACE("sfSplitCloud: no split needed! ");
+        return emptyList;
+    }
+
+    // create as many clouds as the number of classes
+    for (int pointClass : classes)
+    {
+        CCTRACE("[sfSplitCloud] build cloud corresponding to class #" <<pointClass);
+
+        try
+        {
+            // create the reference cloud
+            CCCoreLib::ReferenceCloud referenceCloud(&self);
+
+            // populate the cloud with the points which have the selected class
+            for (unsigned index = 0; index < static_cast<unsigned>(self.size()); index++)
+            {
+                if (static_cast<int>(sf->at(index)) == pointClass)
+                {
+                    referenceCloud.addPointIndex(index);
+                }
+            }
+            ccPointCloud* pc = self.partialClone(&referenceCloud);
+            if (pc)
+            {
+                pc->setName("class #" + QString::number(pointClass));
+                cloudList.push_back(pc);
+            }
+            else
+            {
+                CCTRACE("[sfSplitCloud] Failed to create cloud");
+            }
+        }
+        catch (const std::bad_alloc&)
+        {
+            CCTRACE("[sfSplitCloud] Not enough memory");
+            for (ccPointCloud* pc: cloudList)
+            {
+                delete pc;
+            }
+            return emptyList;
+        }
+    }
+    return cloudList;
+}
+
 bool convertNormalToDipDirSFs_py(ccPointCloud &self)
 {
     // --- from ccEntityAction::convertNormalsTo
@@ -643,6 +808,12 @@ void export_ccPointCloud(py::module &m0)
         .def("addScalarField", addScalarFieldt, ccPointCloudPy_addScalarField_doc)
         .def("applyRigidTransformation", &ccPointCloud::applyRigidTransformation, ccPointCloudPy_applyRigidTransformation_doc)
         .def("applyRigidTransformation", &applyRigidTransformationPy, ccPointCloudPy_applyRigidTransformation_doc)
+        .def("applyScalarFieldGaussianFilter", &applyScalarFieldGaussianFilter_py,
+             py::arg("SFindex"), py::arg("sigma")=0., py::arg("theOctree")=nullptr,
+             ccPointCloudPy_applyScalarFieldGaussianFilter_doc)
+        .def("sfBilateralFilter", &sfBilateralFilter_py,
+              py::arg("SFindex"), py::arg("spatialSigma")=0, py::arg("scalarFieldSigma")=0,
+              ccPointCloudPy_sfBilateralFilter_doc)
         .def("cloneThis", &ccPointCloud::cloneThis,
              py::arg("destCloud")=nullptr, py::arg("ignoreChildren")=false,
              ccPointCloudPy_cloneThis_doc, py::return_value_policy::reference)
@@ -728,6 +899,8 @@ void export_ccPointCloud(py::module &m0)
         .def("setCurrentInScalarField", &ccPointCloud::setCurrentInScalarField, ccPointCloudPy_setCurrentInScalarField_doc)
         .def("setCurrentOutScalarField", &ccPointCloud::setCurrentOutScalarField, ccPointCloudPy_setCurrentOutScalarField_doc)
         .def("sfFromColor", sfFromColor_py, ccPointCloudPy_sfFromColor_doc)
+        .def("sfSplitCloud",&sfSplitCloud_py,
+             py::arg("sfIdx"), py::arg("maxNbClouds")=30, ccPointCloudPy_sfSplitCloud_doc)
         .def("shiftPointsAlongNormals", &ccPointCloud::shiftPointsAlongNormals, ccPointCloudPy_shiftPointsAlongNormals_doc)
         .def("showSFColorsScale", &ccPointCloud::showSFColorsScale, ccPointCloudPy_showSFColorsScale_doc)
         .def("size", &ccPointCloud::size, ccPointCloudPy_size_doc)

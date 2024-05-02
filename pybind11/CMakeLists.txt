@@ -258,5 +258,8 @@ endif()
 if ( PLUGIN_STANDARD_QPOISSON_RECON )
     add_subdirectory( PoissonRecon )
 endif()
+if ( PLUGIN_STANDARD_QCORK )
+    add_subdirectory( Cork )
+endif()
 
 

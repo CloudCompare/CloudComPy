@@ -650,6 +650,9 @@ int LabelConnectedComponents_py(std::vector<ccHObject*> entities,
                                                                                         nullptr,
                                                                                         theOctree.data());
             totalComponentCount += componentCount;
+            CCCoreLib::ScalarField *sf = pc->getScalarField(sfIdx);
+            sf->computeMinAndMax();
+            pc->setCurrentDisplayedScalarField(sfIdx);
         }
     }
     return totalComponentCount;
@@ -2766,6 +2769,8 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("isPluginRANSAC_SD", &pyccPlugins::isPluginRANSAC_SD, cloudComPy_isPluginRANSAC_SD_doc);
 
     m0.def("isPluginPoissonRecon", &pyccPlugins::isPluginPoissonRecon, cloudComPy_isPluginPoissonRecon_doc);
+
+    m0.def("isPluginCork", &pyccPlugins::isPluginCork, cloudComPy_isPluginCork_doc);
 
     m0.def("computeCurvature", &computeCurvature, cloudComPy_computeCurvature_doc);
 

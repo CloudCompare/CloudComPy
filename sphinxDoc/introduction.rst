@@ -8,7 +8,8 @@ of equivalent level to the command mode of CloudCompare.
 
 `CloudComPy <https://github.com/CloudCompare/CloudComPy>`_ does not yet cover all the features of CloudCompare. 
 Features are added according to the needs reported by users, 
-feel free to post issues in `GitHub <https://github.com/CloudCompare/CloudComPy/issues>`_.
+feel free to post issues in `GitHub <https://github.com/CloudCompare/CloudComPy/issues>`_ 
+or `GitLab <https://gitlab.com/openfields1/CloudComPy/-/issues>`_.
 
 Here is an example of a Python script:
 ::

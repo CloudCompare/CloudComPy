@@ -174,6 +174,12 @@ bool pyccPlugins::_isPluginPoissonRecon = true;
 bool pyccPlugins::_isPluginPoissonRecon = false;
 #endif
 
+#ifdef PLUGIN_STANDARD_QCORK
+bool pyccPlugins::_isPluginCork = true;
+#else
+bool pyccPlugins::_isPluginCork = false;
+#endif
+
 // --- internal struct
 
 //* Extended file loading parameters, from plugins/ccCommandLineInterface.h

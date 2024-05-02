@@ -445,17 +445,6 @@ The above code snippet is from :download:`test002.py <../tests/test002.py>`.
 Scalar fields can be built from normals or colors, and can be used to define colors:
 see :ref:`Cloud_Normals` and :ref:`Cloud_Colors`.
 
-To get a scalar field gradient, use :py:meth:`cloudComPy.ccPointCloud.computeScalarFieldGradient`
-with an appropriate radius:
-
-.. include:: ../tests/test003.py
-   :start-after: #---cloudsf01-begin
-   :end-before:  #---cloudsf01-end
-   :literal:
-   :code: python
-
-The previous code is extract from :download:`test003.py <../tests/test003.py>`.
-
 Some methods of :py:class:`cloudComPy.ccPointCloud`, directly wrapped from CloudCompare GUI, 
 are used to select a current scalar field.
 This is required by some other methods, working with the current selected scalar field:
@@ -488,6 +477,38 @@ you can use the following methods of :py:class:`cloudComPy.ccPointCloud`
 
  - :py:meth:`~.cloudComPy.ccPointCloud.deleteAllScalarFields`
  - :py:meth:`~.cloudComPy.ccPointCloud.deleteScalarField`
+
+Scalar fields operators
+.......................
+
+Several operators are available on scalar fields, such as gradient, Gaussian smoothing...
+
+To get a scalar field gradient, use :py:meth:`cloudComPy.ccPointCloud.computeScalarFieldGradient`
+with an appropriate radius:
+
+.. include:: ../tests/test003.py
+   :start-after: #---cloudsf01-begin
+   :end-before:  #---cloudsf01-end
+   :literal:
+   :code: python
+
+To apply a Gaussian filter, use :py:meth:`cloudComPy.ccPointCloud.applyScalarFieldGaussianFilter` or 
+:py:meth:`cloudComPy.ccPointCloud.sfBilateralFilter`. Both methods have default values for sigma 
+and create a new scalar field:
+
+.. include:: ../tests/test003.py
+   :start-after: #---cloudsf02-begin
+   :end-before:  #---cloudsf02-end
+   :literal:
+   :code: python
+
+.. include:: ../tests/test003.py
+   :start-after: #---cloudsf03-begin
+   :end-before:  #---cloudsf03-end
+   :literal:
+   :code: python
+
+The previous code snippets are extract from :download:`test003.py <../tests/test003.py>`.
 
 sensors
 ~~~~~~~
