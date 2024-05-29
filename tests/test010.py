@@ -51,10 +51,7 @@ cc.SaveEntities([cloud1, cloud2ref, cloud2], os.path.join(dataDir, "clouds2.bin"
 #---ICP01-end
 
 #---ICP02-begin
-res=cc.ICP(data=cloud2, model=cloud1, minRMSDecrease=1.e-5,
-           maxIterationCount=20, randomSamplingLimit=50000, removeFarthestPoints=False,
-           method=cc.CONVERGENCE_TYPE.MAX_ITER_CONVERGENCE,
-           adjustScale=False, finalOverlapRatio=0.1)
+res=cc.ICP(data=cloud2, model=cloud1, finalOverlapRatio=0.1)
 tr2 = res.transMat
 cloud3 = res.aligned
 cloud3.applyRigidTransformation(tr2)

@@ -263,15 +263,17 @@ Applies ICP registration on two entities.
 
 :param ccHObject data: cloud to align.
 :param ccHObject model: reference cloud.
-:param float minRMSDecrease: The minimum error (RMS) reduction between two consecutive steps to continue process,
-       if CONVERGENCE_TYPE == MAX_ERROR_CONVERGENCE.
-:param int maxIterationCount: Stop after this number of iterations,
-       if CONVERGENCE_TYPE == MAX_ITER_CONVERGENCE.
-:param int randomSamplingLimit: Limit above which clouds should be randomly resampled.
-:param bool removeFarthestPoints: If `True`, the algorithm will automatically ignore farthest points from the reference.
-       This is a trick to improve registration for slightly different clouds.
-:param CONVERGENCE_TYPE method: Mode of convergence, CONVERGENCE_TYPE.MAX_ITER_CONVERGENCE or CONVERGENCE_TYPE.MAX_ERROR_CONVERGENCE.
+:param float,optional minRMSDecrease: The minimum error (RMS) reduction between two consecutive steps to continue process,
+       if CONVERGENCE_TYPE == MAX_ERROR_CONVERGENCE. Default 1.E-5.
+:param int,optional maxIterationCount: Stop after this number of iterations,
+       if CONVERGENCE_TYPE == MAX_ITER_CONVERGENCE. Default 20.
+:param int,optional randomSamplingLimit: Limit above which clouds should be randomly resampled. Default 50000.
+:param bool,optional removeFarthestPoints: If `True`, the algorithm will automatically ignore farthest points from the reference.
+       This is a trick to improve registration for slightly different clouds. Default False.
+:param CONVERGENCE_TYPE,optional method: Mode of convergence, CONVERGENCE_TYPE.MAX_ITER_CONVERGENCE
+       or CONVERGENCE_TYPE.MAX_ERROR_CONVERGENCE. Default CONVERGENCE_TYPE.MAX_ITER_CONVERGENCE
 :param bool adjustScale: Whether to release the scale parameter during the registration procedure or not.
+       Default False.
 :param float,optional finalOverlapRatio: Theoretical overlap ratio (at each iteration, only this percentage (between 0 and 1).
        Will be used for registration (default 1.0).
 :param bool,optional useDataSFAsWeights: Weights for data points (default `False`).
