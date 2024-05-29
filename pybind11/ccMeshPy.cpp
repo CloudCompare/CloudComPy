@@ -174,6 +174,20 @@ bool flagVerticesByType_py(ccGenericMesh* mesh)
 
 }
 
+ccMesh* meshTriangulate_py(ccGenericPointCloud* cloud,
+                            CCCoreLib::TRIANGULATION_TYPES type,
+                            bool updateNormals/*=false*/,
+                            PointCoordinateType maxEdgeLength/*=0*/,
+                            unsigned char dim/*=2*/)
+{
+    ccMesh* mesh = ccMesh::Triangulate(cloud, type, updateNormals, maxEdgeLength, dim);
+    if (mesh)
+    {
+        mesh->addChild(cloud);
+    }
+    return mesh;
+}
+
 void export_ccMesh(py::module &m0)
 {
     py::class_<CCCoreLib::MeshSamplingTools::EdgeConnectivityStats>(m0, "EdgeConnectivityStats", ccMeshPy_EdgeConnectivityStats_doc)
@@ -220,7 +234,7 @@ void export_ccMesh(py::module &m0)
               ccMeshPy_laplacianSmooth_doc)
         .def("subdivide", &ccMesh::subdivide, py::return_value_policy::reference, ccMeshPy_subdivide_doc)
         .def_static("triangulate",
-             &ccMesh::Triangulate,
+             &meshTriangulate_py,
              py::arg("cloud"), py::arg("type"), py::arg("updateNormals")=false, py::arg("maxEdgeLength")=0, py::arg("dim")=2,
                      ccMeshPy_triangulate_doc, py::return_value_policy::reference)
         .def_static("triangulateTwoPolylines",

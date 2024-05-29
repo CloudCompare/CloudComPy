@@ -75,20 +75,35 @@ The :py:func:`cloudComPy.loadPolyline` returns the first polyline found in the f
 Loading a file containing several entities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The :py:func:`cloudComPy.importFile` returns a tuple (list(mesh), list(cloud), file structure).
+The :py:func:`cloudComPy.importFile` returns a tuple (list(mesh), list(cloud), list(facets), list(polylines), file structure).
 The lists can be empty, depending on the content of the file.
 See :ref:`loadStructure-label` below for file structure.
-For now, CloudComPy detects only meshes and clouds in a ``.bin`` file.
-For instance, polylines and facets are imported as clouds, primitives are imported as meshes. 
-::
+For now, CloudComPy detects only 4 types of entities (meshes, clouds, facets, polylines) in a ``.bin`` file.
+For instance, primitives are imported as meshes.
 
-    res = cc.importFile("CloudComPy/Data/meshCloud.bin")
-    meshes = res[0]
-    clouds = res[1]
-    for mesh in meshes:
-        print(mesh.getName())
-    for cloud in clouds:
-        print(cloud.getName())
+When an entity depends on another entity, for instance a mesh obtained by a cloud triangulation, the second entity will be loaded
+as a child of the first, even if it has been saved explicitely with :py:func:`cloudComPy.SaveEntities`. 
+
+Lets save several entities: 2 clouds, a polyline, 4 facets and the the 4 clouds (vertices) associated to the facets.
+
+.. include:: ../tests/test021.py
+   :start-after: #---saveEntities01-begin
+   :end-before:  #---saveEntities01-end
+   :literal:
+   :code: python
+   
+Then load the file:
+
+.. include:: ../tests/test021.py
+   :start-after: #---loadEntities01-begin
+   :end-before:  #---loadEntities01-end
+   :literal:
+   :code: python
+   
+The 4 clouds associated to the facets are not listed in the clouds, they can be retrieved as children of the facets,
+as indicated in the file structure (see :ref:`loadStructure-label` below).
+
+The above code snippets are from :download:`test021.py <../tests/test021.py>`.
 
 Select the scans to load in a ``.E57`` file
 -------------------------------------------

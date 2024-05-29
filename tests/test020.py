@@ -285,7 +285,8 @@ if not isCoordEqual(g, (-0.050, -0.050, 10.057), tol= 1.e-1):
     raise RuntimeError
 
 res = cc.importFile(filename=os.path.join(dataDir, "meshCloud.bin"), mode=cc.CC_SHIFT_MODE.XYZ, z=10)
-aCloud=res[1][0]
+aMesh = res[0][0]
+aCloud = aMesh.getAssociatedCloud()
 if aCloud.size() != 10000:
     raise RuntimeError
 g= aCloud.computeGravityCenter()
