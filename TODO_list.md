@@ -209,3 +209,9 @@ TODO List
 - TODO: plugin 3DFin ?
 - TODO: (issue #154) plugin MeshIO ?
 - TODO: study convergence with Python plugin
+- TODO: (issue #162) SAVE ccMesh <CC_FILE_ERROR.CC_FERR_BROKEN_DEPENDENCY_ERROR: 13>
+- TODO: (issue #163) Add default arguments to ICP function
+- TODO: (issue #167) Distance map: try to use the same default as CloudCompare (parameters, scalar field names)
+- TODO: (issue #170) Color scale: select in a list, edit
+- TODO: (issue #172) add quaternion input for transformations
+
