@@ -125,7 +125,7 @@ Compute distances between a cloud and a mesh (C2M)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The method :py:meth:`cloudComPy.DistanceComputationTools.computeApproxCloud2MeshDistance` 
-gives an approximate solution, without too much cpu time. You get an approximate distance scalar field,
+gives an approximate solution, without too much cpu time. You get an approximate distance scalar field named ``Approx. distances``,
 and statistics (min, max, mean, variance, error max).
 
 .. include:: ../tests/test009.py
@@ -138,7 +138,11 @@ The structure :py:meth:`cloudComPy.Cloud2MeshDistancesComputationParams`
 is used to define the optimal parameters for accurate distance calculation.
 For instance, if the cloud and mesh are close, filling the parameter ``maxSearchDist`` can greatly speed up the process, 
 but setting it to a non-zero value force a single thread processing.
-The result is a new scalar field in the cloud, with accurate distances to the mesh.
+
+The method :py:meth:`cloudComPy.DistanceComputationTools.computeCloud2MeshDistances` generates a new scalar field in the cloud,
+with accurate distances to the mesh. It's name begins with ``C2M absolute distances`` or ``C2M signed distances`` 
+following the boolean parameter ``signedDistances`` value. If the parameter ``maxSearchDist`` is used, the scalar field name is suffixed
+with ``[val]`` where ``val`` is the ``maxSearchDist`` value.
 
 .. include:: ../tests/test009.py
    :start-after: #---C2M02-begin
@@ -167,7 +171,11 @@ The structure :py:meth:`cloudComPy.Cloud2CloudDistancesComputationParams`
 is used to define the optimal parameters for accurate distance calculation.
 For instance, if the two clouds are close, filling the parameter ``maxSearchDist`` can greatly speed up the process, 
 but setting it to a non-zero value force a single thread processing.
-The result is a new scalar field in the cloud, with accurate distances to the cloud.
+
+The method :py:meth:`cloudComPy.DistanceComputationTools.computeCloud2CloudDistances` generates a new scalar field in the cloud,
+with accurate distances to the cloud. It's name begins with ``C2C absolute distances``.
+If the parameter ``maxSearchDist`` is used, the scalar field name is suffixed
+with ``[val]`` where ``val`` is the ``maxSearchDist`` value.
 
 .. include:: ../tests/test010.py
    :start-after: #---C2C02-begin
