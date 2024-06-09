@@ -1124,6 +1124,104 @@ See Qt documentation.
 :rtype: bool
 )";
 
-//const char* colorsPy_NotDocumented_doc= R"(not documented yet :-()";
+const char* colorsPy_ccColorScale_doc= R"(
+A color scale is defined by several 'steps' corresponding to given colors.
+The color between each step is linearly interpolated. A valid color scale
+must have at least 2 steps, one at relative position 0.0 (scale start) and
+one at relative position 1.0 (scale end). Steps can't be defined outside
+this interval.
+For faster access, an array of interpolated colors is maintained internally.
+)";
+
+const char* colorsPy_ccColorScale_Create_doc= R"(
+Static method to create a new color scale.
+
+Steps must be defined with the insert method.
+
+:param string name: the scale name
+:param string,optional Uuid: a unique Id for the scale. default empty, automatically generated.
+
+:return: the new scale
+:rtype: ccColorScale
+)";
+
+const char* colorsPy_ccColorScale_getName_doc= R"(
+Get the scale name.
+
+:return: the scale name
+:rtype: string
+)";
+
+const char* colorsPy_ccColorScale_SetName_doc= R"(
+Set the Scale name.
+
+:param string name: the new scale name.
+)";
+
+const char* colorsPy_ccColorScale_getUuid_doc= R"(
+Get the scale unique Id.
+
+:return: the unique Id
+:rtype: string
+)";
+
+const char* colorsPy_ccColorScale_insert_doc= R"(
+Insert a color step, with a relative position between 0 and 1, and the associated color.
+
+:param float relative_position: relative position between 0 and 1
+:param QColor color: the color associated to the step
+)";
+
+const char* colorsPy_ccColorScalesManager_doc= R"(
+ccColorScale container and manager, useful to get the defaults color scales.
+)";
+
+const char* colorsPy_ccColorScalesManager_GetUniqueInstance_doc= R"(
+Get the Unique instance of the ccColorScalesManager.
+
+:return: the Unique instance of the ccColorScalesManager
+:rtype: ccColorScalesManager
+)";
+
+const char* colorsPy_ccColorScalesManager_getDefaultScale_doc= R"(
+Get one of the default color scales.
+
+:param DEFAULT_SCALES scale: the color scale id
+
+:return: the color scale
+:rtype: ccColorScale
+)";
+
+const char* colorsPy_ccColorScalesManager_addScale_doc= R"(
+Add a new color scale.
+
+This operation is only useful to store the color scale in the container
+if you want to save it to persistent settings (not yet working properly).
+
+:param ccColorScale scale: the color scale to add
+)";
+
+const char* colorsPy_ccColorScalesManager_getScale_doc= R"(
+Retrieve a color scale with its universal Id.
+
+:param string UUID: the universal Id of the color scale to find
+
+:return: the color scale
+:rtype: ccColorScale
+)";
+
+const char* colorsPy_ccColorScalesManager_removeScale_doc= R"(
+Remove a Color scale from the container.
+
+:param string UUID: the universal Id of the color scale to remove
+)";
+
+const char* colorsPy_ccColorScalesManager_toPersistentSettings_doc= R"(
+Save custom color scales to persistent settings (not yet working properly).
+)";
+
+const char* colorsPy_DEFAULT_SCALES_doc= R"(
+There are 16 predefined color scales
+)";
 
 #endif /* COLORSPY_DOCSTRINGS_HPP_ */

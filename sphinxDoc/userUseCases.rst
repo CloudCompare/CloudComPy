@@ -1375,5 +1375,31 @@ you have to select the action "resume Python script" in the "options" menu to sa
 
 The above code snippets are from :download:`test051.py <../tests/test051.py>`.
 
+choosing a specific color scale for a scalar field rendering
+------------------------------------------------------------
+
+The default color scale for a scalar field is not always convenient for your rendering.
+
+You can choose a color scale from the predefined list of color scales. 
+In the following example, we select the VIRIDIS color scale for one scalar field:
+
+.. include:: ../tests/test057.py
+   :start-after: #---render001-begin
+   :end-before:  #---render001-end
+   :literal:
+   :code: python
+   
+It is also possible to build a specific color scale by defining several steps (relative position, associated color), 
+the relative positions 0 and 1 corresponding to the start and end of the scale must always be defined.
+You can add several intermediate steps.
+
+.. include:: ../tests/test057.py
+   :start-after: #---render002-begin
+   :end-before:  #---render002-end
+   :literal:
+   :code: python
+   
+
+The above code snippets are from :download:`test057.py <../tests/test057.py>`.
 
 

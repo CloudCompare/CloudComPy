@@ -73,6 +73,12 @@ const ScalarType& (CCCoreLib::ScalarField::* getValue2)(std::size_t) const = &CC
 //typedef const ScalarType& (CCCoreLib::ScalarField::*gvftype)(std::size_t) const; // the same using a typedef
 //gvftype getValue2 = &CCCoreLib::ScalarField::getValue;
 
+void setColorScalePy(ccScalarField& self, ccColorScale* scale)
+{
+    QSharedPointer<ccColorScale> shared = QSharedPointer<ccColorScale>(scale);
+    self.setColorScale(shared);
+}
+
 void export_ScalarField(py::module &m0)
 {
     py::class_<CCCoreLib::ScalarField, std::unique_ptr<CCCoreLib::ScalarField, py::nodelete>>(m0, "ScalarField",
@@ -105,6 +111,7 @@ void export_ScalarField(py::module &m0)
         .def(py::init<const char*>(), py::arg("name")=nullptr, ccScalarFieldPy_ccScalarField_ctor_doc)
         .def("isSerializable", &ccScalarField::isSerializable)
         .def("getGlobalShift", &ccScalarField::getGlobalShift, ccScalarFieldPy_getGlobalShift_doc)
+        .def("setColorScale", &setColorScalePy, ccScalarFieldPy_setColorScale_doc)
         ;
 
     //TODO add serialization functions

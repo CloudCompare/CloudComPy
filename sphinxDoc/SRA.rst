@@ -24,7 +24,3 @@ SRA plugin
 .. autoclass:: EmptyCellFillOption
    :members:
    :undoc-members:
-
-.. autoclass:: DEFAULT_SCALES
-   :members:
-   :undoc-members:

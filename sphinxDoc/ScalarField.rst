@@ -26,3 +26,22 @@ bases classes for ccScalarField
    :members:
    :inherited-members:
    :show-inheritance:
+
+-------------------------------
+color scales for scalar fields
+-------------------------------
+
+.. autoclass:: ccColorScale
+   :members:
+   :inherited-members:
+   :show-inheritance:
+
+.. autoclass:: ccColorScalesManager
+   :members:
+   :inherited-members:
+   :show-inheritance:
+
+.. autoclass:: DEFAULT_SCALES
+   :members:
+   :undoc-members:
+

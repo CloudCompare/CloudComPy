@@ -192,4 +192,10 @@ Used for instance for LAS GPS time shift
 
 )";
 
+const char* ccScalarFieldPy_setColorScale_doc= R"(
+Sets associated color scale
+
+:param ccColorScale scale: the color scale
+)";
+
 #endif /* SCALARFIELDPY_DOCSTRINGS_HPP_ */
