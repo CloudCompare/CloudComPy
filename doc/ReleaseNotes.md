@@ -2,6 +2,15 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## June 13, 2024 CloudCompy release:
+
+ - (issue #162) SAVE ccMesh <CC_FILE_ERROR.CC_FERR_BROKEN_DEPENDENCY_ERROR: 13>
+ - (issue #163) Add default arguments to ICP function
+ - (issue #167) Distance map: try to use the same scalar field names as CloudCompare
+ - (issue #170) Color scale: select in a list, edit
+ - (issue #172) add quaternion input for transformations (requires numpy quaternion package to be useful)
+ - some small fixes.
+
 ## April 20, 2024 CloudCompy release:
 
  - update to **CloudCompare 2.13.1** (March 20, 2024): official release.

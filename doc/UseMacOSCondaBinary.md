@@ -45,7 +45,7 @@ Add or update the packages:
 conda activate CloudComPy310
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda install "boost" "cgal" cmake draco ffmpeg "gdal" jupyterlab laszip "matplotlib" "mysql=8.0" "numpy" "opencv" "openssl=3.0.8" "pcl" "pdal" "psutil" pybind11 "qhull=2020.2" "qt=5.15.8" "scipy" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" xorg-libx11 || error_exit "conda environment ${CONDA_ENV} cannot be completed"
+conda install "boost" "cgal" cmake draco ffmpeg "gdal" jupyterlab laszip "matplotlib" "mysql=8.0" "numpy" "opencv" "openssl=3.0.8" "pcl" "pdal" "psutil" pybind11 quaternion "qhull=2020.2" "qt=5.15.8" "scipy" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" xorg-libx11 || error_exit "conda environment ${CONDA_ENV} cannot be completed"
 ```
 
 Unzip the binary tarfile in the directory of your choice.
