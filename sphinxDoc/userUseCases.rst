@@ -788,6 +788,62 @@ The above code snippets are from :download:`test027.py <../tests/test027.py>`.
 
 .. _cloud_comparison_M3C2:
 
+Working with quaternions for rotations
+--------------------------------------
+
+Quaternions are a convenient way to express rotations: see for instance
+`Quaternions and spatial rotation <https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation>`_.
+With numpy, the `quaternion package <https://quaternion.readthedocs.io/en/latest/>`_ provides 
+quaternion objects very useful to work with rotations.
+
+A quaternion is based on an array of four floats (q1, q2, q3, q4).
+A normalized quaternion such as `|q| = sqrt(q1*q1 + q2*q2 + q3*q3 + q4*q4) = 1`
+can also be expressed as:
+
+`q = {cos(θ/2), ux*sin(θ/2), uy*sin(θ/2), uz*sin(θ/2)}`
+
+where (ux, uy, uz) represent the components of a unit vector u, and θ is an angle.
+The quaternion defines a rotation around the vector u, of angle θ.
+
+To use the quaternion package, it must be imported:
+::
+
+    import numpy as np
+    import quaternion
+
+The following exemple function gives a quaternion with a vector and angle as arguments.
+
+.. include:: ../tests/test058.py
+   :start-after: #---quaternion02-begin
+   :end-before:  #---quaternion02-end
+   :literal:
+   :code: python
+
+A rotation in a cloudComPy transformation `tr1` can be expressed as a quaternion `q1` 
+with the :py:meth:`~.cloudComPy.ccGLMatrixd.toQuaternion` method 
+from :py:class:`~.cloudComPy.ccGLMatrixd` or :py:class:`~.cloudComPy.ccGLMatrix`.
+
+The quaternion can also be expressed as a rotation matrix `rot1`.
+
+.. include:: ../tests/test058.py
+   :start-after: #---quaternion01-begin
+   :end-before:  #---quaternion01-end
+   :literal:
+   :code: python
+
+A cloudCompy transformation can be built from a quaternion and an optional translation vector.
+with the :py:meth:`~.cloudComPy.ccGLMatrixd.FromQuaternionAndTranslation` method 
+from :py:class:`~.cloudComPy.ccGLMatrixd` or :py:class:`~.cloudComPy.ccGLMatrix`.
+
+.. include:: ../tests/test058.py
+   :start-after: #---quaternion03-begin
+   :end-before:  #---quaternion03-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test058.py <../tests/test058.py>`.
+
+ 
 Cloud comparison with plugin M3C2
 ---------------------------------
 

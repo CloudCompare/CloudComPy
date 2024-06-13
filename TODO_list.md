@@ -184,6 +184,7 @@ TODO List
 * DONE: (issue #163) Add default arguments to ICP function
 * DONE: (issue #167) Distance map: try to use the same scalar field names as CloudCompare
 * DONE: (issue #170) Color scale: select in a list, edit
+* DONE: (issue #172) add quaternion input for transformations
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -213,5 +214,4 @@ TODO List
 - TODO: plugin 3DFin ?
 - TODO: (issue #154) plugin MeshIO ?
 - TODO: study convergence with Python plugin
-- TODO: (issue #172) add quaternion input for transformations
 
