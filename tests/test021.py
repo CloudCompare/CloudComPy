@@ -83,17 +83,21 @@ if not math.isclose(surface4, 56, rel_tol=1e-02):
     raise RuntimeError
 #---facetCreate02-end
 
+#---saveEntities01-begin
 cc.SaveEntities([cloud, cloudCropZ, poly, polygon1, polygon2, polygon3, polygon4, vert1, vert2, vert3, vert4], os.path.join(dataDir, "polygons2D.bin"))
+#---saveEntities01-end
 
 mesh1 = polygon1.getPolygon()
 cc.SaveMesh(mesh1, os.path.join(dataDir, "mesh1.ply"))
 
+#---loadEntities01-begin
 entities = cc.importFile(os.path.join(dataDir, "polygons2D.bin"))
 meshes = entities[0]
 clouds = entities[1]
 facets = entities[2]
 polylines = entities[3]
 structure = entities[4]
+#---loadEntities01-end
 
 if len(meshes) != 4:
     raise RuntimeError

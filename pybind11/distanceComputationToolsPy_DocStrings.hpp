@@ -131,6 +131,9 @@ Several entity-to-entity distances computation algorithms (cloud-cloud, cloud-me
 const char* distanceComputationToolsPy_computeCloud2CloudDistances_doc= R"(
 Computes the "nearest neighbour distance" between two point clouds (formerly named "Hausdorff distance").
 
+The method generates a new scalar field giving, for each node in a cloud, 
+the distance between this node and the other cloud.
+
 The main algorithm and its different versions (with or without local modeling) are described in
 Daniel Girardeau-Montaut's PhD manuscript (Chapter 2, section 2.3). It is the standard way to compare
 directly two dense (and globally close) point clouds.
@@ -162,6 +165,9 @@ determination of the Closest Point Set (Cloud2CloudDistanceComputationParams::CP
 const char* distanceComputationToolsPy_computeCloud2MeshDistances_doc= R"(
 Computes the distance between a point cloud and a mesh.
 
+The method generates a new scalar field giving, for each node in the cloud, 
+the distance between this node and the mesh.
+
 The algorithm, inspired from METRO by Cignoni et al., is described
 in Daniel Girardeau-Montaut's PhD manuscript (Chapter 2, section 2.2).
 It is the general way to compare a point cloud with a triangular mesh.
@@ -184,6 +190,9 @@ It is the general way to compare a point cloud with a triangular mesh.
 const char* distanceComputationToolsPy_computeApproxCloud2CloudDistance_doc= R"(
 Computes approximate distances between two point clouds.
 
+The method generates a new scalar field giving, for each node in a cloud, 
+an approximate distance between this node and the other cloud.
+
 This methods uses an exact Distance Transform to approximate the real distances.
 Therefore, the greater the octree level is (it is used to determine the grid step), the finer
 the result will be (but more memory and time will be needed).
@@ -205,6 +214,9 @@ the result will be (but more memory and time will be needed).
 
 const char* distanceComputationToolsPy_computeApproxCloud2MeshDistance_doc= R"(
 Computes approximate distances between a point cloud and a mesh.
+
+The method generates a new scalar field giving, for each node in a cloud, 
+an approximate distance between this node and the other cloud.
 
 :param GenericIndexedCloudPersist pointCloud: the compared cloud
        (the distances will be computed on these points)

@@ -228,8 +228,13 @@ int computeCloud2CloudDistances_py( CCCoreLib::GenericIndexedCloudPersist* compa
         return ret;
     CCCoreLib::ScalarField* sf = compCloud->getScalarField(sfIdx);
     sf->computeMinAndMax();
-    sf->setName("C2C absolute distances");
-    const char* sfNames[] = {"C2C absolute distances (X)", "C2C absolute distances (Y)", "C2C absolute distances (Z)"};
+    QString sfName = "C2C absolute distances";
+    if (params.maxSearchDist > 0)
+    {
+        sfName += QString("[<%1]").arg(params.maxSearchDist);
+    }
+    sf->setName(qPrintable(sfName));
+    const char* sfNames[] = {qPrintable(sfName + " (X)"), qPrintable(sfName + " (Y)"), qPrintable(sfName + " (Z)")};
     for (int i=0; i<3; i++)
     if (ccScalarField* sfi = dynamic_cast<ccScalarField*>(params.splitDistances[i]))
     {
@@ -269,7 +274,14 @@ int computeCloud2MeshDistances_py(  CCCoreLib::GenericIndexedCloudPersist* point
         return ret;
     CCCoreLib::ScalarField* sf = compCloud->getScalarField(sfIdx);
     sf->computeMinAndMax();
-    sf->setName("C2M absolute distances");
+    QString sfName = "C2M absolute distances";
+    if (params.signedDistances)
+        sfName = "C2M signed distances";
+    if (params.maxSearchDist > 0)
+    {
+        sfName += QString("[<%1]").arg(params.maxSearchDist);
+    }
+    sf->setName(qPrintable(sfName));
     return 1;
 }
 

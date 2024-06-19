@@ -35,6 +35,7 @@
 #include <ccSphere.h>
 #include <ccTorus.h>
 #include <ccDish.h>
+#include <SquareMatrix.h>
 #include "ccPrimitivesPy_DocStrings.hpp"
 #include "pyccTrace.h"
 
@@ -123,6 +124,86 @@ ccGLMatrix FromViewDirAndUpDir_float(const Vector3Tpl<float>& forward, const Vec
 ccGLMatrixd FromViewDirAndUpDir_double(const Vector3Tpl<double>& forward, const Vector3Tpl<double>& up)
 {
     return ccGLMatrixd(ccGLMatrixTpl<double>::FromViewDirAndUpDir(forward, up));
+}
+
+ccGLMatrix FromQuaternionAndTranslation_float(const std::vector<float>& quaternion, const Vector3Tpl<float>& depl=Vector3Tpl<float>())
+{
+    if (quaternion.size() != 4)
+    {
+        CCTRACE("incorrect quaternion size, must have 4 floats!");
+        return ccGLMatrix();
+    }
+    double norm  = 0;
+    for (int i=0; i<4; i++)
+    {
+        norm += quaternion[i]*quaternion[i];
+    }
+    norm = sqrt(norm);
+    if (norm == 0)
+    {
+        CCTRACE("quaternion norm is null!");
+        return ccGLMatrix();
+    }
+    float normed[4];
+    if (abs(norm - 1) < 1.e-7)
+        norm = 1;
+    for (int i=0; i<4; i++)
+    {
+        normed[i] = quaternion[i]/norm;
+    }
+    CCCoreLib::SquareMatrixTpl<float> rot = CCCoreLib::SquareMatrixTpl<float>();
+    rot.initFromQuaternion(normed);
+    ccGLMatrixTpl<float> trans = FromCCLibMatrix<float,float>(rot, depl);
+    return trans;
+}
+
+ccGLMatrixd FromQuaternionAndTranslation_double(const std::vector<double>& quaternion, const Vector3Tpl<double>& depl=Vector3Tpl<double>())
+{
+    if (quaternion.size() != 4)
+    {
+        CCTRACE("incorrect quaternion size, must have 4 double!");
+        return ccGLMatrixd();
+    }
+    double norm  = 0;
+    for (int i=0; i<4; i++)
+    {
+        norm += quaternion[i]*quaternion[i];
+    }
+    norm = sqrt(norm);
+    if (norm == 0)
+    {
+        CCTRACE("quaternion norm is null!");
+        return ccGLMatrixd();
+    }
+    if (abs(norm - 1) < 1.e-7)
+        norm = 1;
+    double normed[4];
+    for (int i=0; i<4; i++)
+    {
+        normed[i] = quaternion[i]/norm;
+    }
+    CCCoreLib::SquareMatrixTpl<double> rot = CCCoreLib::SquareMatrixTpl<double>();
+    rot.initFromQuaternion(normed);
+    ccGLMatrixTpl<double> trans = FromCCLibMatrix<double,double>(rot, depl);
+    return trans;
+}
+
+std::vector<double> toQuaternion_double(ccGLMatrixTpl<double>& self)
+{
+    CCCoreLib::SquareMatrixTpl<double> rot = CCCoreLib::SquareMatrixTpl<double>(self.data(), true);
+    std::vector<double> quat;
+    quat.resize(4);
+    rot.toQuaternion(&quat[0]);
+    return quat;
+}
+
+std::vector<double> toQuaternion_float(ccGLMatrixTpl<float>& self)
+{
+    CCCoreLib::SquareMatrixTpl<float> rot = CCCoreLib::SquareMatrixTpl<float>(self.data(), true);
+    std::vector<double> quat;
+    quat.resize(4);
+    rot.toQuaternion(&quat[0]);
+    return quat;
 }
 
 ccGLMatrix xRotation_float(ccGLMatrixTpl<float>& self)
@@ -443,11 +524,15 @@ void export_ccPrimitives(py::module &m0)
         .def("FromToRotation", &FromToRotation_float, ccPrimitivesPy_FromToRotation_doc)
         .def("Interpolate", &Interpolate_float, ccPrimitivesPy_Interpolate_doc)
         .def("FromViewDirAndUpDir", &FromViewDirAndUpDir_float, ccPrimitivesPy_FromViewDirAndUpDir_doc)
+        .def_static("FromQuaternionAndTranslation", &FromQuaternionAndTranslation_float,
+             py::arg("quaternion"), py::arg("depl")=Vector3Tpl<float>(),
+             ccPrimitivesPy_FromQuaternionAndTranslation_doc)
         .def("xRotation", &xRotation_float, ccPrimitivesPy_xRotation_doc)
         .def("yRotation", &yRotation_float, ccPrimitivesPy_yRotation_doc)
         .def("zRotation", &zRotation_float, ccPrimitivesPy_zRotation_doc)
         .def("inverse", &inverse_float, ccPrimitivesPy_inverse_doc)
         .def("transposed", &transposed_float, ccPrimitivesPy_transposed_doc)
+        .def("toQuaternion", &toQuaternion_float, ccPrimitivesPy_toQuaternion_doc)
         ;
 
     py::class_<ccGLMatrixd, ccGLMatrixTpl<double> >(m0, "ccGLMatrixd", ccPrimitivesPy_ccGLMatrixd_doc)
@@ -459,11 +544,15 @@ void export_ccPrimitives(py::module &m0)
         .def("FromToRotation", &FromToRotation_double, ccPrimitivesPy_FromToRotation_doc)
         .def("Interpolate", &Interpolate_double, ccPrimitivesPy_Interpolate_doc)
         .def("FromViewDirAndUpDir", &FromViewDirAndUpDir_double, ccPrimitivesPy_FromViewDirAndUpDir_doc)
+        .def_static("FromQuaternionAndTranslation", &FromQuaternionAndTranslation_double,
+             py::arg("quaternion"), py::arg("depl")=Vector3Tpl<double>(),
+             ccPrimitivesPy_FromQuaternionAndTranslation_doc)
         .def("xRotation", &xRotation_double, ccPrimitivesPy_xRotation_doc)
         .def("yRotation", &yRotation_double, ccPrimitivesPy_yRotation_doc)
         .def("zRotation", &zRotation_double, ccPrimitivesPy_zRotation_doc)
         .def("inverse", &inverse_double, ccPrimitivesPy_inverse_doc)
         .def("transposed", &transposed_double, ccPrimitivesPy_transposed_doc)
+        .def("toQuaternion", &toQuaternion_double, ccPrimitivesPy_toQuaternion_doc)
         ;
 
     py::class_<ccGenericPrimitive, PyccGenericPrimitive>(m0, "ccGenericPrimitive") //boost::noncopyable, no_init

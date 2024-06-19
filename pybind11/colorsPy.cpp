@@ -22,6 +22,9 @@
 #include "cloudComPy.hpp"
 
 #include <QColor>
+#include <QString>
+#include <QUuid>
+#include <ccColorScalesManager.h>
 
 #include "colorsPy_DocStrings.hpp"
 #include <vector>
@@ -175,6 +178,47 @@ QRgba64 QRgba64fromRgba64Q_py(unsigned long long c)
 QRgba64 QRgba64fromRgba64_py(int r, int g, int b, int a)
 {
     return QRgba64::fromRgba64(r, g, b, a);
+}
+
+ccColorScale* ccColorScaleCreatePy(const QString& name, const QString& Uuid=QString())
+{
+    if (Uuid.isEmpty())
+    {
+        return new ccColorScale(name, QUuid::createUuid().toString());
+    }
+    return new ccColorScale(name, Uuid);
+}
+
+int ccColorScalePy_insert(ccColorScale& self, double relative_position, QColor& color)
+{
+    if ((relative_position < 0) || (relative_position > 1))
+    {
+        return 0;
+    }
+    self.insert(ccColorScaleElement(relative_position, color));
+    return self.stepCount();
+}
+
+const ccColorScale* getDefaultScalePy(ccColorScalesManager& self, ccColorScalesManager::DEFAULT_SCALES scale)
+{
+    QSharedPointer<ccColorScale> shared = self.getDefaultScale(scale);
+    const ccColorScale* ptr = dynamic_cast<ccColorScale*>(shared.data());
+    CCTRACE("getDefaultScalePy: " << ptr);
+    return ptr;
+}
+
+const ccColorScale* getScalePy(ccColorScalesManager& self, QString UUID)
+{
+    QSharedPointer<ccColorScale> shared = self.getScale(UUID);
+    const ccColorScale* ptr = dynamic_cast<ccColorScale*>(shared.data());
+    CCTRACE("getScalePy: " << ptr);
+    return ptr;
+}
+
+void addScalePy(ccColorScalesManager& self, ccColorScale* scale)
+{
+    QSharedPointer<ccColorScale> shared = QSharedPointer<ccColorScale>(scale);
+    self.addScale(shared);
 }
 
 void export_colors(py::module &m0)
@@ -345,6 +389,47 @@ void export_colors(py::module &m0)
         .def(py::self == py::self)
         .def(py::self != py::self)
         ;
+
+    py::enum_<ccColorScalesManager::DEFAULT_SCALES>(m0, "DEFAULT_SCALES", colorsPy_DEFAULT_SCALES_doc)
+        .value("BGYR", ccColorScalesManager::BGYR)
+        .value("GREY", ccColorScalesManager::GREY)
+        .value("BWR", ccColorScalesManager::BWR)
+        .value("RY", ccColorScalesManager::RY)
+        .value("RW", ccColorScalesManager::RW)
+        .value("ABS_NORM_GREY", ccColorScalesManager::ABS_NORM_GREY)
+        .value("HSV_360_DEG", ccColorScalesManager::HSV_360_DEG)
+        .value("VERTEX_QUALITY", ccColorScalesManager::VERTEX_QUALITY)
+        .value("DIP_BRYW", ccColorScalesManager::DIP_BRYW)
+        .value("DIP_DIR_REPEAT", ccColorScalesManager::DIP_DIR_REPEAT)
+        .value("VIRIDIS", ccColorScalesManager::VIRIDIS)
+        .value("BROWN_YELLOW", ccColorScalesManager::BROWN_YELLOW)
+        .value("YELLOW_BROWN", ccColorScalesManager::YELLOW_BROWN)
+        .value("TOPO_LANDSERF", ccColorScalesManager::TOPO_LANDSERF)
+        .value("HIGH_CONTRAST", ccColorScalesManager::HIGH_CONTRAST)
+        .value("CIVIDIS", ccColorScalesManager::CIVIDIS)
+        .export_values();
+
+    py::class_<ccColorScale>(m0, "ccColorScale", colorsPy_ccColorScale_doc)
+        .def_static("Create", &ccColorScaleCreatePy,
+                    py::arg("name"), py::arg("Uuid")=QString(),
+                    py::return_value_policy::reference, colorsPy_ccColorScale_Create_doc)
+        .def("getName", &ccColorScale::getName, colorsPy_ccColorScale_getName_doc)
+        .def("setName", &ccColorScale::setName, colorsPy_ccColorScale_SetName_doc)
+        .def("getUuid", &ccColorScale::getUuid, colorsPy_ccColorScale_getUuid_doc)
+        .def("insert", &ccColorScalePy_insert, colorsPy_ccColorScale_insert_doc)
+        ;
+
+    py::class_<ccColorScalesManager>(m0, "ccColorScalesManager", colorsPy_ccColorScalesManager_doc)
+        .def("GetUniqueInstance", &ccColorScalesManager::GetUniqueInstance,
+             py::return_value_policy::copy, colorsPy_ccColorScalesManager_GetUniqueInstance_doc)
+        .def("getDefaultScale", &getDefaultScalePy, py::return_value_policy::reference,
+             colorsPy_ccColorScalesManager_getDefaultScale_doc)
+        .def("addScale", &addScalePy, colorsPy_ccColorScalesManager_addScale_doc)
+        .def("getScale", &getScalePy, py::return_value_policy::reference, colorsPy_ccColorScalesManager_getScale_doc)
+        .def("removeScale", &ccColorScalesManager::removeScale, colorsPy_ccColorScalesManager_removeScale_doc)
+        .def("toPersistentSettings", &ccColorScalesManager::toPersistentSettings, colorsPy_ccColorScalesManager_toPersistentSettings_doc)
+        ;
+
 }
 
 

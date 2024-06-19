@@ -230,6 +230,36 @@ Generates a 'viewing' matrix from a looking vector and a 'up' direction.
 :return: rotation matrix
 :rtype: ccGLMatrix)";
 
+const char* ccPrimitivesPy_FromQuaternionAndTranslation_doc= R"(
+Generates a transformation from a quaternion and an optional translation.
+
+A normalized quaternion such as \|q\| = sqrt(q1*q1 + q2*q2 + q3*q3 + q4*q4) = 1,
+can also be expressed as:
+q = {cos(θ/2), ux*sin(θ/2), uy*sin(θ/2), uz*sin(θ/2)}
+where (ux, uy, uz) represent the components of a unit vector u, and θ is an angle.
+The quaternion defines a rotation around the vector u, of angle θ.
+Here, if q is not normalized, q is divided by its euclidian norm \|q\|.
+
+:param list[float] quaternion: a quaternion formed from 4 floats.
+:param CCVector3,optional depl: an optional translation.
+
+:return: transformation matrix
+:rtype: ccGLMatrix 
+)";
+
+const char* ccPrimitivesPy_toQuaternion_doc= R"(
+Generates the quaternion corresponding to the rotation part of the transformation.
+
+A normalized quaternion such as \|q\| = sqrt(q1*q1 + q2*q2 + q3*q3 + q4*q4) = 1,
+can also be expressed as:
+q = {cos(θ/2), ux*sin(θ/2), uy*sin(θ/2), uz*sin(θ/2)}
+where (ux, uy, uz) represent the components of a unit vector u, and θ is an angle.
+The quaternion defines a rotation around the vector u, of angle θ.
+
+:return: the normalized rotation quaternion
+:rtype: list of 4 double
+)";
+
 const char* ccPrimitivesPy_xRotation_doc= R"(
 Returns the rotation component around X only.
 

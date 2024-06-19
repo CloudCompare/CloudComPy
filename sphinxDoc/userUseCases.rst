@@ -125,7 +125,7 @@ Compute distances between a cloud and a mesh (C2M)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The method :py:meth:`cloudComPy.DistanceComputationTools.computeApproxCloud2MeshDistance` 
-gives an approximate solution, without too much cpu time. You get an approximate distance scalar field,
+gives an approximate solution, without too much cpu time. You get an approximate distance scalar field named ``Approx. distances``,
 and statistics (min, max, mean, variance, error max).
 
 .. include:: ../tests/test009.py
@@ -138,7 +138,11 @@ The structure :py:meth:`cloudComPy.Cloud2MeshDistancesComputationParams`
 is used to define the optimal parameters for accurate distance calculation.
 For instance, if the cloud and mesh are close, filling the parameter ``maxSearchDist`` can greatly speed up the process, 
 but setting it to a non-zero value force a single thread processing.
-The result is a new scalar field in the cloud, with accurate distances to the mesh.
+
+The method :py:meth:`cloudComPy.DistanceComputationTools.computeCloud2MeshDistances` generates a new scalar field in the cloud,
+with accurate distances to the mesh. It's name begins with ``C2M absolute distances`` or ``C2M signed distances`` 
+following the boolean parameter ``signedDistances`` value. If the parameter ``maxSearchDist`` is used, the scalar field name is suffixed
+with ``[val]`` where ``val`` is the ``maxSearchDist`` value.
 
 .. include:: ../tests/test009.py
    :start-after: #---C2M02-begin
@@ -167,7 +171,11 @@ The structure :py:meth:`cloudComPy.Cloud2CloudDistancesComputationParams`
 is used to define the optimal parameters for accurate distance calculation.
 For instance, if the two clouds are close, filling the parameter ``maxSearchDist`` can greatly speed up the process, 
 but setting it to a non-zero value force a single thread processing.
-The result is a new scalar field in the cloud, with accurate distances to the cloud.
+
+The method :py:meth:`cloudComPy.DistanceComputationTools.computeCloud2CloudDistances` generates a new scalar field in the cloud,
+with accurate distances to the cloud. It's name begins with ``C2C absolute distances``.
+If the parameter ``maxSearchDist`` is used, the scalar field name is suffixed
+with ``[val]`` where ``val`` is the ``maxSearchDist`` value.
 
 .. include:: ../tests/test010.py
    :start-after: #---C2C02-begin
@@ -780,6 +788,62 @@ The above code snippets are from :download:`test027.py <../tests/test027.py>`.
 
 .. _cloud_comparison_M3C2:
 
+Working with quaternions for rotations
+--------------------------------------
+
+Quaternions are a convenient way to express rotations: see for instance
+`Quaternions and spatial rotation <https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation>`_.
+With numpy, the `quaternion package <https://quaternion.readthedocs.io/en/latest/>`_ provides 
+quaternion objects very useful to work with rotations.
+
+A quaternion is based on an array of four floats (q1, q2, q3, q4).
+A normalized quaternion such as `|q| = sqrt(q1*q1 + q2*q2 + q3*q3 + q4*q4) = 1`
+can also be expressed as:
+
+`q = {cos(θ/2), ux*sin(θ/2), uy*sin(θ/2), uz*sin(θ/2)}`
+
+where (ux, uy, uz) represent the components of a unit vector u, and θ is an angle.
+The quaternion defines a rotation around the vector u, of angle θ.
+
+To use the quaternion package, it must be imported:
+::
+
+    import numpy as np
+    import quaternion
+
+The following exemple function gives a quaternion with a vector and angle as arguments.
+
+.. include:: ../tests/test058.py
+   :start-after: #---quaternion02-begin
+   :end-before:  #---quaternion02-end
+   :literal:
+   :code: python
+
+A rotation in a cloudComPy transformation `tr1` can be expressed as a quaternion `q1` 
+with the :py:meth:`~.cloudComPy.ccGLMatrixd.toQuaternion` method 
+from :py:class:`~.cloudComPy.ccGLMatrixd` or :py:class:`~.cloudComPy.ccGLMatrix`.
+
+The quaternion can also be expressed as a rotation matrix `rot1`.
+
+.. include:: ../tests/test058.py
+   :start-after: #---quaternion01-begin
+   :end-before:  #---quaternion01-end
+   :literal:
+   :code: python
+
+A cloudCompy transformation can be built from a quaternion and an optional translation vector.
+with the :py:meth:`~.cloudComPy.ccGLMatrixd.FromQuaternionAndTranslation` method 
+from :py:class:`~.cloudComPy.ccGLMatrixd` or :py:class:`~.cloudComPy.ccGLMatrix`.
+
+.. include:: ../tests/test058.py
+   :start-after: #---quaternion03-begin
+   :end-before:  #---quaternion03-end
+   :literal:
+   :code: python
+
+The above code snippets are from :download:`test058.py <../tests/test058.py>`.
+
+ 
 Cloud comparison with plugin M3C2
 ---------------------------------
 
@@ -1367,5 +1431,31 @@ you have to select the action "resume Python script" in the "options" menu to sa
 
 The above code snippets are from :download:`test051.py <../tests/test051.py>`.
 
+choosing a specific color scale for a scalar field rendering
+------------------------------------------------------------
+
+The default color scale for a scalar field is not always convenient for your rendering.
+
+You can choose a color scale from the predefined list of color scales. 
+In the following example, we select the VIRIDIS color scale for one scalar field:
+
+.. include:: ../tests/test057.py
+   :start-after: #---render001-begin
+   :end-before:  #---render001-end
+   :literal:
+   :code: python
+   
+It is also possible to build a specific color scale by defining several steps (relative position, associated color), 
+the relative positions 0 and 1 corresponding to the start and end of the scale must always be defined.
+You can add several intermediate steps.
+
+.. include:: ../tests/test057.py
+   :start-after: #---render002-begin
+   :end-before:  #---render002-end
+   :literal:
+   :code: python
+   
+
+The above code snippets are from :download:`test057.py <../tests/test057.py>`.
 
 
