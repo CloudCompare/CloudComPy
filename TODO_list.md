@@ -214,4 +214,5 @@ TODO List
 - TODO: plugin 3DFin ?
 - TODO: (issue #154) plugin MeshIO ?
 - TODO: study convergence with Python plugin
+- TODO: (issue #176) filterBySFValue does not support Meshes (implement also methods from ManualSegmentationTools)
 
