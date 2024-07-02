@@ -216,4 +216,5 @@ TODO List
 - TODO: study convergence with Python plugin
 - TODO: (issue #176) filterBySFValue does not support Meshes (implement also methods from ManualSegmentationTools)
 - TODO: (issue #177) Method to increase size of points within a cloud (and other methods for improving rendering in file)
+- TODO: (issue #178] Visualisation using CloudComPy in CloudCompare: try to fix the behaviour on macOS
 
