@@ -220,4 +220,7 @@ TODO List
 - TODO: (issue #178) Visualisation using CloudComPy in CloudCompare: try to fix the behaviour on macOS
 - TODO: (issue #179) How to SavePointCloud use ascii format?
 - TODO: (issue #184) ICP with Normals
+- TODO: (issue #183) Option to orient normal with custom camera point (see ccPointCloud::orientNormalsTowardViewPoint)
+- TODO: (issue #188) Docker instruction consistency
+- TODO: (issue #189) Fix macOS installation instructions
 
