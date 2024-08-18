@@ -650,6 +650,17 @@ Keep the points whose ScalarField value is between the min and max parameters.
 :return: a ccPointCloud object.
 :rtype: ccPointCloud )";
 
+const char* cloudComPy_MeshFilterBySFValue_doc= R"(
+Create a new mesh by filtering points using the current out ScalarField (see getAssociatedCloud().setCurrentOutScalarField).
+Keep the points whose ScalarField value is between the min and max parameters.
+
+:param float min: minimum value to keep
+:param float max: maximum value to keep
+:param ccMesh mesh: the input mesh
+
+:return: a ccMesh object.
+:rtype: ccMesh )";
+
 const char* cloudComPy_GetPointCloudRadius_doc= R"(
 Compute an estimate radius to use in computeCurvature.
 

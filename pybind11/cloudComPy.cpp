@@ -2786,7 +2786,11 @@ PYBIND11_MODULE(_cloudComPy, m0)
 
     m0.def("computeMomentOrder1", &computeMomentOrder1, cloudComPy_computeMomentOrder1_doc);
 
-    m0.def("filterBySFValue", &filterBySFValue, py::return_value_policy::reference, cloudComPy_filterBySFValue_doc);
+    m0.def("filterBySFValue", static_cast<ccPointCloud* (*)(double, double, ccPointCloud*)>(&filterBySFValue),
+           py::return_value_policy::reference, cloudComPy_filterBySFValue_doc);
+
+    m0.def("filterBySFValue", static_cast<ccMesh* (*)(double, double, ccMesh*)>(&filterBySFValue),
+           py::return_value_policy::reference, cloudComPy_MeshFilterBySFValue_doc);
 
     m0.def("GetPointCloudRadius", &GetPointCloudRadius,
            py::arg("clouds"), py::arg("nodes")=12, cloudComPy_GetPointCloudRadius_doc);

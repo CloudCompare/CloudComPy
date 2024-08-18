@@ -185,6 +185,14 @@ bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds);
  **/
 ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud);
 
+//! Filters out cells whose points scalar values falls into an interval
+/** Threshold values should be expressed relatively to the current displayed scalar field.
+ \param minVal minimum value
+ \param maxVal maximum value
+ \return resulting mesh (remaining cells)
+ **/
+ccMesh* filterBySFValue(double minVal, double maxVal, ccMesh* mesh);
+
 //! Returns a default first guess for algorithms kernel size (several clouds)
 /*! copied from ccLibAlgorithms::GetDefaultCloudKernelSize
  * \param list of clouds

@@ -37,6 +37,7 @@
 #include <ccScalarField.h>
 #include <ccSensor.h>
 #include <ccMesh.h>
+#include <ccSubMesh.h>
 #include <ccFacet.h>
 #include <ccGLMatrix.h>
 #include <ccRasterGrid.h>
@@ -859,7 +860,7 @@ bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds)
 
 ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
 {
-    CCTRACE("filterBySFValue min: " << minVal << " max: " << maxVal << " cloudName: " << cloud->getName().toStdString());
+    CCTRACE("Cloud filterBySFValue min: " << minVal << " max: " << maxVal << " cloudName: " << cloud->getName().toStdString());
     CCCoreLib::ScalarField* sf = cloud->getCurrentOutScalarField();
     ccPointCloud* fitleredCloud = nullptr;
     if (sf)
@@ -870,6 +871,49 @@ ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
     }
     return fitleredCloud;
 }
+// see CommandFilterBySFValue::process and MainWindow::doActionFilterByValue
+ccMesh* filterBySFValue(double minVal, double maxVal, ccMesh* mesh)
+{
+    CCTRACE("Mesh filterBySFValue min: " << minVal << " max: " << maxVal << " cloudName: " << mesh->getName().toStdString());
+    ccPointCloud* pc = ccHObjectCaster::ToPointCloud(mesh);
+    if (!pc)
+    {
+        CCTRACE("Strange Mesh with no cloud");
+        return nullptr;
+    }
+    CCCoreLib::ScalarField* sf = pc->getCurrentOutScalarField();
+    if (!sf)
+    {
+        CCTRACE("no current out scalar field");
+        return nullptr;
+    }
+
+    ccPointCloud* fitleredCloud = nullptr;
+    ScalarType vmin = minVal;
+    ScalarType vmax = maxVal;
+    pc->hidePointsByScalarValue(vmin, vmax);
+    ccMesh* filteredMesh = nullptr;
+    if (mesh->isA(CC_TYPES::MESH)/*|| ent->isKindOf(CC_TYPES::PRIMITIVE)*/) //TODO
+        filteredMesh = ccHObjectCaster::ToMesh(mesh)->createNewMeshFromSelection(false);
+//    else if (mesh->isA(CC_TYPES::SUB_MESH))
+//        filteredMesh = ccHObjectCaster::ToSubMesh(mesh)->createNewSubMeshFromSelection(false);
+    else
+    {
+        CCTRACE("Unhandled mesh type for entity "<< mesh->getName().toStdString());
+        return nullptr;
+    }
+    if (!filteredMesh)
+    {
+        CCTRACE("ccHObjectCaster returns empty filtered mesh!"<< mesh->getName().toStdString());
+        return nullptr;
+
+    }
+    CCTRACE("Mesh " << mesh->getName().toStdString() << " " << filteredMesh->size() << "/" << mesh->size() << " triangles remaining");
+    QString name = mesh->getName() + QString("_FILTERED_[%1_%2]").arg(vmin).arg(vmax);
+    filteredMesh->setName(name);
+    return filteredMesh;
+}
+
 
 double GetPointCloudRadius(std::vector<ccHObject*> clouds, unsigned knn)
 {
