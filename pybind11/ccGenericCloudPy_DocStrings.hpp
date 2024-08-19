@@ -241,6 +241,12 @@ Returns the bounding box object.
 :return: bounding box
 :rtype: ccBBox)";
 
+const char* PointCloudTpl_setPointSize_doc= R"(
+Sets point size for display (render in file)
+
+:param int size: point size >= 0 (default size: 0)
+)";
+
 const char* ccShiftedObject_getGlobalShift_doc= R"(
 Returns the shift applied to original coordinates.
 

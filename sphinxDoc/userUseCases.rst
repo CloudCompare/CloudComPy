@@ -1411,6 +1411,8 @@ Different modes of perspective are available:
 
 The :py:func:`cloudComPy.setCustomView` and :py:func:`cloudComPy.setCameraPos` functions are used to define a custom point of view.
 
+The size of cloud points can be changed with :py:meth:`~.cloudComPy.ccPointCloud.setPointSize` method on a cloud.
+
 Several functions and methods can be used to set the background color, display the scalar bar...
 
  - :py:func:`cloudComPy.setBackgroundColor`
@@ -1426,7 +1428,7 @@ Several functions and methods can be used to set the background color, display t
 
 By default, the :py:func:`cloudComPy.render` function returns immediately after rendering the image.
 It is possible to select an interactive mode by setting the last optional parameter (bool isInteractive) to True.
-In this mode, the Python script is suspended, it is possible to adjust the 3D view.When the vue is correct,
+In this mode, the Python script is suspended, it is possible to adjust the 3D view. When the vue is correct,
 you have to select the action "resume Python script" in the "options" menu to save the render and resume the Python script execution.
 
 The above code snippets are from :download:`test051.py <../tests/test051.py>`.

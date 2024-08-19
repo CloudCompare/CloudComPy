@@ -187,6 +187,7 @@ TODO List
 * DONE: (issue #172) add quaternion input for transformations
 * DONE: fix Windows 11 build with Visual Studio 2022 MSVC1940: patch OpenCVConfig.cmake in conda line 140 to allow MSVC1940 as well as MSVC1930
 * DONE: (issue #176) filterBySFValue does not support Meshes
+* DONE: (issue #177) Method to increase size of points within a cloud for improving rendering in file
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -217,7 +218,7 @@ TODO List
 - TODO: (issue #154) plugin MeshIO ?
 - TODO: study convergence with Python plugin
 - TODO: implement missing methods from ManualSegmentationTools
-- TODO: (issue #177) Method to increase size of points within a cloud (and other methods for improving rendering in file)
+- TODO  following setPointSize, add other methods for improving rendering in file
 - TODO: (issue #178) Visualisation using CloudComPy in CloudCompare: try to fix the behaviour on macOS
 - TODO: (issue #179) How to SavePointCloud use ascii format?
 - TODO: (issue #184) ICP with Normals

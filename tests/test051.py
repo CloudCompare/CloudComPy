@@ -112,6 +112,10 @@ cc.setCameraPos((0., 0., 20.))
 cc.setCustomView((0., 1., 0.), (0., 0., 1.))
 cc.render(os.path.join(dataDir, "renderRef.png"), 2000,1500)
 
+cloud.setPointSize(4)
+cc.render(os.path.join(dataDir, "renderRef4.png"), 2000,1500)
+cloud.setPointSize(0)
+
 cc.setCenteredPerspectiveView()
 cc.render(os.path.join(dataDir, "renderRefCenterPers.png"), 2000,1500)
 

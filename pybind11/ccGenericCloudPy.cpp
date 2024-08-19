@@ -265,6 +265,7 @@ void export_ccGenericCloud(py::module &m0)
         .def("reserve", &CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>::reserve, PointCloudTpl_reserve_doc)
         .def("resize", &CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>::resize, PointCloudTpl_resize_doc)
         .def("addPoint", &CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>::addPoint, PointCloudTpl_addPoint_doc)
+        .def("setPointSize", &CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>::setPointSize, PointCloudTpl_setPointSize_doc)
 		;
 
     py::class_<CCCoreLib::ReferenceCloud, CCCoreLib::GenericIndexedCloudPersist,
