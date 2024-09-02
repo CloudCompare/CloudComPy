@@ -2735,7 +2735,7 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("SaveMesh", &SaveMesh, cloudComPy_SaveMesh_doc);
 
     m0.def("SavePointCloud", &SavePointCloud,
-           py::arg("cloud"), py::arg("filename"), py::arg("version")=QString(""), py::arg("pointFormat")=-1,
+           py::arg("cloud"), py::arg("filename"), py::arg("version")=QString(""), py::arg("pointFormat")=-1, py::arg("isAscii")=true,
            cloudComPy_SavePointCloud_doc);
 
     m0.def("SaveEntities", &SaveEntities, cloudComPy_SaveEntities_doc);

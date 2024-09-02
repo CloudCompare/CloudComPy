@@ -134,7 +134,7 @@ std::vector<ccHObject*> importFile(const char* filename,
  * \param filename
  * \return IO status
  */
-CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version=QString(), int pointFormat=-1 );
+CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version=QString(), int pointFormat=-1, bool isAscii = false);
 
 //! save a mesh to a file
 /*! the file type is given by the extension

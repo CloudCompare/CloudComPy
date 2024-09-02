@@ -504,10 +504,13 @@ Optional values can be used to specify version and format, with the LAS plugin, 
 
 - pointFormat=N with N integer between 0 and 10 
 
+Optional ASCII file format, for ply plugin
+
 :param ccPointCloud cloud: the cloud to save.
 :param str filename: The cloud file.
 :param string,optional version: optional string, default "", used to specify a particular version. (for las plugin only)
 :param int,optional pointFormat: optional point format valid values 0 to 10), default -1 (automatically set)(for las plugin only)
+:param bool,optional isAscii: optional file format, ASCII or BINARY, default False = BINARY (for ply plugin)
 
 :return: 0 or I/O error.
 :rtype: CC_FILE_ERROR)";

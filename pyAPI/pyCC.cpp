@@ -687,7 +687,7 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode,
 
 }
 
-::CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version, int pointFormat)
+::CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version, int pointFormat, bool isAscii)
 {
     CCTRACE("saving cloud, version " << version.toStdString());
     pyCC* capi = initCloudCompare();
@@ -717,7 +717,10 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode,
         parameters.pointFormat = pointFormat;
         CCTRACE("parameters.pointFormat: " << parameters.pointFormat);
     }
-
+    if (isAscii)
+    {
+        parameters.isAscii = true;
+    }
     QString fileFilter = "";
     const std::vector<FileIOFilter::Shared>& filters = FileIOFilter::GetFilters();
     for (const auto filter : filters)
