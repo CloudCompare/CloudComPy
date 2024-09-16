@@ -209,17 +209,9 @@ bool ICP(
     double& finalScale,
     double& finalRMS,
     unsigned& finalPointCount,
-    double minRMSDecrease,
-    unsigned maxIterationCount,
-    unsigned randomSamplingLimit,
-    bool removeFarthestPoints,
-    CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE method,
-    bool adjustScale,
-    double finalOverlapRatio = 1.0,
+    const CCCoreLib::ICPRegistrationTools::Parameters& inputParameters,
     bool useDataSFAsWeights = false,
-    bool useModelSFAsWeights = false,
-    int transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE,
-    int maxThreadCount = 0);
+    bool useModelSFAsWeights = false);
 
 //! copied from ccEntityAction::computeNormals
 bool computeNormals(std::vector<ccHObject*> selectedEntities,

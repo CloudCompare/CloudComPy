@@ -190,6 +190,7 @@ TODO List
 * DONE: (issue #177) Method to increase size of points within a cloud for improving rendering in file
 * DONE: (issue #179) How to SavePointCloud use ascii format?
 * DONE: (issue #183) Option to orient normal with custom camera point (see ccPointCloud::orientNormalsTowardViewPoint)
+* DONE: (issue #184) ICP with Normals
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
@@ -222,7 +223,6 @@ TODO List
 - TODO: implement missing methods from ManualSegmentationTools
 - TODO  following setPointSize, add other methods for improving rendering in file
 - TODO: (issue #178) Visualisation using CloudComPy in CloudCompare: try to fix the behaviour on macOS
-- TODO: (issue #184) ICP with Normals
 - TODO: (issue #188) Docker instruction consistency
 - TODO: (issue #189) Fix macOS installation instructions
 

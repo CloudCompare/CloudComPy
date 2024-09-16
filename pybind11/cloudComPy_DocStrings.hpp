@@ -277,7 +277,9 @@ Applies ICP registration on two entities.
 :param float,optional finalOverlapRatio: Theoretical overlap ratio (at each iteration, only this percentage (between 0 and 1).
        Will be used for registration (default 1.0).
 :param bool,optional useDataSFAsWeights: Weights for data points (default `False`).
+                                         The scalar field must be the current SF in data (see setCurrentScalarField)
 :param bool,optional useModelSFAsWeights: Weights for model points (default `False`).
+                                          The scalar field must be the current SF in model (see setCurrentScalarField)
 :param TRANSFORMATION_FILTERS,optional transformationFilters: Filters to be applied on the resulting transformation at each step (default 0).
 
    - SKIP_NONE           = 0
@@ -291,6 +293,10 @@ Applies ICP registration on two entities.
    - SKIP_TRANSLATION    = 56
 
 :param int,optional maxThreadCount: Maximum number of threads to use (default 0 = max)
+:param bool,optional useC2MSignedDistances: use signed distances (default `False`)
+:param bool,optional robustC2MSignedDistances: use robust signed distances (default `True`)
+:param normalMatching,optional normalMatching: type of normal matching, default NO_NORMAL
+       values from (NO_NORMAL, OPPOSITE_NORMALS, SAME_SIDE_NORMALS, DOUBLE_SIDED_NORMALS)
 
 :return: ICPres structure :py:class:`ICPres`
 )";

@@ -227,7 +227,9 @@ we apply a small rotation-translation on one cloud.
    :code: python
    
 Then we apply the ICP algorithm :py:meth:`cloudComPy.ICP` which gives a transformation to apply 
-to get the precise overlap of the clouds.
+to get the precise overlap of the clouds. 
+**Note:** the 'aligned' member of the result structure is the same object as the original cloud to align: clone it before applying
+the transformation if you want to keep the original.
 
 .. include:: ../tests/test010.py
    :start-after: #---ICP02-begin

@@ -119,8 +119,27 @@ ICPres ICP_py(  ccHObject* data,
                 bool useDataSFAsWeights = false,
                 bool useModelSFAsWeights = false,
                 int transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE,
-                int maxThreadCount = 0)
+                int maxThreadCount = 0,
+                bool useC2MSignedDistances=false,
+                bool robustC2MSignedDistances=true,
+                CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING normalMatching=CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::NO_NORMAL)
 {
+    CCCoreLib::ICPRegistrationTools::Parameters params;
+    params.convType = method;
+    params.minRMSDecrease = minRMSDecrease;
+    params.nbMaxIterations = maxIterationCount;
+    params.adjustScale = adjustScale;
+    params.filterOutFarthestPoints = removeFarthestPoints;
+    params.samplingLimit = randomSamplingLimit;
+    params.finalOverlapRatio = finalOverlapRatio;
+    params.modelWeights = nullptr;
+    params.dataWeights = nullptr;
+    params.transformationFilters = transformationFilters;
+    params.maxThreadCount = maxThreadCount;
+    params.useC2MSignedDistances = useC2MSignedDistances;
+    params.robustC2MSignedDistances = robustC2MSignedDistances;
+    params.normalsMatching = normalMatching;
+
     ICPres a;
     ICP(data,
         model,
@@ -128,17 +147,9 @@ ICPres ICP_py(  ccHObject* data,
         a.finalScale,
         a.finalRMS,
         a.finalPointCount,
-        minRMSDecrease,
-        maxIterationCount,
-        randomSamplingLimit,
-        removeFarthestPoints,
-        method,
-        adjustScale,
-        finalOverlapRatio,
+        params,
         useDataSFAsWeights,
-        useModelSFAsWeights,
-        transformationFilters,
-        maxThreadCount);
+        useModelSFAsWeights);
     a.aligned = dynamic_cast<ccPointCloud*>(data);
     return a;
 }
@@ -2695,6 +2706,13 @@ PYBIND11_MODULE(_cloudComPy, m0)
         .value("ENV_FULL", EnvelopeType::ENV_FULL)
         .export_values();
 
+    py::enum_<CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING>(m0, "normalMatching")
+        .value("NO_NORMAL", CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::NO_NORMAL)
+        .value("OPPOSITE_NORMALS", CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::OPPOSITE_NORMALS)
+        .value("SAME_SIDE_NORMALS", CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::SAME_SIDE_NORMALS)
+        .value("DOUBLE_SIDED_NORMALS", CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::DOUBLE_SIDED_NORMALS)
+        .export_values();
+
     m0.def("importFile", &importFilePy,
            py::arg("filename"), py::arg("mode")=AUTO, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0, py::arg("extraData")="",
            cloudComPy_importFile_doc);
@@ -2823,6 +2841,9 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::arg("useModelSFAsWeights")=false,
            py::arg("transformationFilters")=CCCoreLib::RegistrationTools::SKIP_NONE,
            py::arg("maxThreadCount")=0,
+           py::arg("useC2MSignedDistances")=false,
+           py::arg("robustC2MSignedDistances")=true,
+           py::arg("normalMatching")=CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::NO_NORMAL,
            cloudComPy_ICP_doc);
 
     m0.def("computeNormals", &computeNormals,
