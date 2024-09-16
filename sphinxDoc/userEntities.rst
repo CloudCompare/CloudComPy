@@ -74,6 +74,16 @@ Normals can be computed with :py:func:`~.cloudComPy.computeNormals`:
     if not cloud.hasNormals():
         cc.computeNormals([cloud])
 
+Normals can be oriented with the following:
+
+ - :py:meth:`~.cloudComPy.ccPointCloud.orientNormalsWithFM`
+ - :py:meth:`~.cloudComPy.ccPointCloud.orientNormalsWithMST`
+ - :py:meth:`~.cloudComPy.ccPointCloud.orientNormalsTowardViewPoint`
+
+Normals can be inverted with :py:func:`~.cloudComPy.invertNormals`
+
+See examples of normal manipulations in :download:`test014.py <../tests/test014.py>`.
+
 If you need to save clouds for reopening with CloudCompare GUI, with a predefined state of what is shown
 (colors, normals, scalar fields), use the ``.bin`` format and define the state with the following functions:
 

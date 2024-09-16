@@ -466,6 +466,15 @@ See `Minimum spanning tree <https://en.wikipedia.org/wiki/Minimum_spanning_tree>
 :rtype: bool
 )";
 
+const char* ccPointCloudPy_orientNormalsTowardViewPoint_doc= R"(
+Orient normals towards view point
+
+:param CCVector3,optional VP: optional view point coordinates, default (0,0,0)
+
+:return: success
+:rtype: bool
+)";
+
 const char* ccPointCloudPy_partialClone_doc= R"(
 Creates a new point cloud object from a ReferenceCloud (selection)
 
