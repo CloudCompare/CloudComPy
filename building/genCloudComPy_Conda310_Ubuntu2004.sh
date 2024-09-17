@@ -49,7 +49,7 @@ conda_buildenv()
     fi
     conda config --add channels conda-forge && \
     conda config --set channel_priority strict && \
-    conda install -y "boost=1.74" "cgal=5.4" cmake draco ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
+    conda install -y "boost=1.74" "cgal=5.4" cmake draco ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 quaternion "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
 }
 
 # --- CloudComPy build
@@ -78,7 +78,7 @@ cloudcompy_configure()
     -DCCCORELIB_SHARED:BOOL="1" \
     -DCCCORELIB_USE_CGAL:BOOL="1" \
     -DCCCORELIB_USE_TBB:BOOL="0" \
-    -DCMAKE_BUILD_TYPE:STRING="Release" \
+    -DCMAKE_BUILD_TYPE:STRING="Relwithdebinfo" \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/c++ \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/cc \
     -DCMAKE_Fortran_COMPILER:FILEPATH=/usr/bin/gfortran \
@@ -86,7 +86,8 @@ cloudcompy_configure()
     -DCORK_INCLUDE_DIR:PATH="${CORK_REP}/src" \
     -DCORK_RELEASE_LIBRARY_FILE:FILEPATH="${CORK_REP}/lib/libcork.a" \
     -DDRACO_INCLUDE_DIR:PATH="${CONDA_PATH}/include" \
-    -DDRACO_LIBRARY:PATH="${CONDA_PATH}/lib/libdraco.a" \
+    -DDRACO_LIB_DIR:PATH="${CONDA_PATH}/lib" \
+    -DDRACO_LIBRARIES:PATH="${CONDA_PATH}/lib/libdraco.a" \
     -DEIGEN_INCLUDE_DIR:PATH="${CONDA_PATH}/include/eigen3" \
     -DEIGEN_ROOT_DIR:PATH="${CONDA_PATH}/include/eigen3" \
     -DFBX_SDK_INCLUDE_DIR:PATH="${FBXSDK_REP}/include" \
@@ -131,6 +132,8 @@ cloudcompy_configure()
     -DPLUGIN_IO_QRDB_FETCH_DEPENDENCY:BOOL="1" \
     -DPLUGIN_IO_QRDB_INSTALL_DEPENDENCY:BOOL="1" \
     -DPLUGIN_IO_QSTEP:BOOL="1" \
+    -DPLUGIN_PYTHON="OFF" \
+    -DPLUGIN_STANDARD_3DMASC:BOOL="1" \
     -DPLUGIN_STANDARD_MASONRY_QAUTO_SEG:BOOL="1" \
     -DPLUGIN_STANDARD_MASONRY_QMANUAL_SEG:BOOL="1" \
     -DPLUGIN_STANDARD_QANIMATION:BOOL="1" \
