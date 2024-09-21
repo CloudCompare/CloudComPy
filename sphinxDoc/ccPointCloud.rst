@@ -5,7 +5,7 @@ Points Clouds
 =============================
 
 .. py:module:: cloudComPy
-    :noindex:
+    :no-index:
 
 ----------------------------
 ccPointCloud

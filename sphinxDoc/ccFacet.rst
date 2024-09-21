@@ -4,7 +4,7 @@
 =============================
 
 .. py:module:: cloudComPy
-    :noindex:
+    :no-index:
 
 ----------------------------
 ccFacets

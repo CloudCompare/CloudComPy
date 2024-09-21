@@ -4,7 +4,7 @@ Neighbourhood
 =============================
 
 .. py:module:: cloudComPy
-    :noindex:
+    :no-index:
 
 -----------------------------
 Neighbourhood
