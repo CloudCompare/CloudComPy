@@ -100,6 +100,14 @@ const char* getScalarType()
 
 struct ICPres
 {
+    ICPres() :
+            aligned(nullptr),
+            transMat(ccGLMatrix()),
+            finalScale(1.0),
+            finalRMS(0.0),
+            finalPointCount(0)
+    {
+    }
     ccPointCloud* aligned;
     ccGLMatrix transMat;
     double finalScale;
@@ -107,22 +115,22 @@ struct ICPres
     unsigned finalPointCount;
 };
 
-ICPres ICP_py(  ccHObject* data,
-                ccHObject* model,
-                double minRMSDecrease=1.e-5,
-                unsigned maxIterationCount=20,
-                unsigned randomSamplingLimit=50000,
-                bool removeFarthestPoints=false,
-                CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE method=CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE::MAX_ITER_CONVERGENCE,
-                bool adjustScale=false,
-                double finalOverlapRatio = 1.0,
-                bool useDataSFAsWeights = false,
-                bool useModelSFAsWeights = false,
-                int transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE,
-                int maxThreadCount = 0,
-                bool useC2MSignedDistances=false,
-                bool robustC2MSignedDistances=true,
-                CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING normalMatching=CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::NO_NORMAL)
+const ICPres* ICP_py(ccHObject* data,
+                    ccHObject* model,
+                    double minRMSDecrease=1.e-5,
+                    unsigned maxIterationCount=20,
+                    unsigned randomSamplingLimit=50000,
+                    bool removeFarthestPoints=false,
+                    CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE method=CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE::MAX_ITER_CONVERGENCE,
+                    bool adjustScale=false,
+                    double finalOverlapRatio = 1.0,
+                    bool useDataSFAsWeights = false,
+                    bool useModelSFAsWeights = false,
+                    int transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE,
+                    int maxThreadCount = 0,
+                    bool useC2MSignedDistances=false,
+                    bool robustC2MSignedDistances=true,
+                    CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING normalMatching=CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::NO_NORMAL)
 {
     CCCoreLib::ICPRegistrationTools::Parameters params;
     params.convType = method;
@@ -140,17 +148,17 @@ ICPres ICP_py(  ccHObject* data,
     params.robustC2MSignedDistances = robustC2MSignedDistances;
     params.normalsMatching = normalMatching;
 
-    ICPres a;
+    ICPres* a = new ICPres();
     ICP(data,
         model,
-        a.transMat,
-        a.finalScale,
-        a.finalRMS,
-        a.finalPointCount,
+        a->transMat,
+        a->finalScale,
+        a->finalRMS,
+        a->finalPointCount,
         params,
         useDataSFAsWeights,
         useModelSFAsWeights);
-    a.aligned = dynamic_cast<ccPointCloud*>(data);
+    a->aligned = dynamic_cast<ccPointCloud*>(data);
     return a;
 }
 
@@ -2844,6 +2852,7 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::arg("useC2MSignedDistances")=false,
            py::arg("robustC2MSignedDistances")=true,
            py::arg("normalMatching")=CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::NO_NORMAL,
+           py::return_value_policy::take_ownership,
            cloudComPy_ICP_doc);
 
     m0.def("computeNormals", &computeNormals,

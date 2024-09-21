@@ -81,6 +81,8 @@
 #include <viewerPyApplication.h>
 #include "optdefines.h"
 
+#include "pyccTrace.h"
+
 #ifdef PLUGIN_IO_QFBX
 #include <FBXFilter.h>
 #endif
@@ -1262,7 +1264,7 @@ bool ICP(
         dataCloud = CCCoreLib::MeshSamplingTools::samplePointsOnMesh(ccHObjectCaster::ToGenericMesh(data), s_defaultSampledPointsOnDataMesh);
         if (!dataCloud)
         {
-            ccLog::Error("[ICP] Failed to sample points on 'data' mesh!");
+            CCTRACE("[ICP] Failed to sample points on 'data' mesh!");
             return false;
         }
         cloudGarbage.add(dataCloud);
@@ -1292,7 +1294,7 @@ bool ICP(
             pc->setCurrentScalarField(dataSfIdx);
         else
         {
-            ccLog::Error("[ICP] Couldn't create temporary scalar field! Not enough memory?");
+            CCTRACE("[ICP] Couldn't create temporary scalar field! Not enough memory?");
             return false;
         }
     }
@@ -1300,7 +1302,7 @@ bool ICP(
     {
         if (!dataCloud->enableScalarField())
         {
-            ccLog::Error("[ICP] Couldn't create temporary scalar field! Not enough memory?");
+            CCTRACE("[ICP] Couldn't create temporary scalar field! Not enough memory?");
             return false;
         }
     }
@@ -1317,7 +1319,7 @@ bool ICP(
         //level = 7 if < 1.000.000
         //level = 8 if < 10.000.000
         //level = 9 if > 10.000.000
-        int gridLevel = static_cast<int>(std::floor(std::log10(static_cast<long double>(std::max(dataCloud->size(), modelCloud->size()))))) + 2;
+        int gridLevel = static_cast<int>(log10(static_cast<double>(std::max(dataCloud->size(), modelCloud->size())))) + 2; //static_cast is equivalent to floor if value >= 0
             gridLevel = std::min(std::max(gridLevel, 7), 9);
         int result = -1;
         if (modelMesh)
@@ -1330,19 +1332,21 @@ bool ICP(
             c2mParams.flipNormals = false;
             c2mParams.multiThread = false;
             c2mParams.robust = true;
-            result = CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances(dataCloud, modelMesh, c2mParams);
+            result = CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances(dataCloud,
+                                                                                     modelMesh,
+                                                                                     c2mParams);
         }
         else
         {
             result = CCCoreLib::DistanceComputationTools::computeApproxCloud2CloudDistance( dataCloud,
-                                                                                        modelCloud,
-                                                                                        gridLevel,
-                                                                                        -1);
+                                                                                            modelCloud,
+                                                                                            gridLevel,
+                                                                                            -1);
         }
 
         if (result < 0)
         {
-            ccLog::Error("Failed to determine the max (overlap) distance (not enough memory?)");
+            CCTRACE("Failed to determine the max (overlap) distance (not enough memory?)");
             return false;
         }
 
@@ -1357,7 +1361,7 @@ bool ICP(
             }
             catch (const std::bad_alloc&)
             {
-                ccLog::Error("Not enough memory!");
+                CCTRACE("Not enough memory!");
                 return false;
             }
             for (unsigned i=0; i<count; ++i)
@@ -1385,7 +1389,7 @@ bool ICP(
                     if (    refCloud->size() == refCloud->capacity()
                         &&  !refCloud->reserve(refCloud->size() + baseIncrement) )
                     {
-                        ccLog::Error("Not enough memory!");
+                        CCTRACE("Not enough memory!");
                         return false;
                     }
                     refCloud->addPointIndex(i);
@@ -1396,7 +1400,7 @@ bool ICP(
 
             unsigned countAfter = dataCloud->size();
             double keptRatio = static_cast<double>(countAfter)/countBefore;
-            ccLog::Print(QString("[ICP][Partial overlap] Selecting %1 points out of %2 (%3%) for registration").arg(countAfter).arg(countBefore).arg(static_cast<int>(100*keptRatio)));
+            CCTRACE(QString("[ICP][Partial overlap] Selecting %1 points out of %2 (%3%) for registration").arg(countAfter).arg(countBefore).arg(static_cast<int>(100*keptRatio)).toStdString());
 
             //update the relative 'final overlap' ratio
             params.finalOverlapRatio /= keptRatio;
@@ -1414,11 +1418,11 @@ bool ICP(
                 ccPointCloud* pc = static_cast<ccPointCloud*>(model);
                 params.modelWeights = pc->getCurrentDisplayedScalarField();
                 if (!params.modelWeights)
-                    ccLog::Warning("[ICP] 'useDataSFAsWeights' is true but model has no displayed scalar field!");
+                    CCTRACE("[ICP] 'useDataSFAsWeights' is true but model has no displayed scalar field!");
             }
             else
             {
-                ccLog::Warning("[ICP] 'useDataSFAsWeights' is true but only point cloud scalar fields can be used as weights!");
+                CCTRACE("[ICP] 'useDataSFAsWeights' is true but only point cloud scalar fields can be used as weights!");
             }
         }
 
@@ -1427,9 +1431,13 @@ bool ICP(
             if (!dataDisplayedSF)
             {
                 if (dataCloud == ccHObjectCaster::ToPointCloud(data))
-                    ccLog::Warning("[ICP] 'useDataSFAsWeights' is true but data has no displayed scalar field!");
+                {
+                    CCTRACE("[ICP] 'useDataSFAsWeights' is true but data has no displayed scalar field!");
+                }
                 else
-                    ccLog::Warning("[ICP] 'useDataSFAsWeights' is true but only point cloud scalar fields can be used as weights!");
+                {
+                    CCTRACE("[ICP] 'useDataSFAsWeights' is true but only point cloud scalar fields can be used as weights!");
+                }
             }
             else
             {
@@ -1438,7 +1446,7 @@ bool ICP(
         }
     }
 
-    ccLog::Print(QString("[ICP] Will use %1 threads").arg(params.maxThreadCount));
+    CCTRACE(QString("[ICP] Will use %1 threads").arg(params.maxThreadCount).toStdString());
 
     CCCoreLib::ICPRegistrationTools::RESULT_TYPE result;
     CCCoreLib::PointProjectionTools::Transformation transform;
@@ -1453,12 +1461,23 @@ bool ICP(
 
     if (result >= CCCoreLib::ICPRegistrationTools::ICP_ERROR)
     {
-        ccLog::Error("Registration failed: an error occurred (code %i)",result);
+        CCTRACE("Registration failed: an error occurred (code " << result << ")");
     }
     else if (result == CCCoreLib::ICPRegistrationTools::ICP_APPLY_TRANSFO)
     {
+        CCTRACE(" OK: CCCoreLib::ICPRegistrationTools::ICP_APPLY_TRANSFO");
         transMat = FromCCLibMatrix<double, float>(transform.R, transform.T, transform.s);
         finalScale = transform.s;
+    }
+    else if (result == CCCoreLib::ICPRegistrationTools::ICP_NOTHING_TO_DO)
+    {
+        CCTRACE("return code ICP: (code " << result << ")");
+        transMat = FromCCLibMatrix<double, float>(transform.R, transform.T, transform.s);
+        finalScale = transform.s;
+    }
+    else
+    {
+        CCTRACE("Bad return code ICP: (code " << result << ")");
     }
 
     //remove temporary SF (if any)
