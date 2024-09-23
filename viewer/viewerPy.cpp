@@ -171,6 +171,7 @@ viewerPy::viewerPy(QWidget *parent, Qt::WindowFlags flags)
 
 viewerPy::~viewerPy()
 {
+	CCTRACE("~viewerPy!")
 	release3DMouse();
 
 #ifdef CC_GAMEPAD_SUPPORT
@@ -592,15 +593,18 @@ void viewerPy::addToDB(	ccHObject* entity,
 	entity->setDisplay_recursive(m_glWindow);
 
 	ccHObject* currentRoot = m_glWindow->getSceneDB();
+	CCTRACE("addToDB m_glWindow: " << m_glWindow << " currentRoot: " << currentRoot);
 	if (currentRoot)
 	{
 		//already a pure 'root'
 		if (currentRoot->isA(CC_TYPES::HIERARCHY_OBJECT))
 		{
+			CCTRACE("addToDB: add child on root")
 			currentRoot->addChild(entity);
 		}
 		else
 		{
+			CCTRACE("addToDB: create root and add child")
 			ccHObject* root = new ccHObject("root");
 			root->addChild(currentRoot);
 			root->addChild(entity);
@@ -618,6 +622,7 @@ void viewerPy::addToDB(	ccHObject* entity,
 void viewerPy::removeFromDB(ccHObject* obj, bool autoDelete/*=true*/)
 {
     ccHObject* currentRoot = m_glWindow->getSceneDB();
+	CCTRACE("removeFromDB m_glWindow: " << m_glWindow << " currentRoot: " << currentRoot);
     if (currentRoot)
     {
         if (currentRoot == obj)
@@ -667,6 +672,7 @@ void viewerPy::doActionRenderToFile(QString filename, bool isInteractive)
     viewerPyApplication* app = dynamic_cast<viewerPyApplication*>(coreApp);
     if (app)
     {
+    	CCTRACE("doActionRenderToFile viewerPyApplication: " << app);
         connect(this, SIGNAL(exitRequested()), app, SLOT(closeAllWindows()), Qt::QueuedConnection);
         if (!isInteractive)
         {
@@ -681,6 +687,7 @@ void viewerPy::doActionRenderToFile(QString filename, bool isInteractive)
 
 void viewerPy::renderToFileAndClose()
 {
+	CCTRACE("renderToFileAndClose m_glWindow: " << m_glWindow << " currentRoot: " << m_glWindow->getSceneDB());
     m_glWindow->renderToFile(m_filename);
     CCTRACE("renderToFile done: " << m_filename.toStdString());
     CCTRACE("call app->exit()");

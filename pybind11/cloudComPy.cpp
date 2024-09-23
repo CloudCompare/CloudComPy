@@ -694,6 +694,8 @@ viewerPy* getOrInitializeViewer()
         w = new viewerPy();
         app->setViewer(w);
         CCTRACE("viewerPy initialized");
+        ccHObject* root = new ccHObject("viewerPyDBroot");
+        w->addToDB(root);
 	}
     CCTRACE("--- w " << w);
 	return w;
@@ -800,6 +802,7 @@ void addToRenderScene(ccHObject* obj, bool showScalar=true)
 		CCTRACE("cannot find viewerPyApplication!");
 		return;
 	}
+	CCTRACE("viewerPyApplication: " << app);
 	viewerPy* w = getOrInitializeViewer();
 
 	w->addToDB(obj);
