@@ -24,17 +24,18 @@ You need to create an environment for CloudComPy with conda, from the terminal
 conda activate
 conda update -y -n base -c defaults conda
 ```
-If your environment CloudComPy310 does not exist:
+If your environment CloudComPy310 does not exist or to recreate it from scratch:
+(**note:** for 2.13.2, it's better to recreate the environment, because there are a lot of changes)
 ```
-conda create --name CloudComPy310 python=3.10
+conda create -y --name CloudComPy310 python=3.10
    # --- erase previous env with the same name if existing
 ```
 Add or update the packages:
 ```
 conda activate CloudComPy310
 conda config --add channels conda-forge
-conda config --set channel_priority strict
-conda install "boost=1.74" "cgal=5.4" cmake draco ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 quaternion "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
+conda config --set channel_priority flexible
+conda install -y boost cgal cmake draco "ffmpeg=6.1" gdal jupyterlab laszip matplotlib "mysql=8" numpy opencv "openssl=3.1" pcl pdal psutil pybind11 quaternion "qhull=2020.2" "qt=5.15.8" scipy sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" xorg-libx11
 ```
 
 **Remark:** if conda is unknown, or in a bash script, add the following instruction before conda commands:
@@ -75,10 +76,10 @@ To run CloudCompare:
 CloudCompare
 ```
 
-To execute a Python script using CloudComPy:
+To execute a Python script (for instance myscript.py) using CloudComPy:
 
 ```
-Python myscript.py
+python myscript.py
 ```
 **Remark**: You may need to install libomp.so.5:
 ```
@@ -116,6 +117,8 @@ From the prompt, you can :
 
 ### In case of problem:
 
-There may be differences in the versions of conda packages. When updating the conda configuration, the package versions may change slightly.This is usually not a problem, but since the CloudComPy binary is fixed, there may be a version difference on a package, which makes it incompatible with CloudComPy. For your information, here is the list of package versions when CloudComPy was built.
+There may be differences in the versions of conda packages. When updating the conda configuration, the package versions may change slightly.
+This is usually not a problem, but since the CloudComPy binary is fixed, there may be a version difference on a package, 
+which makes it incompatible with CloudComPy. For your information, here is the list of package versions when CloudComPy was built.
 
 The result of ```conda list``` command is provided in the sources in [building directory](../building)
