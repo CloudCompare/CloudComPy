@@ -268,6 +268,7 @@ nbformat                  5.10.4             pyhd8ed1ab_0    conda-forge
 nest-asyncio              1.6.0              pyhd8ed1ab_0    conda-forge
 nitro                     2.7.dev8             h1537add_0    conda-forge
 nlohmann_json             3.11.3               he0c23c2_1    conda-forge
+notebook                  7.2.2              pyhd8ed1ab_0    conda-forge
 notebook-shim             0.2.4              pyhd8ed1ab_0    conda-forge
 numpy                     1.26.4          py310hf667824_0    conda-forge
 numpydoc                  1.8.0              pyhd8ed1ab_0    conda-forge
