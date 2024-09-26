@@ -2,6 +2,18 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## September 27, 2024 CloudCompy release:
+
+ - (issue #176) filterBySFValue does not support Meshes
+ - (issue #177) Method to increase size of points within a cloud for improving rendering in file
+ - (issue #179) How to SavePointCloud use ascii format?
+ - (issue #183) Option to orient normal with custom camera point (see ccPointCloud::orientNormalsTowardViewPoint)
+ - (issue #184) ICP with Normals
+ - (issue #188) Docker instruction consistency for build
+ - (issue #178) Visualisation using CloudComPy in CloudCompare: try to fix the behaviour on macOS
+ - (issue #189) Fix macOS installation instructions
+ - some small fixes.
+
 ## June 13, 2024 CloudCompy release:
 
  - (issue #162) SAVE ccMesh <CC_FILE_ERROR.CC_FERR_BROKEN_DEPENDENCY_ERROR: 13>

@@ -2,7 +2,7 @@
 #
 # Name                    Version                   Build  Channel
 aiohappyeyeballs          2.4.0              pyhd8ed1ab_0    conda-forge
-aiohttp                   3.10.5          py310ha8f682b_1    conda-forge
+aiohttp                   3.10.6          py310ha8f682b_0    conda-forge
 aiosignal                 1.3.1              pyhd8ed1ab_0    conda-forge
 alabaster                 0.7.16             pyhd8ed1ab_0    conda-forge
 anyio                     4.6.0              pyhd8ed1ab_1    conda-forge
@@ -10,7 +10,7 @@ aom                       3.8.2                h63175ca_0    conda-forge
 argon2-cffi               23.1.0             pyhd8ed1ab_0    conda-forge
 argon2-cffi-bindings      21.2.0          py310ha8f682b_5    conda-forge
 arrow                     1.3.0              pyhd8ed1ab_0    conda-forge
-astroid                   3.3.3           py310h5588dad_0    conda-forge
+astroid                   3.3.4           py310h5588dad_0    conda-forge
 asttokens                 2.4.1              pyhd8ed1ab_0    conda-forge
 async-lru                 2.0.4              pyhd8ed1ab_0    conda-forge
 async-timeout             4.0.3              pyhd8ed1ab_0    conda-forge
@@ -50,13 +50,13 @@ cloudpickle               3.0.0              pyhd8ed1ab_0    conda-forge
 cmake                     3.28.3               hf0feee3_0    conda-forge
 colorama                  0.4.6              pyhd8ed1ab_0    conda-forge
 comm                      0.2.2              pyhd8ed1ab_0    conda-forge
-contourpy                 1.3.0           py310hc19bc0b_1    conda-forge
+contourpy                 1.3.0           py310hc19bc0b_2    conda-forge
 cookiecutter              2.6.0              pyhca7485f_0    conda-forge
 cryptography              42.0.2          py310hb1f9477_0    conda-forge
 curl                      8.8.0                h0dd56e1_0    conda-forge
 cycler                    0.12.1             pyhd8ed1ab_0    conda-forge
 dav1d                     1.2.1                hcfcfb64_0    conda-forge
-debugpy                   1.8.5           py310h9e98ed7_1    conda-forge
+debugpy                   1.8.6           py310h9e98ed7_0    conda-forge
 decorator                 5.1.1              pyhd8ed1ab_0    conda-forge
 defusedxml                0.7.1              pyhd8ed1ab_0    conda-forge
 deprecated                1.2.14             pyh1a96a4e_0    conda-forge
@@ -81,7 +81,7 @@ font-ttf-ubuntu           0.83                 h77eed37_2    conda-forge
 fontconfig                2.14.2               hbde0cde_0    conda-forge
 fonts-conda-ecosystem     1                             0    conda-forge
 fonts-conda-forge         1                             0    conda-forge
-fonttools                 4.53.1          py310ha8f682b_1    conda-forge
+fonttools                 4.54.1          py310ha8f682b_0    conda-forge
 fqdn                      1.5.1              pyhd8ed1ab_0    conda-forge
 freeglut                  3.2.2                he0c23c2_3    conda-forge
 freetype                  2.12.1               hdaf720e_2    conda-forge
@@ -219,7 +219,7 @@ libsqlite                 3.46.1               h2466b09_0    conda-forge
 libssh2                   1.11.0               h7dfc565_0    conda-forge
 libtheora                 1.1.1             hc70643c_1006    conda-forge
 libtiff                   4.6.0                h6e2ebb7_2    conda-forge
-libuv                     1.48.0               hcfcfb64_0    conda-forge
+libuv                     1.49.0               h2466b09_0    conda-forge
 libvorbis                 1.3.7                h0e60522_0    conda-forge
 libwebp                   1.4.0                h2466b09_0    conda-forge
 libwebp-base              1.4.0                hcfcfb64_0    conda-forge
@@ -299,7 +299,7 @@ poppler-data              0.4.12               hd8ed1ab_0    conda-forge
 postgresql                16.1                 h1beaf6b_5    conda-forge
 proj                      9.3.0                he13c7e8_2    conda-forge
 prometheus_client         0.21.0             pyhd8ed1ab_0    conda-forge
-prompt-toolkit            3.0.47             pyha770c72_0    conda-forge
+prompt-toolkit            3.0.48             pyha770c72_0    conda-forge
 psutil                    6.0.0           py310ha8f682b_1    conda-forge
 pthread-stubs             0.4               hcd874cb_1001    conda-forge
 pthreads-win32            2.9.1                hfa6e2cd_3    conda-forge
@@ -317,7 +317,7 @@ pyflakes                  3.2.0              pyhd8ed1ab_0    conda-forge
 pygithub                  2.4.0              pyhd8ed1ab_0    conda-forge
 pygments                  2.18.0             pyhd8ed1ab_0    conda-forge
 pyjwt                     2.9.0              pyhd8ed1ab_1    conda-forge
-pylint                    3.3.0              pyhd8ed1ab_0    conda-forge
+pylint                    3.3.1              pyhd8ed1ab_0    conda-forge
 pylint-venv               3.0.3              pyhd8ed1ab_0    conda-forge
 pyls-spyder               0.4.0              pyhd8ed1ab_0    conda-forge
 pynacl                    1.5.0           py310h635b8f1_3    conda-forge
@@ -342,7 +342,7 @@ pytoolconfig              1.2.5              pyhd8ed1ab_0    conda-forge
 pytz                      2024.2             pyhd8ed1ab_0    conda-forge
 pyuca                     1.2                        py_1    conda-forge
 pywin32                   306             py310h00ffb61_2    conda-forge
-pywin32-ctypes            0.2.3           py310h5588dad_0    conda-forge
+pywin32-ctypes            0.2.3           py310h5588dad_1    conda-forge
 pywinpty                  2.0.13          py310h9e98ed7_1    conda-forge
 pyyaml                    6.0.2           py310ha8f682b_1    conda-forge
 pyzmq                     26.2.0          py310h656833d_1    conda-forge
@@ -368,7 +368,7 @@ rpds-py                   0.20.0          py310hc226416_1    conda-forge
 rtree                     1.3.0           py310h1a9805e_2    conda-forge
 scipy                     1.14.1          py310h46043a1_0    conda-forge
 send2trash                1.8.3              pyh5737063_0    conda-forge
-setuptools                74.1.2             pyhd8ed1ab_0    conda-forge
+setuptools                75.1.0             pyhd8ed1ab_0    conda-forge
 sip                       6.7.12          py310h00ffb61_0    conda-forge
 six                       1.16.0             pyh6c4a22f_0    conda-forge
 snappy                    1.1.10               hfb803bf_1    conda-forge
@@ -385,7 +385,7 @@ sphinxcontrib-jquery      4.1                pyhd8ed1ab_0    conda-forge
 sphinxcontrib-jsmath      1.0.1              pyhd8ed1ab_0    conda-forge
 sphinxcontrib-qthelp      2.0.0              pyhd8ed1ab_0    conda-forge
 sphinxcontrib-serializinghtml 1.1.10             pyhd8ed1ab_0    conda-forge
-spyder                    6.0.0           py310h5588dad_1    conda-forge
+spyder                    6.0.1           py310h5588dad_1    conda-forge
 spyder-kernels            3.0.0           win_pyh7428d3b_0    conda-forge
 sqlite                    3.46.1               h2466b09_0    conda-forge
 stack_data                0.6.2              pyhd8ed1ab_0    conda-forge
@@ -447,7 +447,7 @@ xorg-xproto               7.0.31            hcd874cb_1007    conda-forge
 xz                        5.2.6                h8d14728_0    conda-forge
 yaml                      0.2.5                h8ffe710_2    conda-forge
 yapf                      0.40.1             pyhd8ed1ab_0    conda-forge
-yarl                      1.9.4           py310ha8f682b_1    conda-forge
+yarl                      1.12.1          py310ha8f682b_0    conda-forge
 zeromq                    4.3.5                he1f189c_4    conda-forge
 zipp                      3.20.2             pyhd8ed1ab_0    conda-forge
 zlib                      1.3.1                h2466b09_1    conda-forge
