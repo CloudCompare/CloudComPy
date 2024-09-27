@@ -16,7 +16,7 @@ conda config --add channels conda-forge
 conda config --set channel_priority flexible
 conda install -y boost cgal cmake draco "ffmpeg=6.1" gdal jupyterlab laszip matplotlib "mysql=8" notebook numpy opencv openmp "openssl=3.1" pcl pdal psutil pybind11 quaternion "qhull=2020.2" "qt=5.15.8" scipy sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2"
 ```
-For information, the list of packages actually installed for building and testing can be found in `building/conda-list`.
+For information, the list of packages actually installed for building and testing can be found in [conda-list_Windows11_310](../building/conda-list_Windows11_310).
 
 CMake from miniconda is used to get ctest at install, not for build.
 
@@ -45,7 +45,7 @@ the libraries...
     PLUGIN_IO_QFBX for Autodesk format, see file I/O and above
     PLUGIN_IO_QSTEP for step format (OpenCascade libraries)
 
-My CMakeSettings.json file used to build CloudComPy is in the source package.
+My [CMakeSettings.json](../CMakeSettings.json) file used to build CloudComPy is in the source package.
 
 After the installation step, it is in any case necessary to load the miniconda environment (miniconda Prompt console) 
 for Python and Numpy to be correctly configured.

@@ -126,4 +126,13 @@ The files created with the tests are in your user space: `${HOME}/CloudComPy/Dat
 
  - The plugins QRDB, QSTEP, QTREEISO are not available.
  - test042.py fails on macOS
+
+### In case of problem:
+
+There may be differences in the versions of conda packages. When updating the conda configuration, the package versions may change slightly.
+This is usually not a problem, but since the CloudComPy binary is fixed, there may be a version difference on a package, 
+which makes it incompatible with CloudComPy. For your information, here is the list of package versions when CloudComPy was built.
+
+The result of ```conda list``` command is provided in the sources in [building directory](../building)
+
  
