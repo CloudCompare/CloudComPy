@@ -75,12 +75,16 @@ cloud2 = cloud.cloneThis()
 #---normals01-begin
 cloud2.shiftPointsAlongNormals(0.5)
 #---normals01-end
+cloud2.exportCoordToSF(False, True, True)
 mesh2 = cc.ccMesh.triangulate(cloud2, cc.TRIANGULATION_TYPES.DELAUNAY_2D_AXIS_ALIGNED, dim=2)
 mesh2.flagVerticesByType()
 nsf2 = cloud2.getNumberOfScalarFields()
-sfc2 = cloud2.getScalarField(nsf2 - 1)
-cloud2.setCurrentOutScalarField(nsf2 - 1)
+dic = cloud2.getScalarFieldDic()
+sfc2 = cloud2.getScalarField(dic['Vertex type'])
+cloud2.setCurrentOutScalarField(dic['Vertex type'])
 fcloud2 = cc.filterBySFValue(0.01, sfc2.getMax(), cloud2)
+cloud2.setCurrentOutScalarField(dic['Coord. Z'])
+fmesh2 = cc.filterBySFValue(0.4, 1.0, mesh2)
 
 poly2 = cc.ccPolyline(fcloud2)
 poly2.addChild(fcloud2)
@@ -92,6 +96,6 @@ poly2.samplePoints(False, 1000)
 dish.flipTriangles()
 #---meshTriangles01-end
 
-cc.SaveEntities([sphere, dish, cloud2, mesh2, fcloud, fcloud2, poly, poly2], os.path.join(dataDir, "entities3.bin"))
+cc.SaveEntities([sphere, dish, cloud2, mesh2, fcloud, fcloud2, fmesh2, poly, poly2], os.path.join(dataDir, "entities3.bin"))
 
 

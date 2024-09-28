@@ -277,7 +277,9 @@ Applies ICP registration on two entities.
 :param float,optional finalOverlapRatio: Theoretical overlap ratio (at each iteration, only this percentage (between 0 and 1).
        Will be used for registration (default 1.0).
 :param bool,optional useDataSFAsWeights: Weights for data points (default `False`).
+                                         The scalar field must be the current SF in data (see setCurrentScalarField)
 :param bool,optional useModelSFAsWeights: Weights for model points (default `False`).
+                                          The scalar field must be the current SF in model (see setCurrentScalarField)
 :param TRANSFORMATION_FILTERS,optional transformationFilters: Filters to be applied on the resulting transformation at each step (default 0).
 
    - SKIP_NONE           = 0
@@ -291,6 +293,10 @@ Applies ICP registration on two entities.
    - SKIP_TRANSLATION    = 56
 
 :param int,optional maxThreadCount: Maximum number of threads to use (default 0 = max)
+:param bool,optional useC2MSignedDistances: use signed distances (default `False`)
+:param bool,optional robustC2MSignedDistances: use robust signed distances (default `True`)
+:param normalMatching,optional normalMatching: type of normal matching, default NO_NORMAL
+       values from (NO_NORMAL, OPPOSITE_NORMALS, SAME_SIDE_NORMALS, DOUBLE_SIDED_NORMALS)
 
 :return: ICPres structure :py:class:`ICPres`
 )";
@@ -504,10 +510,13 @@ Optional values can be used to specify version and format, with the LAS plugin, 
 
 - pointFormat=N with N integer between 0 and 10 
 
+Optional ASCII file format, for ply plugin
+
 :param ccPointCloud cloud: the cloud to save.
 :param str filename: The cloud file.
 :param string,optional version: optional string, default "", used to specify a particular version. (for las plugin only)
 :param int,optional pointFormat: optional point format valid values 0 to 10), default -1 (automatically set)(for las plugin only)
+:param bool,optional isAscii: optional file format, ASCII or BINARY, default False = BINARY (for ply plugin)
 
 :return: 0 or I/O error.
 :rtype: CC_FILE_ERROR)";
@@ -649,6 +658,17 @@ Keep the points whose ScalarField value is between the min and max parameters.
 
 :return: a ccPointCloud object.
 :rtype: ccPointCloud )";
+
+const char* cloudComPy_MeshFilterBySFValue_doc= R"(
+Create a new mesh by filtering points using the current out ScalarField (see getAssociatedCloud().setCurrentOutScalarField).
+Keep the points whose ScalarField value is between the min and max parameters.
+
+:param float min: minimum value to keep
+:param float max: maximum value to keep
+:param ccMesh mesh: the input mesh
+
+:return: a ccMesh object.
+:rtype: ccMesh )";
 
 const char* cloudComPy_GetPointCloudRadius_doc= R"(
 Compute an estimate radius to use in computeCurvature.

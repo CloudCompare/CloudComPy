@@ -467,7 +467,7 @@
         },
         {
           "name": "GDAL_LIBRARY",
-          "value": "${condaRoot}/Library/lib/gdal_i.lib",
+          "value": "${condaRoot}/Library/lib/gdal.lib",
           "type": "FILEPATH"
         },
         {

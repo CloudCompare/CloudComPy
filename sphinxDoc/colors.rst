@@ -5,7 +5,7 @@ Colors
 =============================
 
 .. py:module:: cloudComPy
-    :noindex:
+    :no-index:
     
 Color classes are useful for the functions related to color in :py:class:`ccPointCloud` class.
 

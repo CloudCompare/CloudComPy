@@ -100,6 +100,14 @@ const char* getScalarType()
 
 struct ICPres
 {
+    ICPres() :
+            aligned(nullptr),
+            transMat(ccGLMatrix()),
+            finalScale(1.0),
+            finalRMS(0.0),
+            finalPointCount(0)
+    {
+    }
     ccPointCloud* aligned;
     ccGLMatrix transMat;
     double finalScale;
@@ -107,39 +115,50 @@ struct ICPres
     unsigned finalPointCount;
 };
 
-ICPres ICP_py(  ccHObject* data,
-                ccHObject* model,
-                double minRMSDecrease=1.e-5,
-                unsigned maxIterationCount=20,
-                unsigned randomSamplingLimit=50000,
-                bool removeFarthestPoints=false,
-                CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE method=CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE::MAX_ITER_CONVERGENCE,
-                bool adjustScale=false,
-                double finalOverlapRatio = 1.0,
-                bool useDataSFAsWeights = false,
-                bool useModelSFAsWeights = false,
-                int transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE,
-                int maxThreadCount = 0)
+const ICPres* ICP_py(ccHObject* data,
+                    ccHObject* model,
+                    double minRMSDecrease=1.e-5,
+                    unsigned maxIterationCount=20,
+                    unsigned randomSamplingLimit=50000,
+                    bool removeFarthestPoints=false,
+                    CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE method=CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE::MAX_ITER_CONVERGENCE,
+                    bool adjustScale=false,
+                    double finalOverlapRatio = 1.0,
+                    bool useDataSFAsWeights = false,
+                    bool useModelSFAsWeights = false,
+                    int transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE,
+                    int maxThreadCount = 0,
+                    bool useC2MSignedDistances=false,
+                    bool robustC2MSignedDistances=true,
+                    CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING normalMatching=CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::NO_NORMAL)
 {
-    ICPres a;
+    CCCoreLib::ICPRegistrationTools::Parameters params;
+    params.convType = method;
+    params.minRMSDecrease = minRMSDecrease;
+    params.nbMaxIterations = maxIterationCount;
+    params.adjustScale = adjustScale;
+    params.filterOutFarthestPoints = removeFarthestPoints;
+    params.samplingLimit = randomSamplingLimit;
+    params.finalOverlapRatio = finalOverlapRatio;
+    params.modelWeights = nullptr;
+    params.dataWeights = nullptr;
+    params.transformationFilters = transformationFilters;
+    params.maxThreadCount = maxThreadCount;
+    params.useC2MSignedDistances = useC2MSignedDistances;
+    params.robustC2MSignedDistances = robustC2MSignedDistances;
+    params.normalsMatching = normalMatching;
+
+    ICPres* a = new ICPres();
     ICP(data,
         model,
-        a.transMat,
-        a.finalScale,
-        a.finalRMS,
-        a.finalPointCount,
-        minRMSDecrease,
-        maxIterationCount,
-        randomSamplingLimit,
-        removeFarthestPoints,
-        method,
-        adjustScale,
-        finalOverlapRatio,
+        a->transMat,
+        a->finalScale,
+        a->finalRMS,
+        a->finalPointCount,
+        params,
         useDataSFAsWeights,
-        useModelSFAsWeights,
-        transformationFilters,
-        maxThreadCount);
-    a.aligned = dynamic_cast<ccPointCloud*>(data);
+        useModelSFAsWeights);
+    a->aligned = dynamic_cast<ccPointCloud*>(data);
     return a;
 }
 
@@ -675,6 +694,8 @@ viewerPy* getOrInitializeViewer()
         w = new viewerPy();
         app->setViewer(w);
         CCTRACE("viewerPy initialized");
+        ccHObject* root = new ccHObject("viewerPyDBroot");
+        w->addToDB(root);
 	}
     CCTRACE("--- w " << w);
 	return w;
@@ -781,6 +802,7 @@ void addToRenderScene(ccHObject* obj, bool showScalar=true)
 		CCTRACE("cannot find viewerPyApplication!");
 		return;
 	}
+	CCTRACE("viewerPyApplication: " << app);
 	viewerPy* w = getOrInitializeViewer();
 
 	w->addToDB(obj);
@@ -2695,6 +2717,13 @@ PYBIND11_MODULE(_cloudComPy, m0)
         .value("ENV_FULL", EnvelopeType::ENV_FULL)
         .export_values();
 
+    py::enum_<CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING>(m0, "normalMatching")
+        .value("NO_NORMAL", CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::NO_NORMAL)
+        .value("OPPOSITE_NORMALS", CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::OPPOSITE_NORMALS)
+        .value("SAME_SIDE_NORMALS", CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::SAME_SIDE_NORMALS)
+        .value("DOUBLE_SIDED_NORMALS", CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::DOUBLE_SIDED_NORMALS)
+        .export_values();
+
     m0.def("importFile", &importFilePy,
            py::arg("filename"), py::arg("mode")=AUTO, py::arg("x")=0, py::arg("y")=0, py::arg("z")=0, py::arg("extraData")="",
            cloudComPy_importFile_doc);
@@ -2735,7 +2764,7 @@ PYBIND11_MODULE(_cloudComPy, m0)
     m0.def("SaveMesh", &SaveMesh, cloudComPy_SaveMesh_doc);
 
     m0.def("SavePointCloud", &SavePointCloud,
-           py::arg("cloud"), py::arg("filename"), py::arg("version")=QString(""), py::arg("pointFormat")=-1,
+           py::arg("cloud"), py::arg("filename"), py::arg("version")=QString(""), py::arg("pointFormat")=-1, py::arg("isAscii")=true,
            cloudComPy_SavePointCloud_doc);
 
     m0.def("SaveEntities", &SaveEntities, cloudComPy_SaveEntities_doc);
@@ -2786,7 +2815,11 @@ PYBIND11_MODULE(_cloudComPy, m0)
 
     m0.def("computeMomentOrder1", &computeMomentOrder1, cloudComPy_computeMomentOrder1_doc);
 
-    m0.def("filterBySFValue", &filterBySFValue, py::return_value_policy::reference, cloudComPy_filterBySFValue_doc);
+    m0.def("filterBySFValue", static_cast<ccPointCloud* (*)(double, double, ccPointCloud*)>(&filterBySFValue),
+           py::return_value_policy::reference, cloudComPy_filterBySFValue_doc);
+
+    m0.def("filterBySFValue", static_cast<ccMesh* (*)(double, double, ccMesh*)>(&filterBySFValue),
+           py::return_value_policy::reference, cloudComPy_MeshFilterBySFValue_doc);
 
     m0.def("GetPointCloudRadius", &GetPointCloudRadius,
            py::arg("clouds"), py::arg("nodes")=12, cloudComPy_GetPointCloudRadius_doc);
@@ -2819,6 +2852,10 @@ PYBIND11_MODULE(_cloudComPy, m0)
            py::arg("useModelSFAsWeights")=false,
            py::arg("transformationFilters")=CCCoreLib::RegistrationTools::SKIP_NONE,
            py::arg("maxThreadCount")=0,
+           py::arg("useC2MSignedDistances")=false,
+           py::arg("robustC2MSignedDistances")=true,
+           py::arg("normalMatching")=CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING::NO_NORMAL,
+           py::return_value_policy::take_ownership,
            cloudComPy_ICP_doc);
 
     m0.def("computeNormals", &computeNormals,

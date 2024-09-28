@@ -53,7 +53,8 @@ cc.SaveEntities([cloud1, cloud2ref, cloud2], os.path.join(dataDir, "clouds2.bin"
 #---ICP02-begin
 res=cc.ICP(data=cloud2, model=cloud1, finalOverlapRatio=0.1)
 tr2 = res.transMat
-cloud3 = res.aligned
+print(tr2.toString())
+cloud3 = res.aligned.cloneThis() # note: res.aligned is clone2!
 cloud3.applyRigidTransformation(tr2)
 cloud3.setName("cloud2_transformed_afterICP")
 #---ICP02-end
@@ -75,13 +76,20 @@ cc.DistanceComputationTools.computeCloud2CloudDistances(cloud2ref, cloud3, param
 sf = cloud2ref.getScalarField(cloud2ref.getNumberOfScalarFields()-1)
 mindist = sf.getMin()
 maxdist = sf.getMax()
+print("maxdist:", maxdist)
 if mindist < 0:
     raise RuntimeError
 if maxdist > 0.04:
     raise RuntimeError
 
-cc.SaveEntities([cloud1, cloud2, cloud2ref, cloud3], os.path.join(dataDir, "clouds3.bin"))
+cc.computeNormals([cloud1, cloud2])
+res2=cc.ICP(data=cloud2, model=cloud1, finalOverlapRatio=0.1, normalMatching=cc.normalMatching.SAME_SIDE_NORMALS)
+tr3 = res2.transMat
+cloud4 = res2.aligned.cloneThis()
+cloud4.applyRigidTransformation(tr3)
+cloud4.setName("cloud2_transformed_afterICP_normalMatching")
 
+cc.SaveEntities([cloud1, cloud2, cloud2ref, cloud3, cloud4], os.path.join(dataDir, "clouds3.bin"))
 
 
 

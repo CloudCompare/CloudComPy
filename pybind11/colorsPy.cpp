@@ -343,7 +343,7 @@ void export_colors(py::module &m0)
         .def("setRgbUInt", &setRgbUInt_py, colorsPy_setRgbUInt_doc)
         .def("setRgba64", &QColor::setRgba64, colorsPy_setRgba64_doc)
         .def("setRgbF", &QColor::setRgbF,
-             py::arg("r"), py::arg("g"), py::arg("g"), py::arg("a")=1.0,
+             py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=1.0,
              colorsPy_setRgbF_doc)
         .def("spec", &QColor::spec, colorsPy_spec_doc)
         .def("toCmyk", &QColor::toCmyk, colorsPy_toCmyk_doc)
@@ -374,11 +374,11 @@ void export_colors(py::module &m0)
              py::arg("h"), py::arg("s"), py::arg("v"), py::arg("a")=1.0,
              colorsPy_fromHsvF_doc)
         .def_static("fromRgb", &fromRgb_py,
-             py::arg("r"), py::arg("g"), py::arg("g"), py::arg("a")=255,
+             py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=255,
              colorsPy_fromRgb_doc)
         .def_static("fromRgbUInt", &fromRgbUInt_py, colorsPy_fromRgbUInt_doc)
         .def_static("fromRgba64", &fromRgba64_py,
-             py::arg("r"), py::arg("g"), py::arg("g"), py::arg("a")=USHRT_MAX,
+             py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=USHRT_MAX,
              colorsPy_fromRgba64_py_doc)
         .def_static("fromRgba64Q", &fromRgba64Q_py, colorsPy_fromRgba64Q_doc)
         .def_static("fromRgbF", &QColor::fromRgbF,

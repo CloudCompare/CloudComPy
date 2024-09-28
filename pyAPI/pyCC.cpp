@@ -37,6 +37,7 @@
 #include <ccScalarField.h>
 #include <ccSensor.h>
 #include <ccMesh.h>
+#include <ccSubMesh.h>
 #include <ccFacet.h>
 #include <ccGLMatrix.h>
 #include <ccRasterGrid.h>
@@ -79,6 +80,8 @@
 #include <viewerPy.h>
 #include <viewerPyApplication.h>
 #include "optdefines.h"
+
+#include "pyccTrace.h"
 
 #ifdef PLUGIN_IO_QFBX
 #include <FBXFilter.h>
@@ -686,7 +689,7 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode,
 
 }
 
-::CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version, int pointFormat)
+::CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version, int pointFormat, bool isAscii)
 {
     CCTRACE("saving cloud, version " << version.toStdString());
     pyCC* capi = initCloudCompare();
@@ -716,7 +719,10 @@ std::vector<ccHObject*> importFile(const char* filename, CC_SHIFT_MODE mode,
         parameters.pointFormat = pointFormat;
         CCTRACE("parameters.pointFormat: " << parameters.pointFormat);
     }
-
+    if (isAscii)
+    {
+        parameters.isAscii = true;
+    }
     QString fileFilter = "";
     const std::vector<FileIOFilter::Shared>& filters = FileIOFilter::GetFilters();
     for (const auto filter : filters)
@@ -859,7 +865,7 @@ bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds)
 
 ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
 {
-    CCTRACE("filterBySFValue min: " << minVal << " max: " << maxVal << " cloudName: " << cloud->getName().toStdString());
+    CCTRACE("Cloud filterBySFValue min: " << minVal << " max: " << maxVal << " cloudName: " << cloud->getName().toStdString());
     CCCoreLib::ScalarField* sf = cloud->getCurrentOutScalarField();
     ccPointCloud* fitleredCloud = nullptr;
     if (sf)
@@ -870,6 +876,49 @@ ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud)
     }
     return fitleredCloud;
 }
+// see CommandFilterBySFValue::process and MainWindow::doActionFilterByValue
+ccMesh* filterBySFValue(double minVal, double maxVal, ccMesh* mesh)
+{
+    CCTRACE("Mesh filterBySFValue min: " << minVal << " max: " << maxVal << " cloudName: " << mesh->getName().toStdString());
+    ccPointCloud* pc = ccHObjectCaster::ToPointCloud(mesh);
+    if (!pc)
+    {
+        CCTRACE("Strange Mesh with no cloud");
+        return nullptr;
+    }
+    CCCoreLib::ScalarField* sf = pc->getCurrentOutScalarField();
+    if (!sf)
+    {
+        CCTRACE("no current out scalar field");
+        return nullptr;
+    }
+
+    ccPointCloud* fitleredCloud = nullptr;
+    ScalarType vmin = minVal;
+    ScalarType vmax = maxVal;
+    pc->hidePointsByScalarValue(vmin, vmax);
+    ccMesh* filteredMesh = nullptr;
+    if (mesh->isA(CC_TYPES::MESH)/*|| ent->isKindOf(CC_TYPES::PRIMITIVE)*/) //TODO
+        filteredMesh = ccHObjectCaster::ToMesh(mesh)->createNewMeshFromSelection(false);
+//    else if (mesh->isA(CC_TYPES::SUB_MESH))
+//        filteredMesh = ccHObjectCaster::ToSubMesh(mesh)->createNewSubMeshFromSelection(false);
+    else
+    {
+        CCTRACE("Unhandled mesh type for entity "<< mesh->getName().toStdString());
+        return nullptr;
+    }
+    if (!filteredMesh)
+    {
+        CCTRACE("ccHObjectCaster returns empty filtered mesh!"<< mesh->getName().toStdString());
+        return nullptr;
+
+    }
+    CCTRACE("Mesh " << mesh->getName().toStdString() << " " << filteredMesh->size() << "/" << mesh->size() << " triangles remaining");
+    QString name = mesh->getName() + QString("_FILTERED_[%1_%2]").arg(vmin).arg(vmax);
+    filteredMesh->setName(name);
+    return filteredMesh;
+}
+
 
 double GetPointCloudRadius(std::vector<ccHObject*> clouds, unsigned knn)
 {
@@ -1178,17 +1227,9 @@ bool ICP(
     double& finalScale,
     double& finalRMS,
     unsigned& finalPointCount,
-    double minRMSDecrease,
-    unsigned maxIterationCount,
-    unsigned randomSamplingLimit,
-    bool removeFarthestPoints,
-    CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE method,
-    bool adjustScale,
-    double finalOverlapRatio,
+    const CCCoreLib::ICPRegistrationTools::Parameters& inputParameters,
     bool useDataSFAsWeights,
-    bool useModelSFAsWeights,
-    int transformationFilters,
-    int maxThreadCount)
+    bool useModelSFAsWeights)
 {
     // TODO duplicated code from qCC / ccRegistrationTools::ICP
 
@@ -1199,6 +1240,7 @@ bool ICP(
 
     bool restoreColorState = false;
     bool restoreSFState = false;
+    CCCoreLib::ICPRegistrationTools::Parameters params = inputParameters;
 
     CCCoreLib::Garbage<CCCoreLib::GenericIndexedCloudPersist> cloudGarbage;
 
@@ -1222,7 +1264,7 @@ bool ICP(
         dataCloud = CCCoreLib::MeshSamplingTools::samplePointsOnMesh(ccHObjectCaster::ToGenericMesh(data), s_defaultSampledPointsOnDataMesh);
         if (!dataCloud)
         {
-            ccLog::Error("[ICP] Failed to sample points on 'data' mesh!");
+            CCTRACE("[ICP] Failed to sample points on 'data' mesh!");
             return false;
         }
         cloudGarbage.add(dataCloud);
@@ -1252,7 +1294,7 @@ bool ICP(
             pc->setCurrentScalarField(dataSfIdx);
         else
         {
-            ccLog::Error("[ICP] Couldn't create temporary scalar field! Not enough memory?");
+            CCTRACE("[ICP] Couldn't create temporary scalar field! Not enough memory?");
             return false;
         }
     }
@@ -1260,24 +1302,24 @@ bool ICP(
     {
         if (!dataCloud->enableScalarField())
         {
-            ccLog::Error("[ICP] Couldn't create temporary scalar field! Not enough memory?");
+            CCTRACE("[ICP] Couldn't create temporary scalar field! Not enough memory?");
             return false;
         }
     }
 
     //add a 'safety' margin to input ratio
     static double s_overlapMarginRatio = 0.2;
-    finalOverlapRatio = std::max(finalOverlapRatio, 0.01); //1% minimum
+    params.finalOverlapRatio = std::max(params.finalOverlapRatio, 0.01); //1% minimum
     //do we need to reduce the input point cloud (so as to be close
     //to the theoretical number of overlapping points - but not too
     //low so as we are not registered yet ;)
-    if (finalOverlapRatio < 1.0 - s_overlapMarginRatio)
+    if (params.finalOverlapRatio < 1.0 - s_overlapMarginRatio)
     {
         //DGM we can now use 'approximate' distances as SAITO algorithm is exact (but with a coarse resolution)
         //level = 7 if < 1.000.000
         //level = 8 if < 10.000.000
         //level = 9 if > 10.000.000
-        int gridLevel = static_cast<int>(std::floor(std::log10(static_cast<long double>(std::max(dataCloud->size(), modelCloud->size()))))) + 2;
+        int gridLevel = static_cast<int>(log10(static_cast<double>(std::max(dataCloud->size(), modelCloud->size())))) + 2; //static_cast is equivalent to floor if value >= 0
             gridLevel = std::min(std::max(gridLevel, 7), 9);
         int result = -1;
         if (modelMesh)
@@ -1289,19 +1331,22 @@ bool ICP(
             c2mParams.signedDistances = false;
             c2mParams.flipNormals = false;
             c2mParams.multiThread = false;
-            result = CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances(dataCloud, modelMesh, c2mParams);
+            c2mParams.robust = true;
+            result = CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances(dataCloud,
+                                                                                     modelMesh,
+                                                                                     c2mParams);
         }
         else
         {
             result = CCCoreLib::DistanceComputationTools::computeApproxCloud2CloudDistance( dataCloud,
-                                                                                        modelCloud,
-                                                                                        gridLevel,
-                                                                                        -1);
+                                                                                            modelCloud,
+                                                                                            gridLevel,
+                                                                                            -1);
         }
 
         if (result < 0)
         {
-            ccLog::Error("Failed to determine the max (overlap) distance (not enough memory?)");
+            CCTRACE("Failed to determine the max (overlap) distance (not enough memory?)");
             return false;
         }
 
@@ -1316,7 +1361,7 @@ bool ICP(
             }
             catch (const std::bad_alloc&)
             {
-                ccLog::Error("Not enough memory!");
+                CCTRACE("Not enough memory!");
                 return false;
             }
             for (unsigned i=0; i<count; ++i)
@@ -1327,7 +1372,7 @@ bool ICP(
             ParallelSort(distances.begin(), distances.end());
 
             //now look for the max value at 'finalOverlapRatio+margin' percent
-            maxSearchDist = distances[static_cast<size_t>(std::max(1.0,count*(finalOverlapRatio+s_overlapMarginRatio)))-1];
+            maxSearchDist = distances[static_cast<size_t>(std::max(1.0,count*(params.finalOverlapRatio+s_overlapMarginRatio)))-1];
         }
 
         //evntually select the points with distance below 'maxSearchDist'
@@ -1336,7 +1381,7 @@ bool ICP(
             CCCoreLib::ReferenceCloud* refCloud = new CCCoreLib::ReferenceCloud(dataCloud);
             cloudGarbage.add(refCloud);
             unsigned countBefore = dataCloud->size();
-            unsigned baseIncrement = static_cast<unsigned>(std::max(100.0,countBefore*finalOverlapRatio*0.05));
+            unsigned baseIncrement = static_cast<unsigned>(std::max(100.0,countBefore*params.finalOverlapRatio*0.05));
             for (unsigned i=0; i<countBefore; ++i)
             {
                 if (dataCloud->getPointScalarValue(i) <= maxSearchDist)
@@ -1344,7 +1389,7 @@ bool ICP(
                     if (    refCloud->size() == refCloud->capacity()
                         &&  !refCloud->reserve(refCloud->size() + baseIncrement) )
                     {
-                        ccLog::Error("Not enough memory!");
+                        CCTRACE("Not enough memory!");
                         return false;
                     }
                     refCloud->addPointIndex(i);
@@ -1355,29 +1400,29 @@ bool ICP(
 
             unsigned countAfter = dataCloud->size();
             double keptRatio = static_cast<double>(countAfter)/countBefore;
-            ccLog::Print(QString("[ICP][Partial overlap] Selecting %1 points out of %2 (%3%) for registration").arg(countAfter).arg(countBefore).arg(static_cast<int>(100*keptRatio)));
+            CCTRACE(QString("[ICP][Partial overlap] Selecting %1 points out of %2 (%3%) for registration").arg(countAfter).arg(countBefore).arg(static_cast<int>(100*keptRatio)).toStdString());
 
             //update the relative 'final overlap' ratio
-            finalOverlapRatio /= keptRatio;
+            params.finalOverlapRatio /= keptRatio;
         }
     }
 
     //weights
-    CCCoreLib::ScalarField* modelWeights = nullptr;
-    CCCoreLib::ScalarField* dataWeights = nullptr;
+    params.modelWeights = nullptr;
+    params.dataWeights = nullptr;
     {
         if (!modelMesh && useModelSFAsWeights)
         {
             if (modelCloud == dynamic_cast<CCCoreLib::GenericIndexedCloudPersist*>(model) && model->isA(CC_TYPES::POINT_CLOUD))
             {
                 ccPointCloud* pc = static_cast<ccPointCloud*>(model);
-                modelWeights = pc->getCurrentDisplayedScalarField();
-                if (!modelWeights)
-                    ccLog::Warning("[ICP] 'useDataSFAsWeights' is true but model has no displayed scalar field!");
+                params.modelWeights = pc->getCurrentDisplayedScalarField();
+                if (!params.modelWeights)
+                    CCTRACE("[ICP] 'useDataSFAsWeights' is true but model has no displayed scalar field!");
             }
             else
             {
-                ccLog::Warning("[ICP] 'useDataSFAsWeights' is true but only point cloud scalar fields can be used as weights!");
+                CCTRACE("[ICP] 'useDataSFAsWeights' is true but only point cloud scalar fields can be used as weights!");
             }
         }
 
@@ -1386,33 +1431,25 @@ bool ICP(
             if (!dataDisplayedSF)
             {
                 if (dataCloud == ccHObjectCaster::ToPointCloud(data))
-                    ccLog::Warning("[ICP] 'useDataSFAsWeights' is true but data has no displayed scalar field!");
+                {
+                    CCTRACE("[ICP] 'useDataSFAsWeights' is true but data has no displayed scalar field!");
+                }
                 else
-                    ccLog::Warning("[ICP] 'useDataSFAsWeights' is true but only point cloud scalar fields can be used as weights!");
+                {
+                    CCTRACE("[ICP] 'useDataSFAsWeights' is true but only point cloud scalar fields can be used as weights!");
+                }
             }
             else
             {
-                dataWeights = dataDisplayedSF;
+                params.dataWeights = dataDisplayedSF;
             }
         }
     }
 
+    CCTRACE(QString("[ICP] Will use %1 threads").arg(params.maxThreadCount).toStdString());
+
     CCCoreLib::ICPRegistrationTools::RESULT_TYPE result;
     CCCoreLib::PointProjectionTools::Transformation transform;
-    CCCoreLib::ICPRegistrationTools::Parameters params;
-    {
-        params.convType = method;
-        params.minRMSDecrease = minRMSDecrease;
-        params.nbMaxIterations = maxIterationCount;
-        params.adjustScale = adjustScale;
-        params.filterOutFarthestPoints = removeFarthestPoints;
-        params.samplingLimit = randomSamplingLimit;
-        params.finalOverlapRatio = finalOverlapRatio;
-        params.modelWeights = modelWeights;
-        params.dataWeights = dataWeights;
-        params.transformationFilters = transformationFilters;
-        params.maxThreadCount = maxThreadCount;
-    }
 
     result = CCCoreLib::ICPRegistrationTools::Register( modelCloud,
                                                     modelMesh,
@@ -1424,12 +1461,23 @@ bool ICP(
 
     if (result >= CCCoreLib::ICPRegistrationTools::ICP_ERROR)
     {
-        ccLog::Error("Registration failed: an error occurred (code %i)",result);
+        CCTRACE("Registration failed: an error occurred (code " << result << ")");
     }
     else if (result == CCCoreLib::ICPRegistrationTools::ICP_APPLY_TRANSFO)
     {
+        CCTRACE(" OK: CCCoreLib::ICPRegistrationTools::ICP_APPLY_TRANSFO");
         transMat = FromCCLibMatrix<double, float>(transform.R, transform.T, transform.s);
         finalScale = transform.s;
+    }
+    else if (result == CCCoreLib::ICPRegistrationTools::ICP_NOTHING_TO_DO)
+    {
+        CCTRACE("return code ICP: (code " << result << ")");
+        transMat = FromCCLibMatrix<double, float>(transform.R, transform.T, transform.s);
+        finalScale = transform.s;
+    }
+    else
+    {
+        CCTRACE("Bad return code ICP: (code " << result << ")");
     }
 
     //remove temporary SF (if any)

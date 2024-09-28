@@ -9,7 +9,7 @@ export CLOUDCOMPY_TARFILE=CloudComPy_Conda310_MacOS_"$(date +"%Y%m%d-%H%M")".tgz
 if [ -d ${HOME}/anaconda3 ]; then
     export CONDA_ROOT=${HOME}/anaconda3                                                # root directory of conda installation
 else
-    export CONDA_ROOT=${HOME}/miniconda3                                                # root directory of conda installation
+    export CONDA_ROOT=${HOME}/miniconda3                                               # root directory of conda installation
 fi
 export CONDA_ENV=CloudComPy310                                                         # conda environment name
 export CONDA_PATH=${CONDA_ROOT}/envs/${CONDA_ENV}                                      # conda environment directory
@@ -43,14 +43,15 @@ conda_buildenv()
     conda update -y -n base -c defaults conda
     conda activate ${CONDA_ENV}
     ret=$?
+    ret=1
     if [ $ret != "0" ]; then
         conda activate && \
         conda create -y --name ${CONDA_ENV} python=3.10 && \
         conda activate ${CONDA_ENV} || error_exit "conda environment ${CONDA_ENV} cannot be built"
     fi
     conda config --add channels conda-forge && \
-    conda config --set channel_priority strict && \
-    conda install -y "boost" "cgal" cmake draco "ffmpeg=4.4" "gdal" jupyterlab laszip "matplotlib" "mysql=8.0" "numpy" "opencv" "openssl=3.0.8" "pcl" "pdal" "psutil" pybind11 "qhull=2020.2" "qt=5.15.8" "scipy" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" xorg-libx11 || error_exit "conda environment ${CONDA_ENV} cannot be completed"
+    conda config --set channel_priority flexible && \
+    conda install -y boost cgal cmake draco "ffmpeg=6.1" gdal jupyterlab laszip matplotlib "mysql=8" notebook numpy opencv "openssl=3.1" pcl pdal psutil pybind11 quaternion "qhull=2020.2" "qt=5.15.8" scipy sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" xorg-libx11 || error_exit "conda environment ${CONDA_ENV} cannot be completed"
 }
 
 # --- CloudComPy build
@@ -65,19 +66,6 @@ cloudcompy_setenv()
     rm -rf ${CLOUDCOMPY_INSTALL}
     mkdir -p ${CLOUDCOMPY_BUILD} && cd ${CLOUDCOMPY_BUILD} || error_exit "access problem to ${CLOUDCOMPY_BUILD}"
 }
-
-#    -DCMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING="-O0 -g -DNDEBUG" \
-
-#    -DCMAKE_CXX_COMPILER:STRING="/opt/homebrew/bin/g++-13" \
-#    -DCMAKE_CXX_COMPILER_AR:FILEPATH="/opt/homebrew/bin/gcc-ar-13" \
-#    -DCMAKE_CXX_COMPILER_RANLIB:FILEPATH="/opt/homebrew/bin/gcc-ranlib-13" \
-#    -DCMAKE_C_COMPILER:STRING="/opt/homebrew/bin/gcc-13" \
-#    -DCMAKE_C_COMPILER_AR:FILEPATH="/opt/homebrew/bin/gcc-ar-13"  \
-#    -DCMAKE_C_COMPILER_RANLIB:FILEPATH="/opt/homebrew/bin/gcc-ranlib-13" \
-#    -DCMAKE_Fortran_COMPILER:FILEPATH="/opt/homebrew/bin/gfortran-13" \
-#    -DCMAKE_CXX_FLAGS:STRING="-I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include" \
-#    -DCMAKE_CXX_FLAGS:STRING="--sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk" \
-
 
 cloudcompy_configure()
 {
@@ -105,6 +93,9 @@ cloudcompy_configure()
     -DCONDA_LIBS:PATH="${CONDA_PATH}/lib" \
     -DCORK_INCLUDE_DIR:PATH="${CORK_REP}/src" \
     -DCORK_RELEASE_LIBRARY_FILE:FILEPATH="${CORK_REP}/lib/libcork.a" \
+    -DDRACO_INCLUDE_DIR:PATH="${CONDA_PATH}/include" \
+    -DDRACO_LIB_DIR:PATH="${CONDA_PATH}/lib" \
+    -DDRACO_LIBRARIES:PATH="${CONDA_PATH}/lib/libdraco.a" \
     -DEIGEN_INCLUDE_DIR:PATH="${CONDA_PATH}/include/eigen3" \
     -DEIGEN_ROOT_DIR:PATH="${CONDA_PATH}/include/eigen3" \
     -DFBX_SDK_INCLUDE_DIR:PATH="${FBXSDK_REP}/include" \
@@ -138,6 +129,7 @@ cloudcompy_configure()
     -DPLUGIN_IO_QADDITIONAL:BOOL="1" \
     -DPLUGIN_IO_QCORE:BOOL="1" \
     -DPLUGIN_IO_QCSV_MATRIX:BOOL="1" \
+    -DPLUGIN_IO_QDRACO:BOOL="1" \
     -DPLUGIN_IO_QE57:BOOL="1" \
     -DPLUGIN_IO_QFBX:BOOL="1" \
     -DPLUGIN_IO_QLAS:BOOL="1" \
@@ -148,6 +140,7 @@ cloudcompy_configure()
     -DPLUGIN_IO_QRDB_FETCH_DEPENDENCY:BOOL="1" \
     -DPLUGIN_IO_QRDB_INSTALL_DEPENDENCY:BOOL="1" \
     -DPLUGIN_IO_QSTEP:BOOL="0" \
+    -DPLUGIN_STANDARD_3DMASC:BOOL="1" \
     -DPLUGIN_STANDARD_MASONRY_QAUTO_SEG:BOOL="1" \
     -DPLUGIN_STANDARD_MASONRY_QMANUAL_SEG:BOOL="1" \
     -DPLUGIN_STANDARD_QANIMATION:BOOL="1" \
@@ -200,14 +193,6 @@ cloudcompy_build()
 {
     echo "# --- build and install CloudComPy ---"
     cd ${CLOUDCOMPY_BUILD} && make -j${NBTHREADS} && make install
-    #cd ${OPENCASCADE_REP}/lib && \
-    #cp -f libTKSTEP.so.7 libTKSTEPBase.so.7 libTKSTEPAttr.so.7 libTKSTEP209.so.7 libTKShHealing.so.7 libTKTopAlgo.so.7 libTKBRep.so.7 \
-    #libTKGeomBase.so.7 libTKG3d.so.7 libTKG2d.so.7 libTKMath.so.7 libTKernel.so.7 libTKXSBase.so.7 libTKGeomAlgo.so.7 libTKMesh.so.7 \
-    #${CLOUDCOMPY_INSTALL}/lib/cloudcompare/plugins
-    #cd ${PCLLIB_REP}/lib && \
-    #cp -f libpcl_common.so.1.12.1 ${CLOUDCOMPY_INSTALL}/lib/cloudcompare
-    #cd ${CLOUDCOMPY_INSTALL}/lib/cloudcompare && \
-    #ln -s libpcl_common.so.1.12.1 libpcl_common.so.1.12 && ln -s libpcl_common.so.1.12.1 libpcl_common.so
 }
 
 cloudcompy_tarfile()

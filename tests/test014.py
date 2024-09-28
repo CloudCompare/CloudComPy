@@ -127,6 +127,22 @@ if not math.isclose(sfmax, -0.06670579, rel_tol=1e-06):
 if not math.isclose(sfmin, -0.9999990, rel_tol=1e-06):
     raise RuntimeError
 
+cloud.orientNormalsTowardViewPoint((0, 0, 15))
+cloud.exportNormalToSF(False, False, True)
+sf=cloud.getScalarField(cloud.getScalarFieldDic()['Nz'])
+sfmin = sf.getMin()
+sfmax = sf.getMax()
+if not math.isclose(sfmax, 0.9999990, rel_tol=1e-06):
+    raise RuntimeError
+if not math.isclose(sfmin, 0.06670579, rel_tol=1e-06):
+    raise RuntimeError
+
+cloud.orientNormalsTowardViewPoint()
+cloud.exportNormalToSF(False, False, True)
+sf=cloud.getScalarField(cloud.getScalarFieldDic()['Nz'])
+sfmin = sf.getMin()
+sfmax = sf.getMax()
+
 #---meshNormals01-begin
 cloud1 = cc.loadPointCloud(getSampleCloud2(3.0,0, 0.1))
 cloud1.setName("cloud1")

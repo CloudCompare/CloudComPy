@@ -72,6 +72,9 @@ if res != cc.CC_FERR_NO_ERROR:
 res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.ply")) # OK  FileIO::setWriterInfo has not been called
 if res != cc.CC_FERR_NO_ERROR:
     raise RuntimeError
+res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloudAscii.ply"), isAscii=True) # OK  FileIO::setWriterInfo has not been called
+if res != cc.CC_FERR_NO_ERROR:
+    raise RuntimeError
 res = cc.SavePointCloud(cloud, os.path.join(dataDir, "cloud.vtk")) # OK
 if res != cc.CC_FERR_NO_ERROR:
     raise RuntimeError
@@ -164,6 +167,10 @@ if cloudsbf.size() != 10000:
 
 cloudply = cc.loadPointCloud(os.path.join(dataDir, "cloud.ply"))
 if cloudply.size() != 10000:
+    raise RuntimeError
+
+cloudAsciiply = cc.loadPointCloud(os.path.join(dataDir, "cloudAscii.ply"))
+if cloudAsciiply.size() != 10000:
     raise RuntimeError
 
 cloudvtk = cc.loadPointCloud(os.path.join(dataDir, "cloud.vtk"))

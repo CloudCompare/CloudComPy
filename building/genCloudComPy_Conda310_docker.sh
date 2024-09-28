@@ -27,6 +27,7 @@ error_exit()
 conda_buildenv()
 {
     echo "# --- build conda environment ---"
+    conda update -y -n base -c defaults conda
     conda activate ${CONDA_ENV}
     ret=$?
     if [ $ret != "0" ]; then
@@ -36,7 +37,7 @@ conda_buildenv()
     fi
     conda config --add channels conda-forge && \
     conda config --set channel_priority strict && \
-    conda install -y "boost=1.74" "cgal=5.4" cmake draco ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
+    conda install -y "boost=1.74" "cgal=5.4" cmake draco ffmpeg "gdal=3.5" jupyterlab laszip "matplotlib=3.5" "mysql=8.0" "numpy=1.22" "opencv=4.5" "openmp=8.0" "pcl=1.12" "pdal=2.4" "psutil=5.9" pybind11 quaternion "qhull=2020.2" "qt=5.15.4" "scipy=1.8" sphinx_rtd_theme spyder tbb tbb-devel "xerces-c=3.2" || error_exit "conda environment ${CONDA_ENV} cannot be completed"
 }
 
 # --- CloudComPy build
@@ -73,6 +74,7 @@ cloudcompy_configure()
     -DCORK_INCLUDE_DIR:PATH="${CORK_REP}/src" \
     -DCORK_RELEASE_LIBRARY_FILE:FILEPATH="${CORK_REP}/lib/libcork.a" \
     -DDRACO_INCLUDE_DIR:PATH="${CONDA_PATH}/include" \
+    -DDRACO_LIB_DIR:PATH="${CONDA_PATH}/lib" \
     -DDRACO_LIBRARY:PATH="${CONDA_PATH}/lib/libdraco.a" \
     -DEIGEN_INCLUDE_DIR:PATH="${CONDA_PATH}/include/eigen3" \
     -DEIGEN_ROOT_DIR:PATH="${CONDA_PATH}/include/eigen3" \
@@ -115,6 +117,8 @@ cloudcompy_configure()
     -DPLUGIN_IO_QRDB_FETCH_DEPENDENCY:BOOL="1" \
     -DPLUGIN_IO_QRDB_INSTALL_DEPENDENCY:BOOL="1" \
     -DPLUGIN_IO_QSTEP:BOOL="0" \
+    -DPLUGIN_PYTHON="OFF" \
+    -DPLUGIN_STANDARD_3DMASC:BOOL="1" \
     -DPLUGIN_STANDARD_MASONRY_QAUTO_SEG:BOOL="1" \
     -DPLUGIN_STANDARD_MASONRY_QMANUAL_SEG:BOOL="1" \
     -DPLUGIN_STANDARD_QANIMATION:BOOL="1" \
@@ -137,6 +141,7 @@ cloudcompy_configure()
     -DPLUGIN_STANDARD_QPOISSON_RECON:BOOL="1" \
     -DPLUGIN_STANDARD_QRANSAC_SD:BOOL="1" \
     -DPLUGIN_STANDARD_QSRA:BOOL="1" \
+    -DPLUGIN_STANDARD_QTREEISO:BOOL="1" \
     -DPYTHONAPI_TEST_DIRECTORY:STRING="CloudComPy/Data" \
     -DPYTHONAPI_EXTDATA_DIRECTORY:STRING="CloudComPy/ExternalData" \
     -DPYTHONAPI_TRACES:BOOL="1" \

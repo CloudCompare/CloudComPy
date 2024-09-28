@@ -638,6 +638,12 @@ bool orientNormalsWithMST_py(ccPointCloud &self, unsigned char octreeLevel = 6)
     return self.orientNormalsWithMST(octreeLevel);
 }
 
+bool orientNormalsTowardViewPoint_py(ccPointCloud &self, const Vector3Tpl<float>& VP)
+{
+    Vector3Tpl<float> ncvp = VP;
+    return self.orientNormalsTowardViewPoint(ncvp, nullptr);
+}
+
 py::tuple partialClone_py(ccPointCloud &self,
                           const CCCoreLib::ReferenceCloud* selection)
 {
@@ -874,6 +880,9 @@ void export_ccPointCloud(py::module &m0)
         .def("orientNormalsWithMST", &orientNormalsWithMST_py,
              py::arg("octreeLevel")=6,
              ccPointCloudPy_orientNormalsWithMST_doc)
+        .def("orientNormalsTowardViewPoint", &orientNormalsTowardViewPoint_py,
+             py::arg("VP")=CCVector3(0,0,0),
+             ccPointCloudPy_orientNormalsTowardViewPoint_doc)
         .def("partialClone", &partialClone_py, ccPointCloudPy_partialClone_doc)
         .def("renameScalarField", &ccPointCloud::renameScalarField, ccPointCloudPy_renameScalarField_doc)
         .def("reserve", &ccPointCloud::reserve, ccPointCloudPy_reserve_doc)

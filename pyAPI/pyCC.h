@@ -134,7 +134,7 @@ std::vector<ccHObject*> importFile(const char* filename,
  * \param filename
  * \return IO status
  */
-CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version=QString(), int pointFormat=-1 );
+CC_FILE_ERROR SavePointCloud(ccPointCloud* cloud, const QString& filename, const QString& version=QString(), int pointFormat=-1, bool isAscii = false);
 
 //! save a mesh to a file
 /*! the file type is given by the extension
@@ -185,6 +185,14 @@ bool computeMomentOrder1(double radius, std::vector<ccHObject*> clouds);
  **/
 ccPointCloud* filterBySFValue(double minVal, double maxVal, ccPointCloud* cloud);
 
+//! Filters out cells whose points scalar values falls into an interval
+/** Threshold values should be expressed relatively to the current displayed scalar field.
+ \param minVal minimum value
+ \param maxVal maximum value
+ \return resulting mesh (remaining cells)
+ **/
+ccMesh* filterBySFValue(double minVal, double maxVal, ccMesh* mesh);
+
 //! Returns a default first guess for algorithms kernel size (several clouds)
 /*! copied from ccLibAlgorithms::GetDefaultCloudKernelSize
  * \param list of clouds
@@ -201,17 +209,9 @@ bool ICP(
     double& finalScale,
     double& finalRMS,
     unsigned& finalPointCount,
-    double minRMSDecrease,
-    unsigned maxIterationCount,
-    unsigned randomSamplingLimit,
-    bool removeFarthestPoints,
-    CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE method,
-    bool adjustScale,
-    double finalOverlapRatio = 1.0,
+    const CCCoreLib::ICPRegistrationTools::Parameters& inputParameters,
     bool useDataSFAsWeights = false,
-    bool useModelSFAsWeights = false,
-    int transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE,
-    int maxThreadCount = 0);
+    bool useModelSFAsWeights = false);
 
 //! copied from ccEntityAction::computeNormals
 bool computeNormals(std::vector<ccHObject*> selectedEntities,

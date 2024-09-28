@@ -4,7 +4,7 @@ Scalar Fields
 =============================
 
 .. py:module:: cloudComPy
-    :noindex:
+    :no-index:
 
 ----------------------------
 ccScalarField

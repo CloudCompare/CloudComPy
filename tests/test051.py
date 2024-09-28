@@ -30,6 +30,12 @@ os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 from gendata import getSampleCloud, getSampleCloud2, dataDir, dataExtDir, isCoordEqual
 import cloudComPy as cc
 
+#---rendermac-begin
+#   on macos, a first render is necessary before adding objects to the scene, 
+#   to avoid empty images later (TODO: fix this bug properly)
+cc.render(os.path.join(dataDir, "null.png"), 2000,1500)
+#---rendermac-end
+
 #---render001-begin
 cloud1 = cc.loadPointCloud(os.path.join(dataDir, "boule.bin"))
 cloud1.setCurrentScalarField(0)
@@ -42,6 +48,7 @@ for cloud in struct[1]:
     cloud.showNormals(True)
     cc.addToRenderScene(cloud)
 
+cc.setGlobalZoom()
 cc.render(os.path.join(dataDir, "rendera.png"), 2000,1500)
 #---render001-end
 
@@ -111,6 +118,10 @@ cc.render(os.path.join(dataDir, "render0.png"), 2000,1500)
 cc.setCameraPos((0., 0., 20.))
 cc.setCustomView((0., 1., 0.), (0., 0., 1.))
 cc.render(os.path.join(dataDir, "renderRef.png"), 2000,1500)
+
+cloud.setPointSize(4)
+cc.render(os.path.join(dataDir, "renderRef4.png"), 2000,1500)
+cloud.setPointSize(0)
 
 cc.setCenteredPerspectiveView()
 cc.render(os.path.join(dataDir, "renderRefCenterPers.png"), 2000,1500)

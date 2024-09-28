@@ -4,7 +4,7 @@ Geometrical Analysis Tools
 =============================
 
 .. py:module:: cloudComPy
-    :noindex:
+    :no-index:
 
 -----------------------------
 Geometrical Analysis

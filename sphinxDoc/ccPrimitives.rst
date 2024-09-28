@@ -5,7 +5,7 @@ ccPrimitives
 =============================
 
 .. py:module:: cloudComPy
-    :noindex:
+    :no-index:
 
 Primitives regroups all the geometric generators provided by CloudCompare:
 :py:class:`ccBox`, :py:class:`ccCone`, :py:class:`ccCylinder`, :py:class:`ccPlane`,

@@ -227,7 +227,9 @@ we apply a small rotation-translation on one cloud.
    :code: python
    
 Then we apply the ICP algorithm :py:meth:`cloudComPy.ICP` which gives a transformation to apply 
-to get the precise overlap of the clouds.
+to get the precise overlap of the clouds. 
+**Note:** the 'aligned' member of the result structure is the same object as the original cloud to align: clone it before applying
+the transformation if you want to keep the original.
 
 .. include:: ../tests/test010.py
    :start-after: #---ICP02-begin
@@ -1409,7 +1411,9 @@ Different modes of perspective are available:
  
  To define a zoom on the whole scene or on selected entities, use the :py:func:`cloudComPy.setGlobalZoom` and :py:func:`cloudComPy.zoomOnSelectedEntity` functions.
 
-The :py:func:`cloudComPy.setCustomView` and py:func:`cloudComPy.setCameraPos` functions are used to define a custom point of view.
+The :py:func:`cloudComPy.setCustomView` and :py:func:`cloudComPy.setCameraPos` functions are used to define a custom point of view.
+
+The size of cloud points can be changed with :py:meth:`~.cloudComPy.ccPointCloud.setPointSize` method on a cloud.
 
 Several functions and methods can be used to set the background color, display the scalar bar...
 
@@ -1426,7 +1430,7 @@ Several functions and methods can be used to set the background color, display t
 
 By default, the :py:func:`cloudComPy.render` function returns immediately after rendering the image.
 It is possible to select an interactive mode by setting the last optional parameter (bool isInteractive) to True.
-In this mode, the Python script is suspended, it is possible to adjust the 3D view.When the vue is correct,
+In this mode, the Python script is suspended, it is possible to adjust the 3D view. When the vue is correct,
 you have to select the action "resume Python script" in the "options" menu to save the render and resume the Python script execution.
 
 The above code snippets are from :download:`test051.py <../tests/test051.py>`.
