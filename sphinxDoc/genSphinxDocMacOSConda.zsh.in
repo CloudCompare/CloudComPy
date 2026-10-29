@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 source @PYTHONVENV_DIR@/bin/activate
-source @CMAKE_INSTALL_PREFIX@/bin/envCloudComPyMacOS.zsh activate
+source @CMAKE_INSTALL_PREFIX@/cloudComPy/envCloudComPyMacOS.zsh activate
 
 rm @SPHINXDOCTREES@/*.doctree
-@SPHINXBUILD@ -c @CMAKE_BINARY_DIR@/sphinxDoc -v -a -b html -d @SPHINXDOCTREES@ @ALLSPHINXOPTS@ @CMAKE_INSTALL_PREFIX@/doc/html 
+@SPHINXBUILD@ -c @CMAKE_BINARY_DIR@/sphinxDoc -v -a -b html -d @SPHINXDOCTREES@ @ALLSPHINXOPTS@ @CMAKE_INSTALL_PREFIX@/cloudComPy/doc/html 

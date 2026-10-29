@@ -27,14 +27,12 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import dataDir, createSymbolicLinks
 import cloudComPy as cc
+from gendata import dataDir
 
 #---optimalBB00-begin
 from cloudComPy.minimalBoundingBox import findRotation
 #---optimalBB00-end
-
-createSymbolicLinks() # required for tests on build, before cc.initCC.init
 
 # --- a rotated object, with a non optimal bounding box
 

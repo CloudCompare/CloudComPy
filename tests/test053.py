@@ -27,10 +27,10 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, dataDir, isCoordEqual
 import cloudComPy as cc
 import numpy as np
 import multiprocessing
+from gendata import getSampleCloud, dataDir, isCoordEqual
 
 if not cc.isPluginPoissonRecon():
     print("Test skipped")

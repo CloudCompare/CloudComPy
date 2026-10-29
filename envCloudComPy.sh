@@ -26,6 +26,7 @@
 activate()
 {
     if [ x${CLOUDCOMPY_ENV_ACTIVATED} != "x1" ]; then
+        echo "Activating CloudComPy environment"
         export LD_LIBRARY_PATH_SAVED=${LD_LIBRARY_PATH}
         export PYTHONPATH_SAVED=${PYTHONPATH}
         export PATH_SAVED=${PATH}
@@ -43,6 +44,7 @@ activate()
 deactivate()
 {
     if [ x${CLOUDCOMPY_ENV_ACTIVATED} == "x1" ]; then
+        echo "Deactivating CloudComPy environment"
         export LD_LIBRARY_PATH=${LD_LIBRARY_PATH_SAVED}
         export LD_LIBRARY_PATH_SAVED=
         export PYTHONPATH=${PYTHONPATH_SAVED}

@@ -27,10 +27,8 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, getSamplePoly, dataDir, isCoordEqual, createSymbolicLinks
 import cloudComPy as cc
-
-createSymbolicLinks() # required for tests on build, before cc.initCC.init
+from gendata import getSampleCloud, getSamplePoly, dataDir, isCoordEqual
 
 #---cloudCrop2D01-begin
 cloud = cc.loadPointCloud(getSampleCloud(5.0))

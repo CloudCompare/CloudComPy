@@ -3,15 +3,15 @@ import sys
 import math
 
 import numpy as np
+
+os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
+import cloudComPy as cc
+
 try:
     import quaternion
 except:
     print("Test skipped")
     sys.exit()
-
-
-os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
-import cloudComPy as cc
 
 # --- from ccGLMatrix to quaternion
 

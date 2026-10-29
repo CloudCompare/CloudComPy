@@ -28,10 +28,8 @@ import requests
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, getSampleCloud2, dataDir, dataExtDir, isCoordEqual, createSymbolicLinks, getSamplePoly
 import cloudComPy as cc
-
-createSymbolicLinks() # required for tests on build, before cc.initCC
+from gendata import getSampleCloud, getSampleCloud2, dataDir, dataExtDir, isCoordEqual, getSamplePoly
 
 cloud = cc.loadPointCloud(getSampleCloud2(3.0, 0, 0.1))
 cloud.setName("cloud")

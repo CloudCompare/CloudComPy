@@ -28,8 +28,8 @@ import psutil
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import dataDir, getSampleCloud
 import cloudComPy as cc
+from gendata import dataDir, getSampleCloud
 
 #---extractCC01-begin
 process = psutil.Process(os.getpid())

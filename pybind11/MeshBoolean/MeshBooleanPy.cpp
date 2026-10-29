@@ -43,11 +43,11 @@ PYBIND11_MODULE(_MeshBoolean, m4)
 {
     m4.doc() = MeshBoolean_doc;
 
-    py::enum_<CSG_OPERATION>(m4, "CSG_OPERATION")
-        .value("UNION", CSG_OPERATION::UNION)
-        .value("INTERSECT", CSG_OPERATION::INTERSECT)
-        .value("DIFF", CSG_OPERATION::DIFF)
-        .value("SYM_DIFF", CSG_OPERATION::SYM_DIFF)
+    py::enum_<ccMeshBooleanDialog::CSG_OPERATION>(m4, "CSG_OPERATION")
+        .value("UNION", ccMeshBooleanDialog::CSG_OPERATION::UNION)
+        .value("INTERSECT", ccMeshBooleanDialog::CSG_OPERATION::INTERSECT)
+        .value("DIFF", ccMeshBooleanDialog::CSG_OPERATION::DIFF)
+        .value("SYM_DIFF", ccMeshBooleanDialog::CSG_OPERATION::SYM_DIFF)
         .export_values();
         ;
 

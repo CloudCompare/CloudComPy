@@ -1,5 +1,5 @@
 call @CONDA_BASE_DIRECTORY@\Scripts\activate.bat @CONDA_BASE_DIRECTORY@
 call conda activate @CONDA_ENV_NAME@
-set PATH=@CMAKE_PREFIX_PATH@\bin;%PATH%
-call @CMAKE_INSTALL_PREFIX@\envCloudComPy.bat doc
+set PATH=@CMAKE_PREFIX_PATH@\cloudComPy;%PATH%
+call @CMAKE_INSTALL_PREFIX@\cloudComPy\envCloudComPy.bat doc
 call python @CMAKE_BINARY_DIR@\sphinxDoc\WinBundle.py

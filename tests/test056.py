@@ -27,9 +27,8 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import dataDir
-
 import cloudComPy as cc
+from gendata import dataDir
 
 #---Cork01-begin
 tr1 = cc.ccGLMatrix()

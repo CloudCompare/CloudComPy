@@ -179,6 +179,7 @@ It is equivalent to PCL StatisticalOutlierRemoval filter
 :param GenericProgressCallback,optional progressCb: default None,
        the client application can get some notification of the process progress through this callback mechanism
        (not available yet)
+:param int,optional maxThreadCount: default 0, maximum number of threads to use (0 = automatic)
 
 :return: a reference cloud corresponding to the filtered cloud
 :rtype: ReferenceCloud
@@ -202,6 +203,7 @@ This filter removes points based on their distance relatively to the best fit pl
 :param GenericProgressCallback,optional progressCb: default None,
        the client application can get some notification of the process progress through this callback mechanism
        (not available yet)
+:param int,optional maxThreadCount: default 0, maximum number of threads to use (0 = automatic)
 
 :return: a reference cloud corresponding to the filtered cloud
 :rtype: ReferenceCloud

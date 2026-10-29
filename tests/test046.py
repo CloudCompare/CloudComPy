@@ -29,9 +29,9 @@ import urllib.request
 
 os.environ["_CCTRACE_"] = "ON"  # only if you want C++ debug traces
 
-from gendata import dataDir, dataExtDir, isCoordEqual
 
 import cloudComPy as cc
+from gendata import dataDir, dataExtDir, isCoordEqual
 
 #---Canupo001-begin
 # example data available here: https://nicolas.brodu.net/common/recherche/canupo/benchmark.tar.gz

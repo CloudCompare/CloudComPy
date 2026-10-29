@@ -2,6 +2,11 @@
 
 These release notes start with the October 18, 2021 CloudComPy release.
 
+## september 27, 2026 CloudComPy release:
+
+ - Experimental PyPI wheel files for Python 3.10 through 3.14, macOS, Windows, Linux availables for test and download at https://www.simulation.openfields.fr/index.php/cloudcompy-downloads
+ - CloudComPy wheel files are based on CloudCompare 2.14 beta (september 27, 2026)
+
 ## may 26, 2026 CloudComPy release:
 
  - cloudComPy is based on CloudCompare 2.14alpha (master May 1st, 2026), with various patches needed by cloudComPy.

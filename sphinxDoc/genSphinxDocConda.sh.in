@@ -3,12 +3,21 @@
 isPypiBuild=@IS_PYPI_BUILD@
 
 if [ $isPypiBuild = "true" ] ; then
+    echo "Generating Sphinx documentation for PyPI build"
+    export LD_LIBRARY_PATH=@CMAKE_INSTALL_PREFIX@/cloudComPy:@CMAKE_INSTALL_PREFIX@/cloudComPy/plugins/CC:${LD_LIBRARY_PATH}
+    echo "LD_LIBRARY_PATH for doc: $LD_LIBRARY_PATH"
+    export PYTHONPATH=@CMAKE_INSTALL_PREFIX@/cloudComPy:@CMAKE_INSTALL_PREFIX@:@CMAKE_INSTALL_PREFIX@/cloudComPy/doc/PythonAPI_test${PYTHONPATH}
+    echo "PYTHONPATH for doc: $PYTHONPATH"
+    export QT_PLUGIN_PATH=@CMAKE_INSTALL_PREFIX@/cloudComPy/plugins
+    export QT_QPA_PLATFORM_PLUGIN_PATH=@CMAKE_INSTALL_PREFIX@/cloudComPy/plugins/platforms
+    export PATH=@CMAKE_INSTALL_PREFIX@/cloudComPy:${PATH}
+
     rm @SPHINXDOCTREES@/*.doctree
     @SPHINXBUILD@ -c @CMAKE_BINARY_DIR@/sphinxDoc -b html -d @SPHINXDOCTREES@ @ALLSPHINXOPTS@ @CMAKE_INSTALL_PREFIX@/cloudComPy/doc/html 
-    python @CMAKE_BINARY_DIR@/sphinxDoc/getDependency.py "@CMAKE_INSTALL_PREFIX@/cloudComPy" ${QT_PREFIX}
 else
     source @PYTHONVENV_DIR@/bin/activate
-    . @CMAKE_INSTALL_PREFIX@/bin/envCloudComPy.sh activate
+    . @CMAKE_INSTALL_PREFIX@/cloudComPy/envCloudComPy.sh activate
+    echo "Generating Sphinx documentation for conda build"
     rm @SPHINXDOCTREES@/*.doctree
     @SPHINXBUILD@ -c @CMAKE_BINARY_DIR@/sphinxDoc -b html -d @SPHINXDOCTREES@ @ALLSPHINXOPTS@ @CMAKE_INSTALL_PREFIX@/cloudComPy/doc/html 
 fi

@@ -27,8 +27,8 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, dataDir, dataExtDir
 import cloudComPy as cc
+from gendata import getSampleCloud, dataDir, dataExtDir
 
 #---render001-begin
 cloud = cc.loadPointCloud(getSampleCloud(5.0))

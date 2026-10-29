@@ -267,7 +267,7 @@ pyCC* initCloudCompare()
         CCTRACE("initCloudCompare");
     	//viewerPyApplication::InitOpenGL();
         QDir appDir = initCC::moduleDir;
-#ifdef Q_OS_LINUX
+#ifdef BUILD_PYPI
         QString appliDir = appDir.absolutePath() + "/cloudComPy";
 #else
         appDir.cdUp();
@@ -312,7 +312,11 @@ void pyCC_setupPaths(pyCC* capi)
         bundleDir.cdUp();
     }
 
+#ifdef BUILD_PYPI
+    capi->m_PluginPaths << (bundleDir.absolutePath() + "/cloudComPy/CloudCompare/CloudCompare.app/Contents/PlugIns/ccPlugins");
+#else
     capi->m_PluginPaths << (bundleDir.absolutePath() + "/CloudCompare/CloudCompare.app/Contents/PlugIns/ccPlugins");
+#endif
 
 #if defined(CC_MAC_DEV_PATHS)
     // Used for development only - this is the path where the plugins are built
@@ -321,19 +325,23 @@ void pyCC_setupPaths(pyCC* capi)
     bundleDir.cdUp();
     bundleDir.cdUp();
     bundleDir.cdUp();
-
     capi->m_PluginPaths << (bundleDir.absolutePath() + "/ccPlugins");
     capi->m_ShaderPath = (bundleDir.absolutePath() + "/shaders");
     capi->m_TranslationPath = (bundleDir.absolutePath() + "/qCC/translations");
+#elif defined(BUILD_PYPI)
+    capi->m_ShaderPath = (bundleDir.absolutePath() + "/cloudComPy/CloudCompare/CloudCompare.app/Contents/Shaders");
+    capi->m_TranslationPath = (bundleDir.absolutePath() + "/cloudComPy/CloudCompare/CloudCompare.app/Contents/translations");
 #else
     capi->m_ShaderPath = (bundleDir.absolutePath() + "/CloudCompare/CloudCompare.app/Contents/Shaders");
     capi->m_TranslationPath = (bundleDir.absolutePath() + "/CloudCompare/CloudCompare.app/Contents/translations");
 #endif
+
 #elif defined(Q_OS_WIN)
-    capi->m_PluginPaths << (appDir.absolutePath() + "/plugins");
-    capi->m_ShaderPath = (appDir.absolutePath() + "/shaders");
-    capi->m_TranslationPath = (appDir.absolutePath() + "/translations");
-#elif defined(Q_OS_LINUX)
+    capi->m_PluginPaths << (appDir.absolutePath() + "/cloudComPy/plugins");
+    capi->m_ShaderPath = (appDir.absolutePath() + "/cloudComPy/shaders");
+    capi->m_TranslationPath = (appDir.absolutePath() + "/cloudComPy/translations");
+
+    #elif defined(Q_OS_LINUX)
     // Shaders & plugins are relative to the bin directory where the executable is found
     QDir  theDir = appDir;
 
@@ -4570,7 +4578,7 @@ ccHObject* GetSlice_(ccHObject* obj, ccClipBox* clipBox, bool silent)
             CCTRACE("Not enough memory!");
             return nullptr;
         }
-        clipBox->flagPointsInside(inputCloud, &selectionTable);
+        clipBox->flagPoints(inputCloud, &selectionTable);
 
         ccGenericPointCloud* sliceCloud = inputCloud->createNewCloudFromVisibilitySelection(false, &selectionTable, nullptr, true);
         if (!sliceCloud)

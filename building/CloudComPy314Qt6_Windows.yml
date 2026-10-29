@@ -1,0 +1,28 @@
+name: CloudComPy314
+channels:
+ - conda-forge
+ - nodefaults
+dependencies:
+ - python=3.14
+ - libboost=1.88
+ - cgal-cpp=6.1
+ - cmake=4.3
+ - draco=1.5.7
+ - ffmpeg=8.1
+ - gdal=3.12
+ - laszip=3.4.3
+ - matplotlib=3.10
+ - mpir=3.0
+ - mysql=9.6
+ - notebook=7.5
+ - opencv=4.13
+ - occt=7.9
+ - openssl=3.6
+ - pcl=1.15.1
+ - pdal>=2.7
+ - pkgconfig
+ - psutil=7.2
+ - pybind11=3.0
+ - qhull=2020.2
+ - qt6-main=6.10
+ - xerces-c=3.3

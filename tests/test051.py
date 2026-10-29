@@ -27,8 +27,8 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, getSampleCloud2, dataDir, dataExtDir, isCoordEqual
 import cloudComPy as cc
+from gendata import getSampleCloud, getSampleCloud2, dataDir, dataExtDir, isCoordEqual
 
 #---rendermac-begin
 #   on macos, a first render is necessary before adding objects to the scene, 

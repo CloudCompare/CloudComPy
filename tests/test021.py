@@ -28,10 +28,8 @@ import numpy as np
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, getSamplePoly2, dataDir, isCoordEqual, createSymbolicLinks
 import cloudComPy as cc
-
-createSymbolicLinks() # required for tests on build, before cc.initCC
+from gendata import getSampleCloud, getSamplePoly2, dataDir, isCoordEqual
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 poly = cc.loadPolyline(getSamplePoly2("poly2"))

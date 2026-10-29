@@ -32,11 +32,7 @@ set( USE_DOCS
     UseMacOSCondaBinary.md
     UseWindowsCondaBinary.md
     )
-if ( LINUX )
     install(FILES ${USE_DOCS} DESTINATION cloudComPy/doc )
-else()
-    install(FILES ${USE_DOCS} DESTINATION doc )
-endif()
 
 add_subdirectory( samples )
 

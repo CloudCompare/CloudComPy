@@ -206,11 +206,11 @@ TODO List
 * DONE: (issue #216) Hough Plugin
 * DONE: Set automatically the build date on documentation
 * DONE: automatize windows build and test in a script
+* DONE: (issue #50) CloudComPy via Pip (Experimental: wheel files only available at openfields.fr site now)
 - TODO: try to have ctest working at build step on Windows and Linux (incomplete)
 - TODO: A kind of automatic test coverage, to find examples for a particular function.
 - TODO: Fix the Link problem in Windows to avoid the option /force:multiple at link step
 - TODO: add functions to get an inventory of all C++ entities, for cleaning memory purpose...
-- TODO: (issue #50) evaluate the feasibility of pip or conda packaging of CloudComPy
 - TODO: check Qt 5.15.6 for the translation bug observed with Qt 5.15.4
 - TODO: (issue #105) propose a solution for CloudComPy on a cluster (without display)
 - TODO: (issue #118) Build a version with double precision scalar field.
@@ -236,7 +236,8 @@ TODO List
 - TODO: study convergence with Python plugin
 - TODO: implement missing methods from ManualSegmentationTools
 - TODO: following setPointSize, add other methods for improving rendering in file
-
+- TODO: update documentation and Readme for PyPI
+- TODO: check Q3DMasc on PyPI (Windows)
 
 
 

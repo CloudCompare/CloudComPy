@@ -28,8 +28,8 @@ import requests
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import dataDir, dataExtDir
 import cloudComPy as cc
+from gendata import dataDir, dataExtDir
 
 # example data available here: http://sourceforge.net/projects/e57-3d-imgfmt/files/E57Example-data/
 if not os.path.isfile(os.path.join(dataExtDir,"pumpARowColumnIndexNoInvalidPoints.e57")):

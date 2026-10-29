@@ -60,7 +60,7 @@ def getDepLibs(packagePath="@CMAKE_INSTALL_PREFIX@/cloudComPy", QtPrefix="--- IG
     # --- extra libs set mannually added (not found by ldd, but needed for the plugins to work)
     buildpypi = "@BUILD_PYPI@"
     if (buildpypi == "TRUE"):
-        libs.add("/usr/lib64/libcblas.so.3")
+        libs.add("@CONDA_PATH@/lib/libcblas.so.3")
     else:
         libs.add("@CONDA_PATH@/lib/libcblas.so.3")
    

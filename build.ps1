@@ -1,5 +1,9 @@
 
 param(
+
+    [ValidateSet("10","11","12","13","14")]
+    [string]$PyMinor = "12",
+
     [switch]$All,         # Clean + Configure + Build + Install + Package + Tests
     [switch]$FromScratch, # Clean + Configure + Build
     [switch]$BuildOnly,   # Build uniquement
@@ -14,10 +18,9 @@ $PSNativeCommandUseErrorActionPreference = $true
 
 # --- LOCAL CONFIGURATION ------------------------------------------------------
 
+$CondaEnvName = "CloudComPy3$PyMinor"
 $CondaBase = "$Home/miniconda3"
-$CondaEnvName = "CloudComPy312"
 $CondaRoot = "$CondaBase/envs/$CondaEnvName"
-$PyMinVersion = "12"
 #$Qt6root = "C:/Qt/6.10.2/msvc2022_64"
 $Qt6root = "$CondaRoot/Library"
 $WorkRoot = "$Home/cloudComPy"
@@ -29,7 +32,7 @@ $BuildDir = "$BuildRoot/x64-$Configuration"
 $corkDir = "$WorkRoot/cork"
 $libiglDir = "$WorkRoot/libigl/libigl"
 $fbxSdk = "C:/Program Files/Autodesk/FBX/FBX SDK/2020.3.9"
-$PythonVenv = "$WorkRoot/venv3${PyMinVersion}doc"
+$PythonVenv = "$WorkRoot/venv3${PyMinor}doc"
 $CloudCompareVersion = "2.14.beta"
 
 # --- LOGGING & TIMING ---------------------------------------------------------
@@ -106,7 +109,7 @@ function Invoke-PrepareEnvironment {
     Start-Step "PrepareEnvironment"
 
     Clear-Host
-    Write-Step "🐍 Conda Activation (Qt neutralized)" "Green"
+    Write-Step "🐍 Conda Activation for Python 3.$PyMinor (Qt neutralized)" "Green"
 
     # Cleaning PATH / Qt Conda
     $env:PATH = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'Library\\bin\\Qt' -and $_ -notmatch 'Library\\bin\\qt' }) -join ';'
@@ -136,9 +139,9 @@ function Invoke-Configure {
     if (Test-Path $BuildDir) { Remove-Item -Recurse -Force $BuildDir }
     New-Item -ItemType Directory -Force $BuildDir | Out-Null
 
-    Write-Step "🔧 CMake configure..." "Green"
+    Write-Step "🔧 CMake configure for Python 3.$PyMinor..." "Green"
 
-    conda list > "$SourceDir\building\conda-list_conda3$PyMinVersion"
+    conda list > "$SourceDir\building\conda-list_Windows11_conda3$PyMinor"
 
     $cmakeArgs = @(
         "-S$SourceDir",
@@ -146,8 +149,8 @@ function Invoke-Configure {
         "-G", "Ninja",
         "-DCMAKE_BUILD_TYPE=$Configuration",
         "-DCMAKE_SHARED_LINKER_FLAGS='/machine:x64 /FORCE:MULTIPLE'",
-        "-DPYTHON_PREFERED_VERSION=3.$PyMinVersion",
-        "-DPYTHON_MIN_VERSION=$PyMinVersion",
+        "-DPYTHON_PREFERED_VERSION=3.$PyMinor",
+        "-DPYMINOR=$PyMinor",
         "-DUSE_CONDA_PACKAGES=ON",
         "-DCLOUDCOMPARE_VERSION=$CloudCompareVersion",
         "-DCONDA_BASE_DIRECTORY=$CondaBase",
@@ -156,7 +159,7 @@ function Invoke-Configure {
         "-DQt6_DIR=$Qt6root/lib/cmake/Qt6",
         "-DCMAKE_PREFIX_PATH=$Qt6root",
         "-DCMAKE_INSTALL_PREFIX=$InstallRoot",
-        "-DBUILD_PYPI_PACKAGE=0",
+        "-DBUILD_PYPI=1",
         "-DBUILD_PY_TESTING=1",
         "-DBUILD_REFERENCE_DOC=1",
         "-DBUILD_TESTING=1",
@@ -184,6 +187,9 @@ function Invoke-Configure {
         "-DOPENCASCADE_DLL_DIR=$condaRoot/Library/bin",
         "-DOPENCASCADE_TBB_DLL_DIR=$condaRoot/Library/bin",
         "-DOPTION_BUILD_CCVIEWER=OFF",
+        "-DOPTION_SUPPORT_3DMOUSE_WITH_3DxWARE=OFF",
+        "-DOPTION_SUPPORT_3DMOUSE_WITH_HIDAPI=ON",
+        "-DOPTION_HID_DEBUG=OFF",
         "-DOPTION_USE_GDAL=1",
         "-DPLUGIN_EXAMPLE_GL=1",
         "-DPLUGIN_EXAMPLE_IO=1",
@@ -234,6 +240,7 @@ function Invoke-Configure {
         "-DPYTHONAPI_TRACES=1",
         "-DPYTHONVENV=$PythonVenv",
         "-DQANIMATION_WITH_FFMPEG_SUPPORT=1",
+        "-DREPO_DIR=$SourceDir",
         "-DUSE_EXTERNAL_QHULL_FOR_QHPR=0",
         "-DWORKROOT=$WorkRoot"
     )
@@ -268,19 +275,49 @@ function Invoke-Install {
 
 function Invoke-Package {
     Start-Step "Package"
-    Write-Step "📦 Packaging CloudComPy..." "Cyan"
 
-    $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-    $packageName = "CloudComPy_${CondaEnvName}_$timestamp.7z"
-    $packagePath = Join-Path "$WorkRoot/install" $packageName
+    # Write-Step "📦 Packaging CloudComPy..." "Cyan"
 
-    $sevenZip = "C:\Program Files\7-Zip\7z.exe"
+    # $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    # $packageName = "CloudComPy_${CondaEnvName}_$timestamp.7z"
+    # $packagePath = Join-Path "$WorkRoot/install" $packageName
 
-    & $sevenZip a -t7z -m0=lzma2 -mx=9 -mmt=on -ms=on $packagePath $InstallRoot `
-        2>&1 | Tee-Object -FilePath $Global:LogFile -Append
+    # $sevenZip = "C:\Program Files\7-Zip\7z.exe"
 
-    Write-Host "🎉 Package generated : $packagePath" -ForegroundColor Green
-    Write-Log "Package generated : $packagePath"
+    # & $sevenZip a -t7z -m0=lzma2 -mx=9 -mmt=on -ms=on $packagePath $InstallRoot `
+    #     2>&1 | Tee-Object -FilePath $Global:LogFile -Append
+
+    # Write-Host "🎉 Package generated : $packagePath" -ForegroundColor Green
+    # Write-Log "Package generated : $packagePath"
+
+    Write-Host "📦 Building wheel..." -ForegroundColor Cyan
+
+    # Nettoyage
+    if (Test-Path dist) { Remove-Item dist -Recurse -Force }
+
+    # Construction du wheel
+    $venvActivate = Join-Path $PythonVenv "Scripts/Activate.ps1"
+    & $venvActivate
+    Copy-Item Windows/pyproject.toml pyproject.toml -Force
+    Copy-Item Windows/setup.py setup.py -Force
+
+    $Old = "CloudComPy312"
+    $New = "CloudComPy3$PyMinor"
+
+    $PyProject = Join-Path $SourceDir "pyproject.toml"
+
+    (Get-Content $PyProject -Raw) `
+        -replace $Old, $New |
+        Set-Content $PyProject -Encoding UTF8
+
+    python -m build --wheel
+
+    # Vérification
+    twine check dist\*.whl
+
+    Write-Host "🎉 Wheel généré et vérifié !" -ForegroundColor Green
+
+    Copy-Item dist\*.whl "$WorkRoot/install" -Force
 
     End-Step "Package"
 }
@@ -292,11 +329,21 @@ function Invoke-Tests {
     $venvActivate = Join-Path $PythonVenv "Scripts/Activate.ps1"
     & $venvActivate
 
-    Push-Location $InstallRoot
-    cmd /c "`"$(Join-Path $InstallRoot 'envCloudComPy.bat')`"" `
+    $envDump = cmd /c "call `"$InstallRoot\cloudComPy\envCloudComPy.bat`" && set" `
         2>&1 | Tee-Object -FilePath $Global:LogFile -Append
 
-    Push-Location (Join-Path $InstallRoot "doc/PythonAPI_test")
+    foreach ($line in $envDump) {
+        if ($line -match '^(.*?)=(.*)$') {
+            Set-Item -Path Env:$($matches[1]) -Value $matches[2]
+        }
+    }
+
+    Write-Host "=== PATH ==="
+    $env:PATH -split ';'
+    Write-Host "`n=== PYTHONPATH ==="
+    $env:PYTHONPATH -split ';'
+
+    Push-Location (Join-Path $InstallRoot "cloudComPy/doc/PythonAPI_test")
     ctest --output-on-failure 2>&1 | Tee-Object -FilePath $Global:LogFile -Append
 
     Pop-Location
@@ -355,4 +402,4 @@ if ($Tests) {
     exit
 }
 
-Write-Host "ℹ️ No switch provided. Use -All, -FromScratch, -BuildOnly, -InstallOnly, -Package or -Tests"
+Write-Host "ℹ️ No switch provided. Use -All, -FromScratch, -BuildOnly, -InstallOnly, -Package or -Tests. Add also-PyMinor=10|11|12|13|14 to specify the Python version." -ForegroundColor Yellow

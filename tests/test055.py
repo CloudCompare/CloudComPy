@@ -27,8 +27,8 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, getSamplePoly, dataDir, isCoordEqual
 import cloudComPy as cc
+from gendata import getSampleCloud, getSamplePoly, dataDir, isCoordEqual
 
 #---triangleEdges01-begin
 sphere = cc.ccSphere(radius=2, precision=128)

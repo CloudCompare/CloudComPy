@@ -212,7 +212,7 @@ cloudcompy_test()
     cd cloudComPy/doc/PythonAPI_test && ctest
 }
 
-conda_buildenv && \
+#conda_buildenv && \
 python_buildenv &&\
 cloudcompy_setenv && \
 cloudcompy_configure && \

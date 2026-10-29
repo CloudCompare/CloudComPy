@@ -92,10 +92,15 @@ set(PYTHONAPI_SCRIPTS
 # --- install
 
 if( WIN32 )
-    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION CloudCompare )
-    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/RANSAC_SD )
+    if(BUILD_PYPI)
+        install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy )
+        install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy/RANSAC_SD )
+    else()
+        install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION CloudCompare )
+        install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/RANSAC_SD )
+    endif()
 elseif( APPLE )
-    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/CloudCompare/CloudCompare.app/Contents/Frameworks )
+    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy/CloudCompare/CloudCompare.app/Contents/Frameworks )
     install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy/RANSAC_SD )
 else()
     install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy )

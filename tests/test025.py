@@ -28,10 +28,8 @@ import numpy as np
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual, createSymbolicLinks
 import cloudComPy as cc
-
-createSymbolicLinks() # required for tests on build, before cc.initCC
+from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual
 
 #---createCloudNumpy02-begin
 # --- generate a set of coords and a scalar field

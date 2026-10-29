@@ -63,6 +63,15 @@ set(RSTFILES
     version.rst
     )
 
+if( BUILD_PYPI )
+    set(IS_PYPI_BUILD "true")
+    set(REPO_GIT_DIR "${REPO_DIR}")
+else()
+    set(IS_PYPI_BUILD "false")
+    set(REPO_GIT_DIR "${CMAKE_SOURCE_DIR}")
+endif()
+message(STATUS "REPO_GIT_DIR: ${REPO_GIT_DIR}")
+
 set(SPHINXOPTS )
 set(SOURCEDIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(SPHINXDOCTREES "${CMAKE_CURRENT_BINARY_DIR}/doctrees")
@@ -73,37 +82,36 @@ string(TIMESTAMP BUILD_DATE "%Y/%m/%d")
 
 execute_process(
     COMMAND git rev-parse --short HEAD
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    WORKING_DIRECTORY ${REPO_GIT_DIR}
     OUTPUT_VARIABLE CLOUDCOMPY_GIT_COMMIT
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+message(STATUS "CLOUDCOMPY_GIT_COMMIT: ${CLOUDCOMPY_GIT_COMMIT}")
 
 execute_process(
     COMMAND git rev-parse --short HEAD
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/CloudCompare
+    WORKING_DIRECTORY ${REPO_GIT_DIR}/CloudCompare
     OUTPUT_VARIABLE CLOUDCOMPARE_GIT_COMMIT
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+message(STATUS "CLOUDCOMPARE_GIT_COMMIT: ${CLOUDCOMPARE_GIT_COMMIT}")
 
 execute_process(
     COMMAND git log -1 --format=%cd --date=format:%Y/%m/%d
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    WORKING_DIRECTORY ${REPO_GIT_DIR}
     OUTPUT_VARIABLE CLOUDCOMPY_COMMIT_DATE
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+message(STATUS "CLOUDCOMPY_COMMIT_DATE: ${CLOUDCOMPY_COMMIT_DATE}")
 
 execute_process(
     COMMAND git log -1 --format=%cd --date=format:%Y/%m/%d
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/CloudCompare
+    WORKING_DIRECTORY ${REPO_GIT_DIR}/CloudCompare
     OUTPUT_VARIABLE CLOUDCOMPARE_COMMIT_DATE
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+message(STATUS "CLOUDCOMPARE_COMMIT_DATE: ${CLOUDCOMPARE_COMMIT_DATE}")
 
-if( BUILD_PYPI )
-    set(IS_PYPI_BUILD "true")
-else()
-    set(IS_PYPI_BUILD "false")
-endif()
 configure_file(conf.py.in conf.py @ONLY)
 configure_file(getDependency.py.in getDependency.py)
 

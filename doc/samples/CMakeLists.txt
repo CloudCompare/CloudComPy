@@ -26,7 +26,11 @@ set( NOTEBOOK_SAMPLES
 if ( LINUX )
     set( NOTEBOOK_SAMPLES_DIR cloudComPy/doc/samples )
 else()
-    set( NOTEBOOK_SAMPLES_DIR doc/samples )
+    if(BUILD_PYPI)
+        set( NOTEBOOK_SAMPLES_DIR ${CMAKE_INSTALL_PREFIX}/cloudComPy/doc/samples )
+    else()
+        set( NOTEBOOK_SAMPLES_DIR doc/samples )
+    endif()
 endif()
 
 install(PROGRAMS ${NOTEBOOK_SAMPLES}

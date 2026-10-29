@@ -27,8 +27,8 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, dataDir, isCoordEqual
 import cloudComPy as cc
+from gendata import getSampleCloud, dataDir, isCoordEqual
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 cloud.translate((1000, 2000, 3000))

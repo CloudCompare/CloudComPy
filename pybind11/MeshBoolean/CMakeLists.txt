@@ -69,6 +69,7 @@ target_include_directories( ${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../../pybind11
     ${CMAKE_CURRENT_SOURCE_DIR}/../../pyAPI
     ${CMAKE_CURRENT_SOURCE_DIR}/../../CloudCompare/plugins/core/Standard/qMeshBoolean/include
+    ${CMAKE_BINARY_DIR}/CloudCompare/plugins/core/Standard/qMeshBoolean/QMESH_BOOLEAN_PLUGIN_autogen/include
     ${CCCoreLib_SOURCE_DIR}/include
     ${EIGEN_ROOT_DIR}
     ${LIBIGL_INCLUDE_DIR}
@@ -95,10 +96,15 @@ set(PYTHONAPI_SCRIPTS
 # --- install
 
 if( WIN32 )
-    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION CloudCompare )
-    install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/MeshBoolean )
+    if(BUILD_PYPI)
+        install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy )
+        install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy/MeshBoolean )
+    else()
+        install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION CloudCompare )
+        install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy/MeshBoolean )
+    endif()
 elseif( APPLE )
-    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/CloudCompare/CloudCompare.app/Contents/Frameworks )
+    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy/CloudCompare/CloudCompare.app/Contents/Frameworks )
     install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy/MeshBoolean )
 else()
     install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy )

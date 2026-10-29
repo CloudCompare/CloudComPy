@@ -1,0 +1,35 @@
+
+
+[build-system]
+requires = ["setuptools==76.1.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cloudComPy"
+version = "2.13.90"
+description = "CloudCompare Python bindings"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Paul RASCLE", email = "paul.rascle@openfields.fr" },
+]
+dependencies = [
+  "numpy",
+  "scipy",
+  "requests",
+  "psutil",
+  "matplotlib",
+  "numpy-quaternion",
+  "cmake"
+]
+
+[tool.setuptools]
+include-package-data = true
+package-dir = {"" = "../installConda/CloudComPy_PyPI"}
+
+[tool.setuptools.packages.find]
+where = ["../installConda/CloudComPy_PyPI"]
+include = ["cloudComPy*"]
+
+[tool.setuptools.package-data]
+cloudComPy = ["*.so", "*.dylib", "*.pyd", "*.pyi", "*.txt", "*.json", "LICENSE*", "**/*"]

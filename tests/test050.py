@@ -25,8 +25,8 @@ import os, sys
 
 os.environ["_CCTRACE_"] = "ON"  # only if you want C++ debug traces
 
-from gendata import dataDir, dataExtDir
 import cloudComPy as cc
+from gendata import dataDir, dataExtDir
 
 if not os.path.isfile(os.path.join(dataExtDir, "testIssue100.e57")):
     print("Test skipped")

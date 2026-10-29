@@ -47,7 +47,7 @@ py::tuple computeRANSAC_SD(ccPointCloud* ccPC,
     CCTRACE("computeRANSAC_SD");
     std::vector<ccMesh*> meshes;
     std::vector<ccPointCloud*> clouds;
-    ccHObject* objsFound = qRansacSD::executeRANSAC(ccPC, param, true);
+    ccHObject* objsFound = qRansacSD::ExecuteRANSAC(ccPC, param, nullptr, true);
     if (objsFound)
     {
         unsigned int nbChildren = objsFound->getChildrenNumber();

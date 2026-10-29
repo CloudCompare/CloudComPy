@@ -66,7 +66,7 @@ cloudcompy_configure()
     -S"${CLOUDCOMPY_SRC}" \
     -B"${CLOUDCOMPY_BUILD}" \
     -G"Unix Makefiles" \
-    -DBUILD_PYPI_PACKAGE:BOOL="0" \
+    -DBUILD_PYPI:BOOL="0" \
     -DBUILD_PY_TESTING:BOOL="1" \
     -DBUILD_REFERENCE_DOC:BOOL="1" \
     -DBUILD_TESTING:BOOL="1" \

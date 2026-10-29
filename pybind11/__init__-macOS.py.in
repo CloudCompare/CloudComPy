@@ -36,6 +36,8 @@ import sys
 from pathlib import Path
 
 cloudComPyInstallDir = os.path.dirname(__file__)
+sys.path.append(os.path.join(cloudComPyInstallDir, "CloudCompare", "CloudCompare.app", "Contents", "Frameworks" ))
+sys.path.append(os.path.join(cloudComPyInstallDir, "doc", "PythonAPI_test" ))
 
 # ---------------------------------------------------------------------------
 # 1. Localisation du dossier CloudCompare (racine de CloudComPy)
@@ -50,14 +52,21 @@ cloudComPyInstallDir = os.path.dirname(__file__)
 # ---------------------------------------------------------------------------
 # 4. Plugins Qt
 # ---------------------------------------------------------------------------
-os.environ["QT_PLUGIN_PATH"] = os.path.join(os.path.dirname(__file__), "..", "CloudCompare", "CloudCompare.app", "Contents", "plugins")
-os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = os.path.join(os.path.dirname(__file__), "..", "CloudCompare", "CloudCompare.app", "Contents", "plugins", "platforms")
+os.environ["QT_PLUGIN_PATH"] = os.path.join(os.path.dirname(__file__), "CloudCompare", "CloudCompare.app", "Contents", "plugins")
+os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = os.path.join(os.path.dirname(__file__), "CloudCompare", "CloudCompare.app", "Contents", "plugins", "platforms")
 
 # ---------------------------------------------------------------------------
 # 5. Import du module natif CloudComPy
 # ---------------------------------------------------------------------------
+# automatic detection: PyPI build if module in site-packages
+is_in_site_packages = "site-packages" in cloudComPyInstallDir
+isPypiBuild = int(is_in_site_packages)
 
-from _cloudComPy import *
+if isPypiBuild:
+    from _cloudComPy import *
+else:
+    from _cloudComPy import *
+
 initCC()
 initCloudCompare()
 
@@ -66,7 +75,7 @@ def launchCloudCompareGUI():
     Launch the CloudCompare GUI in a subprocess, and return immediately.
     """
     import subprocess
-    subprocess.Popen(os.path.join(cloudComPyInstallDir, "..", "CloudCompare", "CloudCompare.app", "Contents", "MacOS", "CloudCompare"))
+    subprocess.Popen(os.path.join(cloudComPyInstallDir, "CloudCompare", "CloudCompare.app", "Contents", "MacOS", "CloudCompare"))
     
 def launchTests():
     """
@@ -74,7 +83,7 @@ def launchTests():
     """
     import subprocess
     oldCWD = os.getcwd()
-    os.chdir(os.path.join(cloudComPyInstallDir, "..", "doc", "PythonAPI_test"))
+    os.chdir(os.path.join(cloudComPyInstallDir, "doc", "PythonAPI_test"))
     subprocess.run("ctest")
     os.chdir(oldCWD)
 
@@ -83,5 +92,5 @@ def launchDoc():
     Launch the cloudComPy documentation in a web browser.
     """
     import webbrowser
-    doc = Path(cloudComPyInstallDir).parent / "doc" / "html" / "index.html"
+    doc = Path(cloudComPyInstallDir) / "doc" / "html" / "index.html"
     webbrowser.open(doc.resolve().as_uri())

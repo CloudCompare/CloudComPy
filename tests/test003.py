@@ -28,8 +28,8 @@ import requests
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, dataDir, dataExtDir
 import cloudComPy as cc
+from gendata import getSampleCloud, dataDir, dataExtDir
 
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
 res = cloud.exportCoordToSF(False, True, True)

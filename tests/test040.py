@@ -27,8 +27,8 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud2, getSamplePoly, dataDir
 import cloudComPy as cc
+from gendata import getSampleCloud2, getSamplePoly, dataDir
 
 # --- create 2 ply files, a mesh and a cloud, with normals, color, scalar fields
 

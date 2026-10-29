@@ -28,8 +28,8 @@ import psutil
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, getSamplePoly, dataDir, isCoordEqual
 import cloudComPy as cc
+from gendata import getSampleCloud, getSamplePoly, dataDir, isCoordEqual
 
 tr1 = cc.ccGLMatrix()
 tr1.initFromParameters(0., (0., 0., 0.), (3.0, 0.0, 4.0))

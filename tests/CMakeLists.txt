@@ -38,7 +38,11 @@ endif()
 if( LINUX )
     set(PYTHONAPI_TEST_SCRIPTS_DIRECTORY cloudComPy/doc/PythonAPI_test)
 else()
-    set(PYTHONAPI_TEST_SCRIPTS_DIRECTORY doc/PythonAPI_test)
+    if( BUILD_PYPI)
+        set(PYTHONAPI_TEST_SCRIPTS_DIRECTORY ${CMAKE_INSTALL_PREFIX}/cloudComPy/doc/PythonAPI_test)
+    else()
+        set(PYTHONAPI_TEST_SCRIPTS_DIRECTORY doc/PythonAPI_test)
+    endif()
 endif()
 
 # data sample generator and other utilities for test

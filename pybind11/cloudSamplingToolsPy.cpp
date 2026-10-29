@@ -131,6 +131,7 @@ void export_cloudSamplingTools(py::module &m0)
              py::arg("cloud"), py::arg("knn")=6, py::arg("nSigma")=1.0,
              py::arg("octree")=nullptr,
              py::arg("progressCb")=nullptr,
+             py::arg("maxThreadCount")=0,
              CloudSamplingToolsPy_sorFilter_doc, py::return_value_policy::reference)
 
         .def_static("noiseFilter",
@@ -140,6 +141,7 @@ void export_cloudSamplingTools(py::module &m0)
              py::arg("knn")=6, py::arg("useAbsoluteError")=true, py::arg("absoluteError")=0,
              py::arg("octree")=nullptr,
              py::arg("progressCb")=nullptr,
+             py::arg("maxThreadCount")=0,
              CloudSamplingToolsPy_noiseFilter_doc, py::return_value_policy::reference)
         ;
 }

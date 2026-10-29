@@ -135,6 +135,7 @@ if (APPLE)
 else()
 	set (ENV_SCRIPTS condaCloud.sh)
 endif()
+
 option(USE_CONDA_PACKAGES "Use Conda packages and environment for build: add commands for set/unset run environment" OFF)
 
 # --- Python scripts with added functions
@@ -148,7 +149,11 @@ set(PYTHONAPI_SCRIPTS
 
 if( BUILD_PYPI )
     set(IS_PYPI_BUILD 1)
-    set(CLOUDCOMPY_IMPORT_PREFIX "cloudComPy.")
+    if ( APPLE )
+        set(CLOUDCOMPY_IMPORT_PREFIX "")
+    else()
+        set(CLOUDCOMPY_IMPORT_PREFIX "cloudComPy.")
+    endif()
 else()
     set(IS_PYPI_BUILD 0)
     set(CLOUDCOMPY_IMPORT_PREFIX "")
@@ -158,12 +163,17 @@ endif()
 
 if( WIN32 )
     configure_file(__init__-Windows.py.in __init__.py @ONLY)
-	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare )
-	install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy )
+    if( BUILD_PYPI )
+        install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy )
+        install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy )
+    else()
+        install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION CloudCompare )
+        install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION CloudCompare/cloudComPy )
+    endif()
 elseif( APPLE )
     configure_file(__init__-macOS.py.in __init__.py @ONLY)
-	message( STATUS "install MacOS PYTHON : ${CMAKE_INSTALL_PREFIX}/CloudCompare/CloudCompare.app/Contents/Frameworks" )
-	install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/CloudCompare/CloudCompare.app/Contents/Frameworks )
+	message( STATUS "install MacOS PYTHON : ${CMAKE_INSTALL_PREFIX}/cloudComPy/CloudCompare/CloudCompare.app/Contents/Frameworks" )
+	install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy/CloudCompare/CloudCompare.app/Contents/Frameworks )
 	install(PROGRAMS ${PYTHONAPI_SCRIPTS} DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy )	
 else()
     configure_file(__init__-Linux.py.in __init__.py @ONLY)
@@ -178,63 +188,75 @@ else()
 endif()
 
 if(WIN32)
-  #if( NOT INSTALL_PREREQUISITE_LIBRARIES )
-  if( INSTALL_PREREQUISITE_LIBRARIES )
+    #if( NOT INSTALL_PREREQUISITE_LIBRARIES )
+    if( INSTALL_PREREQUISITE_LIBRARIES )
 
-    if ( PLUGIN_IO_QRDB )
-        message( STATUS "rdblib.dll ${CMAKE_CURRENT_BINARY_DIR}/../_deps/rdb_sdk-src/library/rdblib.dll")
-        install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../_deps/rdb_sdk-src/library/rdblib.dll DESTINATION CloudCompare )
+        if ( PLUGIN_IO_QRDB )
+            message( STATUS "rdblib.dll ${CMAKE_CURRENT_BINARY_DIR}/../_deps/rdb_sdk-src/library/rdblib.dll")
+            if( BUILD_PYPI )
+                install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../_deps/rdb_sdk-src/library/rdblib.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy )
+            else()
+                install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../_deps/rdb_sdk-src/library/rdblib.dll DESTINATION CloudCompare )
+            endif()
+        endif()
+
+        if ( PLUGIN_IO_QSTEP )
+            set( OCCT_DLL_FILES
+                ${OPENCASCADE_DLL_DIR}/TKSTEP.dll
+                ${OPENCASCADE_DLL_DIR}/TKSTEPAttr.dll
+                ${OPENCASCADE_DLL_DIR}/TKSTEP209.dll
+                ${OPENCASCADE_DLL_DIR}/TKSTEPBase.dll
+                ${OPENCASCADE_DLL_DIR}/TKShHealing.dll
+                ${OPENCASCADE_DLL_DIR}/TKTopAlgo.dll
+                ${OPENCASCADE_DLL_DIR}/TKGeomAlgo.dll
+                ${OPENCASCADE_DLL_DIR}/TKBRep.dll
+                ${OPENCASCADE_DLL_DIR}/TKGeomBase.dll
+                ${OPENCASCADE_DLL_DIR}/TKG3D.dll
+                ${OPENCASCADE_DLL_DIR}/TKG2D.dll
+                ${OPENCASCADE_DLL_DIR}/TKMath.dll
+                ${OPENCASCADE_DLL_DIR}/TKernel.dll
+                ${OPENCASCADE_DLL_DIR}/TKXSBase.dll
+                ${OPENCASCADE_DLL_DIR}/TKMesh.dll
+                ${OPENCASCADE_DLL_DIR}/../../../../tbb_2017.0.100/bin/intel64/vc14/tbb.dll
+            )
+            message( STATUS "OCCT_DLL_FILES ${OCCT_DLL_FILES}")
+            if( BUILD_PYPI )
+                install( FILES ${OCCT_DLL_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy )
+            else()
+                install( FILES ${OCCT_DLL_FILES} DESTINATION CloudCompare )
+            endif()
+        endif()
+
+        if( PLUGIN_STANDARD_QPCL )
+            set( PCL_LIBRARIES_DIR ${PCL_DIR}/../bin )
+            message( STATUS PCL_LIBRARIES_DIR ${PCL_LIBRARIES_DIR} )
+            set ( PCL_DLL_FILES
+                ${PCL_LIBRARIES_DIR}/pcl_common.dll
+                ${PCL_LIBRARIES_DIR}/pcl_features.dll
+                ${PCL_LIBRARIES_DIR}/pcl_filters.dll
+                ${PCL_LIBRARIES_DIR}/pcl_io.dll
+                ${PCL_LIBRARIES_DIR}/pcl_io_ply.dll
+                ${PCL_LIBRARIES_DIR}/pcl_kdtree.dll
+                ${PCL_LIBRARIES_DIR}/pcl_keypoints.dll
+                ${PCL_LIBRARIES_DIR}/pcl_ml.dll
+                ${PCL_LIBRARIES_DIR}/pcl_octree.dll
+                ${PCL_LIBRARIES_DIR}/pcl_recognition.dll
+                ${PCL_LIBRARIES_DIR}/pcl_registration.dll
+                ${PCL_LIBRARIES_DIR}/pcl_sample_consensus.dll
+                ${PCL_LIBRARIES_DIR}/pcl_search.dll
+                ${PCL_LIBRARIES_DIR}/pcl_segmentation.dll
+                ${PCL_LIBRARIES_DIR}/pcl_stereo.dll
+                ${PCL_LIBRARIES_DIR}/pcl_surface.dll
+                ${PCL_LIBRARIES_DIR}/pcl_tracking.dll
+            )
+            if ( BUILD_PYPI )
+                install( FILES ${PCL_DLL_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/cloudComPy )
+            else()
+                install( FILES ${PCL_DLL_FILES} DESTINATION CloudCompare )
+            endif()
+        endif()
+        
     endif()
-
-    if ( PLUGIN_IO_QSTEP )
-        set( OCCT_DLL_FILES
-             ${OPENCASCADE_DLL_DIR}/TKSTEP.dll
-             ${OPENCASCADE_DLL_DIR}/TKSTEPAttr.dll
-             ${OPENCASCADE_DLL_DIR}/TKSTEP209.dll
-             ${OPENCASCADE_DLL_DIR}/TKSTEPBase.dll
-             ${OPENCASCADE_DLL_DIR}/TKShHealing.dll
-             ${OPENCASCADE_DLL_DIR}/TKTopAlgo.dll
-             ${OPENCASCADE_DLL_DIR}/TKGeomAlgo.dll
-             ${OPENCASCADE_DLL_DIR}/TKBRep.dll
-             ${OPENCASCADE_DLL_DIR}/TKGeomBase.dll
-             ${OPENCASCADE_DLL_DIR}/TKG3D.dll
-             ${OPENCASCADE_DLL_DIR}/TKG2D.dll
-             ${OPENCASCADE_DLL_DIR}/TKMath.dll
-             ${OPENCASCADE_DLL_DIR}/TKernel.dll
-             ${OPENCASCADE_DLL_DIR}/TKXSBase.dll
-             ${OPENCASCADE_DLL_DIR}/TKMesh.dll
-             ${OPENCASCADE_DLL_DIR}/../../../../tbb_2017.0.100/bin/intel64/vc14/tbb.dll
-           )
-        message( STATUS "OCCT_DLL_FILES ${OCCT_DLL_FILES}")
-	    install( FILES ${OCCT_DLL_FILES} DESTINATION CloudCompare )
-    endif()
-
-    if( PLUGIN_STANDARD_QPCL )
-        set( PCL_LIBRARIES_DIR ${PCL_DIR}/../bin )
-        message( STATUS PCL_LIBRARIES_DIR ${PCL_LIBRARIES_DIR} )
-        set ( PCL_DLL_FILES
-            ${PCL_LIBRARIES_DIR}/pcl_common.dll
-            ${PCL_LIBRARIES_DIR}/pcl_features.dll
-            ${PCL_LIBRARIES_DIR}/pcl_filters.dll
-            ${PCL_LIBRARIES_DIR}/pcl_io.dll
-            ${PCL_LIBRARIES_DIR}/pcl_io_ply.dll
-            ${PCL_LIBRARIES_DIR}/pcl_kdtree.dll
-            ${PCL_LIBRARIES_DIR}/pcl_keypoints.dll
-            ${PCL_LIBRARIES_DIR}/pcl_ml.dll
-            ${PCL_LIBRARIES_DIR}/pcl_octree.dll
-            ${PCL_LIBRARIES_DIR}/pcl_recognition.dll
-            ${PCL_LIBRARIES_DIR}/pcl_registration.dll
-            ${PCL_LIBRARIES_DIR}/pcl_sample_consensus.dll
-            ${PCL_LIBRARIES_DIR}/pcl_search.dll
-            ${PCL_LIBRARIES_DIR}/pcl_segmentation.dll
-            ${PCL_LIBRARIES_DIR}/pcl_stereo.dll
-            ${PCL_LIBRARIES_DIR}/pcl_surface.dll
-            ${PCL_LIBRARIES_DIR}/pcl_tracking.dll
-        )
-	    install( FILES ${PCL_DLL_FILES} DESTINATION CloudCompare )
-    endif()
-
-  endif()
 endif()
 
 # --- plugins

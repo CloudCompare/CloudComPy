@@ -1,4 +1,4 @@
 cd "@WORKROOT@"
-call @CMAKE_INSTALL_PREFIX@\envCloudComPy.bat doc
+call @CMAKE_INSTALL_PREFIX@\cloudComPy\envCloudComPy.bat doc
 del @SPHINXDOCTREES@\*.doctree
-"@PYTHONVENV@/Scripts/python.exe" -m sphinx -c @CMAKE_BINARY_DIR@/sphinxDoc -b html -d @SPHINXDOCTREES@ @ALLSPHINXOPTS@ @CMAKE_INSTALL_PREFIX@\doc\html
+"@PYTHONVENV@/Scripts/python.exe" -m sphinx -c @CMAKE_BINARY_DIR@/sphinxDoc -b html -d @SPHINXDOCTREES@ @ALLSPHINXOPTS@ @CMAKE_INSTALL_PREFIX@\cloudComPy\doc\html

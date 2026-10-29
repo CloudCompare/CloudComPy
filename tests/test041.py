@@ -28,9 +28,8 @@ import requests
 
 os.environ["_CCTRACE_"] = "ON"  # only if you want C++ debug traces
 
-from gendata import dataDir, dataExtDir, isCoordEqual
-
 import cloudComPy as cc
+from gendata import dataDir, dataExtDir, isCoordEqual
 
 #---sensor001-begin
 # example data available here: http://sourceforge.net/projects/e57-3d-imgfmt/files/E57Example-data/manitouNoInvalidPoints.e57/download

@@ -36,20 +36,25 @@ import sys
 from pathlib import Path
 
 cloudComPyInstallDir = os.path.dirname(__file__)
+sys.path.append(os.path.join(cloudComPyInstallDir, "doc", "PythonAPI_test"))
+if "LD_LIBRARY_PATH" in os.environ:
+    libpath=os.environ["LD_LIBRARY_PATH"].split(':')
+    if cloudComPyInstallDir not in libpath:
+        os.environ["LD_LIBRARY_PATH"]=cloudcompyInstallDir + ':' + os.environ["LD_LIBRARY_PATH"]
+else:
+    os.environ["LD_LIBRARY_PATH"]=cloudComPyInstallDir
 
-isPypiBuild = @IS_PYPI_BUILD@
+# automatic detection: PyPI build if module in site-packages
+is_in_site_packages = "site-packages" in cloudComPyInstallDir
+isPypiBuild = int(is_in_site_packages)
+
 if isPypiBuild:
     os.environ["QT_PLUGIN_PATH"]=os.path.join(cloudComPyInstallDir, "plugins")
-    print("QT_PLUGIN_PATH", os.environ["QT_PLUGIN_PATH"])
+    #print("QT_PLUGIN_PATH", os.environ["QT_PLUGIN_PATH"])
     os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"]=os.path.join(cloudComPyInstallDir, "plugins", "platforms")
-    print("QT_QPA_PLATFORM_PLUGIN_PATH", os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"])
-
-    #Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, vnc, wayland-egl, wayland, wayland-xcomposite-egl, wayland-xcomposite-glx, webgl, xcb.
-    #os.environ["QT_QPA_PLATFORM"]="offscreen"
-    #print("QT_QPA_PLATFORM", os.environ["QT_QPA_PLATFORM"])
-
-    #os.environ["QT_XCB_GL_INTEGRATION"]="none" # 3 possibles values : xcb_egl, xcb_glx, none
-    #print("QT_XCB_GL_INTEGRATION", os.environ["QT_XCB_GL_INTEGRATION"])
+    #print("QT_QPA_PLATFORM_PLUGIN_PATH", os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"])
+    os.environ.setdefault("FONTCONFIG_FILE", "/etc/fonts/fonts.conf")
+    os.environ.setdefault("FONTCONFIG_PATH", "/etc/fonts")
 
     from ._cloudComPy import *
 else:

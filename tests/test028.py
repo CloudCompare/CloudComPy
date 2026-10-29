@@ -27,9 +27,9 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, dataDir, isCoordEqual
 import cloudComPy as cc
 import numpy as np
+from gendata import getSampleCloud, dataDir, isCoordEqual
 
 # --- QColor from Qt
 

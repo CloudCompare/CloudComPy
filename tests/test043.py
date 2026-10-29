@@ -27,8 +27,8 @@ import math
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import dataDir, getSampleCloud
 import cloudComPy as cc
+from gendata import dataDir, getSampleCloud
 
 #---CSF01-begin
 if cc.isPluginCSF():

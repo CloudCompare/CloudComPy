@@ -150,7 +150,7 @@ class winBundle:
 if __name__ == "__main__":
 
     print(" === Fill Bundle with required DLL ===")
-    app_dir = Path(r"@CMAKE_INSTALL_PREFIX@\CloudCompare")
+    app_dir = Path(r"@CMAKE_INSTALL_PREFIX@/cloudComPy")
     bundle = winBundle(app_dir)
     bundle.collect_initial_binaries()
     bundle.find_all_dependencies()

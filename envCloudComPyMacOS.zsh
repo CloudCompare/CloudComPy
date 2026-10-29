@@ -28,7 +28,7 @@ activate()
     echo "activate"
     if [[ x${CLOUDCOMPY_ENV_ACTIVATED} != "x1" ]]; then
         export PYTHONPATH_SAVED=${PYTHONPATH}
-        export PYTHONPATH=${CLOUDCOMPY_ROOT}:${CLOUDCOMPY_ROOT}/CloudCompare/CloudCompare.app/Contents/Frameworks:${PYTHONPATH}
+        export PYTHONPATH=${CLOUDCOMPY_ROOT}:${CLOUDCOMPY_ROOT}/cloudComPy:${CLOUDCOMPY_ROOT}/cloudComPy/CloudCompare/CloudCompare.app/Contents/Frameworks:${PYTHONPATH}
         export PYTHONPATH=${CLOUDCOMPY_ROOT}/cloudComPy/doc/PythonAPI_test:${PYTHONPATH}
         export CLOUDCOMPY_ENV_ACTIVATED=1
         export LC_NUMERIC=C

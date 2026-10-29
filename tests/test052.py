@@ -28,8 +28,8 @@ import requests
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import  dataDir, dataExtDir, isCoordEqual
 import cloudComPy as cc
+from gendata import  dataDir, dataExtDir, isCoordEqual
 
 if not os.path.isfile(os.path.join(dataExtDir,"garonne_L93.xyz")):
     if not os.path.exists(dataExtDir):

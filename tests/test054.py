@@ -28,8 +28,8 @@ import numpy as np
 
 os.environ["_CCTRACE_"]="ON" # only if you want C++ debug traces
 
-from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual
 import cloudComPy as cc
+from gendata import getSampleCloud, getSampleCloud2, dataDir, isCoordEqual
 
 #---normals01-begin
 cloud = cc.loadPointCloud(getSampleCloud(5.0))
